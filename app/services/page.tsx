@@ -205,9 +205,11 @@ export default function ServicesPage() {
                                 <span>{srv.stats[0]}</span>
                               </div>
                             )}
-                            <h3 className="font-display text-2xl sm:text-3xl font-light text-white group-hover:text-ean-gold transition-colors duration-300 tracking-wide">
-                              {srv.name}
-                            </h3>
+                            <Link href={`/services/${srv.slug}`} className="block">
+                              <h3 className="font-display text-2xl sm:text-3xl font-light text-white hover:text-ean-gold transition-colors duration-300 tracking-wide">
+                                {srv.name}
+                              </h3>
+                            </Link>
                             <p className="font-ui text-sm text-ean-muted-light leading-relaxed">
                               {srv.extendedDescription || srv.short}
                             </p>
@@ -223,9 +225,12 @@ export default function ServicesPage() {
                           </div>
 
                           <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                            <span className="font-ui text-[10px] uppercase tracking-wider text-white/40 font-semibold">
-                              Available 24/7
-                            </span>
+                            <Link 
+                              href={`/services/${srv.slug}`}
+                              className="text-xs font-semibold uppercase tracking-wider text-ean-muted-light hover:text-white transition-colors"
+                            >
+                              <span>View Details</span>
+                            </Link>
                             <Link 
                               href={`/contact?service=${srv.slug}`} 
                               className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ean-gold hover:text-ean-gold-light group/link"
@@ -273,9 +278,11 @@ export default function ServicesPage() {
                               <span className="font-ui text-[10px] font-bold tracking-[0.2em] text-ean-gold uppercase block">
                                 Featured Acquisition & Charter
                               </span>
-                              <h3 className="font-display text-2xl sm:text-3xl font-light text-white group-hover:text-ean-gold transition-colors duration-300 tracking-wide leading-tight">
-                                {srv.name}
-                              </h3>
+                              <Link href={`/services/${srv.slug}`} className="block">
+                                <h3 className="font-display text-2xl sm:text-3xl font-light text-white hover:text-ean-gold transition-colors duration-300 tracking-wide leading-tight">
+                                  {srv.name}
+                                </h3>
+                              </Link>
                             </div>
                             <p className="font-ui text-sm text-ean-muted-light leading-relaxed">
                               {srv.extendedDescription || srv.short}
@@ -292,9 +299,12 @@ export default function ServicesPage() {
                           </div>
 
                           <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                            <span className="font-ui text-[10px] uppercase tracking-wider text-white/40 font-semibold">
-                              Executive Charter
-                            </span>
+                            <Link 
+                              href={`/services/${srv.slug}`}
+                              className="text-xs font-semibold uppercase tracking-wider text-ean-muted-light hover:text-white transition-colors"
+                            >
+                              <span>View Details</span>
+                            </Link>
                             <Link 
                               href={`/contact?service=${srv.slug}`} 
                               className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ean-gold hover:text-ean-gold-light group/link"
@@ -337,9 +347,11 @@ export default function ServicesPage() {
                           </div>
 
                           <div className="space-y-4 pt-2">
-                            <h3 className="font-display text-xl sm:text-2xl font-medium text-white group-hover:text-ean-gold transition-colors duration-300 tracking-wide">
-                              {srv.name}
-                            </h3>
+                            <Link href={`/services/${srv.slug}`} className="block">
+                              <h3 className="font-display text-xl sm:text-2xl font-medium text-white hover:text-ean-gold transition-colors duration-300 tracking-wide">
+                                {srv.name}
+                              </h3>
+                            </Link>
                             <p className="font-ui text-sm text-ean-muted-light leading-relaxed">
                               {srv.short}
                             </p>
@@ -355,9 +367,12 @@ export default function ServicesPage() {
                           </div>
 
                           <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                            <span className="font-ui text-[10px] uppercase tracking-wider text-white/40 font-semibold">
-                              Operations Desk
-                            </span>
+                            <Link 
+                              href={`/services/${srv.slug}`}
+                              className="text-xs font-semibold uppercase tracking-wider text-ean-muted-light hover:text-white transition-colors"
+                            >
+                              <span>View Details</span>
+                            </Link>
                             <Link 
                               href={`/contact?service=${srv.slug}`} 
                               className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ean-gold hover:text-ean-gold-light group/link"

@@ -259,7 +259,7 @@ export default function BlogPage() {
                             } h-full transition-colors duration-500 hover:bg-ean-navy hover:text-white`}
                           >
                             {/* Image Box */}
-                            <div className={`relative w-full ${isWide ? 'h-52 lg:h-auto lg:w-1/2 min-h-[240px]' : 'h-52'} overflow-hidden bg-black/10 shrink-0`}>
+                            <div className={`relative w-full ${isWide ? 'h-52 lg:h-auto lg:w-1/2 min-h-60' : 'h-52'} overflow-hidden bg-black/10 shrink-0`}>
                               <Image
                                 src={art.image}
                                 alt={art.title}

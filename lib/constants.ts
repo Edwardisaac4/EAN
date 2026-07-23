@@ -156,6 +156,7 @@ export const FOOTER_SERVICES_LINKS = [
   { name: 'Sales & Charter', href: '/services/aircraft-sales-charter' },
   { name: 'Wings™ Catering', href: '/services/wings-catering' },
   { name: 'VIP Lounge', href: '/services/vip-lounge' },
+  { name: 'Leased Office Spaces', href: '/services/leased-offices' },
 ];
 
 export const FOOTER_COMPANY_LINKS = [
