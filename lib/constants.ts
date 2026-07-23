@@ -839,7 +839,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Founder & Chief Executive Officer',
     department: 'executive',
     departmentLabel: 'Executive Office',
-    image: '/images/SD ! NBAC.jpg',
+    image: '/images/Leadership/sd-nbac.jpg',
     quote: 'In executive aviation, luxury is not merely an aesthetic — it is the seamless execution of uncompromising safety, total privacy, and absolute precision.',
     bio: [
       'Segun Demuren is a pioneering Nigerian aviation entrepreneur, visionary leader, and the Founder & CEO of EAN Aviation — West Africa’s first fully integrated Fixed Base Operator (FBO) hangar and business jet maintenance facility located at Murtala Muhammed International Airport (MMIA), Lagos.',
