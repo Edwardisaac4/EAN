@@ -32,7 +32,6 @@ export default function RootLayout({
       className={`${cormorant.variable} ${inter.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col bg-ean-navy text-white font-ui select-none">
-        <Preloader />
         {children}
         <Footer />
       </body>
