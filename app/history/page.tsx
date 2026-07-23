@@ -268,7 +268,7 @@ export default function HistoryPage() {
             {/* Scrolling slides container */}
             <div
               ref={horizontalScrollRef}
-              className="flex flex-row items-center gap-12 px-[10vw] lg:px-[15vw] h-[55vh]"
+              className="flex flex-row items-center gap-6 sm:gap-12 px-[6vw] sm:px-[10vw] lg:px-[15vw] h-[68vh] sm:h-[55vh]"
             >
               {TIMELINE_EVENTS.map((event, idx) => {
                 const img = event.image || '/images/about-jet.png';
@@ -277,52 +277,54 @@ export default function HistoryPage() {
                   <div
                     key={idx}
                     onClick={() => setSelectedEvent(event)}
-                    className="history-slide w-[80vw] sm:w-[65vw] lg:w-[50vw] shrink-0 bg-white border border-ean-border-light p-6 sm:p-8 rounded-xs flex flex-col sm:flex-row gap-6 items-center shadow-xl h-[45vh] lg:h-[48vh] relative overflow-hidden group hover:border-ean-gold/60 transition-all duration-300 cursor-pointer"
+                    className="history-slide w-[85vw] sm:w-[65vw] lg:w-[50vw] shrink-0 bg-white border border-ean-border-light p-4 sm:p-8 rounded-xs flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch shadow-xl h-[56vh] sm:h-[46vh] lg:h-[48vh] relative overflow-hidden group hover:border-ean-gold/60 transition-all duration-300 cursor-pointer"
                   >
                     {/* Background giant year number */}
-                    <div className="absolute -bottom-6 -right-6 font-display text-[150px] lg:text-[200px] font-bold text-ean-navy/5 pointer-events-none select-none group-hover:text-ean-gold/10 transition-colors duration-500">
+                    <div className="absolute -bottom-6 -right-6 font-display text-[120px] sm:text-[150px] lg:text-[200px] font-bold text-ean-navy/5 pointer-events-none select-none group-hover:text-ean-gold/10 transition-colors duration-500">
                       {event.year}
                     </div>
 
-                    {/* Content Section (Left side) */}
-                    <div className="flex-1 space-y-3 z-10 text-left">
-                      <div className="flex items-center justify-between">
-                        <span className="font-display text-4xl lg:text-5xl font-semibold text-ean-gold tracking-tight">
-                          {event.year}
-                        </span>
-                        {event.category && (
-                          <span className="px-2 py-0.5 bg-ean-navy/5 border border-ean-navy/10 text-[9px] font-mono text-ean-navy font-bold uppercase tracking-wider rounded-xs">
-                            {event.category}
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="font-ui text-lg sm:text-xl font-semibold text-ean-navy group-hover:text-ean-gold transition-colors duration-300">
-                        {event.title}
-                      </h3>
-                      <p className="font-ui text-xs sm:text-sm text-ean-muted-dark leading-relaxed line-clamp-3">
-                        {event.description}
-                      </p>
-
-                      {/* Read Full Story Action Prompt */}
-                      <div className="pt-2 flex items-center gap-1.5 font-ui text-xs font-bold text-ean-navy group-hover:text-ean-gold transition-colors">
-                        <span>Read Full Milestone Story</span>
-                        <ChevronRight className="w-4 h-4 text-ean-gold transition-transform duration-300 group-hover:translate-x-1" />
-                      </div>
-                    </div>
-
-                    {/* Image Section (Right side) */}
-                    <div className="relative w-full sm:w-[45%] h-[20vh] sm:h-full rounded-xs overflow-hidden border border-ean-border-light shrink-0">
+                    {/* Image Section (Top on mobile, Right on desktop) */}
+                    <div className="relative w-full sm:w-[45%] h-44 sm:h-full rounded-xs overflow-hidden border border-ean-border-light shrink-0 order-first sm:order-last">
                       <Image
                         src={img}
                         alt={event.title}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 30vw, 25vw"
-                        className="object-cover transition-transform duration-750 group-hover:scale-105"
-                        quality={90}
+                        className="object-cover object-center transition-transform duration-750 group-hover:scale-105"
+                        quality={95}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-transparent to-transparent opacity-60" />
-                      <div className="absolute bottom-2 right-2 px-2 py-1 bg-ean-navy/90 backdrop-blur-xs text-[10px] font-mono text-ean-gold uppercase tracking-wider rounded-xs">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent sm:from-white/70" />
+                      <div className="absolute bottom-2 right-2 px-2 py-1 bg-ean-navy/90 backdrop-blur-xs text-[9px] sm:text-[10px] font-mono text-ean-gold uppercase tracking-wider rounded-xs z-10">
                         Click to Read Story
+                      </div>
+                    </div>
+
+                    {/* Content Section (Bottom on mobile, Left on desktop) */}
+                    <div className="flex-1 space-y-2 sm:space-y-3 z-10 text-left flex flex-col justify-between order-last sm:order-first">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-ean-gold tracking-tight">
+                            {event.year}
+                          </span>
+                          {event.category && (
+                            <span className="px-2 py-0.5 bg-ean-navy/5 border border-ean-navy/10 text-[9px] font-mono text-ean-navy font-bold uppercase tracking-wider rounded-xs">
+                              {event.category}
+                            </span>
+                          )}
+                        </div>
+                        <h3 className="font-ui text-base sm:text-xl font-semibold text-ean-navy group-hover:text-ean-gold transition-colors duration-300 line-clamp-2 sm:line-clamp-none">
+                          {event.title}
+                        </h3>
+                        <p className="font-ui text-xs sm:text-sm text-ean-muted-dark leading-relaxed line-clamp-3">
+                          {event.description}
+                        </p>
+                      </div>
+
+                      {/* Read Full Story Action Prompt */}
+                      <div className="pt-1 sm:pt-2 flex items-center gap-1.5 font-ui text-xs font-bold text-ean-navy group-hover:text-ean-gold transition-colors">
+                        <span>Read Full Milestone Story</span>
+                        <ChevronRight className="w-4 h-4 text-ean-gold transition-transform duration-300 group-hover:translate-x-1" />
                       </div>
                     </div>
                   </div>
