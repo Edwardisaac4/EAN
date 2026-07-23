@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Backgrounds */
+  --color-ean-navy: #4a0d1a;
+  --color-ean-navy-mid: #2d0710;
+  --color-ean-black: #0d0204;
+  --color-ean-black-pure: #050102;
+  --color-ean-black-accent: #141213;
+  --color-ean-white: #ffffff;
+  --color-ean-surface: #fdf6f7;
+
+  /* Accent */
+  --color-ean-gold: #c4952a;
+  --color-ean-gold-light: #d4ab50;
+  --color-ean-gold-muted: rgba(196, 149, 42, 0.25);
+
+  /* Text */
+  --color-ean-text-light: #ffffff;
+  --color-ean-text-dark: #2a070e;
+  --color-ean-muted-light: rgba(255, 255, 255, 0.65);
+  --color-ean-muted-dark: #854452;
+
+  /* Borders */
+  --color-ean-border-dark: rgba(255, 255, 255, 0.1);
+  --color-ean-border-light: #f0d8dc;
+
+  /* Typography */
+  --font-display: var(--font-display), serif;
+  --font-ui: var(--font-ui), sans-serif;
+
+  /* Animations */
+  --animate-marquee: marquee 30s linear infinite;
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-ean-black text-ean-text-light font-ui antialiased;
+  }
+}
