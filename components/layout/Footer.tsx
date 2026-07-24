@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { 
   MapPin, 
@@ -125,10 +126,14 @@ export default function Footer() {
           {/* Brand & Overview (Mobile: Full width, iPad: md:col-span-2, Desktop: lg:col-span-4) */}
           <div className="md:col-span-2 lg:col-span-4 space-y-5">
             <div className="space-y-2">
-              <Link href="/" className="inline-block">
-                <span className="font-ui font-bold text-xl tracking-[0.25em] text-white hover:text-ean-gold transition-colors duration-300">
-                  EAN AVIATION
-                </span>
+              <Link href="/" className="inline-flex items-center group">
+                <Image
+                  src="/images/EAN-Logo.png"
+                  alt="EAN Aviation Logo"
+                  width={180}
+                  height={48}
+                  className="h-10 sm:h-11 w-auto object-contain filter brightness-0 invert opacity-95 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105"
+                />
               </Link>
               <div className="h-0.5 w-12 bg-ean-gold rounded-full" />
             </div>
@@ -140,9 +145,9 @@ export default function Footer() {
             {/* Social Icons */}
             <div className="flex items-center gap-3 pt-2">
               {[
-                { icon: LinkedinIcon, href: 'https://linkedin.com', label: 'LinkedIn' },
-                { icon: InstagramIcon, href: 'https://instagram.com', label: 'Instagram' },
-                { icon: FacebookIcon, href: 'https://facebook.com', label: 'Facebook' },
+                { icon: LinkedinIcon, href: 'https://www.linkedin.com/company/ean-aviation-limited/', label: 'LinkedIn' },
+                { icon: InstagramIcon, href: 'https://www.instagram.com/eanaviationltd/', label: 'Instagram' },
+                { icon: FacebookIcon, href: 'https://www.facebook.com/eanaviationltd/', label: 'Facebook' },
               ].map((soc, idx) => {
                 const IconComponent = soc.icon;
                 return (

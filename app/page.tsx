@@ -6,7 +6,6 @@ import ServicesSection from "@/components/sections/ServicesSection";
 import CharterSection from "@/components/sections/CharterSection";
 import VIPSection from "@/components/sections/VIPSection";
 import PartnersStrip from "@/components/sections/PartnersStrip";
-import NewsSection from "@/components/sections/NewsSection";
 import ContactSection from "@/components/sections/ContactSection";
 
 export default function Home() {
@@ -21,7 +20,6 @@ export default function Home() {
         <VIPSection />
         <CharterSection />
         <PartnersStrip />
-        <NewsSection />
         <ContactSection />
       </main>
     </>

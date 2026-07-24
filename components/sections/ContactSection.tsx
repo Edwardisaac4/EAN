@@ -44,8 +44,8 @@ export default function ContactSection() {
       {/* Background with Parallax */}
       <div ref={bgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
         <Image
-          src="/images/contact-cta.png"
-          alt="EAN Aviation premium helicopter on pad at dusk"
+          src="/images/runway.jpg"
+          alt="Private jet on runway approaching city skyline"
           fill
           sizes="100vw"
           priority={false}
@@ -53,8 +53,8 @@ export default function ContactSection() {
           className="object-cover object-center"
         />
         {/* Luxury overlays for text visibility */}
-        <div className="absolute inset-0 bg-black/80" />
-        <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/35 to-black/75" />
+        <div className="absolute inset-0 bg-black/70" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/40 to-black/75" />
       </div>
 
       {/* Content */}

@@ -23,7 +23,7 @@ const INFRASTRUCTURE_ITEMS = [
     title: 'Integrated FBO & VIP Lounge',
     category: 'Private Terminal',
     icon: Building2,
-    image: '/images/vip-lounge.png',
+    image: '/images/vip-lounge.jpg',
     badge: '1st in West Africa',
     description: 'A dedicated 24/7 executive terminal at Lagos airport featuring private ramp access, luxury passenger lounges, discreet diplomatic protocol, and VIP customs clearance completed in under 7 minutes.',
     specs: [

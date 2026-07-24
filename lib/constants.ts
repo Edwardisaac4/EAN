@@ -176,7 +176,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     eyebrow: "The Most Comprehensive Aviation Services Company in West Africa",
     title: "Elevating Every\nJourney",
     subtitle: "FBO Services · Aircraft Charter · NCAA-Approved\nMaintenance · VIP Ground Handling",
-    image: "/images/hero/slide-1.png",
+    image: "/images/hero/slider 1.png",
     primaryCta: {
       text: "Make an Inquiry",
       href: "#contact-section",
@@ -191,7 +191,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     eyebrow: "Exclusive Private Flight Solutions",
     title: "Precision in Flight,\nLuxury in Detail",
     subtitle: "Experience bespoke jet and helicopter chartering tailored to\nyour schedule and designed for ultimate comfort.",
-    image: "/images/hero/slide-2.png",
+    image: "/images/hero/slider 2.jpg",
     primaryCta: {
       text: "Book a Charter",
       href: "/charter",
@@ -206,7 +206,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     eyebrow: "NCAA-Approved Maintenance Organisation",
     title: "Uncompromising\nSafety & Standards",
     subtitle: "West Africa's certified maintenance hub keeping business jets\nand commercial fleets flying safely.",
-    image: "/images/hero/slide-3.png",
+    image: "/images/hero/slider 3.png",
     primaryCta: {
       text: "Maintenance Services",
       href: "/services/aircraft-maintenance",
@@ -221,7 +221,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     eyebrow: "Nigeria's Premier FBO Hangar & VIP Lounge",
     title: "The EAN Way of\nDeparture",
     subtitle: "Enjoy the luxury of Lagos airport's dedicated VIP private terminal,\naccompanied by Wings™ freshly prepared in-flight catering.",
-    image: "/images/hero/slide-4.png",
+    image: "/images/hero/slider 4.jpeg",
     primaryCta: {
       text: "VIP Lounge Experience",
       href: "/services/vip-lounge",
@@ -392,7 +392,7 @@ export const SERVICES_DATA: ServiceRichData[] = [
       'High-speed corporate Wi-Fi & quiet study',
       'Chauffeur-driven tarmac transfers'
     ],
-    image: '/images/vip-lounge.png',
+    image: '/images/vip-lounge.jpg',
   },
   {
     slug: 'leased-offices',
@@ -433,7 +433,7 @@ export const ARTICLES_DATABASE: Article[] = [
     excerpt: 'An in-depth review of current regulatory compliances and key handling upgrades at major airport terminals.',
     publishedAt: 'July 15, 2026',
     readTime: '5 min read',
-    image: '/images/vip-lounge.png',
+    image: '/images/vip-lounge.jpg',
   },
   {
     slug: 'safety-standards-inside-maintenance-hub',
@@ -460,7 +460,7 @@ export const ARTICLES_DATABASE: Article[] = [
     excerpt: 'A look inside the new fast-track executive terminal and lounge spaces designed for seamless travel.',
     publishedAt: 'June 28, 2026',
     readTime: '5 min read',
-    image: '/images/vip-lounge.png',
+    image: '/images/vip-lounge.jpg',
   },
   {
     slug: 'choosing-right-corporate-helicopter',
@@ -479,7 +479,7 @@ export const MOCK_POSTS: BlogPostMock[] = [
     category: 'FBO Services',
     excerpt: 'An in-depth review of current regulatory compliances and key handling upgrades at major airport terminals.',
     publishedAt: 'July 18, 2026',
-    image: '/images/vip-lounge.png',
+    image: '/images/vip-lounge.jpg',
     slug: 'navigating-fbo-regulations-west-africa',
   },
   {
@@ -722,7 +722,7 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     year: "2023",
     title: "Heliconia-EAN JV & EAN JETS Launch",
     category: "CHARTER & JOINT VENTURES",
-    image: "/images/vip-lounge.png",
+    image: "/images/vip-lounge.jpg",
     description:
       "Formed a strategic joint venture with Heliconia and launched EAN JETS to expand offshore helicopter services and executive jet charter operations.",
     story: [
@@ -915,7 +915,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Head of FBO Terminal & VIP Concierge',
     department: 'ground',
     departmentLabel: 'FBO & Concierge',
-    image: '/images/vip-lounge.png',
+    image: '/images/vip-lounge.jpg',
     quote: 'The airport experience for executive travelers should be entirely effortless — discreet, instantaneous, and tailored to individual preference.',
     bio: [
       'Amina Ibrahim directs all ground handling, VIP lounge hospitality, and passenger protocol services at EAN’s private terminal in Lagos. She curates bespoke VIP itineraries for diplomats, executive charter clients, and international dignitaries.',
@@ -986,7 +986,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Head of Executive Customer Experience',
     department: 'ground',
     departmentLabel: 'Customer Experience',
-    image: '/images/vip-lounge.png',
+    image: '/images/vip-lounge.jpg',
     quote: 'True service is anticipating needs before they are articulated, ensuring absolute privacy, comfort, and peace of mind.',
     bio: [
       'Blessing Nwachukwu directs customer relationship management, charter client concierge services, and executive account operations at EAN Aviation. She oversees client communications from initial flight inquiry through to ground arrival.',

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -65,6 +66,15 @@ export default function Preloader() {
       className="fixed inset-0 z-9999 bg-ean-navy flex flex-col items-center justify-center select-none"
     >
       <div className="flex flex-col items-center space-y-6">
+        {/* Brand Icon */}
+        <Image
+          src="/images/ean icon.png"
+          alt="EAN Aviation Logo"
+          width={64}
+          height={64}
+          className="h-14 w-auto object-contain animate-pulse"
+          priority
+        />
         {/* Letters Container */}
         <div ref={textRef} className="flex space-x-1.5 sm:space-x-3 text-center">
           {phrase.split('').map((char, index) => (

@@ -32,8 +32,7 @@ if (typeof window !== 'undefined') {
 
 import { 
   VALUE_PILLARS, 
-  CREDENTIAL_ITEMS, 
-  COMMITTEE_MEMBERS 
+  CREDENTIAL_ITEMS 
 } from '@/lib/constants';
 
 const iconMap = {
@@ -327,68 +326,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* SECTION 6: Committee & Leadership */}
-        <section id="team" className="bg-ean-navy-mid text-white py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
-          {/* Ambient blur light source */}
-          <div className="absolute -top-48 -left-48 w-96 h-96 rounded-full bg-ean-gold/5 blur-[120px] pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
-            <SectionReveal className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
-                Leadership
-              </span>
-              <h2 className="font-display text-4xl sm:text-5xl font-light text-white leading-tight">
-                Our Committee
-              </h2>
-              <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
-                Meet the seasoned industry experts steering EAN Aviation toward new frontiers of growth, safety, and operational excellence.
-              </p>
-            </SectionReveal>
-
-            <div className="space-y-12">
-              {COMMITTEE_MEMBERS.map((member, idx) => (
-                <SectionReveal key={idx}>
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start bg-ean-navy/30 border border-white/5 p-8 sm:p-10 rounded-xs transition-all duration-300 hover:border-ean-gold/25">
-                    {/* Member Image & Details */}
-                    <div className="lg:col-span-4 space-y-4">
-                      <div className="relative w-full aspect-4/5 sm:aspect-square lg:aspect-4/5 rounded-xs overflow-hidden border border-ean-border-dark/60 bg-ean-navy-mid group">
-                        {/* Fallback avatar shape if image isn't loaded */}
-                        <div className="absolute inset-0 flex items-center justify-center bg-ean-navy-mid text-ean-gold/30">
-                          <svg className="w-20 h-20" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                          </svg>
-                        </div>
-                        <Image
-                          src={member.image}
-                          alt={member.name}
-                          fill
-                          sizes="(max-width: 1024px) 100vw, 30vw"
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          quality={95}
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-transparent to-transparent opacity-40" />
-                      </div>
-                      <div className="space-y-1">
-                        <h3 className="font-display text-2xl font-medium text-white">{member.name}</h3>
-                        <p className="font-ui text-sm text-ean-gold tracking-wide uppercase font-semibold">{member.role}</p>
-                      </div>
-                    </div>
-
-                    {/* Member Bio */}
-                    <div className="lg:col-span-8 space-y-6 font-ui text-sm sm:text-base text-ean-muted-light leading-relaxed">
-                      {member.bio.map((paragraph, pIdx) => (
-                        <p key={pIdx}>{paragraph}</p>
-                      ))}
-                    </div>
-                  </div>
-                </SectionReveal>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* SECTION 7: Premium Call to Action */}
         <section className="bg-ean-surface text-ean-text-dark py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-light/60">

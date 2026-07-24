@@ -520,8 +520,8 @@ export default function ContactPage() {
         {/* SECTION 4: Stylized MMIA Airport Location Spotlight */}
         <section className="relative w-full h-87.5 sm:h-112.5 bg-ean-navy flex items-center justify-center overflow-hidden border-t border-ean-border-dark">
           <Image
-            src="/images/contact-cta.png"
-            alt="EAN Aviation corporate helicopter on runway apron at sunset"
+            src="/images/runway.jpg"
+            alt="Private jet on runway with city skyline backdrop"
             fill
             sizes="100vw"
             className="object-cover"

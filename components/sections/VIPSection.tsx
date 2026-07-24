@@ -13,7 +13,7 @@ export default function VIPSection() {
             {/* Left Column: Large Lounge Visual */}
             <div className="lg:col-span-5 relative w-full h-80 sm:h-100 lg:h-125 rounded-xs overflow-hidden shadow-xl border border-ean-border-light dark:border-ean-border-dark group lg:order-1">
               <Image
-                src="/images/vip-lounge.png"
+                src="/images/vip-lounge.jpg"
                 alt="EAN Aviation premium airport terminal VIP lounge"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"

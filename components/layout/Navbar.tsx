@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown } from 'lucide-react';
@@ -39,20 +40,25 @@ export default function Navbar() {
       >
         <div
           className={`transition-all duration-500 ease-in-out flex items-center justify-between pointer-events-auto ${isScrolled
-              ? 'max-w-5xl mx-auto mt-4 px-8 py-3.5 rounded-full bg-ean-navy/80 dark:bg-ean-navy/60 backdrop-blur-xl border border-white/10 dark:border-white/5 shadow-[0_12px_40px_rgba(0,0,0,0.5)] w-[calc(100%-2rem)] md:w-[calc(100%-4rem)]'
+              ? 'max-w-6xl mx-auto mt-4 px-6 md:px-8 py-3.5 rounded-full bg-ean-navy/80 dark:bg-ean-navy/60 backdrop-blur-xl border border-white/10 dark:border-white/5 shadow-[0_12px_40px_rgba(0,0,0,0.5)] w-[calc(100%-2rem)] lg:w-[calc(100%-4rem)]'
               : 'max-w-7xl mx-auto px-6 md:px-8 py-0 rounded-none bg-transparent border-b border-transparent w-full'
             }`}
         >
           {/* Logo */}
-          <Link href="/" className="group flex items-center gap-2">
-            <span className="font-ui font-bold text-lg tracking-[0.25em] text-white transition-all duration-300 group-hover:text-ean-gold">
-              EAN AVIATION
-            </span>
+          <Link href="/" className="group flex items-center">
+            <Image
+              src="/images/EAN-Logo.png"
+              alt="EAN Aviation Logo"
+              width={180}
+              height={48}
+              className="h-8 sm:h-9 md:h-10 w-auto object-contain filter brightness-0 invert opacity-95 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105"
+              priority
+            />
           </Link>
 
-          {/* Desktop Navigation + CTA */}
-          <div className="hidden md:flex items-center gap-8 lg:gap-10">
-            <nav className="flex items-center gap-6 lg:gap-8">
+          {/* Desktop & Tablet Landscape Navigation + CTA */}
+          <div className="hidden lg:flex items-center gap-5 xl:gap-8">
+            <nav className="flex items-center gap-4 xl:gap-7">
               {NAV_ITEMS.map((item) => (
                 <div
                   key={item.name}
@@ -64,7 +70,7 @@ export default function Navbar() {
                     <>
                       <Link
                         href={item.href}
-                        className={`font-ui text-sm tracking-widest transition-colors duration-300 relative py-2 flex items-center gap-1 cursor-pointer ${pathname === item.href || item.dropdownItems.some((sub) => pathname === sub.href)
+                        className={`font-ui text-xs xl:text-sm tracking-widest transition-colors duration-300 relative py-2 flex items-center gap-1 cursor-pointer ${pathname === item.href || item.dropdownItems.some((sub) => pathname === sub.href)
                             ? 'text-ean-gold font-medium'
                             : 'text-ean-muted-light hover:text-white'
                           }`}
@@ -109,7 +115,7 @@ export default function Navbar() {
                   ) : (
                     <Link
                       href={item.href}
-                      className={`font-ui text-sm tracking-widest transition-colors duration-300 relative py-2 block ${pathname === item.href
+                      className={`font-ui text-xs xl:text-sm tracking-widest transition-colors duration-300 relative py-2 block ${pathname === item.href
                           ? 'text-ean-gold font-medium'
                           : 'text-ean-muted-light hover:text-white'
                         }`}
@@ -128,16 +134,16 @@ export default function Navbar() {
               ))}
             </nav>
             <Link href={NAV_CTA.href}>
-              <button className="bg-ean-gold hover:bg-ean-gold-light text-ean-navy text-xs font-ui font-bold uppercase tracking-widest px-6 py-2.5 rounded-full transition-all duration-300 cursor-pointer shadow-[0_4px_12px_rgba(196,149,42,0.15)] hover:shadow-[0_4px_18px_rgba(196,149,42,0.3)]">
+              <button className="bg-ean-gold hover:bg-ean-gold-light text-ean-navy text-xs font-ui font-bold uppercase tracking-widest px-5 xl:px-6 py-2 rounded-full transition-all duration-300 cursor-pointer shadow-[0_4px_12px_rgba(196,149,42,0.15)] hover:shadow-[0_4px_18px_rgba(196,149,42,0.3)]">
                 {NAV_CTA.name}
               </button>
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile & iPad Portrait Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden text-white p-2 focus:outline-none hover:text-ean-gold transition-colors cursor-pointer"
+            className="lg:hidden text-white p-2 focus:outline-none hover:text-ean-gold transition-colors cursor-pointer"
             aria-label="Toggle Menu"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -145,7 +151,7 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile & iPad Menu Drawer Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -153,7 +159,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 bg-ean-navy pt-24 px-6 flex flex-col gap-6 md:hidden overflow-y-auto"
+            className="fixed inset-0 z-40 bg-ean-navy pt-24 px-6 md:px-12 flex flex-col gap-6 lg:hidden overflow-y-auto"
           >
             <nav className="flex flex-col gap-4">
               {NAV_ITEMS.map((item) => (

@@ -140,7 +140,7 @@ export default function HeroSection() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-screen overflow-hidden bg-ean-navy flex items-center select-none"
+      className="relative w-full h-screen min-h-[620px] md:min-h-[720px] lg:min-h-[800px] overflow-hidden bg-ean-navy flex items-center select-none"
     >
       {/* Background Slides Container */}
       {HERO_SLIDES.map((s, idx) => (
@@ -165,8 +165,8 @@ export default function HeroSection() {
       ))}
 
       {/* Main Content (Text Layer) */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 w-full pt-16">
-        <div className="max-w-3xl flex flex-col items-start text-left">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 lg:px-12 w-full pt-20 sm:pt-24 md:pt-28 lg:pt-16">
+        <div className="max-w-2xl lg:max-w-3xl flex flex-col items-start text-left">
           {/* Eyebrow */}
           <p
             ref={eyebrowRef}
@@ -178,7 +178,7 @@ export default function HeroSection() {
           {/* Headline */}
           <h1
             ref={titleRef}
-            className="opacity-0 font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-white font-medium leading-[1.1] mb-5 sm:mb-6"
+            className="opacity-0 font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-white font-medium leading-[1.1] mb-4 sm:mb-6"
           >
             {slide.title.split('\n').map((line, i) => (
               <React.Fragment key={i}>
@@ -191,7 +191,7 @@ export default function HeroSection() {
           {/* Subtitle */}
           <p
             ref={subtitleRef}
-            className="opacity-0 font-ui text-xs sm:text-sm md:text-base lg:text-lg text-ean-muted-light leading-relaxed mb-8 sm:mb-10 max-w-xl"
+            className="opacity-0 font-ui text-xs sm:text-sm md:text-base lg:text-lg text-ean-muted-light leading-relaxed mb-6 sm:mb-8 md:mb-10 max-w-xl"
           >
             {slide.subtitle.split('\n').map((line, i) => (
               <React.Fragment key={i}>
@@ -202,7 +202,7 @@ export default function HeroSection() {
           </p>
 
           {/* Action Buttons */}
-          <div ref={ctasRef} className="opacity-0 flex flex-row items-center gap-4 w-full sm:w-auto">
+          <div ref={ctasRef} className="opacity-0 flex flex-wrap sm:flex-row items-center gap-3.5 sm:gap-4 w-full sm:w-auto">
             <GoldButton onClick={handleInquiryClick}>
               {slide.primaryCta.text}
             </GoldButton>

@@ -18,6 +18,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "EAN Aviation",
   description: "EAN Aviation is West Africa's most comprehensive aviation services provider.",
+  icons: {
+    icon: "/images/ean icon.png",
+    shortcut: "/images/ean icon.png",
+    apple: "/images/ean icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -32,6 +37,7 @@ export default function RootLayout({
       className={`${cormorant.variable} ${inter.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col bg-ean-navy text-white font-ui select-none">
+        <Preloader />
         {children}
         <Footer />
       </body>
