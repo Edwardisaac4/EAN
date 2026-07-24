@@ -826,9 +826,9 @@ export const COMMITTEE_MEMBERS: CommitteeMember[] = [
     role: 'Aviation Commercial Leader',
     image: '/images/about-jet.png',
     bio: [
-      'Boyede Oyegbami is an accomplished aviation commercial leader with over a decade of experience driving business growth, customer acquisition, and operational excellence across leading energy and aviation fueling companies in Nigeria.',
-      'Prior to joining EAN, Boyede served as Aviation Commercial Manager at Eterna Plc, leading aviation business start-up, regulatory compliance, and end-to-end jet fuel operations, achieving milestones such as first into-plane fueling within a year and onboarding five airline customers in five months.',
-      'He holds an MSc in Environmental Consultancy from Newcastle University (UK) and a BSc in Microbiology from Bowen University, complemented by certifications from IATA, the British Safety Council, and IEMA. Skilled in contract negotiations, customer relationship management, and strategic sales growth.'
+      "Boyede Oyegbami is an accomplished aviation commercial leader with over a decade of experience driving business growth, customer acquisition, and operational excellence across leading energy and aviation fueling companies in Nigeria.",
+      "Prior to joining EAN, Boyede served as Aviation Commercial Manager at Eternal Plc, leading aviation business start-up, regulatory compliance, and end-to-end jet fuel operations, achieving milestones such as first into-plane fueling within a year and onboarding five airline customers in five months.",
+      "He holds an MSc in Environmental Consultancy from Newcastle University (UK) and a BSc in Microbiology from Bowen University, complemented by certifications from IATA, the British Safety Council, and IEMA. Skilled in contract negotiations, customer relationship management, and strategic sales growth.",
     ]
   }
 ];
@@ -844,9 +844,10 @@ export const TEAM_MEMBERS: TeamMember[] = [
     quote:
       "In executive aviation, luxury is not merely an aesthetic — it is the seamless execution of uncompromising safety, total privacy, and absolute precision.",
     bio: [
-      "Segun Demuren is a pioneering Nigerian aviation entrepreneur, visionary leader, and the Founder & CEO of EAN Aviation — West Africa’s first fully integrated Fixed Base Operator (FBO) hangar and business jet maintenance facility located at Murtala Muhammed International Airport (MMIA), Lagos.",
-      "With over two decades of executive experience across international aviation, energy, and corporate finance, Segun recognized the critical infrastructure gap in West African business flight. Under his leadership, EAN Aviation transformed from a groundbreaking vision into a world-class aviation conglomerate encompassing FBO ground handling, NCAA-approved maintenance (AMO), luxury VIP lounge operations, and jet charter services.",
-      "A respected advocate for regional aviation governance, Segun actively serves on international business aviation advisory boards and continues to champion higher safety benchmarks, regulatory alignment, and infrastructural investment across the African continent.",
+      "Olusegun Demuren brings visionary leadership and strategic expertise to EAN Aviation, driving its evolution as a leading force in Africa’s private aviation sector.",
+      "He holds a B.Sc. in Information Systems from Marist College, New York, and has completed executive programs at Lagos Business School and the International Air Transport Association (IATA) in Singapore.",
+      "His professional journey began as a Systems Analyst with renowned Wall Street firms Sanford C. Bernstein Inc. and Alliance Capital LLC, where he developed strong capabilities in investment strategy and systems integration.",
+      "Combining technological insight with a deep understanding of the aviation industry, he has positioned EAN Aviation at the forefront of innovation, service excellence, and operational precision, establishing it as a trusted name across the continent.",
     ],
     credentials: [
       "Founder & CEO",
@@ -870,9 +871,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     quote:
       "Sustainable growth in aviation relies on rigorous contract discipline, trusted client relationships, and flawless fuel & flight operations.",
     bio: [
-      "Boyede Oyegbami is an accomplished aviation commercial leader with over a decade of experience driving strategic business expansion, corporate client acquisition, and operational excellence across leading energy and aviation fueling enterprises in Nigeria.",
-      "Prior to joining EAN, Boyede served as Aviation Commercial Manager at Eterna Plc, leading aviation business start-ups, regulatory compliance, and into-plane fueling operations, achieving milestones such as onboarding five major airline customers within five months.",
-      "He holds an MSc in Environmental Consultancy from Newcastle University (UK) and a BSc in Microbiology from Bowen University, complemented by certifications from IATA, the British Safety Council, and IEMA.",
+      "Boyede Oyegbami is an accomplished aviation commercial leader with over a decade of experience driving business growth, customer acquisition, and operational excellence across leading energy and aviation fueling companies in Nigeria.",
+      "Prior to joining EAN, Boyede served as Aviation Commercial Manager at Eternal Plc, leading aviation business start-up, regulatory compliance, and end-to-end jet fuel operations, achieving milestones such as first into-plane fueling within a year and onboarding five airline customers in five months.",
+      "He holds an MSc in Environmental Consultancy from Newcastle University (UK) and a BSc in Microbiology from Bowen University, complemented by certifications from IATA, the British Safety Council, and IEMA. Skilled in contract negotiations, customer relationship management, and strategic sales growth.",
     ],
     credentials: [
       "MSc Newcastle Univ",
@@ -895,8 +896,8 @@ export const TEAM_MEMBERS: TeamMember[] = [
     quote:
       "Every marketing strategy begins with brand clarity — articulating our commitment to safety, luxury, and unmatched service in business aviation.",
     bio: [
-      "Josephine Kolawole leads brand management, media relations, and digital marketing strategies for EAN Aviation across West Africa.",
-      "With extensive experience in luxury brand positioning and executive corporate communications, Josephine drives client engagement and market visibility.",
+      "Josephine Kolawole is a marketing leader with nearly a decade of experience driving brand growth across the technology and aviation sectors. As Head of Marketing at EAN Aviation, she leads brand strategy, integrated marketing communications, digital marketing, and public relations, delivering initiatives that strengthen brand visibility and support business growth.",
+      "Prior to this, she led regional marketing initiatives across Central Africa at HP, overseeing multi-market campaigns, go-to-market strategies, and channel marketing. Josephine is passionate about building brands that create measurable business impact through strategic thinking, stakeholder engagement, and data-driven execution. She is currently pursuing a PhD, reflecting her commitment to continuous learning and leadership.",
     ],
     credentials: [
       "Brand Strategy Specialist",
@@ -980,8 +981,12 @@ export const TEAM_MEMBERS: TeamMember[] = [
     quote:
       "World-class aviation facilities depend on seamless maintenance, security protocols, and operational readiness.",
     bio: [
-      "Bukunola directs facility maintenance, hangar logistics, and apron infrastructure at EAN Aviation's MMIA terminal in Lagos.",
-      "Ensuring complete compliance with international aviation safety and security standards, Bukky oversees EAN's luxury terminal and hangar assets.",
+      "Olubukunola Hundeyin is an accomplished Quality, Safety, and Compliance executive with nearly a decade of progressive leadership experience driving operational excellence, regulatory compliance, and continuous improvement within the aviation industry. As Head of Quality & Safety, she provides strategic leadership in quality assurance, safety management, compliance monitoring, and organizational performance, ensuring alignment with the Nigerian Civil Aviation Regulations (Nig. CARs), ICAO Standards and Recommended Practices (SARPs), and internationally recognized best practices.",
+      "She holds a Bachelor's degree in Chemical Engineering from the University of Lagos and a Postgraduate Diploma in Quality Management from Robert Gordon University, Aberdeen, Scotland. A full member of the Nigerian Society of Engineers (NSE), Olubukunola combines technical expertise with strategic leadership to deliver sustainable business improvements and strengthen organizational resilience.",
+      "Throughout her career, Olubukunola has led and contributed to high-impact quality, safety, and compliance initiatives across aviation operations. She has successfully driven the implementation and continual improvement of Quality Management Systems (QMS), strengthened compliance monitoring programmes, enhanced operational processes, and partnered with multidisciplinary teams to embed a culture of quality, safety, and accountability.",
+      "Among her notable achievements is leading the successful maintenance of the International Standard for Business Aircraft Handling (IS-BAH) Stage II Certification through two consecutive certification cycles, demonstrating her commitment to operational excellence and international best practices. She also leads the implementation and continual enhancement of ISO-based Quality Management Systems, supporting improved organizational performance, customer satisfaction, and regulatory compliance.",
+      "An American Society for Quality (ASQ) Certified Quality Auditor (CQA) and Certified Quality Improvement Associate (CQIA), Olubukunola also holds certifications in NEBOSH International General Certificate in Occupational Health and Safety, ISO 9001:2015 Lead Auditor, Quality Management Systems in Aviation, QMS Auditor/Lead Auditor, and Internal Auditing, reflecting her commitment to continuous professional development.",
+      "Recognized for her collaborative leadership, integrity, and results-driven approach, Olubukunola is passionate about building high-performing teams, fostering a proactive safety culture, and implementing management systems that deliver measurable value. She remains committed to advancing quality and safety standards, strengthening regulatory compliance, and helping organizations achieve operational excellence in an evolving global aviation industry.",
     ],
     credentials: [
       "Facilities Management Lead",
@@ -1011,7 +1016,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     highlights: [{ label: "Revenue Analytics Precision", value: "99.5%" }],
   },
   {
-    id: "samuel-oladipo",
+    id: "ineh-osikhekha",
     name: "Ineh Osikhekha",
     role: "Head, Facilities",
     department: "Facilities",
@@ -1100,7 +1105,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     highlights: [{ label: "Client Satisfaction Index", value: "99.4%" }],
   },
   {
-    id: "babatunde-lawal",
+    id: "akachukwu-udec",
     name: "Akachukwu Udechukwu",
     role: "Corporate Finance Manager",
     department: "Finance",
@@ -1147,21 +1152,24 @@ export const TEAM_MEMBERS: TeamMember[] = [
     highlights: [{ label: "Fiscal Audit Accuracy", value: "100%" }],
   },
   {
-    id: "david-vance",
-    name: "David Vance",
-    role: "Head of Aircraft Sales & Acquisitions",
-    department: "Executive",
-    departmentLabel: "Aircraft Sales & Charter",
+    id: "ahmed-kazeem",
+    name: "Ahmed Kazeem",
+    role: "Head, Finance",
+    department: "Finance",
+    departmentLabel: "Finance & Governance",
     image: "/images/hero/slide-2.png",
     quote:
-      "Acquiring an aircraft is an asset management strategy — matching performance profiles, pre-buy inspections, and total cost of ownership.",
+      "Financial strategy must be precise, transparent, and aligned with long-term infrastructure development.",
     bio: [
-      "David Vance manages EAN Aviation’s aircraft brokerage, pre-owned jet sales, and turbine helicopter acquisition deals across West Africa.",
-      "With a background in global aircraft transaction advisory, David assists corporate entities and private individuals with aircraft sourcing, pre-purchase inspections, registration, and delivery.",
+      "Ahmed Kazeem manages financial planning, fiscal risk management, charter revenue accounting, and corporate governance at EAN Aviation.",
+      "With a background in global aircraft transaction advisory, Ahmed assists corporate entities and private individuals with aircraft sourcing, pre-purchase inspections, registration, and delivery.",
     ],
     credentials: [
-      "International Aircraft Dealers Association (IADA) Specialist",
-      "Private Jet Acquisition Advisor",
+      "ICAN Certification",
+      "ACCA Certification",
+      "CPA Certification",
+      "CFA Certification",
+      "Chartered Accountant",
     ],
     highlights: [{ label: "Aircraft Transactions Closed", value: "$120M+" }],
   },
