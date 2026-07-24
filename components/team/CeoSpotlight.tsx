@@ -33,7 +33,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* CEO Portrait Column */}
             <div className="lg:col-span-5 relative">
-              <div className="relative aspect-4/5 sm:aspect-square lg:aspect-4/5 rounded-xs overflow-hidden border border-ean-gold/30 shadow-2xl group bg-ean-navy-mid">
+              <div className="relative aspect-4/5 rounded-xs overflow-hidden border border-ean-gold/30 shadow-2xl group bg-ean-navy-mid">
                 {/* Decorative Frame Elements */}
                 <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-transparent to-transparent z-10 opacity-70 group-hover:opacity-50 transition-opacity duration-500" />
                 <div className="absolute top-4 left-4 z-20 px-3 py-1 bg-ean-navy/80 backdrop-blur-md rounded-xs border border-ean-gold/40 text-[10px] uppercase font-mono tracking-widest text-ean-gold">

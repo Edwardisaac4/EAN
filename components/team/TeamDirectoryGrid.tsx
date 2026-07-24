@@ -27,7 +27,7 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
               Leadership & Department Directory
             </h2>
             <p className="font-ui text-base sm:text-lg text-ean-muted-dark leading-relaxed">
-              Explore the biographies and credentials of our 15 department leaders shaping business flight in West Africa.
+              Explore the biographies and credentials of our department leaders shaping business flight in West Africa.
             </p>
           </div>
 
@@ -43,18 +43,27 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
               >
                 <div>
                   {/* Card Image */}
-                  <div className="relative w-full aspect-4/3 bg-ean-navy overflow-hidden">
+                  <div className="relative w-full aspect-[4/3.8] bg-ean-navy overflow-hidden">
                     <Image
                       src={member.image}
                       alt={member.name}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="object-cover object-top transition-transform duration-750 group-hover:scale-105"
                       quality={95}
                     />
-                    <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-transparent to-transparent opacity-50" />
-                    <div className="absolute top-3 left-3 px-2.5 py-1 bg-ean-navy/90 backdrop-blur-md rounded-xs border border-ean-gold/30 font-mono text-[9px] text-ean-gold uppercase tracking-widest">
+                    {/* Services-Style Gradient Blur Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-ean-navy/90 via-ean-navy/30 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-300" />
+                    
+                    {/* Top Department Badge - Glass */}
+                    <div className="absolute top-3 left-3 px-3 py-1 bg-ean-navy/80 backdrop-blur-md rounded-xs border border-ean-gold/30 font-mono text-[9px] text-ean-gold uppercase tracking-widest shadow-md">
                       {member.departmentLabel}
+                    </div>
+
+                    {/* Bottom Blur Overlay Strip */}
+                    <div className="absolute bottom-2.5 left-3 right-3 px-3 py-2 bg-ean-navy/70 backdrop-blur-md border border-white/10 rounded-xs flex items-center justify-between shadow-lg opacity-95">
+                      <span className="font-ui text-xs font-medium text-white/90 truncate">{member.role}</span>
+                      <span className="font-mono text-[9px] text-ean-gold font-bold uppercase tracking-wider shrink-0 ml-2">EAN</span>
                     </div>
                   </div>
 

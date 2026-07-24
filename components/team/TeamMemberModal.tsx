@@ -77,7 +77,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                       alt={member.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 30vw"
-                      className="object-cover"
+                      className="object-cover object-top"
                       quality={95}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />

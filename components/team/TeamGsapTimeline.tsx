@@ -183,7 +183,7 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
                 alt={activeMember.name}
                 fill
                 sizes="(max-width: 1024px) 100vw, 35vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                 quality={95}
               />
               <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-transparent to-transparent opacity-60" />

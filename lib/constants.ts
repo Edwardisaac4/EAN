@@ -114,7 +114,7 @@ export interface TeamMember {
   id: string;
   name: string;
   role: string;
-  department: 'executive' | 'operations' | 'engineering' | 'ground' | 'safety' | 'culinary';
+  department: 'Executive' | 'Operations' | 'Finance' | 'Marketing' | 'Maintenance' | 'Quality and safety' | 'IT & Business Intelligence' | 'Facilities' | 'Legal' | 'Human Resources';
   departmentLabel: string;
   image: string;
   quote?: string;
@@ -835,272 +835,336 @@ export const COMMITTEE_MEMBERS: CommitteeMember[] = [
 
 export const TEAM_MEMBERS: TeamMember[] = [
   {
-    id: 'segun-demuren',
-    name: 'Segun Demuren',
-    role: 'Founder & Chief Executive Officer',
-    department: 'executive',
-    departmentLabel: 'Executive Office',
-    image: '/images/leadership/sd-nbac.jpg',
-    quote: 'In executive aviation, luxury is not merely an aesthetic — it is the seamless execution of uncompromising safety, total privacy, and absolute precision.',
+    id: "segun-demuren",
+    name: "Segun Demuren",
+    role: "Founder & Chief Executive Officer",
+    department: "Executive",
+    departmentLabel: "CEO",
+    image: "/images/leadership/sd-nbac.jpg",
+    quote:
+      "In executive aviation, luxury is not merely an aesthetic — it is the seamless execution of uncompromising safety, total privacy, and absolute precision.",
     bio: [
-      'Segun Demuren is a pioneering Nigerian aviation entrepreneur, visionary leader, and the Founder & CEO of EAN Aviation — West Africa’s first fully integrated Fixed Base Operator (FBO) hangar and business jet maintenance facility located at Murtala Muhammed International Airport (MMIA), Lagos.',
-      'With over two decades of executive experience across international aviation, energy, and corporate finance, Segun recognized the critical infrastructure gap in West African business flight. Under his leadership, EAN Aviation transformed from a groundbreaking vision into a world-class aviation conglomerate encompassing FBO ground handling, NCAA-approved maintenance (AMO), luxury VIP lounge operations, and jet charter services.',
-      'A respected advocate for regional aviation governance, Segun actively serves on international business aviation advisory boards and continues to champion higher safety benchmarks, regulatory alignment, and infrastructural investment across the African continent.'
+      "Segun Demuren is a pioneering Nigerian aviation entrepreneur, visionary leader, and the Founder & CEO of EAN Aviation — West Africa’s first fully integrated Fixed Base Operator (FBO) hangar and business jet maintenance facility located at Murtala Muhammed International Airport (MMIA), Lagos.",
+      "With over two decades of executive experience across international aviation, energy, and corporate finance, Segun recognized the critical infrastructure gap in West African business flight. Under his leadership, EAN Aviation transformed from a groundbreaking vision into a world-class aviation conglomerate encompassing FBO ground handling, NCAA-approved maintenance (AMO), luxury VIP lounge operations, and jet charter services.",
+      "A respected advocate for regional aviation governance, Segun actively serves on international business aviation advisory boards and continues to champion higher safety benchmarks, regulatory alignment, and infrastructural investment across the African continent.",
     ],
-    credentials: ['Founder & CEO', 'Pioneer FBO Lagos', '20+ Yrs Executive Leadership', 'NBAA & AfBAA Member'],
+    credentials: [
+      "Founder & CEO",
+      "Pioneer FBO Lagos",
+      "20+ Yrs Executive Leadership",
+      "NBAA & AfBAA Member",
+    ],
     highlights: [
-      { label: 'Years of Aviation Vision', value: '20+' },
-      { label: '1st Integrated FBO Hangar', value: 'MMIA Lagos' },
-      { label: 'NCAA AMO Hangar', value: 'MMIA Lagos' }
-    ]
+      { label: "Years of Aviation Vision", value: "20+" },
+      { label: "1st Integrated FBO Hangar", value: "MMIA Lagos" },
+      { label: "NCAA AMO Hangar", value: "MMIA Lagos" },
+    ],
   },
   {
-    id: 'boyede-oyegbami',
-    name: 'Boyede Oyegbami',
-    role: 'Commercial & Business Development Director',
-    department: 'executive',
-    departmentLabel: 'Commercial Leadership',
-    image: '/images/leadership/boyede-nbac.jpg',
-    quote: 'Sustainable growth in aviation relies on rigorous contract discipline, trusted client relationships, and flawless fuel & flight operations.',
+    id: "boyede-oyegbami",
+    name: "Boyede Oyegbami",
+    role: "Head, Sales",
+    department: "Executive",
+    departmentLabel: "Sales",
+    image: "/images/leadership/boyede-nbac.jpg",
+    quote:
+      "Sustainable growth in aviation relies on rigorous contract discipline, trusted client relationships, and flawless fuel & flight operations.",
     bio: [
-      'Boyede Oyegbami is an accomplished aviation commercial leader with over a decade of experience driving strategic business expansion, corporate client acquisition, and operational excellence across leading energy and aviation fueling enterprises in Nigeria.',
-      'Prior to joining EAN, Boyede served as Aviation Commercial Manager at Eterna Plc, leading aviation business start-ups, regulatory compliance, and into-plane fueling operations, achieving milestones such as onboarding five major airline customers within five months.',
-      'He holds an MSc in Environmental Consultancy from Newcastle University (UK) and a BSc in Microbiology from Bowen University, complemented by certifications from IATA, the British Safety Council, and IEMA.'
+      "Boyede Oyegbami is an accomplished aviation commercial leader with over a decade of experience driving strategic business expansion, corporate client acquisition, and operational excellence across leading energy and aviation fueling enterprises in Nigeria.",
+      "Prior to joining EAN, Boyede served as Aviation Commercial Manager at Eterna Plc, leading aviation business start-ups, regulatory compliance, and into-plane fueling operations, achieving milestones such as onboarding five major airline customers within five months.",
+      "He holds an MSc in Environmental Consultancy from Newcastle University (UK) and a BSc in Microbiology from Bowen University, complemented by certifications from IATA, the British Safety Council, and IEMA.",
     ],
-    credentials: ['MSc Newcastle Univ', 'IATA Certified', '10+ Yrs Aviation Commercial', 'Contract Negotiation'],
+    credentials: [
+      "MSc Newcastle Univ",
+      "IATA Certified",
+      "10+ Yrs Aviation Commercial",
+      "Contract Negotiation",
+    ],
     highlights: [
-      { label: 'Corporate Client Retention', value: '98%' },
-      { label: 'Fueling Operational Audits', value: '100% Passed' }
-    ]
+      { label: "Corporate Client Retention", value: "98%" },
+      { label: "Fueling Operational Audits", value: "100% Passed" },
+    ],
   },
   {
-    id: 'adewale-coker',
-    name: 'Capt. Adewale Coker',
-    role: 'Director of Flight Operations & Chief Pilot',
-    department: 'operations',
-    departmentLabel: 'Flight Operations',
-    image: '/images/hero/slide-2.png',
-    quote: 'Every flight plan begins long before engine start — precision weather tracking, aircrew discipline, and total situational readiness define our standard.',
+    id: "josephine-kolawole",
+    name: "Josephine Kolawole",
+    role: "Head, Marketing",
+    department: "Marketing",
+    departmentLabel: "Marketing",
+    image: "/images/leadership/josephine-nbac.jpg",
+    quote:
+      "Every marketing strategy begins with brand clarity — articulating our commitment to safety, luxury, and unmatched service in business aviation.",
     bio: [
-      'Captain Adewale Coker brings over 18 years of command experience across corporate jets and international charter operations. As Director of Flight Operations, he oversees pilot crew training, flight crew scheduling, and operational compliance under NCAA and ICAO regulations.',
-      'With over 9,500 flight hours logged on Bombardier Global, Gulfstream, and Hawker platforms, Captain Coker leads EAN’s flight operations team with an unwavering emphasis on safety management systems (SMS) and passenger comfort.'
+      "Josephine Kolawole leads brand management, media relations, and digital marketing strategies for EAN Aviation across West Africa.",
+      "With extensive experience in luxury brand positioning and executive corporate communications, Josephine drives client engagement and market visibility.",
     ],
-    credentials: ['ATPL (NCAA & FAA)', 'Bombardier & Gulfstream Type Rated', '9,500+ Flight Hours', 'SMS Auditor'],
+    credentials: [
+      "Brand Strategy Specialist",
+      "Digital Marketing Director",
+      "Corporate Communications",
+    ],
     highlights: [
-      { label: 'Flight Command Hours', value: '9,500+' },
-      { label: 'Safety Record', value: '100% Zero Incident' }
-    ]
+      { label: "Brand Reach Growth", value: "150%" },
+      { label: "Media Engagement", value: "Top Tier" },
+    ],
   },
   {
-    id: 'tunde-adeleke',
-    name: 'Engr. Tunde Adeleke',
-    role: 'Head of Aircraft Maintenance (NCAA AMO)',
-    department: 'engineering',
-    departmentLabel: 'Maintenance & Engineering',
-    image: '/images/hero/slide-3.png',
-    quote: 'A mechanical component never lies. Airworthiness demands rigorous diagnostics, OEM precision, and zero tolerance for short-cuts.',
+    id: "tunde-awe",
+    name: "Tunde Tunde-AWE",
+    role: "Head, P.M.O",
+    department: "Executive",
+    departmentLabel: "P.M.O",
+    image: "/images/leadership/tunde-awe.jpg",
+    quote:
+      "Strategic project delivery in aviation relies on rigorous governance, cross-functional precision, and uncompromising quality control.",
     bio: [
-      'Engineer Tunde Adeleke leads EAN Aviation’s NCAA-certified Approved Maintenance Organisation (AMO) hangar facility at MMIA Lagos. He commands a multidisciplinary engineering team responsible for line maintenance, avionics troubleshooting, and scheduled inspections for business aircraft.',
-      'Having completed specialized OEM training at Gulfstream, Bombardier, and Pratt & Whitney, Engr. Adeleke ensures every aircraft entering EAN hangars meets stringent international airworthiness directives.'
+      "Tunde Awe leads the Project Management Office (PMO) at EAN Aviation, driving strategic capital initiatives, infrastructure expansion, and corporate operational alignment across West Africa.",
+      "With extensive project management and technical expertise, Tunde ensures every major aviation infrastructure project and executive program is executed to world-class standards.",
     ],
-    credentials: ['NCAA Licensed Engineer', 'Gulfstream & Bombardier Certified', 'B1/B2 Avionics Specialist', '20 Yrs MRO Experience'],
+    credentials: [
+      "Head of PMO",
+      "Project Management Professional",
+      "Aviation Infrastructure Specialist",
+    ],
     highlights: [
-      { label: 'NCAA AMO Audit Pass Rate', value: '100%' },
-      { label: 'Turnaround Efficiency', value: '< 24 Hours' }
-    ]
+      { label: "Project On-Time Delivery", value: "99%" },
+      { label: "Capital Infrastructure Quality", value: "World Class" },
+    ],
   },
   {
-    id: 'amina-ibrahim',
-    name: 'Amina Ibrahim',
-    role: 'Head of FBO Terminal & VIP Concierge',
-    department: 'ground',
-    departmentLabel: 'FBO & Concierge',
-    image: '/images/vip-lounge.jpg',
-    quote: 'The airport experience for executive travelers should be entirely effortless — discreet, instantaneous, and tailored to individual preference.',
+    id: "ann-umeh",
+    name: "Ann Umeh",
+    role: "Head, Client Relations",
+    department: "Operations",
+    departmentLabel: "Client Relations",
+    image: "/images/leadership/ann-umeh-nbac.jpg",
+    quote:
+      "The airport experience for executive travelers should be entirely effortless — discreet, instantaneous, and tailored to individual preference.",
     bio: [
-      'Amina Ibrahim directs all ground handling, VIP lounge hospitality, and passenger protocol services at EAN’s private terminal in Lagos. She curates bespoke VIP itineraries for diplomats, executive charter clients, and international dignitaries.',
-      'With a background in international luxury hospitality and protocol management, Amina has elevated EAN’s FBO terminal to be recognized as West Africa’s premier private gateway.'
+      "Ann Umeh directs all ground handling, VIP lounge hospitality, and passenger protocol services at EAN’s private terminal in Lagos. She curates bespoke VIP itineraries for diplomats, executive charter clients, and international dignitaries.",
+      "With a background in international luxury hospitality and protocol management, Ann has elevated EAN’s FBO terminal to be recognized as West Africa’s premier private gateway.",
     ],
-    credentials: ['Protocol & Diplomatic Handling', 'IATA Passenger Ground Services', 'Luxury Hospitality Directorship'],
+    credentials: [
+      "Protocol & Diplomatic Handling",
+      "IATA Passenger Ground Services",
+      "Luxury Hospitality Directorship",
+    ],
     highlights: [
-      { label: 'VIP Passengers Accommodated', value: '12,000+' },
-      { label: 'Average Customs/Lounge Time', value: '< 7 Mins' }
-    ]
+      { label: "VIP Passengers Accommodated", value: "12,000+" },
+      { label: "Average Customs/Lounge Time", value: "< 7 Mins" },
+    ],
   },
   {
-    id: 'samuel-oladipo',
-    name: 'Capt. Samuel Oladipo',
-    role: 'Head of Safety, Quality & Compliance',
-    department: 'safety',
-    departmentLabel: 'Safety & Compliance',
-    image: '/images/hero/slide-1.png',
-    quote: 'Safety is not a department — it is the operational culture that dictates every action from hangar floor to flight deck.',
+    id: "seye-fasuyi",
+    name: "Seye Fasuyi",
+    role: "Head, Human Resource",
+    department: "Executive",
+    departmentLabel: "Human Resource",
+    image: "/images/leadership/seye-nbac.jpg",
+    quote:
+      "Precision weather tracking, aircrew discipline, and total situational readiness define our flight operations standard.",
     bio: [
-      'Capt. Samuel Oladipo oversees EAN Aviation’s integrated Safety Management System (SMS), risk assessments, and regulatory audit compliance. He works directly with the NCAA, IATA, and international aviation safety bodies to maintain EAN’s flawless safety record.',
-      'A former air transport safety inspector, Capt. Oladipo conducts routine emergency response drills, ramp safety checks, and continuous quality assurance monitoring.'
+      "Seye oversees flight operations, aircrew scheduling, and flight safety compliance under NCAA and ICAO regulations.",
+      "With over a decade of flight operations management experience, Seye ensures every charter flight adheres to stringent international safety management protocols.",
     ],
-    credentials: ['ICAO SMS Manager', 'NCAA Certified Auditor', 'IS-BAO Lead Inspector', 'Flight Safety Specialist'],
-    highlights: [
-      { label: 'Operational Safety Audit Score', value: '100%' },
-      { label: 'Continuous SMS Reviews', value: 'Quarterly' }
-    ]
+    credentials: ["Head, Human Resource"],
+    highlights: [{ label: "Safety Record", value: "100% Zero Incident" }],
   },
   {
-    id: 'jean-luc-laurent',
-    name: 'Chef Jean-Luc Laurent',
-    role: 'Executive Culinary Director, Wings™ Catering',
-    department: 'culinary',
-    departmentLabel: 'Wings™ Catering',
-    image: '/images/hero/slide-4.png',
-    quote: 'Dining at 40,000 feet requires culinary science — adjusting flavor profiles, precision cabin packaging, and uncompromised freshness.',
+    id: "bukunola-hundeyin",
+    name: "Olubukunola Hundeyin",
+    role: "Head, Quality And Safety",
+    department: "Facilities",
+    departmentLabel: "Facilities",
+    image: "/images/leadership/bukky-nbac.jpg",
+    quote:
+      "World-class aviation facilities depend on seamless maintenance, security protocols, and operational readiness.",
     bio: [
-      'Chef Jean-Luc Laurent heads Wings™ Catering, EAN Aviation’s dedicated in-flight gourmet culinary unit. Trained in Michelin-starred French kitchens and corporate jet catering, Chef Jean-Luc crafts bespoke menus designed specifically for altitude flight performance.',
-      'He oversees a state-of-the-art kitchen facility located adjacent to the FBO ramp, guaranteeing farm-to-cabin freshness for private charter operations.'
+      "Bukunola directs facility maintenance, hangar logistics, and apron infrastructure at EAN Aviation's MMIA terminal in Lagos.",
+      "Ensuring complete compliance with international aviation safety and security standards, Bukky oversees EAN's luxury terminal and hangar assets.",
     ],
-    credentials: ['Le Cordon Bleu Master Chef', 'HACCP Food Safety Certified', 'Ex-International Airlines Executive Chef'],
-    highlights: [
-      { label: 'Gourmet In-Flight Meals Delivered', value: '8,500+' },
-      { label: 'Custom Menu Turnaround', value: '2 Hours' }
-    ]
+    credentials: [
+      "Facilities Management Lead",
+      "Aviation Security Auditor",
+      "Infrastructure Specialist",
+    ],
+    highlights: [{ label: "Hangar & Terminal Uptime", value: "99.9%" }],
   },
   {
-    id: 'olufemi-bakare',
-    name: 'Olufemi Bakare',
-    role: 'Head of Avionics & Technical Systems',
-    department: 'engineering',
-    departmentLabel: 'Maintenance & Engineering',
-    image: '/images/contact-cta.png',
-    quote: 'Modern flight decks depend on flawless digital integrity — satellite nav, radar, and telemetry must function with absolute fidelity.',
+    id: "osayuwamen-abu",
+    name: "Osayuwamen Abu",
+    role: "Head, Business Intelligence & Revenue Controller",
+    department: "IT & Business Intelligence",
+    departmentLabel: "IT & BI",
+    image: "/images/leadership/Yuwa.jpg",
+    quote:
+      "Data-driven insights and real-time revenue analytics empower strategic growth and operational efficiency.",
     bio: [
-      'Olufemi Bakare leads EAN Aviation’s avionics engineering department. He specializes in flight management systems (FMS), satellite communications (Satcom), and radar diagnostics across business aircraft models including Honeywell Primus and Collins Pro Line suites.',
-      'Olufemi brings 15 years of technical engineering experience in real-time troubleshooting and line maintenance updates for private jet fleets.'
+      "Osayuwamen Abu is a Certified Information Technology Professional with over a decade of experience in financial management, strategy, and business intelligence. He leads EAN Aviation’s financial planning, performance analytics, and revenue optimization efforts.",
+      "Osayuwamen leverages enterprise data models to streamline flight dispatch metrics, maintenance accounting, and client service metrics.",
     ],
-    credentials: ['Avionics Systems Specialist', 'Honeywell & Collins Certified', 'NCAA Licensed B2 Engineer'],
-    highlights: [
-      { label: 'Avionics Diagnostic Accuracy', value: '99.8%' }
-    ]
+    credentials: [
+      "Certified IT Professional",
+      "Business Intelligence Specialist",
+      "Financial Strategy & Revenue Optimization",
+    ],
+    highlights: [{ label: "Revenue Analytics Precision", value: "99.5%" }],
   },
   {
-    id: 'blessing-nwachukwu',
-    name: 'Blessing Nwachukwu',
-    role: 'Head of Executive Customer Experience',
-    department: 'ground',
-    departmentLabel: 'Customer Experience',
-    image: '/images/vip-lounge.jpg',
-    quote: 'True service is anticipating needs before they are articulated, ensuring absolute privacy, comfort, and peace of mind.',
+    id: "samuel-oladipo",
+    name: "Ineh Osikhekha",
+    role: "Head, Facilities",
+    department: "Facilities",
+    departmentLabel: "Facilities",
+    image: "/images/hero/slide-1.png",
+    quote:
+      "Operational infrastructure must be seamless, secure, and engineered to accelerate executive movement.",
     bio: [
-      'Blessing Nwachukwu directs customer relationship management, charter client concierge services, and executive account operations at EAN Aviation. She oversees client communications from initial flight inquiry through to ground arrival.',
-      'Blessing has established long-standing partnerships with multinational corporate travel desks, HNWI family offices, and diplomatic missions across Africa.'
+      "Ineh Osikhekha oversees EAN Aviation’s integrated Safety Management System (SMS), risk assessments, and regulatory audit compliance. He works directly with the NCAA, IATA, and international aviation safety bodies to maintain EAN’s flawless safety record.",
     ],
-    credentials: ['Customer Centricity Leadership', 'Diplomatic Protocol Specialist', 'BA Mass Communications'],
+    credentials: [
+      "ICAO SMS Manager",
+      "NCAA Certified Auditor",
+      "IS-BAO Lead Inspector",
+      "Flight Safety Specialist",
+    ],
     highlights: [
-      { label: 'Client Satisfaction Index', value: '99.4%' }
-    ]
+      { label: "Operational Safety Audit Score", value: "100%" },
+      { label: "Continuous SMS Reviews", value: "Quarterly" },
+    ],
   },
   {
-    id: 'babatunde-lawal',
-    name: 'Babatunde Lawal',
-    role: 'Head of Ramp Operations & Ground Handling',
-    department: 'ground',
-    departmentLabel: 'FBO & Ramp Logistics',
-    image: '/images/hero/slide-1.png',
-    quote: 'On the tarmac, timing is everything. Fueling, baggage, GPU power, and marshaling must execute like clockwork.',
+    id: "vivian-okoh-olutunfese",
+    name: "Vivian Okoh-Olutunfese",
+    role: "Head, Legal",
+    department: "Legal",
+    departmentLabel: "Legal & Corporate Communications",
+    image: "/images/hero/slide-4.png",
+    quote:
+      "Navigating the complexities of international aviation demands precision, proactive engagement, and absolute regulatory alignment.",
     bio: [
-      'Babatunde Lawal commands EAN Aviation’s aircraft marshaling, aircraft tug, GPU ground power, and Into-Plane fueling teams on the MMIA Lagos apron.',
-      'With over 14 years of heavy ramp management experience, Babatunde has safely coordinated turnaround ground handling for thousands of business jets and transient international aircraft.'
+      "Vivian Okoh-Olutunfese is a dual-qualified lawyer with extensive experience in corporate law, regulatory compliance, and international aviation policy. She serves as the Head of Legal & Corporate Communications at EAN Aviation.",
+      "Her expertise ensures that EAN Aviation operates with complete alignment to NCAA, ICAO, and international regulatory frameworks while maintaining seamless communications with all aviation stakeholders.",
     ],
-    credentials: ['IATA Ramp Operations Manager', 'NCAA Apron Safety Certified', 'Heavy Tug & Tow Specialist'],
+    credentials: [
+      "Dual-qualified lawyer",
+      "Corporate law",
+      "Regulatory compliance",
+      "International aviation policy",
+    ],
     highlights: [
-      { label: 'Ramp Turnarounds Executed', value: '15,000+' },
-      { label: 'Ramp Safety Incident Rate', value: '0.00%' }
-    ]
+      { label: "Gourmet In-Flight Meals Delivered", value: "8,500+" },
+      { label: "Custom Menu Turnaround", value: "2 Hours" },
+    ],
   },
   {
-    id: 'chioma-okonkwo',
-    name: 'Chioma Okonkwo',
-    role: 'Head of Finance & Corporate Governance',
-    department: 'executive',
-    departmentLabel: 'Finance & Governance',
-    image: '/images/about-jet.png',
-    quote: 'Financial discipline and transparent corporate governance build the foundation that supports ambitious infrastructure expansion.',
+    id: "alexey-saliu-lawal",
+    name: "Alexey Alyosha Saliu-Lawal",
+    role: "Head, Maintenance",
+    department: "Maintenance",
+    departmentLabel: "Maintenance",
+    image: "/images/contact-cta.png",
+    quote:
+      "Modern flight decks depend on flawless digital integrity — satellite nav, radar, and telemetry must function with absolute fidelity.",
     bio: [
-      'Chioma Okonkwo leads financial planning, fiscal risk management, charter revenue accounting, and corporate governance at EAN Aviation.',
-      'A Fellow of the Institute of Chartered Accountants of Nigeria (FCA), Chioma holds an MBA in Finance and oversees multi-currency flight invoicing, vendor contracts, and international audit compliance.'
+      "Alexey Alyosha Saliu-Lawal leads EAN Aviation’s engineering and maintenance department. He specializes in flight management systems (FMS), satellite communications (Satcom), and radar diagnostics across business aircraft models including Honeywell Primus and Collins Pro Line suites.",
+      "Alexey brings 15 years of technical engineering experience in real-time troubleshooting and line maintenance updates for private jet fleets.",
     ],
-    credentials: ['FCA Chartered Accountant', 'MBA Finance', '16+ Yrs Corporate Governance'],
-    highlights: [
-      { label: 'Fiscal Audit Accuracy', value: '100%' }
-    ]
+    credentials: [
+      "Aircraft Maintenance and Engineering (AME)",
+      "Certified Aviation Professional (CAP)",
+      "Airworthiness and Compliance Specialist",
+      "Aircraft Maintenance and Engineering (AME)",
+    ],
+    highlights: [{ label: "Avionics Diagnostic Accuracy", value: "99.8%" }],
   },
   {
-    id: 'david-vance',
-    name: 'David Vance',
-    role: 'Head of Aircraft Sales & Acquisitions',
-    department: 'executive',
-    departmentLabel: 'Aircraft Sales & Charter',
-    image: '/images/hero/slide-2.png',
-    quote: 'Acquiring an aircraft is an asset management strategy — matching performance profiles, pre-buy inspections, and total cost of ownership.',
+    id: "tomilara-adewale",
+    name: "Tomilara Adewale",
+    role: "Human Resource Manager",
+    department: "Human Resources",
+    departmentLabel: "Human Resources",
+    image: "/images/vip-lounge.jpg",
+    quote:
+      "True service is anticipating needs before they are articulated, ensuring absolute privacy, comfort, and peace of mind.",
     bio: [
-      'David Vance manages EAN Aviation’s aircraft brokerage, pre-owned jet sales, and turbine helicopter acquisition deals across West Africa.',
-      'With a background in global aircraft transaction advisory, David assists corporate entities and private individuals with aircraft sourcing, pre-purchase inspections, registration, and delivery.'
+      "Tomilara Adewale directs human resource management,  at EAN Aviation. She oversees client communications from initial flight inquiry through to ground arrival.",
+      "Tomilara has established long-standing partnerships with multinational corporate travel desks, HNWI family offices, and diplomatic missions across Africa.",
     ],
-    credentials: ['International Aircraft Dealers Association (IADA) Specialist', 'Private Jet Acquisition Advisor'],
-    highlights: [
-      { label: 'Aircraft Transactions Closed', value: '$120M+' }
-    ]
+    credentials: [
+      "Human Resource Management",
+      "Customer Centricity Leadership",
+      "Diplomatic Protocol Specialist",
+      "BA Mass Communications",
+    ],
+    highlights: [{ label: "Client Satisfaction Index", value: "99.4%" }],
   },
   {
-    id: 'victoria-adebayo',
-    name: 'Victoria Adebayo',
-    role: 'Head of Human Capital & Talent Development',
-    department: 'executive',
-    departmentLabel: 'Human Capital',
-    image: '/images/contact-cta.png',
-    quote: 'Our competitive advantage is our people — nurturing top-tier aviation talent, continuous technical training, and leadership development.',
+    id: "babatunde-lawal",
+    name: "Akachukwu Udechukwu",
+    role: "Corporate Finance Manager",
+    department: "Finance",
+    departmentLabel: "Finance & Governance",
+    image: "/images/hero/slide-1.png",
+    quote:
+      "Financial strategy must be precise, transparent, and aligned with long-term infrastructure development.",
     bio: [
-      'Victoria Adebayo oversees talent acquisition, aviation crew training programs, employee relations, and organizational development across EAN Aviation.',
-      'She ensures all operational personnel, engineers, flight dispatchers, and concierge staff undergo continuous international certification and safety training.'
+      "Akachukwu Udechukwu is a chartered accountant with over 15 years of experience in corporate finance, financial reporting, and fiscal strategy across the aviation and energy sectors.",
+      "He leads financial planning, revenue accounting, and audit compliance for EAN Aviation’s integrated aviation ecosystem, including flight services, hangarage, and ground handling.",
     ],
-    credentials: ['MCIPM Human Resource Professional', 'SHRM-SCP', 'Aviation Talent Strategist'],
+    credentials: [
+      "ICAN Certification",
+      "ACCA Certification",
+      "CPA Certification",
+      "CFA Certification",
+      "Chartered Accountant",
+    ],
     highlights: [
-      { label: 'Staff Training Hours / Year', value: '4,500+' }
-    ]
+      { label: "Financial Reporting Accuracy", value: "99.8%" },
+      { label: "Audit Compliance Rate", value: "100%" },
+      { label: "Revenue Accounting Accuracy", value: "100%" },
+      { label: "Financial Strategy Development", value: "100%" },
+    ],
   },
   {
-    id: 'ibrahim-bello',
-    name: 'Ibrahim Bello',
-    role: 'Head of Flight Dispatch & Overflight Logistics',
-    department: 'operations',
-    departmentLabel: 'Flight Operations',
-    image: '/images/hero/slide-3.png',
-    quote: 'Navigating international airspace requires precision clearance timing, real-time NOTAM updates, and instant diplomatic coordination.',
+    id: "ogunlokun-tunde-tunbosun",
+    name: "Ogunlokun Tunde Tunbosun",
+    role: "Finance Manager",
+    department: "Finance",
+    departmentLabel: "Finance & Governance",
+    image: "/images/about-jet.png",
+    quote:
+      "Financial discipline and transparent corporate governance build the foundation that supports ambitious infrastructure expansion.",
     bio: [
-      'Ibrahim Bello manages EAN Aviation’s 24/7 flight dispatch unit, responsible for flight plan filings, overflight & landing permits across Africa, slot coordination, and diplomatic clearances.',
-      'Ibrahim’s team maintains direct communication lines with civil aviation authorities across 40+ African and Middle Eastern nations.'
+      "Ogunlokun Tunde Tunbosun leads financial planning, fiscal risk management, charter revenue accounting, and corporate governance at EAN Aviation.",
+      "A Fellow of the Institute of Chartered Accountants of Nigeria (FCA), Chioma holds an MBA in Finance and oversees multi-currency flight invoicing, vendor contracts, and international audit compliance.",
     ],
-    credentials: ['NCAA Licensed Flight Dispatcher', 'ICAO Flight Plan Specialist', '24/7 Ops Coordinator'],
-    highlights: [
-      { label: 'Permit Approval Rate', value: '99.9%' },
-      { label: 'Global Airspace Coverage', value: '40+ Countries' }
-    ]
+    credentials: [
+      "FCA Chartered Accountant",
+      "MBA Finance",
+      "16+ Yrs Corporate Governance",
+    ],
+    highlights: [{ label: "Fiscal Audit Accuracy", value: "100%" }],
   },
   {
-    id: 'temitope-alabi',
-    name: 'Temitope Alabi',
-    role: 'Head of Aviation IT & Digital Infrastructure',
-    department: 'operations',
-    departmentLabel: 'IT & Digital Systems',
-    image: '/images/hero/slide-4.png',
-    quote: 'Cybersecurity, real-time aircraft telemetry, and seamless digital booking platforms power modern aviation excellence.',
+    id: "david-vance",
+    name: "David Vance",
+    role: "Head of Aircraft Sales & Acquisitions",
+    department: "Executive",
+    departmentLabel: "Aircraft Sales & Charter",
+    image: "/images/hero/slide-2.png",
+    quote:
+      "Acquiring an aircraft is an asset management strategy — matching performance profiles, pre-buy inspections, and total cost of ownership.",
     bio: [
-      'Temitope Alabi directs IT infrastructure, cybersecurity, flight tracking networks, and digital customer interfaces across EAN Aviation.',
-      'Temitope leads the technical integration of EAN’s FBO management software, charter quote booking systems, and hangar security monitoring.'
+      "David Vance manages EAN Aviation’s aircraft brokerage, pre-owned jet sales, and turbine helicopter acquisition deals across West Africa.",
+      "With a background in global aircraft transaction advisory, David assists corporate entities and private individuals with aircraft sourcing, pre-purchase inspections, registration, and delivery.",
     ],
-    credentials: ['CISSP Cybersecurity Specialist', 'Aviation Tech Lead', 'MSc Information Systems'],
-    highlights: [
-      { label: 'System Uptime Rate', value: '99.99%' }
-    ]
-  }
+    credentials: [
+      "International Aircraft Dealers Association (IADA) Specialist",
+      "Private Jet Acquisition Advisor",
+    ],
+    highlights: [{ label: "Aircraft Transactions Closed", value: "$120M+" }],
+  },
 ];
 
 export * from './legal-constants';

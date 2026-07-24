@@ -133,7 +133,7 @@ export default function TeamPage() {
                 ref={subtitleRef}
                 className="font-ui text-base sm:text-lg text-ean-muted-light max-w-2xl leading-relaxed opacity-0"
               >
-                Meet the 15 seasoned aviation executives, captains, and engineers steering EAN Aviation toward new frontiers of growth, safety, and operational precision in West Africa.
+                Meet the Seasoned aviation executives, captains, and engineers steering EAN Aviation toward new frontiers of growth, safety, and operational precision in West Africa.
               </p>
             </div>
           </div>
