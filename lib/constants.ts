@@ -1137,7 +1137,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Finance Manager",
     department: "Finance",
     departmentLabel: "Finance & Governance",
-    image: "/images/about-jet.png",
+    image: "/images/leadership/Tunde Ogulokun.jpg",
     quote:
       "Financial discipline and transparent corporate governance build the foundation that supports ambitious infrastructure expansion.",
     bio: [
