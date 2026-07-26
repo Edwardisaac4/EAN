@@ -1110,7 +1110,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Corporate Finance Manager",
     department: "Finance",
     departmentLabel: "Finance & Governance",
-    image: "/images/hero/slide-1.png",
+    image: "/images/leadership/akachukwu.jpg",
     quote:
       "Financial strategy must be precise, transparent, and aligned with long-term infrastructure development.",
     bio: [

@@ -125,7 +125,7 @@ export default function AboutPage() {
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%]">
             <Image
-              src="/images/about-jet.png"
+              src="/images/hero/slide-1.png"
               alt="EAN Aviation premium private jet inside MMIA hangar at sunset"
               fill
               sizes="100vw"

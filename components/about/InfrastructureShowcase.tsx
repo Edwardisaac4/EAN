@@ -53,7 +53,7 @@ const INFRASTRUCTURE_ITEMS = [
     title: 'Aircraft Sales & Charter Advisory',
     category: 'Aircraft Brokerage & Acquisitions',
     icon: Plane,
-    image: '/images/about-jet.png',
+    image: '/images/hero/slide-1.png',
     badge: 'Executive Jet Sales & Charter',
     description: 'Bespoke corporate aircraft sales brokerage, pre-purchase technical evaluations, fleet management, and charter flight arrangements across West Africa.',
     specs: [

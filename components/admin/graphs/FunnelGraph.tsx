@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Target, ChevronRight } from 'lucide-react';
+import { Target } from 'lucide-react';
 import { LeadStats } from '@/lib/admin-leads-data';
 
 export interface FunnelGraphProps {
@@ -49,7 +49,7 @@ export function FunnelGraph({ stats }: FunnelGraphProps) {
               {/* Trapeze/Bar Funnel Graphic */}
               <div className="w-full flex justify-center">
                 <div
-                  className={`h-7 rounded-xl bg-gradient-to-r ${stage.color} flex items-center justify-between px-3 text-white text-[11px] font-bold transition-all duration-500 shadow-lg`}
+                  className={`h-7 rounded-xl bg-linear-to-r ${stage.color} flex items-center justify-between px-3 text-white text-[11px] font-bold transition-all duration-500 shadow-lg`}
                   style={{ width: `${widthPercent}%` }}
                 >
                   <span className="truncate">{stage.label}</span>

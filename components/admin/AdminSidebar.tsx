@@ -15,7 +15,8 @@ import {
   ChevronRight,
   Sparkles,
   Menu,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
 
 export interface NavMenuItem {
@@ -64,6 +65,11 @@ export function AdminSidebar() {
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
+
+  // Do not render sidebar on login screen
+  if (pathname === '/admin/login') {
+    return null;
+  }
 
   return (
     <>
@@ -188,7 +194,13 @@ export function AdminSidebar() {
                 </p>
               </div>
             </div>
-            <ShieldCheck className="w-4 h-4 text-ean-gold/60" />
+            <Link
+              href="/admin/login"
+              title="Sign Out of Admin Portal"
+              className="p-1.5 rounded-lg text-ean-muted-light hover:text-red-400 hover:bg-red-500/10 transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </aside>
