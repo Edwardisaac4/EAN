@@ -1,98 +1,90 @@
-import fs from 'fs';
-import path from 'path';
-
 interface AttemptRecord {
   count: number;
   firstAttemptAt: number;
   lockoutUntil?: number;
 }
 
-interface RateLimitStore {
-  [key: string]: AttemptRecord;
-}
-
 const MAX_ATTEMPTS = 5;
 const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes lockout
 
-const STORE_PATH = path.join(process.cwd(), '.next', 'rate-limit-store.json');
-
-function loadStore(): RateLimitStore {
-  try {
-    if (fs.existsSync(STORE_PATH)) {
-      const raw = fs.readFileSync(STORE_PATH, 'utf-8');
-      return JSON.parse(raw);
-    }
-  } catch (err) {
-    // Fail gracefully
-  }
-  return {};
+// Shared memory store across serverless invocations and module reloads
+declare global {
+  var __rateLimitStore: Map<string, AttemptRecord> | undefined;
 }
 
-function saveStore(store: RateLimitStore): void {
-  try {
-    const dir = path.dirname(STORE_PATH);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
-  } catch (err) {
-    // Fail gracefully
-  }
+const store: Map<string, AttemptRecord> =
+  globalThis.__rateLimitStore ?? new Map<string, AttemptRecord>();
+
+if (process.env.NODE_ENV !== 'production') {
+  globalThis.__rateLimitStore = store;
 }
 
 export function checkRateLimit(ip: string, email: string): { isAllowed: boolean; retryAfterSeconds?: number } {
-  const store = loadStore();
-  const key = `${ip.trim()}:${email.trim().toLowerCase()}`;
-  const record = store[key];
+  try {
+    const key = `${ip.trim()}:${email.trim().toLowerCase()}`;
+    const record = store.get(key);
 
-  if (!record) {
+    if (!record) {
+      return { isAllowed: true };
+    }
+
+    const now = Date.now();
+
+    if (record.lockoutUntil && record.lockoutUntil > now) {
+      const retryAfterSeconds = Math.ceil((record.lockoutUntil - now) / 1000);
+      return { isAllowed: false, retryAfterSeconds };
+    }
+
+    if (now - record.firstAttemptAt > WINDOW_MS) {
+      store.delete(key);
+      return { isAllowed: true };
+    }
+
     return { isAllowed: true };
+  } catch (err) {
+    console.error('Rate limiter check error:', err);
+    throw new Error('Rate limiter state evaluation failed');
   }
-
-  const now = Date.now();
-
-  if (record.lockoutUntil && record.lockoutUntil > now) {
-    const retryAfterSeconds = Math.ceil((record.lockoutUntil - now) / 1000);
-    return { isAllowed: false, retryAfterSeconds };
-  }
-
-  if (now - record.firstAttemptAt > WINDOW_MS) {
-    delete store[key];
-    saveStore(store);
-    return { isAllowed: true };
-  }
-
-  return { isAllowed: true };
 }
 
 export function recordFailedAttempt(ip: string, email: string): void {
-  const store = loadStore();
-  const key = `${ip.trim()}:${email.trim().toLowerCase()}`;
-  const now = Date.now();
-  const record = store[key] || { count: 0, firstAttemptAt: now };
+  try {
+    const key = `${ip.trim()}:${email.trim().toLowerCase()}`;
+    const now = Date.now();
+    const existing = store.get(key);
 
-  if (now - record.firstAttemptAt > WINDOW_MS) {
-    record.count = 1;
-    record.firstAttemptAt = now;
-    delete record.lockoutUntil;
-  } else {
-    record.count += 1;
+    let record: AttemptRecord;
+
+    if (!existing || now - existing.firstAttemptAt > WINDOW_MS) {
+      record = {
+        count: 1,
+        firstAttemptAt: now,
+      };
+    } else {
+      const newCount = existing.count + 1;
+      record = {
+        count: newCount,
+        firstAttemptAt: existing.firstAttemptAt,
+        lockoutUntil: newCount >= MAX_ATTEMPTS ? now + LOCKOUT_MS : existing.lockoutUntil,
+      };
+    }
+
+    store.set(key, record);
+  } catch (err) {
+    console.error('Rate limiter record failed attempt error:', err);
+    throw new Error('Failed to record rate limit attempt');
   }
-
-  if (record.count >= MAX_ATTEMPTS) {
-    record.lockoutUntil = now + LOCKOUT_MS;
-  }
-
-  store[key] = record;
-  saveStore(store);
 }
 
 export function clearRateLimit(ip: string, email: string): void {
-  const store = loadStore();
-  const key = `${ip.trim()}:${email.trim().toLowerCase()}`;
-  if (store[key]) {
-    delete store[key];
-    saveStore(store);
+  try {
+    const key = `${ip.trim()}:${email.trim().toLowerCase()}`;
+    if (store.has(key)) {
+      store.delete(key);
+    }
+  } catch (err) {
+    console.error('Rate limiter clear error:', err);
+    throw new Error('Failed to clear rate limit state');
   }
 }

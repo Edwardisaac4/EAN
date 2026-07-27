@@ -1134,7 +1134,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     departmentLabel: "Operations",
     image: "/images/hero/slide-2.png",
     quote:
-      "Financial strategy must be precise, transparent, and aligned with long-term infrastructure development.",
+      "Precision weather tracking, aircrew discipline, and total situational readiness define our flight operations standard.",
     bio: [
       "Okechukwu Umeh manages the planning, coordination, and execution of all ground and air operations, ensuring seamless service delivery for private, corporate, and government clients across Africa.",
     ],
@@ -1147,7 +1147,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "tosin-taiwo",
     name: "Tosin Taiwo",
-    role: "Ramp Manageer",
+    role: "Ramp Manager",
     department: "Operations",
     departmentLabel: "Operational Excellence",
     image: "/images/hero/slide-2.png",

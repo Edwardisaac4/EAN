@@ -70,12 +70,16 @@ export function AdminSidebar() {
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/admin/logout', { method: 'POST' });
-    } catch (err) {
-      console.error('Logout error:', err);
-    } finally {
+      const res = await fetch('/api/admin/logout', { method: 'POST' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        console.error('Logout error:', data.error || `Logout failed with status ${res.status}`);
+        return;
+      }
       router.replace('/admin/login');
       router.refresh();
+    } catch (err) {
+      console.error('Logout error:', err);
     }
   };
 

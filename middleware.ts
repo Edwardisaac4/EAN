@@ -8,7 +8,8 @@ export async function middleware(request: NextRequest) {
   // Protect /admin routes
   if (pathname.startsWith('/admin')) {
     const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME)?.value;
-    const isValidSession = sessionCookie ? await verifySessionToken(sessionCookie) : null;
+    const payload = sessionCookie ? await verifySessionToken(sessionCookie) : null;
+    const isValidSession = Boolean(payload && payload.role === 'admin');
 
     // If visiting login page while already authenticated, redirect to /admin
     if (pathname === '/admin/login') {

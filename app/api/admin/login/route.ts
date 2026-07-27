@@ -18,11 +18,38 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
-    const { email, password, rememberMe } = body;
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { success: false, error: 'Invalid JSON request body.' },
+        { status: 400 }
+      );
+    }
 
-    const inputEmail = (email || '').trim().toLowerCase();
-    const inputPassword = (password || '').trim();
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid request body shape.' },
+        { status: 400 }
+      );
+    }
+
+    const { email, password, rememberMe } = body as Record<string, unknown>;
+
+    if (
+      typeof email !== 'string' ||
+      typeof password !== 'string' ||
+      typeof rememberMe !== 'boolean'
+    ) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid request payload types. Email and password must be strings, and rememberMe must be a boolean.' },
+        { status: 400 }
+      );
+    }
+
+    const inputEmail = email.trim().toLowerCase();
+    const inputPassword = password;
 
     if (!inputEmail || !inputPassword) {
       return NextResponse.json(
@@ -48,7 +75,7 @@ export async function POST(request: Request) {
     }
 
     const normalizedEnvEmail = envEmail.trim().toLowerCase();
-    const normalizedEnvPassword = envPassword.trim();
+    const normalizedEnvPassword = envPassword;
 
     // Validate credentials
     if (inputEmail !== normalizedEnvEmail || inputPassword !== normalizedEnvPassword) {
