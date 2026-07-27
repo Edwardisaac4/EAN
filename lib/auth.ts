@@ -1,10 +1,12 @@
 // Authentication helper for generating and verifying signed session tokens
 export const SESSION_COOKIE_NAME = "admin_session";
 
-const SECRET_KEY = process.env.ADMIN_SESSION_SECRET;
-
-if (!SECRET_KEY) {
-  throw new Error("ADMIN_SESSION_SECRET environment variable must be set");
+function getSecretKey(): string {
+  const key = process.env.ADMIN_SESSION_SECRET;
+  if (!key) {
+    throw new Error("ADMIN_SESSION_SECRET environment variable must be set");
+  }
+  return key;
 }
 
 export interface SessionPayload {
@@ -57,7 +59,7 @@ export async function createSessionToken(
   const dataBase64 = base64UrlEncode(dataStr);
 
   const encoder = new TextEncoder();
-  const keyData = encoder.encode(SECRET_KEY);
+  const keyData = encoder.encode(getSecretKey());
   const cryptoKey = await crypto.subtle.importKey(
     "raw",
     keyData,
@@ -86,7 +88,7 @@ export async function verifySessionToken(
     const [dataBase64, sigBase64] = parts;
 
     const encoder = new TextEncoder();
-    const keyData = encoder.encode(SECRET_KEY);
+    const keyData = encoder.encode(getSecretKey());
     const cryptoKey = await crypto.subtle.importKey(
       "raw",
       keyData,
