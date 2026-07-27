@@ -1105,53 +1105,6 @@ export const TEAM_MEMBERS: TeamMember[] = [
     highlights: [{ label: "Client Satisfaction Index", value: "99.4%" }],
   },
   {
-    id: "akachukwu-udec",
-    name: "Akachukwu Udechukwu",
-    role: "Corporate Finance Manager",
-    department: "Finance",
-    departmentLabel: "Finance & Governance",
-    image: "/images/leadership/akachukwu.jpg",
-    quote:
-      "Financial strategy must be precise, transparent, and aligned with long-term infrastructure development.",
-    bio: [
-      "Akachukwu Udechukwu is a chartered accountant with over 15 years of experience in corporate finance, financial reporting, and fiscal strategy across the aviation and energy sectors.",
-      "He leads financial planning, revenue accounting, and audit compliance for EAN Aviation’s integrated aviation ecosystem, including flight services, hangarage, and ground handling.",
-    ],
-    credentials: [
-      "ICAN Certification",
-      "ACCA Certification",
-      "CPA Certification",
-      "CFA Certification",
-      "Chartered Accountant",
-    ],
-    highlights: [
-      { label: "Financial Reporting Accuracy", value: "99.8%" },
-      { label: "Audit Compliance Rate", value: "100%" },
-      { label: "Revenue Accounting Accuracy", value: "100%" },
-      { label: "Financial Strategy Development", value: "100%" },
-    ],
-  },
-  {
-    id: "ogunlokun-tunde-tunbosun",
-    name: "Ogunlokun Tunde Tunbosun",
-    role: "Finance Manager",
-    department: "Finance",
-    departmentLabel: "Finance & Governance",
-    image: "/images/leadership/Tunde Ogulokun.jpg",
-    quote:
-      "Financial discipline and transparent corporate governance build the foundation that supports ambitious infrastructure expansion.",
-    bio: [
-      "Ogunlokun Tunde Tunbosun leads financial planning, fiscal risk management, charter revenue accounting, and corporate governance at EAN Aviation.",
-      "A Fellow of the Institute of Chartered Accountants of Nigeria (FCA), Chioma holds an MBA in Finance and oversees multi-currency flight invoicing, vendor contracts, and international audit compliance.",
-    ],
-    credentials: [
-      "FCA Chartered Accountant",
-      "MBA Finance",
-      "16+ Yrs Corporate Governance",
-    ],
-    highlights: [{ label: "Fiscal Audit Accuracy", value: "100%" }],
-  },
-  {
     id: "ahmed-kazeem",
     name: "Ahmed Kazeem",
     role: "Head, Finance",
@@ -1172,6 +1125,47 @@ export const TEAM_MEMBERS: TeamMember[] = [
       "Chartered Accountant",
     ],
     highlights: [{ label: "Aircraft Transactions Closed", value: "$120M+" }],
+  },
+  {
+    id: "okechukwu-umeh",
+    name: "Okechukwu Umeh",
+    role: "Flight Operations Manager",
+    department: "Operations",
+    departmentLabel: "Operations",
+    image: "/images/hero/slide-2.png",
+    quote:
+      "Financial strategy must be precise, transparent, and aligned with long-term infrastructure development.",
+    bio: [
+      "Okechukwu Umeh manages the planning, coordination, and execution of all ground and air operations, ensuring seamless service delivery for private, corporate, and government clients across Africa.",
+    ],
+    credentials: [
+      "Flight Operations Officer (FOO)",
+      "Airline/Aviation Management",
+    ],
+    highlights: [{ label: "Aircraft Transactions Closed", value: "$120M+" }],
+  },
+  {
+    id: "tosin-taiwo",
+    name: "Tosin Taiwo",
+    role: "Ramp Manageer",
+    department: "Operations",
+    departmentLabel: "Operational Excellence",
+    image: "/images/hero/slide-2.png",
+    quote:
+      "Financial strategy must be precise, transparent, and aligned with long-term infrastructure development.",
+    bio: [
+      "Ahmed Kazeem manages financial planning, fiscal risk management, charter revenue accounting, and corporate governance at EAN Aviation.",
+      "With a background in global aircraft transaction advisory, Ahmed assists corporate entities and private individuals with aircraft sourcing, pre-purchase inspections, registration, and delivery.",
+    ],
+    credentials: [
+      "Advanced Diploma in Logistics and Supply Chain Management",
+      "Diploma in Aeronautical Engineering",
+      "FAA Dangerous Goods Training",
+      "Advanced certificate in Project Management",
+      "Certificate in Aviation Safety and Security Management",
+      "Certificate in Leadership and Change Management",
+    ],
+    highlights: [{ label: "Aircraft Turnaround Time", value: "30 minutes" }],
   },
 ];
 

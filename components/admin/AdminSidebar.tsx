@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Users, 
@@ -11,7 +11,6 @@ import {
   FileText, 
   Settings, 
   ExternalLink,
-  ShieldCheck,
   ChevronRight,
   Sparkles,
   Menu,
@@ -59,12 +58,26 @@ export const ADMIN_NAV_ITEMS: NavMenuItem[] = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [prevPathname, setPrevPathname] = useState(pathname);
 
-  // Close mobile drawer on route change
-  useEffect(() => {
+  // Close mobile drawer on route change without cascading effect render
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setIsOpen(false);
-  }, [pathname]);
+  }
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin/logout', { method: 'POST' });
+    } catch (err) {
+      console.error('Logout error:', err);
+    } finally {
+      router.replace('/admin/login');
+      router.refresh();
+    }
+  };
 
   // Do not render sidebar on login screen
   if (pathname === '/admin/login') {
@@ -194,13 +207,14 @@ export function AdminSidebar() {
                 </p>
               </div>
             </div>
-            <Link
-              href="/admin/login"
+            <button
+              type="button"
+              onClick={handleLogout}
               title="Sign Out of Admin Portal"
-              className="p-1.5 rounded-lg text-ean-muted-light hover:text-red-400 hover:bg-red-500/10 transition-colors"
+              className="p-1.5 rounded-lg text-ean-muted-light hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
-            </Link>
+            </button>
           </div>
         </div>
       </aside>

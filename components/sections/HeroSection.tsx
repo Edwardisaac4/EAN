@@ -155,7 +155,7 @@ export default function HeroSection() {
             fill
             sizes="100vw"
             priority={idx === 0}
-            quality={95}
+            quality={85}
             className="object-cover object-center"
           />
           {/* Overlays for high readability */}

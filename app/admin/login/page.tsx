@@ -11,17 +11,15 @@ import {
   EyeOff, 
   ShieldCheck, 
   ArrowRight, 
-  Sparkles, 
   CheckCircle2,
   Building2,
-  KeyRound,
   AlertCircle
 } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('admin@ean.aero');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +37,7 @@ export default function AdminLoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, rememberMe }),
       });
 
       const data = await res.json();
@@ -54,7 +52,8 @@ export default function AdminLoginPage() {
       setIsSuccess(true);
       setTimeout(() => {
         router.push('/admin');
-      }, 600);
+        router.refresh();
+      }, 500);
     } catch (err: unknown) {
       console.error('Login error:', err);
       setError('Unable to communicate with the authentication server.');
@@ -111,14 +110,6 @@ export default function AdminLoginPage() {
           {/* Top Gold Accent Line */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-ean-gold to-transparent opacity-80" />
 
-          {/* Quick Environment Config Badge */}
-          <div className="flex items-center gap-2.5 p-3 rounded-xl bg-ean-gold/10 border border-ean-gold/25 text-xs text-ean-gold-light">
-            <Sparkles className="w-4 h-4 text-ean-gold shrink-0" />
-            <span>
-              <strong className="font-semibold text-ean-white">Environment Config:</strong> Mapped to <code className="bg-black/40 px-1.5 py-0.5 rounded text-ean-gold font-mono text-[11px]">.env.local</code> credentials.
-            </span>
-          </div>
-
           {/* Error Callout Banner */}
           {error && (
             <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-400 animate-in fade-in">
@@ -128,7 +119,7 @@ export default function AdminLoginPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email / Username Input */}
+            {/* Email Input */}
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold uppercase tracking-wider text-ean-muted-light">
                 Executive Email or ID
@@ -138,7 +129,7 @@ export default function AdminLoginPage() {
                   <Mail className="w-4 h-4" />
                 </div>
                 <input
-                  type="text"
+                  type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -154,13 +145,6 @@ export default function AdminLoginPage() {
                 <label className="block text-xs font-semibold uppercase tracking-wider text-ean-muted-light">
                   Password / Access Code
                 </label>
-                <button 
-                  type="button" 
-                  onClick={() => alert("Credentials are set in .env.local (ADMIN_EMAIL and ADMIN_PASSWORD).")}
-                  className="text-[11px] text-ean-gold hover:underline transition-all"
-                >
-                  Need access code?
-                </button>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-ean-gold/70">
@@ -228,14 +212,6 @@ export default function AdminLoginPage() {
               )}
             </button>
           </form>
-
-          {/* Demomode Helper Credentials */}
-          <div className="pt-2 border-t border-ean-border-dark/60 text-center">
-            <p className="text-[11px] text-ean-muted-light/70 flex items-center justify-center gap-1.5">
-              <KeyRound className="w-3 h-3 text-ean-gold/80" />
-              <span>Configured via: <strong className="text-ean-white font-medium">ADMIN_EMAIL & ADMIN_PASSWORD</strong> in .env.local</span>
-            </p>
-          </div>
         </div>
 
         {/* Footer Security Badges */}

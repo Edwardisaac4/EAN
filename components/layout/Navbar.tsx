@@ -52,7 +52,7 @@ export default function Navbar() {
               width={180}
               height={48}
               className="h-8 sm:h-9 md:h-10 w-auto object-contain filter brightness-0 invert opacity-95 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105"
-              priority
+              loading="eager"
             />
           </Link>
 
