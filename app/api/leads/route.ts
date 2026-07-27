@@ -1,134 +1,126 @@
-import { NextResponse } from 'next/server';
-import { INITIAL_LEADS, Lead, ServiceCategory, LeadStatus, LeadPriority } from '@/lib/admin-leads-data';
-import { deriveSourceLabel } from '@/lib/leads-store';
+// =============================================================================
+// /api/leads — Public lead submission + Admin lead listing
+// Connected to Supabase via leads-service
+// =============================================================================
 
-// In-memory fallback array for server context
-let inMemoryLeads: Lead[] = [...INITIAL_LEADS];
+import { NextResponse } from 'next/server'
+import { createLead, getLeads } from '@/lib/services/leads-service'
+import { sendNewLeadAlert } from '@/lib/services/lead-notifications'
+import { dbError, badRequest } from '@/lib/supabase/helpers'
+import type { LeadSubmissionPayload, LeadServiceEnum, LeadStatusEnum, LeadPriorityEnum } from '@/types/database'
+
+// ---------------------------------------------------------------------------
+// GET /api/leads — fetch leads (admin, paginated, filterable)
+// ---------------------------------------------------------------------------
 
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const q = searchParams.get('q')?.toLowerCase();
-    const status = searchParams.get('status') as LeadStatus | 'all' | null;
-    const service = searchParams.get('service') as ServiceCategory | 'all' | null;
-    const priority = searchParams.get('priority') as LeadPriority | 'all' | null;
+    const { searchParams } = new URL(request.url)
 
-    let filtered = [...inMemoryLeads];
+    const status   = searchParams.get('status') as LeadStatusEnum | 'all' | null
+    const service  = searchParams.get('service') as LeadServiceEnum | 'all' | null
+    const priority = searchParams.get('priority') as LeadPriorityEnum | 'all' | null
+    const search   = searchParams.get('q') || searchParams.get('search') || undefined
+    const page     = Number(searchParams.get('page') ?? 1)
+    const limit    = Number(searchParams.get('limit') ?? 20)
 
-    if (q) {
-      filtered = filtered.filter(
-        (l) =>
-          l.fullName.toLowerCase().includes(q) ||
-          l.email.toLowerCase().includes(q) ||
-          l.id.toLowerCase().includes(q) ||
-          l.phone.toLowerCase().includes(q) ||
-          (l.company && l.company.toLowerCase().includes(q))
-      );
-    }
+    const { leads, total, error } = await getLeads({
+      status:   status || 'all',
+      service:  service || 'all',
+      priority: priority || 'all',
+      search,
+      page,
+      limit,
+    })
 
-    if (status && status !== 'all') {
-      filtered = filtered.filter((l) => l.status === status);
-    }
-
-    if (service && service !== 'all') {
-      filtered = filtered.filter((l) => l.service === service);
-    }
-
-    if (priority && priority !== 'all') {
-      filtered = filtered.filter((l) => l.priority === priority);
+    if (error) {
+      return dbError('Failed to fetch leads')
     }
 
     return NextResponse.json({
       success: true,
-      total: filtered.length,
-      leads: filtered,
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch leads' },
-      { status: 500 }
-    );
+      total,
+      page,
+      limit,
+      leads,
+    })
+  } catch (err) {
+    console.error('GET /api/leads error:', err)
+    return dbError('Internal server error fetching leads')
   }
 }
 
+// ---------------------------------------------------------------------------
+// POST /api/leads — public contact form submission
+// ---------------------------------------------------------------------------
+
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    let body: Record<string, unknown>
+    try {
+      body = await request.json()
+    } catch {
+      return badRequest('Invalid JSON request body')
+    }
 
-    const { fullName, name, email, phone, company, service, message, tracking, clientLeads } = body;
+    const {
+      fullName,
+      name,
+      email,
+      phone,
+      company,
+      service,
+      message,
+      tracking,
+    } = body as Record<string, unknown>
 
-    // Use name or fullName
-    const leadName = fullName || name;
+    // Accept either fullName or name
+    const leadName = (fullName || name) as string | undefined
 
     if (!leadName || !email || !message) {
-      return NextResponse.json(
-        { success: false, error: 'Missing required lead fields (name, email, message)' },
-        { status: 400 }
-      );
+      return badRequest('Missing required fields: name, email, and message are required')
     }
 
-    // Sync client leads if passed
-    if (Array.isArray(clientLeads) && clientLeads.length > 0) {
-      inMemoryLeads = clientLeads;
+    // Extract client IP for tracking
+    const forwardedFor = request.headers.get('x-forwarded-for')
+    const clientIp = forwardedFor ? forwardedFor.split(',')[0].trim() : undefined
+
+    const payload: LeadSubmissionPayload = {
+      fullName: leadName as string,
+      email: email as string,
+      phone: (phone as string) || undefined,
+      company: (company as string) || undefined,
+      service: ((service as string) || 'general') as LeadServiceEnum,
+      message: message as string,
+      tracking: tracking as LeadSubmissionPayload['tracking'],
     }
 
-    const now = new Date().toISOString();
-    const nextId = `EAN-LD-${new Date().getFullYear()}-${String(inMemoryLeads.length + 90).padStart(3, '0')}`;
-    const derivedSource = deriveSourceLabel(tracking);
+    const { lead, error } = await createLead(payload, clientIp)
 
-    // Auto priority assignment based on service or urgency keywords
-    let priority: LeadPriority = 'normal';
-    if (
-      message.toLowerCase().includes('urgent') ||
-      message.toLowerCase().includes('asap') ||
-      service === 'fbo'
-    ) {
-      priority = 'urgent';
-    } else if (service === 'charter' || service === 'maintenance') {
-      priority = 'high';
+    if (error) {
+      console.error('Failed to create lead:', error)
+      return dbError('Failed to submit inquiry. Please try again.')
     }
 
-    const newLead: Lead = {
-      id: nextId,
-      fullName: leadName,
-      email,
-      phone: phone || 'Not provided',
-      company: company || undefined,
-      service: (service as ServiceCategory) || 'general',
-      message,
-      status: 'new',
-      priority,
-      createdAt: now,
-      updatedAt: now,
-      source: derivedSource,
-      notes: [],
-      activities: [
-        {
-          id: `act-${Date.now()}`,
-          timestamp: now,
-          author: 'System (Form Engine)',
-          action: `Lead automatically captured via ${tracking?.formPage || 'Website Form'}`,
-        },
-      ],
-      estimatedValue: service === 'charter' ? 20000 : service === 'fbo' ? 15000 : service === 'maintenance' ? 35000 : 5000,
-      tracking,
-    };
-
-    inMemoryLeads = [newLead, ...inMemoryLeads];
+    // Fire-and-forget email alert (non-blocking)
+    sendNewLeadAlert(lead).catch((err) =>
+      console.error('Lead email alert failed:', err)
+    )
 
     return NextResponse.json(
       {
         success: true,
-        message: 'Lead created successfully',
-        lead: newLead,
+        message: 'Your inquiry has been received. Our team will contact you shortly.',
+        lead: {
+          id: lead.id,
+          lead_code: lead.lead_code,
+          status: lead.status,
+        },
       },
       { status: 201 }
-    );
-  } catch (error) {
-    console.error('Error creating lead in API route:', error);
-    return NextResponse.json(
-      { success: false, error: 'Internal server error creating lead' },
-      { status: 500 }
-    );
+    )
+  } catch (err) {
+    console.error('POST /api/leads error:', err)
+    return dbError('Internal server error submitting lead')
   }
 }

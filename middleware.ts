@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifySessionToken, SESSION_COOKIE_NAME } from '@/lib/auth';
+import { updateSession } from '@/utils/supabase/middleware';
 
 export async function middleware(request: NextRequest) {
+  // Refresh Supabase auth session on every request
+  const { supabaseResponse } = updateSession(request);
+
   const { pathname } = request.nextUrl;
 
   // Protect /admin routes
@@ -16,7 +20,7 @@ export async function middleware(request: NextRequest) {
       if (isValidSession) {
         return NextResponse.redirect(new URL('/admin', request.url));
       }
-      return NextResponse.next();
+      return supabaseResponse;
     }
 
     // For all other /admin routes, reject unauthenticated access
@@ -27,9 +31,12 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  return supabaseResponse;
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: [
+    // Match all routes except static files and images
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 };
