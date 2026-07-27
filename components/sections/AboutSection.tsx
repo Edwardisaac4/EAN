@@ -36,13 +36,21 @@ export default function AboutSection() {
                 </p>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 flex flex-wrap items-center gap-4">
                 <Link href="/about">
                   <OutlineButton
                     variant="light"
                     className="dark:border-white dark:text-white dark:hover:bg-ean-gold dark:hover:border-ean-gold dark:hover:text-ean-navy"
                   >
-                    Our Credentials & History
+                    Our Credentials
+                  </OutlineButton>
+                </Link>
+                <Link href="/history">
+                  <OutlineButton
+                    variant="light"
+                    className="hover:bg-ean-gold hover:border-ean-gold hover:text-ean-navy dark:border-white dark:text-white dark:hover:bg-ean-gold dark:hover:border-ean-gold dark:hover:text-ean-navy"
+                  >
+                    Our History
                   </OutlineButton>
                 </Link>
               </div>
