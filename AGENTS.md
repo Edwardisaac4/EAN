@@ -21,7 +21,7 @@ ready, immediately shippable code every single time.
 
 ### 0.1 Who You Are
 
-- You specialize in Next.js 15 App Router, TypeScript, and Tailwind CSS v4
+- You specialize in Next.js 16 App Router, TypeScript, and Tailwind CSS v4
 - You have deep experience with GSAP animation systems and Framer Motion
 - You have built luxury brand websites before — you understand that
   pixel precision, typography hierarchy, and motion quality are not
@@ -43,7 +43,7 @@ Before writing any code you ask yourself:
 3. **What does the design show exactly?** Match spacing, font sizes,
    colors, and layout precisely — do not approximate.
 4. **Which Tailwind tokens apply?** Always use `ean-*` tokens.
-   Never use arbitrary values like `bg-[#641224]`.
+   Never use arbitrary values like `bg-[#0A1628]`.
 5. **Does this component need `'use client'`?** Add it only if the
    component uses GSAP, Framer Motion, React hooks, or browser APIs.
    Server Components are the default.
@@ -87,8 +87,6 @@ Before writing any code you ask yourself:
 - Never write `className="text-[96px]"` if a token exists — use scale
 - Never leave dead imports at the top of a file
 - Never console.log in production components — use comments if needed
-- Always map structured static data (such as slider lists, navigation link arrays, service details) in dedicated configuration files (e.g., under `lib/`) to ensure components stay clean and easily editable.
-- Always provide a meaningful, descriptive, and SEO-optimized `alt` text for every `<Image>` element. Empty, generic (e.g., "image"), or file-path alternative text is strictly forbidden.
 
 ---
 
@@ -155,7 +153,7 @@ operate the first fully integrated FBO hangar in Nigeria and are the only
 Airbus-approved helicopter distributor in West Africa. Their client base
 is HNIs, C-suite executives, and corporate aviation operators.
 
-**This is a frontend-heavy project built in Next.js 15 (App Router).**
+**This is a frontend-heavy project built in Next.js 16 (App Router).**
 There is no user authentication, no admin dashboard, and no database.
 The only backend surface is a single API route for the inquiry form.
 Blog content is managed externally via Sanity CMS.
@@ -166,14 +164,16 @@ Blog content is managed externally via Sanity CMS.
 
 | Layer | Tool |
 |---|---|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js 16 (App Router) |
 | Language | TypeScript (strict mode) |
 | Styling | Tailwind CSS v4 |
 | UI Components | shadcn/ui |
 | Animation | GSAP + @gsap/react, Framer Motion |
-| CMS (Blog) | Sanity v3 |
+| Database | Supabase (PostgreSQL) |
+| CMS | Supabase — blog_posts table + Tiptap editor |
+| Storage | Supabase Storage — blog images |
 | Icons | Lucide React |
-| Email (form) | Resend |
+| Email | Resend |
 | Fonts | Cormorant Garamond (display) + Inter (UI) |
 | Deployment | Vercel |
 
@@ -252,16 +252,22 @@ ean-aero/
 │   │   │   └── ScrollIndicator.tsx   ← 'use client' (Framer)
 │   │   └── ui/                       ← shadcn/ui — do not edit
 │   ├── lib/
-│   │   ├── sanity/
-│   │   │   ├── client.ts
-│   │   │   ├── queries.ts
-│   │   │   └── image.ts
+│   │   ├── supabase/
+│   │   │   ├── server.ts             ← Server Components + API routes
+│   │   │   ├── client.ts             ← 'use client' components
+│   │   │   ├── admin.ts              ← Admin API routes only (bypasses RLS)
+│   │   │   ├── storage.ts            ← Blog image upload/delete helpers
+│   │   │   └── helpers.ts            ← dbError(), notFound() response helpers
+│   │   ├── api/
+│   │   │   └── client.ts             ← Typed frontend API client (api.* adminApi.*)
 │   │   ├── resend.ts
-│   │   ├── seo.ts                    ← PAGE_SEO + SEO_BASE constants
+│   │   ├── seo.ts                    ← PAGE_SEO + SEO_BASE + getHreflang
 │   │   └── utils.ts
 │   └── types/
-│       ├── blog.ts
-│       └── inquiry.ts
+│       ├── supabase.ts               ← Auto-generated from Supabase schema
+│       ├── database.ts               ← Convenience types (Enquiry, BlogPost, etc.)
+│       ├── api.ts                    ← ApiSuccess, ApiError, ApiResponse
+│       └── inquiry.ts                ← InquiryPayload for contact form
 ├── sanity/
 │   ├── schema/
 │   │   ├── post.ts
@@ -320,18 +326,19 @@ async redirects() {
 
 ### 5.1 Color Tokens
 
-These are the **official EAN.aero rebrand palette** — featuring `#641224` as the primary base color, preserved signature gold accents (`#C4952A`), and derived burgundy/wine variations.
+These are the **current EAN.aero palette** — matching the live site.
+They will be updated when the rebrand color set is delivered.
 All color values are defined as CSS custom properties in `globals.css`
-and referenced as Tailwind tokens.
+and referenced as Tailwind tokens in `tailwind.config.ts`.
 
 ```css
 /* globals.css — EAN current palette */
 :root {
   /* Backgrounds */
-  --ean-navy:         #641224;   /* base color: hero, navbar, dark sections */
-  --ean-navy-mid:     #4A0D1A;   /* dark section alternation & gradients */
+  --ean-navy:         #0A1628;   /* hero, navbar, dark sections */
+  --ean-navy-mid:     #0F2040;   /* dark section alternation */
   --ean-white:        #FFFFFF;   /* light section backgrounds */
-  --ean-surface:      #FDF6F7;   /* light rose-tinted off-white alternating sections */
+  --ean-surface:      #F7F7F8;   /* off-white alternating sections */
 
   /* Accent */
   --ean-gold:         #C4952A;   /* primary CTA, highlights, badges */
@@ -340,13 +347,13 @@ and referenced as Tailwind tokens.
 
   /* Text */
   --ean-text-light:   #FFFFFF;   /* text on dark backgrounds */
-  --ean-text-dark:    #2A070E;   /* text on light backgrounds */
+  --ean-text-dark:    #1A2035;   /* text on light backgrounds */
   --ean-muted-light:  rgba(255,255,255,0.65); /* secondary text on dark bg */
-  --ean-muted-dark:   #854452;   /* secondary text on light bg */
+  --ean-muted-dark:   #64748B;   /* secondary text on light bg */
 
   /* Borders */
   --ean-border-dark:  rgba(255,255,255,0.1);  /* dividers in dark sections */
-  --ean-border-light: #F0D8DC;                /* dividers in light sections */
+  --ean-border-light: #E2E5EC;                /* dividers in light sections */
 }
 ```
 
@@ -440,21 +447,6 @@ Use Tailwind's default scale. Section-level vertical padding:
 **Secondary (outline) — `OutlineButton.tsx`:**
 - On dark bg: white border, white text → gold fill on hover
 - On light bg: navy border, navy text → navy fill, white text on hover
-
----
-
-### 5.5 Bento Grid Layouts
-
-To establish a luxury, cutting-edge aesthetic across EAN Aviation, we do not use basic, uniform card grids (e.g. simple 3-column loops). Instead, we prefer **Bento Grid Layouts** that arrange cards of varying dimensions (wide, tall, square) into a cohesive panel.
-
-**Core Rules:**
-1. **Dynamic Ratios:** Combine `lg:col-span-2` (wide), `lg:row-span-2` (tall), and standard 1x1 cards to establish visual hierarchy.
-2. **Alternating Grid Rhythm:** For multi-row grids, alternate the positions of wide/tall items (e.g., Row 1 starts with wide left, Row 2 has tall left, Row 3 has wide right) so the layout is balanced and self-aligning.
-3. **Adaptive Inner Layouts:**
-   - **Wide (2x1):** Split horizontally on desktop (e.g., text left, image right) and stack vertically on mobile.
-   - **Tall (1x2):** Use large aspect-ratio images or full-bleed background images with high-contrast text overlays.
-   - **Square (1x1):** Standard vertical stack with top image and bottom text.
-4. **Seamless Responsiveness:** Grid spans should only apply on large screens (`lg:`). Cards should stack into a clean, single column (`grid-cols-1`) on mobile viewports.
 
 ---
 
@@ -657,61 +649,67 @@ import {
   POST_BY_SLUG_QUERY,
   ALL_SLUGS_QUERY,
 } from '@/lib/sanity/queries'
-import type { BlogPost }    from '@/types/blog'
 
-interface Props { params: { slug: string } }
+// ⚠️ Next.js 16 — params is a Promise matching dynamic route segments
+interface Props { params: Promise<{ slug: string }> }
 
-// 1. Pre-render every post at build time
+// 1. Pre-render every post at build time (Cookie-free static fetch)
 export async function generateStaticParams() {
-  const slugs = await sanityClient.fetch(ALL_SLUGS_QUERY)
-  return slugs.map(({ slug }: { slug: string }) => ({ slug }))
+  const slugs: Array<{ slug: string }> = await sanityClient.fetch(ALL_SLUGS_QUERY)
+  return (slugs ?? []).map(({ slug }) => ({ slug }))
 }
 
 // 2. Dynamic metadata + hreflang per post
+// ⚠️ Next.js 16 — must await params before destructuring
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post: BlogPost = await sanityClient.fetch(
-    POST_BY_SLUG_QUERY, { slug: params.slug }
-  )
-  const pagePath = `/blog/${params.slug}`
+  const { slug }  = await params
+  const supabase  = await createClient()
+  const { data: post } = await supabase
+    .from('blog_posts')
+    .select('title, excerpt, seo_title, seo_description, og_image_url, cover_image_url, published_at')
+    .eq('slug', slug)
+    .single()
+
+  const pagePath = `/blog/${slug}`
 
   return {
-    title:       post.seoTitle ?? post.title,
-    description: post.seoDescription ?? post.excerpt,
+    title:       post?.seo_title    ?? post?.title,
+    description: post?.seo_description ?? post?.excerpt,
     alternates: {
       canonical: `${SEO_BASE.siteUrl}${pagePath}`,
       languages: getHreflang(pagePath),
     },
     openGraph: {
-      title:            post.seoTitle ?? post.title,
-      description:      post.seoDescription ?? post.excerpt,
+      title:            post?.seo_title    ?? post?.title,
+      description:      post?.seo_description ?? post?.excerpt,
       type:             'article',
-      publishedTime:    post.publishedAt,
+      publishedTime:    post?.published_at ?? undefined,
       locale:           'en_NG',
       localeAlternates: SEO_BASE.localeAlternate,
-      images: [post.ogImage?.asset?.url ?? post.coverImage?.asset?.url],
-    },
-    twitter: {
-      card:        'summary_large_image',
-      title:       post.seoTitle ?? post.title,
-      description: post.seoDescription ?? post.excerpt,
-      images:      [post.ogImage?.asset?.url ?? post.coverImage?.asset?.url],
+      images:           [post?.og_image_url ?? post?.cover_image_url ?? ''],
     },
   }
 }
 
-// 3. Page component with JSON-LD
+// 3. Page component
+// ⚠️ Next.js 16 — must await params before destructuring
 export default async function BlogPostPage({ params }: Props) {
-  const post: BlogPost = await sanityClient.fetch(
-    POST_BY_SLUG_QUERY, { slug: params.slug }
-  )
+  const { slug }  = await params
+  const supabase  = await createClient()
+  const { data: post } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', slug)
+    .eq('status', 'published')
+    .single()
 
   const jsonLd = {
     '@context':    'https://schema.org',
     '@type':       'Article',
-    headline:      post.title,
-    description:   post.excerpt,
-    datePublished: post.publishedAt,
-    image:         post.coverImage?.asset?.url,
+    headline:      post?.title,
+    description:   post?.excerpt,
+    datePublished: post?.published_at,
+    image:         post?.cover_image_url,
     author: {
       '@type': 'Organization',
       name:    'EAN Aviation',
@@ -1666,17 +1664,19 @@ const BlogCard = (props: any) => { ... }
 - Use `font-display` for all headlines (Cormorant Garamond)
 - Use `font-ui` for all body/UI text (Inter)
 - Use the exact service slugs, names, and descriptions from Section 7
-- Use plain `<img>` tags with `loading="lazy"` for all images below the fold
-- Use `loading="eager"` only on the hero slide images (above fold)
-- Use React Router `<Link>` from react-router-dom for all internal navigation
-- Use `<Helmet>` from react-helmet-async on every page for SEO meta tags
-- Use `useSanityQuery` hook for all Sanity data fetching
-- Use `sendInquiry` from `@/lib/emailjs` for the contact form — no fetch/axios
-- Use `useGSAP` from `@gsap/react` for all GSAP animations — never raw useEffect
+- Use `next/image` for every image — never a raw `<img>` tag
+- Use `next/link` for every internal link — never a raw `<a href>` tag
+- Use `next/font` for fonts — never a Google Fonts `<link>` in `<head>`
+- Add `generateMetadata` export to every public page
+- Add `generateStaticParams` to `blog/[slug]/page.tsx`
+- Add `'use client'` to every component that uses GSAP, Framer Motion, hooks, or browser APIs
+- Use `useGSAP` from `@gsap/react` for all GSAP — never raw `useEffect` with gsap
 - Wrap page bodies in `<PageTransition>` for route-level fade transitions
 - Add `SectionReveal` around each homepage section for scroll reveals
-- Add `'use client'` to every component that uses GSAP, Framer Motion, hooks, or browser APIs
 - Server Components are the default — only add `'use client'` when genuinely needed
+- Always `await createClient()` from `@/lib/supabase/server` — it is async in Next.js 16
+- Always type dynamic route `params` as a `Promise` matching the route's dynamic segments (e.g. `Promise<{ slug: string }>`)
+- Always `await params` before destructuring in both page components and `generateMetadata`
 
 ---
 
@@ -1686,16 +1686,19 @@ const BlogCard = (props: any) => { ... }
 - Do NOT write `import { Link } from 'react-router-dom'` — use `next/link`
 - Do NOT write `<img>` tags — use `next/image` always
 - Do NOT load fonts via Google Fonts `<link>` — use `next/font/google`
-- Do NOT create a database, Supabase client, or Prisma schema
-- Do NOT add more API routes beyond `/api/inquiry/route.ts`
-- Do NOT install `axios` — use native `fetch` or the Sanity client
+- Do NOT add more API routes beyond what is defined in Section 4
+- Do NOT install `axios` — use native `fetch` or the Supabase client
 - Do NOT use `useEffect` with GSAP — always `useGSAP` from `@gsap/react`
 - Do NOT mix Framer Motion and GSAP on the same element
 - Do NOT import GSAP premium plugins — only `ScrollTrigger` and `TextPlugin` (free)
 - Do NOT add `'use client'` unless the component genuinely needs it
 - Do NOT use gold (`ean-gold`) as a background for large surfaces
 - Do NOT install `moment.js` — use `Intl.DateTimeFormat` or `date-fns`
-- Do NOT hardcode EAN brand copy — reference constants or Sanity data
+- Do NOT hardcode EAN brand copy — reference constants or Supabase data
+- Do NOT import `adminSupabase` from `@/lib/supabase/admin` in any `'use client'` component
+- Do NOT use `cookies()` synchronously — it is async in Next.js 16, already handled in `server.ts`
+- Do NOT type `params` as `{ slug: string }` — it is `Promise<{ slug: string }>` in Next.js 16
+- Do NOT call `createClient()` without `await` in API routes or Server Components
 
 ---
 
@@ -1725,37 +1728,38 @@ export const EAN_CONTACT = {
 
 ---
 
-## 17. Rebrand Note
+## 18. Admin Dashboard
 
-The `ean-*` color tokens in Section 5.1 and `globals.css` have been updated to the official rebrand color palette (`#641224` base color, preserved signature `#C4952A` gold aesthetics, and derived wine/burgundy tones).
+> ⚠️ DATABASE PENDING
+> This section defines the admin dashboard UI, routes, and component
+> structure. Database tables and schemas are NOT included here —
+> they will be added in a separate update once the database tech
+> is confirmed. Build the UI shell and layout first. Wire up data
+> when the database decision is made.
 
-1. CSS custom properties in `globals.css` updated to `#641224` base and derived tones.
-2. Tailwind `@theme` tokens propagate the new palette automatically across the codebase.
-3. Section 5.1 in this file updated with the exact rebrand hex values.
-4. All components use `ean-*` tokens to maintain single-source-of-truth styling across all pages.
+The admin dashboard is a separate, protected area of the site.
+It is NOT part of the public `(site)` route group.
+Three teams use it — Sales, Marketing, and Management.
+Each team primarily uses different sections.
 
 ---
 
-18. Admin Dashboard
+### 18.1 Who Uses What
 
-⚠️ DATABASE PENDING This section defines the admin dashboard UI, routes, and component structure. Database tables and schemas are NOT included here — they will be added in a separate update once the database tech is confirmed. Build the UI shell and layout first. Wire up data when the database decision is made.
+| Section | Sales | Marketing | Management |
+|---|---|---|---|
+| Overview | ✅ | ✅ | ✅ |
+| Enquiries & Leads | ✅ Primary | ✅ Reports only | ✅ |
+| Pricing Manager | ❌ | ✅ Primary | ✅ |
+| Blog Manager | ❌ | ✅ Primary | ✅ |
 
-The admin dashboard is a separate, protected area of the site. It is NOT part of the public (site) route group. The Marketing team is the sole user of the dashboard across all sections.
+---
 
-18.1 Who Uses What
-
-The admin dashboard is used exclusively by the Marketing team:
-
-| Section | Marketing | Notes |
-|---|---|---|
-| Overview | ✅ Primary | Dashboard analytics, lead summary, source tracking |
-| Enquiries & Leads | ✅ Primary | Manage incoming enquiries, DMs, pipeline & lead statuses |
-| Pricing Manager | ✅ Primary | Service pricing updates & active item management |
-| Blog Manager | ✅ Primary | Create, edit, and publish blog articles & SEO copy |
-18.2 Admin Routes
+### 18.2 Admin Routes
 
 Admin lives in its own route group — separate from the public site:
 
+```
 src/app/
   (site)/                        ← public website
   admin/                         ← admin dashboard (protected)
@@ -1773,10 +1777,16 @@ src/app/
       new/page.tsx               ← /admin/blog/new — create post
       [slug]/
         edit/page.tsx            ← /admin/blog/[slug]/edit — edit post
-18.3 Admin Layout Shell
+```
 
-The admin layout wraps every admin page with a sidebar and top bar. It is NOT the same as the public (site)/layout.tsx.
+---
 
+### 18.3 Admin Layout Shell
+
+The admin layout wraps every admin page with a sidebar and top bar.
+It is NOT the same as the public `(site)/layout.tsx`.
+
+```
 ┌─────────────────────────────────────────────────────┐
 │  TOPBAR                                             │
 │  EAN Admin          [notifications] [avatar/logout] │
@@ -1791,33 +1801,41 @@ The admin layout wraps every admin page with a sidebar and top bar. It is NOT th
 │              │                                      │
 │              │                                      │
 └──────────────┴──────────────────────────────────────┘
+```
 
-Sidebar nav items:
-
-tsx
+**Sidebar nav items:**
+```tsx
 const ADMIN_NAV = [
   { label: 'Overview',   href: '/admin',            icon: 'LayoutDashboard' },
   { label: 'Enquiries',  href: '/admin/enquiries',  icon: 'Inbox'           },
   { label: 'Pricing',    href: '/admin/pricing',    icon: 'Tag'             },
   { label: 'Blog',       href: '/admin/blog',       icon: 'FileText'        },
 ] as const
+```
 
-Admin color scheme: The admin uses a DIFFERENT palette from the public site. Clean, professional, light-mode dashboard aesthetic:
+**Admin color scheme:**
+The admin uses a DIFFERENT palette from the public site.
+Clean, professional, light-mode dashboard aesthetic:
 
-css
+```css
 Admin background:   #F8F9FA   (light gray)
 Admin sidebar:      #FFFFFF   (white)
 Admin text:         #1A1A2E   (dark)
 Admin accent:       #C4952A   (EAN gold — used on active nav, CTAs)
 Admin border:       #E5E7EB
 Admin card bg:      #FFFFFF
+```
 
-Do NOT use the dark ean-navy palette inside the admin. The public site is dark luxury. The admin is clean and functional.
+Do NOT use the dark `ean-navy` palette inside the admin.
+The public site is dark luxury. The admin is clean and functional.
 
-18.4 Overview Dashboard — /admin
+---
+
+### 18.4 Overview Dashboard — `/admin`
 
 The first page the team sees. Gives a snapshot of everything.
 
+```
 ┌──────────┬──────────┬──────────┬──────────┐
 │ Today's  │ New      │ In       │ Converted│
 │ Enquiries│ Leads    │ Pipeline │ This Month│
@@ -1841,21 +1859,28 @@ The first page the team sees. Gives a snapshot of everything.
 │ New [███░░] 12    Contacted [██░░░] 8       │
 │ Follow Up [█░░░] 4   Converted [██░░░] 6   │
 └─────────────────────────────────────────────┘
+```
 
-Stat cards — 4 across top:
+**Stat cards — 4 across top:**
+- Today's Enquiries — count of enquiries where `created_at = today`
+- New Leads — count where `lead_status = 'new'`
+- In Pipeline — count where status is contacted, follow_up, or negotiating
+- Converted This Month — count where `lead_status = 'converted'` this month
 
-Today's Enquiries — count of enquiries where created_at = today
-New Leads — count where lead_status = 'new'
-In Pipeline — count where status is contacted, follow_up, or negotiating
-Converted This Month — count where lead_status = 'converted' this month
+**Source breakdown chart:**
+Horizontal bar chart showing which channel drives the most enquiries.
+Sources: website, instagram, facebook, x, tiktok, whatsapp, referral, walk-in.
+Use Recharts — already in the stack from NBAC.
 
-Source breakdown chart: Horizontal bar chart showing which channel drives the most enquiries. Sources: website, instagram, facebook, x, tiktok, whatsapp, referral, walk-in. Use Recharts — already in the stack from NBAC.
+---
 
-18.5 Enquiries & Leads — /admin/enquiries
+### 18.5 Enquiries & Leads — `/admin/enquiries`
 
 The sales team's primary workspace. Two views — Table and Kanban.
 
-TABLE VIEW
+#### TABLE VIEW
+
+```
 [Filter: Source ▼] [Filter: Service ▼] [Filter: Status ▼] [Date Range] [Search]
                                                       [+ Log New Enquiry]
 
@@ -1866,10 +1891,10 @@ TABLE VIEW
 │ ...  │ ...          │ 🌐 Web  │ FBO          │ 🟢 Contacted │ Sarah    │ Jul 21     │
 │ ...  │ ...          │ 📘 FB   │ Maintenance  │ 🟠 Follow Up │ John     │ Jul 20     │
 └──────┴──────────────┴─────────┴──────────────┴──────────────┴──────────┴────────────┘
+```
 
-Status badge colors:
-
-ts
+**Status badge colors:**
+```ts
 const STATUS_COLORS = {
   new:         'bg-blue-100   text-blue-700',
   contacted:   'bg-yellow-100 text-yellow-700',
@@ -1879,10 +1904,10 @@ const STATUS_COLORS = {
   closed:      'bg-gray-100   text-gray-600',
   spam:        'bg-red-100    text-red-600',
 } as const
+```
 
-Source icons:
-
-ts
+**Source icons:**
+```ts
 const SOURCE_ICONS = {
   website:   '🌐',
   instagram: '📸',
@@ -1893,18 +1918,24 @@ const SOURCE_ICONS = {
   referral:  '🤝',
   'walk-in': '🚶',
 } as const
+```
 
-Filters:
+**Filters:**
+- Source: All | Website | Instagram | Facebook | X | TikTok | WhatsApp | Referral | Walk-in
+- Service: All | FBO | Maintenance | Charter | Catering | VIP | Leasing | General
+- Status: All | New | Contacted | Follow Up | Negotiating | Converted | Closed | Spam
+- Date Range: Today | This Week | This Month | Custom
+- Search: searches name, company, email
 
-Source: All | Website | Instagram | Facebook | X | TikTok | WhatsApp | Referral | Walk-in
-Service: All | FBO | Maintenance | Charter | Catering | VIP | Leasing | General
-Status: All | New | Contacted | Follow Up | Negotiating | Converted | Closed | Spam
-Date Range: Today | This Week | This Month | Custom
-Search: searches name, company, email
+**"+ Log New Enquiry" button:**
+Opens a modal form for manually logging enquiries that came via
+social DMs, phone calls, or walk-ins. Fields:
+full_name, company, email, phone, source (dropdown), service_type,
+message (textarea), and optionally assign immediately.
 
-"+ Log New Enquiry" button: Opens a modal form for manually logging enquiries that came via social DMs, phone calls, or walk-ins. Fields: full_name, company, email, phone, source (dropdown), service_type, message (textarea), and optionally assign immediately.
+#### KANBAN VIEW (toggle from table)
 
-KANBAN VIEW (toggle from table)
+```
 ┌──────────┬────────────┬───────────┬──────────────┬───────────┐
 │ NEW      │ CONTACTED  │ FOLLOW UP │ NEGOTIATING  │ CONVERTED │
 │ [badge]  │ [badge]    │ [badge]   │ [badge]      │ [badge]   │
@@ -1915,13 +1946,17 @@ KANBAN VIEW (toggle from table)
 │ │Source│ │ │Source│   │ │Source│  │ │Source│     │ │Source│  │
 │ └──────┘ │ └──────┘   │ └──────┘  │ └──────┘     │ └──────┘  │
 └──────────┴────────────┴───────────┴──────────────┴───────────┘
+```
 
-Cards are draggable between columns — dragging updates lead_status.
+Cards are draggable between columns — dragging updates `lead_status`.
 
-18.6 Enquiry Detail — /admin/enquiries/[id]
+---
+
+### 18.6 Enquiry Detail — `/admin/enquiries/[id]`
 
 Clicking any enquiry row opens the full detail view.
 
+```
 ← Back to Enquiries
 
 ┌─────────────────────────────┬──────────────────────────┐
@@ -1946,10 +1981,16 @@ Jul 22, 10:30am — Enquiry received via Instagram
 Jul 22, 11:00am — Assigned to Sarah
 Jul 22, 2:00pm  — Status changed: New → Contacted
 Jul 23, 9:00am  — Note added: "Client wants Lagos–Abuja route"
-18.7 Pricing Manager — /admin/pricing
+```
 
-Marketing uses this to update prices when costs change. All 6 services shown as cards.
+---
 
+### 18.7 Pricing Manager — `/admin/pricing`
+
+Marketing uses this to update prices when costs change.
+All 6 services shown as cards.
+
+```
 Pricing Manager                              [Last updated: Jul 22, 2026]
 
 ┌──────────────────────┐  ┌──────────────────────┐  ┌──────────────────────┐
@@ -1975,9 +2016,11 @@ Pricing Manager                              [Last updated: Jul 22, 2026]
 │                      │  │                      │  │                      │
 │ [Edit Prices]        │  │ [Edit Prices]        │  │ [Edit Prices]        │
 └──────────────────────┘  └──────────────────────┘  └──────────────────────┘
+```
 
-Clicking "Edit Prices" → /admin/pricing/[service]:
+**Clicking "Edit Prices" → `/admin/pricing/[service]`:**
 
+```
 ← Back to Pricing
 
 FBO & Ground Support — Edit Prices
@@ -1991,16 +2034,24 @@ FBO & Ground Support — Edit Prices
 └─────────────────────────────────┴──────────┴──────────┴────────┴────────┘
 
 [+ Add Price Item]
+```
 
-Clicking Edit on a row opens an inline edit form. The Active toggle lets marketing hide a price without deleting it (e.g. a service is temporarily unavailable).
+Clicking Edit on a row opens an inline edit form.
+The Active toggle lets marketing hide a price without deleting it
+(e.g. a service is temporarily unavailable).
 
-Currency selector per item: NGN (₦) or USD ($) NGN is default. USD option for international clients.
+**Currency selector per item:** NGN (₦) or USD ($)
+NGN is default. USD option for international clients.
 
-18.8 Blog Manager — /admin/blog
+---
+
+### 18.8 Blog Manager — `/admin/blog`
 
 Replaces Sanity. Marketing team writes and publishes posts here.
 
-BLOG LIST
+#### BLOG LIST
+
+```
 Blog Posts                                          [+ New Post]
 
 [Filter: All | Published | Draft]   [Search posts...]
@@ -2012,7 +2063,11 @@ Blog Posts                                          [+ New Post]
 │ What is a Fixed Base Operator?   │ Education │ 🟢 Published│ [Edit] [Delete]  │
 │ Charter Routes for Q4 2026       │ Charter   │ 🟡 Draft    │ [Edit] [Delete]  │
 └──────────────────────────────────┴───────────┴─────────────┴──────────────────┘
-BLOG EDITOR — /admin/blog/new and /admin/blog/[slug]/edit
+```
+
+#### BLOG EDITOR — `/admin/blog/new` and `/admin/blog/[slug]/edit`
+
+```
 ← Back to Blog Posts
 
 ┌──────────────────────────────────────────────────────────┐
@@ -2038,14 +2093,24 @@ BLOG EDITOR — /admin/blog/new and /admin/blog/[slug]/edit
 ├──────────────────────────────────────────────────────────┤
 │                      [Save Draft]   [Publish Post]       │
 └──────────────────────────────────────────────────────────┘
+```
 
-Tiptap toolbar features: Bold, Italic, Underline, H1, H2, H3, Horizontal Rule, Link, Image Upload, Blockquote, Code Block.
+**Tiptap toolbar features:**
+Bold, Italic, Underline, H1, H2, H3, Horizontal Rule,
+Link, Image Upload, Blockquote, Code Block.
 
-Char counters: SEO Title shows X/60 chars — turns red above 60. Meta Description shows X/160 chars — turns red above 160.
+**Char counters:**
+SEO Title shows X/60 chars — turns red above 60.
+Meta Description shows X/160 chars — turns red above 160.
 
-Save Draft — saves without making it live on the public blog. Publish Post — makes it immediately visible on ean.aero/blog.
+**Save Draft** — saves without making it live on the public blog.
+**Publish Post** — makes it immediately visible on ean.aero/blog.
 
-18.9 Admin Components to Build
+---
+
+### 18.9 Admin Components to Build
+
+```
 src/components/admin/
   layout/
     AdminSidebar.tsx          ← nav items, active state
@@ -2078,16 +2143,331 @@ src/components/admin/
     BlogEditor.tsx            ← Tiptap wrapper + all fields
     SEOFieldsPanel.tsx        ← collapsible SEO section
     StatusToggle.tsx          ← draft / published toggle
-18.10 Admin Rules for Agents
-Admin pages live in src/app/admin/ — never inside (site)/
-Admin uses light-mode palette — never ean-navy or dark tokens
-Gold (ean-gold) is used ONLY for active sidebar nav item and CTAs
-Recharts is the charting library — no Chart.js, no D3 directly
-Tiptap is the blog editor — no Quill, no Draft.js, no contenteditable div
-Tables use shadcn/ui Table component as the base
-Modals use shadcn/ui Dialog component
-Dropdowns use shadcn/ui Select component
-Date pickers use shadcn/ui Calendar + Popover
-Do NOT build auth yet — auth setup comes when database is confirmed
-Do NOT wire up API calls yet — build UI shell first, data layer comes later
+```
+
+---
+
+### 18.10 Admin Rules for Agents
+
+- Admin pages live in `src/app/admin/` — never inside `(site)/`
+- Admin uses light-mode palette — never `ean-navy` or dark tokens
+- Gold (`ean-gold`) is used ONLY for active sidebar nav item and CTAs
+- Recharts is the charting library — no Chart.js, no D3 directly
+- Tiptap is the blog editor — no Quill, no Draft.js, no contenteditable div
+- Tables use shadcn/ui `Table` component as the base
+- Modals use shadcn/ui `Dialog` component
+- Dropdowns use shadcn/ui `Select` component
+- Date pickers use shadcn/ui `Calendar` + `Popover`
+- Do NOT build auth yet — auth setup comes when database is confirmed
+- Do NOT wire up API calls yet — build UI shell first, data layer comes later
+
+---
+
+## 19. Database Schema (Supabase)
+
+> This is the working schema while using Supabase as the interim
+> database. When the company's own database is ready, these same
+> SQL files become the migration scripts — nothing changes structurally.
+> See `.agents/skills/supabase.md` for all query patterns.
+
+---
+
+### 19.1 Shared Trigger — Run First
+
+```sql
+-- Run this BEFORE creating any tables
+create or replace function update_updated_at()
+returns trigger as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$ language plpgsql;
+```
+
+---
+
+### 19.2 Enquiries Table
+
+Stores every inquiry from the public contact form AND manually
+logged social DM enquiries. Every enquiry is also a lead.
+
+```sql
+create table enquiries (
+  id            uuid        primary key default gen_random_uuid(),
+
+  -- who they are
+  full_name     text        not null,
+  company       text,
+  email         text        not null,
+  phone         text,
+
+  -- where they came from
+  source        text        not null default 'website',
+  -- website | facebook | instagram | x | tiktok
+  -- whatsapp | referral | walk-in
+
+  -- what they want
+  service_type  text        not null,
+  -- fbo | maintenance | charter | catering | vip | leasing | general
+  message       text        not null,
+
+  -- lead pipeline
+  lead_status   text        not null default 'new',
+  -- new | contacted | follow_up | negotiating | converted | closed | spam
+  assigned_to   text,
+  notes         text,
+
+  -- timestamps
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+
+create trigger enquiries_updated_at
+  before update on enquiries
+  for each row execute function update_updated_at();
+
+alter table enquiries enable row level security;
+
+create policy "Public can submit enquiries"
+  on enquiries for insert with check (true);
+```
+
+**TypeScript types:**
+```ts
+export type EnquirySource =
+  'website' | 'facebook' | 'instagram' | 'x' |
+  'tiktok'  | 'whatsapp' | 'referral'  | 'walk-in'
+
+export type ServiceType =
+  'fbo' | 'maintenance' | 'charter' | 'catering' |
+  'vip' | 'leasing'     | 'general'
+
+export type LeadStatus =
+  'new' | 'contacted' | 'follow_up' | 'negotiating' |
+  'converted' | 'closed' | 'spam'
+
+export type Enquiry = {
+  id:           string
+  full_name:    string
+  company:      string | null
+  email:        string
+  phone:        string | null
+  source:       EnquirySource
+  service_type: ServiceType
+  message:      string
+  lead_status:  LeadStatus
+  assigned_to:  string | null
+  notes:        string | null
+  created_at:   string
+  updated_at:   string
+}
+
+export type NewEnquiry    = Omit<Enquiry, 'id' | 'created_at' | 'updated_at'>
+export type EnquiryUpdate = Partial<Pick<Enquiry,
+  'lead_status' | 'assigned_to' | 'notes'
+>>
+```
+
+---
+
+### 19.3 Pricing Table
+
+All publicly displayed prices for all 6 services.
+Marketing updates via admin dashboard. Frontend fetches dynamically.
+
+```sql
+create table pricing (
+  id            uuid        primary key default gen_random_uuid(),
+
+  service_slug  text        not null,
+  -- fbo | maintenance | charter | catering | vip | leasing
+
+  item_name     text        not null,
+  description   text,
+  price         numeric     not null,
+  currency      text        not null default 'NGN',
+  -- NGN | USD
+  unit          text        not null,
+  -- per visit | per hour | per flight | per person | per month | per year
+
+  is_active     boolean     not null default true,
+  updated_at    timestamptz not null default now()
+);
+
+create trigger pricing_updated_at
+  before update on pricing
+  for each row execute function update_updated_at();
+
+alter table pricing enable row level security;
+
+create policy "Public can read active pricing"
+  on pricing for select using (is_active = true);
+```
+
+**Seed data:**
+```sql
+insert into pricing (service_slug, item_name, price, currency, unit) values
+  ('fbo',         'Standard Ramp Handling',       150000,  'NGN', 'per visit'),
+  ('fbo',         'VIP Ramp Handling',             350000,  'NGN', 'per visit'),
+  ('fbo',         'Fueling Surcharge',              15000,  'NGN', 'per litre'),
+  ('maintenance', 'Line Maintenance',               80000,  'NGN', 'per hour'),
+  ('maintenance', 'A-Check',                       500000,  'NGN', 'per job'),
+  ('maintenance', 'AOG Recovery',                  750000,  'NGN', 'per job'),
+  ('charter',     'Lagos → Abuja (Light Jet)',     2500000, 'NGN', 'per flight'),
+  ('charter',     'Lagos → Accra (Mid Jet)',       4000000, 'NGN', 'per flight'),
+  ('charter',     'Helicopter City Hop',           1200000, 'NGN', 'per flight'),
+  ('catering',    'Standard Meal Package',           45000, 'NGN', 'per person'),
+  ('catering',    'Premium Meal Package',            85000, 'NGN', 'per person'),
+  ('catering',    'Crew Meal',                       25000, 'NGN', 'per person'),
+  ('vip',         'Single Visit',                    25000, 'NGN', 'per person'),
+  ('vip',         'Monthly Membership',             150000, 'NGN', 'per month'),
+  ('vip',         'Corporate Annual',              1200000, 'NGN', 'per year'),
+  ('leasing',     'Small Hangar Bay',               800000, 'NGN', 'per month'),
+  ('leasing',     'Large Hangar Bay',              1500000, 'NGN', 'per month'),
+  ('leasing',     'Executive Office Suite',         450000, 'NGN', 'per month');
+```
+
+**TypeScript types:**
+```ts
+export type PriceItem = {
+  id:           string
+  service_slug: ServiceType
+  item_name:    string
+  description:  string | null
+  price:        number
+  currency:     'NGN' | 'USD'
+  unit:         string
+  is_active:    boolean
+  updated_at:   string
+}
+
+export type NewPriceItem    = Omit<PriceItem, 'id' | 'updated_at'>
+export type PriceItemUpdate = Partial<Pick<PriceItem,
+  'item_name' | 'description' | 'price' | 'currency' | 'unit' | 'is_active'
+>>
+
+export type GroupedPricing  = Record<ServiceType, PriceItem[]>
+```
+
+---
+
+### 19.4 Blog Posts Table
+
+Replaces Sanity. Blog content written in the admin Tiptap editor.
+Only published posts are publicly visible.
+
+```sql
+create table blog_posts (
+  id               uuid        primary key default gen_random_uuid(),
+
+  title            text        not null,
+  slug             text        not null unique,
+  excerpt          text,
+  body             jsonb,                    -- Tiptap JSON output
+  cover_image_url  text,                    -- Supabase Storage URL
+  category         text,
+  -- Business Aviation | FBO Services | Industry News
+  -- Charter | Maintenance | General
+
+  status           text        not null default 'draft',
+  -- draft | published
+  published_at     timestamptz,             -- set when status → published
+
+  seo_title        text,                    -- 50-60 chars
+  seo_description  text,                    -- 140-160 chars
+  og_image_url     text,
+
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now()
+);
+
+create trigger blog_posts_updated_at
+  before update on blog_posts
+  for each row execute function update_updated_at();
+
+alter table blog_posts enable row level security;
+
+create policy "Public can read published posts"
+  on blog_posts for select using (status = 'published');
+```
+
+**TypeScript types:**
+```ts
+export type BlogCategory =
+  'Business Aviation' | 'FBO Services' | 'Industry News' |
+  'Charter' | 'Maintenance' | 'General'
+
+export type PostStatus = 'draft' | 'published'
+
+export type BlogPost = {
+  id:              string
+  title:           string
+  slug:            string
+  excerpt:         string | null
+  body:            Record<string, unknown> | null
+  cover_image_url: string | null
+  category:        BlogCategory | null
+  status:          PostStatus
+  published_at:    string | null
+  seo_title:       string | null
+  seo_description: string | null
+  og_image_url:    string | null
+  created_at:      string
+  updated_at:      string
+}
+
+export type NewBlogPost  = Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>
+export type BlogPostUpdate = Partial<Pick<BlogPost,
+  'title' | 'slug' | 'excerpt' | 'body' | 'cover_image_url' |
+  'category' | 'seo_title' | 'seo_description' | 'og_image_url'
+>>
+// status + published_at are ONLY updated via publish/unpublish endpoints
+```
+
+---
+
+### 19.5 Schema Rules for Agents
+
+- NEVER change a column name without a `/supabase/migrations/` file
+- NEVER delete a column — set `is_active = false` or add `deleted_at`
+- ALWAYS attach the `update_updated_at` trigger to tables with `updated_at`
+- ALWAYS enable RLS on every new table
+- NEVER use `SELECT *` in production queries — select only needed columns
+- ALWAYS paginate list queries — never return unbounded result sets
+- NEVER store passwords, payment info, or government IDs
+- ALWAYS use `uuid` for primary keys — never `serial` or integer IDs
+- `status` and `published_at` on blog_posts ONLY update via publish/unpublish endpoints
+
+---
+
+### 19.6 Migration Path to Company Database
+
+```
+1. Export from Supabase:
+   supabase db dump -f ean_backup.sql
+
+2. Import to company Postgres:
+   psql -d ean_production -f ean_backup.sql
+
+3. Swap env vars — three lines in .env
+
+4. Replace @supabase/supabase-js with pg or Prisma in lib/supabase/*
+   API routes, components, and types stay exactly the same.
+```
+
+---
+
+## 20. Rebrand Note
+
+The current `ean-*` color tokens in Section 5.1 match the live ean.aero site.
+
+When rebrand colors are confirmed:
+1. Update CSS custom properties in `globals.css` — values only, keep variable names
+2. Update the Tailwind token values in `tailwind.config.ts`
+3. Update this file's Section 5.1 with the new hex values
+4. No component code changes should be needed — tokens propagate automatically
+
+---
+
 *Last updated: July 2026 — Eddie / EAN Aviation dev*

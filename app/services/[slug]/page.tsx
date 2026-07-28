@@ -94,8 +94,8 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               quality={95}
             />
             {/* Dark Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#140307] via-[#1E050B]/80 to-[#1E050B]/50" />
-            <div className="absolute inset-0 bg-radial-at-c from-transparent via-[#140307]/40 to-[#140307]/90" />
+            <div className="absolute inset-0 bg-linear-to-t from-ean-burgundy-dark via-ean-burgundy-deep/80 to-ean-burgundy-deep/50" />
+            <div className="absolute inset-0 bg-radial-at-c from-transparent via-ean-burgundy-dark/40 to-ean-burgundy-dark/90" />
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 w-full">
@@ -149,7 +149,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
         {/* KEY HIGHLIGHTS BAR */}
         {service.stats && service.stats.length > 0 && (
-          <section className="bg-gradient-to-r from-[#2D0710] via-[#1E050B] to-[#2D0710] text-white border-y border-ean-gold/30 py-6 relative z-20">
+          <section className="bg-linear-to-r from-ean-burgundy-mid via-ean-burgundy-deep to-ean-burgundy-mid text-white border-y border-ean-gold/30 py-6 relative z-20">
             <div className="max-w-7xl mx-auto px-6 md:px-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-center divide-y sm:divide-y-0 sm:divide-x divide-white/10">
                 {service.stats.map((stat, sIdx) => (
@@ -203,7 +203,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                   </div>
 
                   {/* 24/7 Operations Desk Callout */}
-                  <div className="p-6 bg-gradient-to-br from-[#2E0710] to-[#170307] text-white rounded-xs border border-ean-gold/30 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg">
+                  <div className="p-6 bg-linear-to-br from-ean-burgundy-mid to-ean-burgundy-dark text-white rounded-xs border border-ean-gold/30 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg">
                     <div className="space-y-1 text-center sm:text-left">
                       <div className="font-display text-lg font-light text-white">
                         Require Immediate Flight Support?

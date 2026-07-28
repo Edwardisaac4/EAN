@@ -1,116 +1,106 @@
-import { NextResponse } from 'next/server';
-import { INITIAL_LEADS, Lead } from '@/lib/admin-leads-data';
+// =============================================================================
+// /api/leads/[id] — Single lead detail, updates, and notes
+// Connected to Supabase via leads-service
+// =============================================================================
 
-let inMemoryLeads: Lead[] = [...INITIAL_LEADS];
+import { NextResponse } from 'next/server'
+import { getLeadById, updateLead, addLeadNote } from '@/lib/services/leads-service'
+import { dbError, notFound, badRequest } from '@/lib/supabase/helpers'
+
+// ---------------------------------------------------------------------------
+// GET /api/leads/[id] — fetch single lead with all related data
+// ---------------------------------------------------------------------------
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
-  const lead = inMemoryLeads.find((l) => l.id === id);
+  try {
+    const { id } = await params
+    const { lead, error } = await getLeadById(id)
 
-  if (!lead) {
-    return NextResponse.json(
-      { success: false, error: 'Lead not found' },
-      { status: 404 }
-    );
+    if (error || !lead) {
+      return notFound('Lead not found')
+    }
+
+    return NextResponse.json({ success: true, lead })
+  } catch (err) {
+    console.error('GET /api/leads/[id] error:', err)
+    return dbError('Internal server error fetching lead')
   }
-
-  return NextResponse.json({ success: true, lead });
 }
+
+// ---------------------------------------------------------------------------
+// PATCH /api/leads/[id] — update lead status, priority, assignment, add note
+// ---------------------------------------------------------------------------
 
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
-    const body = await request.json();
-    const { status, priority, assignedTo, newNote, author, clientLeads } = body;
+    const { id } = await params
+    let body: Record<string, unknown>
 
-    if (Array.isArray(clientLeads) && clientLeads.length > 0) {
-      inMemoryLeads = clientLeads;
+    try {
+      body = await request.json()
+    } catch {
+      return badRequest('Invalid JSON request body')
     }
 
-    const leadIndex = inMemoryLeads.findIndex((l) => l.id === id);
-
-    if (leadIndex === -1) {
-      return NextResponse.json(
-        { success: false, error: 'Lead not found' },
-        { status: 404 }
-      );
+    const { status, priority, assignedTo, newNote, author } = body as {
+      status?: string
+      priority?: string
+      assignedTo?: string
+      newNote?: string
+      author?: string
     }
 
-    const targetLead = inMemoryLeads[leadIndex];
-    const now = new Date().toISOString();
-    const updatedActivities = [...targetLead.activities];
+    // Build update payload
+    const updates: Record<string, unknown> & { author?: string } = { author }
 
-    // Status change activity log
-    if (status && status !== targetLead.status) {
-      updatedActivities.unshift({
-        id: `act-${Date.now()}`,
-        timestamp: now,
-        author: author || 'Lead Admin',
-        action: `Status updated from ${targetLead.status} to ${status}`,
-      });
+    if (status) updates.status = status
+    if (priority) updates.priority = priority
+    if (assignedTo !== undefined) updates.assigned_to = assignedTo
+
+    // Apply updates if any field changes exist
+    const hasFieldUpdates = status || priority || assignedTo !== undefined
+    let updatedLead = null
+
+    if (hasFieldUpdates) {
+      const { lead: updated, error } = await updateLead(id, updates)
+      if (error) {
+        return dbError('Failed to update lead')
+      }
+      updatedLead = updated
     }
 
-    // Priority change activity log
-    if (priority && priority !== targetLead.priority) {
-      updatedActivities.unshift({
-        id: `act-${Date.now()}-p`,
-        timestamp: now,
-        author: author || 'Lead Admin',
-        action: `Priority updated from ${targetLead.priority} to ${priority}`,
-      });
-    }
-
-    // Staff assignment activity log
-    if (assignedTo && assignedTo !== targetLead.assignedTo) {
-      updatedActivities.unshift({
-        id: `act-${Date.now()}-a`,
-        timestamp: now,
-        author: author || 'Lead Admin',
-        action: `Assigned lead to ${assignedTo}`,
-      });
-    }
-
-    // Add note activity log
-    const updatedNotes = [...targetLead.notes];
+    // Add note if provided
     if (newNote && newNote.trim()) {
-      updatedNotes.unshift(newNote);
-      updatedActivities.unshift({
-        id: `act-${Date.now()}-n`,
-        timestamp: now,
-        author: author || 'Lead Admin',
-        action: 'Added internal note',
-        note: newNote,
-      });
+      const { error: noteError } = await addLeadNote(
+        id,
+        newNote.trim(),
+        (author as string) || 'Lead Admin'
+      )
+      if (noteError) {
+        console.error('Failed to add note:', noteError)
+      }
     }
 
-    const updatedLead: Lead = {
-      ...targetLead,
-      status: status || targetLead.status,
-      priority: priority || targetLead.priority,
-      assignedTo: assignedTo !== undefined ? assignedTo : targetLead.assignedTo,
-      notes: updatedNotes,
-      activities: updatedActivities,
-      updatedAt: now,
-    };
+    // Fetch the full updated lead with all related data
+    const { lead: fullLead, error: fetchError } = await getLeadById(id)
 
-    inMemoryLeads[leadIndex] = updatedLead;
+    if (fetchError || !fullLead) {
+      return notFound('Lead not found after update')
+    }
 
     return NextResponse.json({
       success: true,
       message: 'Lead updated successfully',
-      lead: updatedLead,
-    });
-  } catch (error) {
-    console.error('Error updating lead in API route:', error);
-    return NextResponse.json(
-      { success: false, error: 'Internal server error updating lead' },
-      { status: 500 }
-    );
+      lead: fullLead,
+    })
+  } catch (err) {
+    console.error('PATCH /api/leads/[id] error:', err)
+    return dbError('Internal server error updating lead')
   }
 }

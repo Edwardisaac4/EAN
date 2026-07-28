@@ -334,7 +334,7 @@ export function LeadDetailDrawer({
               <div className="space-y-3 pl-2 border-l-2 border-ean-gold/30">
                 {lead.activities.map((act) => (
                   <div key={act.id} className="relative pl-3 text-xs space-y-0.5">
-                    <div className="w-2 h-2 rounded-full bg-ean-gold absolute -left-[17px] top-1" />
+                    <div className="w-2 h-2 rounded-full bg-ean-gold absolute -left-4.25 top-1" />
                     <div className="flex items-center justify-between text-ean-muted-light text-[10px]">
                       <span className="font-semibold text-ean-gold-light">{act.author}</span>
                       <span className="font-mono">

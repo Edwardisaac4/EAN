@@ -49,10 +49,10 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-4xl bg-gradient-to-b from-[#FFFFFF] via-[#FDFBFB] to-[#F7EEF0] border border-ean-gold/40 rounded-2xl md:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.5)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col"
+            className="relative w-full max-w-4xl bg-linear-to-b from-white via-ean-surface to-ean-surface border border-ean-gold/40 rounded-2xl md:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.5)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col"
           >
             {/* Executive Close Button Header */}
-            <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4.5 bg-gradient-to-r from-[#4A0D1A] via-[#641224] to-[#3B0913] border-b border-ean-gold/30 shadow-md">
+            <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4.5 bg-linear-to-r from-ean-burgundy via-ean-burgundy-accent to-ean-burgundy-rich border-b border-ean-gold/30 shadow-md">
               <div className="flex items-center gap-2 text-xs uppercase font-mono tracking-widest text-ean-gold">
                 <ShieldCheck className="w-4 h-4 text-ean-gold" />
                 <span>Executive Bio Profile</span>
@@ -80,14 +80,14 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                       className="object-cover object-top"
                       quality={95}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-60" />
                   </div>
 
                   <div className="p-4 bg-white border border-ean-gold/25 rounded-xl shadow-xs space-y-1">
                     <div className="text-[10px] uppercase tracking-widest text-ean-gold font-bold">
                       Department
                     </div>
-                    <div className="text-sm font-bold text-[#2A070E] font-ui">
+                    <div className="text-sm font-bold text-ean-text-dark font-ui">
                       {member.departmentLabel}
                     </div>
                   </div>
@@ -99,17 +99,17 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                     <span className="font-ui text-xs font-bold uppercase tracking-[0.25em] text-ean-gold">
                       {member.departmentLabel}
                     </span>
-                    <h2 className="font-display text-3xl sm:text-4xl font-light text-[#2A070E] mt-1">
+                    <h2 className="font-display text-3xl sm:text-4xl font-light text-ean-text-dark mt-1">
                       {member.name}
                     </h2>
-                    <p className="font-ui text-base text-[#4A0D1A] font-semibold mt-1">
+                    <p className="font-ui text-base text-ean-navy font-semibold mt-1">
                       {member.role}
                     </p>
                   </div>
 
                   {/* Signature Quote */}
                   {member.quote && (
-                    <div className="p-5 bg-gradient-to-r from-ean-gold/15 via-white to-white border-l-4 border-ean-gold rounded-r-xl shadow-xs font-display italic text-sm sm:text-base text-[#2A070E] relative overflow-hidden">
+                    <div className="p-5 bg-linear-to-r from-ean-gold/15 via-white to-white border-l-4 border-ean-gold rounded-r-xl shadow-xs font-display italic text-sm sm:text-base text-ean-text-dark relative overflow-hidden">
                       <Quote className="w-6 h-6 text-ean-gold/30 absolute top-3 right-3" />
                       &ldquo;{member.quote}&rdquo;
                     </div>
@@ -143,8 +143,8 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                   {member.highlights && member.highlights.length > 0 && (
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
                       {member.highlights.map((h, hIdx) => (
-                        <div key={hIdx} className="bg-gradient-to-br from-white to-[#F9EEF1] p-4 rounded-xl border border-ean-gold/30 shadow-xs">
-                          <div className="font-display text-2xl font-bold text-[#641224]">{h.value}</div>
+                        <div key={hIdx} className="bg-linear-to-br from-white to-ean-surface p-4 rounded-xl border border-ean-gold/30 shadow-xs">
+                          <div className="font-display text-2xl font-bold text-ean-burgundy-accent">{h.value}</div>
                           <div className="font-ui text-[10px] uppercase tracking-wider text-slate-600 font-semibold">{h.label}</div>
                         </div>
                       ))}
@@ -168,7 +168,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                 </button>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-ean-gold via-ean-gold-light to-ean-gold text-ean-navy text-xs font-bold uppercase tracking-wider rounded-full hover:shadow-lg transition-all"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-linear-to-r from-ean-gold via-ean-gold-light to-ean-gold text-ean-navy text-xs font-bold uppercase tracking-wider rounded-full hover:shadow-lg transition-all"
                 >
                   <Mail className="w-3.5 h-3.5" />
                   Contact Leadership

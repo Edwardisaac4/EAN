@@ -294,7 +294,7 @@ export default function HistoryPage() {
                         className="object-cover object-center transition-transform duration-750 group-hover:scale-105"
                         quality={95}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent sm:from-white/70" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent sm:from-white/70" />
                       <div className="absolute bottom-2 right-2 px-2 py-1 bg-ean-navy/90 backdrop-blur-xs text-[9px] sm:text-[10px] font-mono text-ean-gold uppercase tracking-wider rounded-xs z-10">
                         Click to Read Story
                       </div>

@@ -71,7 +71,7 @@ export default function NewsSection() {
                     } transition-colors duration-500 cursor-pointer shadow-xs`}
                   >
                     {/* Image wrapper */}
-                    <div className={`relative w-full ${isWide ? 'h-52 lg:h-auto lg:w-1/2 min-h-[240px]' : 'h-48 sm:h-52'} overflow-hidden bg-black/10 shrink-0`}>
+                    <div className={`relative w-full ${isWide ? 'h-52 lg:h-auto lg:w-1/2 min-h-60' : 'h-48 sm:h-52'} overflow-hidden bg-black/10 shrink-0`}>
                       <Image
                         src={post.image}
                         alt={post.title}

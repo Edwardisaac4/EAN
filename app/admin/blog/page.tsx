@@ -97,7 +97,7 @@ export default function BlogCMSPage() {
             onClick={() => alert("Article Editor dialog opened. Here you can write markdown content, set cover image, and publish.")}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-ean-gold hover:bg-ean-gold-light text-ean-black font-semibold text-xs transition-all shadow-[0_0_15px_rgba(196,149,42,0.2)]"
           >
-            <Plus className="w-4 h-4 stroke-[3]" />
+            <Plus className="w-4 h-4 stroke-3" />
             <span>Create New Article</span>
           </button>
         </div>
@@ -129,7 +129,7 @@ export default function BlogCMSPage() {
             </thead>
             <tbody className="divide-y divide-ean-border-dark/60 text-ean-white font-ui">
               {filtered.map((art) => (
-                <tr key={art.id} className="hover:bg-white/[0.03] transition-colors">
+                <tr key={art.id} className="hover:bg-white/3 transition-colors">
                   <td className="py-4 px-4 font-semibold text-ean-white">
                     <Link href={`/blog/${art.slug}`} target="_blank" className="hover:text-ean-gold transition-colors flex items-center gap-1.5">
                       {art.title}

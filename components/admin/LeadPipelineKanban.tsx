@@ -55,7 +55,7 @@ export function LeadPipelineKanban({
         return (
           <div
             key={col.status}
-            className="bg-ean-black-accent/60 border border-ean-border-dark rounded-xl p-3.5 flex flex-col min-w-[260px] max-h-[75vh]"
+            className="bg-ean-black-accent/60 border border-ean-border-dark rounded-xl p-3.5 flex flex-col min-w-65 max-h-[75vh]"
           >
             {/* Column Header */}
             <div className={`p-2.5 rounded-lg border ${col.color} mb-3 flex items-center justify-between`}>

@@ -151,7 +151,7 @@ export function AdminHeader({ onSearchChange, onOpenCreateModal, unreadCount = 2
             onClick={onOpenCreateModal}
             className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg bg-ean-gold hover:bg-ean-gold-light text-ean-black font-semibold text-xs transition-all shadow-[0_0_15px_rgba(196,149,42,0.3)] hover:scale-[1.02] active:scale-[0.98]"
           >
-            <Plus className="w-3.5 h-3.5 stroke-[3]" />
+            <Plus className="w-3.5 h-3.5 stroke-3" />
             <span className="hidden sm:inline">Log Lead</span>
           </button>
         )}

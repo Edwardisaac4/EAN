@@ -140,7 +140,7 @@ export default function HeroSection() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-screen min-h-[620px] md:min-h-[720px] lg:min-h-[800px] overflow-hidden bg-ean-navy flex items-center select-none"
+      className="relative w-full h-screen min-h-155 md:min-h-180 lg:min-h-200 overflow-hidden bg-ean-navy flex items-center select-none"
     >
       {/* Background Slides Container */}
       {HERO_SLIDES.map((s, idx) => (

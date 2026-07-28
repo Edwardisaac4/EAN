@@ -15,7 +15,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
 
   return (
     <>
-      <section className="relative bg-gradient-to-b from-[#070103] via-[#2A050D] to-[#0D0204] py-16 sm:py-24 overflow-hidden border-b border-white/10">
+      <section className="relative bg-linear-to-b from-ean-burgundy-night via-ean-burgundy-dusk to-ean-black py-16 sm:py-24 overflow-hidden border-b border-white/10">
         {/* Ambient Backlight Blur */}
         <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-128 h-128 rounded-full bg-ean-gold/10 blur-[140px] pointer-events-none" />
         <div className="absolute bottom-0 right-10 w-96 h-96 rounded-full bg-blue-950/40 blur-[120px] pointer-events-none" />
@@ -81,7 +81,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
 
               {/* CEO Signature Quote Box */}
               {ceoMember.quote && (
-                <div className="relative p-6 sm:p-8 bg-gradient-to-r from-white/15 via-white/[0.05] to-transparent border-l-4 border-ean-gold rounded-r-2xl backdrop-blur-md space-y-3 shadow-xl">
+                <div className="relative p-6 sm:p-8 bg-linear-to-r from-white/15 via-white/5 to-transparent border-l-4 border-ean-gold rounded-r-2xl backdrop-blur-md space-y-3 shadow-xl">
                   <Quote className="w-8 h-8 text-ean-gold/40 absolute top-4 right-4" />
                   <p className="font-display italic text-lg sm:text-xl text-white leading-relaxed relative z-10">
                     &ldquo;{ceoMember.quote}&rdquo;

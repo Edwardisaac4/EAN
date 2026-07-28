@@ -5,6 +5,7 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { sendGAEvent } from '@next/third-parties/google';
 import { 
   MapPin, 
   Phone, 
@@ -24,6 +25,7 @@ import GoldButton from '@/components/shared/GoldButton';
 import { FAQ_ITEMS, LAGOS_HQ } from '@/lib/constants';
 import { getTrackingContext } from '@/lib/lead-tracking';
 import { addLeadToStore, getAllLeadsFromStore } from '@/lib/leads-store';
+import { ServiceCategory } from '@/lib/admin-leads-data';
 
 // Helper to map service slug to form select option value
 const getServiceFromSlug = (slug: string): string => {
@@ -164,6 +166,12 @@ export default function ContactPage() {
 
       if (resData.success && resData.lead) {
         addLeadToStore(resData.lead);
+        // Track Google Analytics conversion event ONLY when confirmed success
+        sendGAEvent('event', 'generate_lead', {
+          category: 'Inquiry',
+          service: formData.service,
+          value: 1,
+        });
       } else {
         // Fallback local lead creation if API route offline
         const fallbackLead = {
@@ -172,7 +180,7 @@ export default function ContactPage() {
           email: formData.email,
           phone: formData.phone,
           company: formData.company,
-          service: formData.service as any,
+          service: formData.service as ServiceCategory,
           message: formData.message,
           status: 'new' as const,
           priority: 'high' as const,
@@ -207,7 +215,7 @@ export default function ContactPage() {
     } catch (err) {
       console.error('Error submitting lead form:', err);
       setIsSubmitting(false);
-      setSubmitSuccess(true);
+      setErrors({ form: 'Network error submitting form. Please try again or call our 24/7 desk.' });
     }
   };
 

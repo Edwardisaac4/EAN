@@ -117,7 +117,7 @@ export function LeadDataTable({ leads, onSelectLead, onQuickStatusChange }: Lead
               <tr
                 key={lead.id}
                 onClick={() => onSelectLead(lead)}
-                className="hover:bg-white/[0.03] transition-colors cursor-pointer group"
+                className="hover:bg-white/3 transition-colors cursor-pointer group"
               >
                 {/* ID & Prospect */}
                 <td className="py-4 px-4">
