@@ -38,7 +38,7 @@ create index idx on orders (status, created_at);
 
 -- Works for: WHERE status = 'pending'
 -- Works for: WHERE status = 'pending' AND created_at > '2024-01-01'
--- Does NOT work for: WHERE created_at > '2024-01-01' (leftmost prefix rule)
+-- Queries omitting leading index columns (e.g. WHERE created_at > '2024-01-01') may be inefficient or bypassed depending on PostgreSQL version and statistics (note: PostgreSQL 18+ supports B-tree skip scans). Always verify with EXPLAIN (ANALYZE, BUFFERS).
 ```
 
 Reference: [Multicolumn Indexes](https://www.postgresql.org/docs/current/indexes-multicolumn.html)

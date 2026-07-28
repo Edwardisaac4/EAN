@@ -6,11 +6,10 @@ Read this file fully before writing any Supabase code.
 Every pattern here is chosen specifically for Next.js 16 App Router.
 Do not use deprecated packages or old patterns.
 
-> ⚠️ NEXT.JS 16 BREAKING CHANGES THAT AFFECT SUPABASE:
-> 1. cookies() is now async — must await it in server client
-> 2. Cookie methods changed from get/set/remove → getAll/setAll
-> 3. params in dynamic routes are Promises — must await params before use
-> 4. createClient() in server.ts must be async function
+> ⚠️ NEXT.JS 16 & @SUPABASE/SSR ADAPTER DETAILS:
+> 1. cookies() is now async — must await it in server client (Next.js cookieStore retains get, getAll, set, delete; getAll/setAll are @supabase/ssr adapter options)
+> 2. params in dynamic routes are Promises — must await params before use
+> 3. createClient() in server.ts must be async function
 
 ---
 
@@ -52,12 +51,16 @@ export async function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        // ⚠️ Next.js 16 — getAll/setAll replace get/set/remove
         getAll: () => cookieStore.getAll(),
         setAll: (cookiesToSet) => {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            cookieStore.set(name, value, options)
-          })
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options)
+            })
+          } catch {
+            // Ignored in Server Components where cookie mutation is prohibited.
+            // Session refresh is handled via middleware/proxy.
+          }
         },
       },
     }
@@ -640,7 +643,7 @@ const { data: slugs } = await supabase
   .select('slug')
   .eq('status', 'published')
 
-// Single post by slug
+// Single post by slug (Dynamic server-rendered route when accessing cookieStore)
 // ⚠️ Next.js 16 — params is a Promise, must await before destructuring
 // src/app/(site)/blog/[slug]/page.tsx
 interface Props { params: Promise<{ slug: string }> }

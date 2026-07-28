@@ -54,6 +54,9 @@ where c.contype = 'f'
     select 1 from pg_index i
     where i.indrelid = c.conrelid
       and i.indkey[0 : cardinality(c.conkey) - 1] = c.conkey
+      and i.indpred is null
+      and i.indisvalid
+      and i.indisready
   );
 ```
 

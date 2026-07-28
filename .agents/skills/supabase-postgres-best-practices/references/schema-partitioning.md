@@ -39,14 +39,15 @@ create table events_2024_01 partition of events
 create table events_2024_02 partition of events
   for values from ('2024-02-01') to ('2024-03-01');
 
--- Catch-all default partition for out-of-range dates (prevents insert errors)
+-- Catch-all default partition for out-of-range dates (prevents insert errors).
+-- Note: Rows in default partition overlapping future ranges must be removed/relocated before attaching new partitions.
 create table events_default partition of events default;
 
 -- Query filtering created_at between '2024-01-15' and '2024-02-15' scans only events_2024_01 and events_2024_02
 select * from events where created_at >= '2024-01-15' and created_at < '2024-02-15';
 
--- Drop old partition instantly
-drop table events_2024_01;  -- Instant vs DELETE taking hours
+-- Fast data removal (drops table file, but acquires an ACCESS EXCLUSIVE lock on the parent table):
+drop table events_2024_01;
 ```
 
 When to partition:

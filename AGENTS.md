@@ -643,24 +643,19 @@ export const ALL_SLUGS_QUERY = `
 ```tsx
 // src/app/(site)/blog/[slug]/page.tsx
 import type { Metadata }    from 'next'
-import { createClient }     from '@/lib/supabase/server'
+import { sanityClient }     from '@/lib/sanity/client'
 import { PAGE_SEO, SEO_BASE, getHreflang } from '@/lib/seo'
 import {
   POST_BY_SLUG_QUERY,
   ALL_SLUGS_QUERY,
 } from '@/lib/sanity/queries'
-import type { BlogPost }    from '@/types/database'
 
-// ⚠️ Next.js 16 — params is a Promise, type it accordingly
+// ⚠️ Next.js 16 — params is a Promise matching dynamic route segments
 interface Props { params: Promise<{ slug: string }> }
 
-// 1. Pre-render every post at build time
+// 1. Pre-render every post at build time (Cookie-free static fetch)
 export async function generateStaticParams() {
-  const supabase = await createClient()
-  const { data: slugs } = await supabase
-    .from('blog_posts')
-    .select('slug')
-    .eq('status', 'published')
+  const slugs: Array<{ slug: string }> = await sanityClient.fetch(ALL_SLUGS_QUERY)
   return (slugs ?? []).map(({ slug }) => ({ slug }))
 }
 
@@ -1680,7 +1675,7 @@ const BlogCard = (props: any) => { ... }
 - Add `SectionReveal` around each homepage section for scroll reveals
 - Server Components are the default — only add `'use client'` when genuinely needed
 - Always `await createClient()` from `@/lib/supabase/server` — it is async in Next.js 16
-- Always type dynamic route `params` as `Promise<{ slug: string }>` — Next.js 16
+- Always type dynamic route `params` as a `Promise` matching the route's dynamic segments (e.g. `Promise<{ slug: string }>`)
 - Always `await params` before destructuring in both page components and `generateMetadata`
 
 ---

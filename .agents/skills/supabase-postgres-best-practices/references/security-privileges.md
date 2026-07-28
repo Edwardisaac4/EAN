@@ -50,11 +50,12 @@ Revoke public defaults on current and future objects:
 revoke all on schema public from public;
 revoke all on all tables in schema public from public;
 revoke all on all sequences in schema public from public;
+revoke all on all functions in schema public from public;
 
--- Revoke default public access on future tables, sequences, and functions created in schema public
-alter default privileges in schema public revoke all on tables from public;
-alter default privileges in schema public revoke all on sequences from public;
-alter default privileges in schema public revoke all on functions from public;
+-- Revoke default public access on future tables, sequences, and functions created by object-owning role
+alter default privileges for role postgres in schema public revoke all on tables from public;
+alter default privileges for role postgres in schema public revoke all on sequences from public;
+alter default privileges for role postgres in schema public revoke all on functions from public;
 ```
 
 Reference: [Roles and Privileges](https://supabase.com/blog/postgres-roles-and-privileges)

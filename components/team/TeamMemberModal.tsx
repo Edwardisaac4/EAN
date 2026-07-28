@@ -49,10 +49,10 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-4xl bg-linear-to-b from-[#FFFFFF] via-[#FDFBFB] to-[#F7EEF0] border border-ean-gold/40 rounded-2xl md:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.5)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col"
+            className="relative w-full max-w-4xl bg-linear-to-b from-white via-ean-surface to-ean-surface border border-ean-gold/40 rounded-2xl md:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.5)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col"
           >
             {/* Executive Close Button Header */}
-            <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4.5 bg-linear-to-r from-[#4A0D1A] via-[#641224] to-[#3B0913] border-b border-ean-gold/30 shadow-md">
+            <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4.5 bg-linear-to-r from-ean-burgundy via-ean-burgundy-accent to-ean-burgundy-rich border-b border-ean-gold/30 shadow-md">
               <div className="flex items-center gap-2 text-xs uppercase font-mono tracking-widest text-ean-gold">
                 <ShieldCheck className="w-4 h-4 text-ean-gold" />
                 <span>Executive Bio Profile</span>
@@ -143,8 +143,8 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                   {member.highlights && member.highlights.length > 0 && (
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
                       {member.highlights.map((h, hIdx) => (
-                        <div key={hIdx} className="bg-linear-to-br from-white to-[#F9EEF1] p-4 rounded-xl border border-ean-gold/30 shadow-xs">
-                          <div className="font-display text-2xl font-bold text-[#641224]">{h.value}</div>
+                        <div key={hIdx} className="bg-linear-to-br from-white to-ean-surface p-4 rounded-xl border border-ean-gold/30 shadow-xs">
+                          <div className="font-display text-2xl font-bold text-ean-burgundy-accent">{h.value}</div>
                           <div className="font-ui text-[10px] uppercase tracking-wider text-slate-600 font-semibold">{h.label}</div>
                         </div>
                       ))}

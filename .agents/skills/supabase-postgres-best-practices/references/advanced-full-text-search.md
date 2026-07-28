@@ -7,7 +7,7 @@ tags: full-text-search, tsvector, gin, search
 
 ## Use tsvector for Full-Text Search
 
-Leading-wildcard patterns (like `%postgresql%`) generally cannot use ordinary B-tree indexes, though `pg_trgm` GIN/GIST indexes can accelerate `LIKE`/`ILIKE`. For natural language search with stemming, stop words, and relevance ranking, full-text search with `tsvector` is orders of magnitude faster.
+Leading-wildcard patterns (like `%postgresql%`) generally cannot use ordinary B-tree indexes, though `pg_trgm` GIN/GIST indexes can accelerate `LIKE`/`ILIKE`. For natural language search with stemming, stop words, and relevance ranking, full-text search with `tsvector` is significantly faster depending on dataset size and query complexity.
 
 **Incorrect (unindexed or basic LIKE pattern matching):**
 

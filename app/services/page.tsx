@@ -106,7 +106,7 @@ export default function ServicesPage() {
         {/* SECTION 1: Cinematic Header */}
         <section
           ref={heroRef}
-          className="relative pt-32 pb-20 bg-linear-to-b from-[#3B0913] via-[#24060E] to-[#1A0409] border-b border-white/10 overflow-hidden text-white"
+          className="relative pt-32 pb-20 bg-linear-to-b from-ean-burgundy-rich via-ean-burgundy-mid to-ean-burgundy-dark border-b border-white/10 overflow-hidden text-white"
         >
           {/* Ambient Glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-175 h-175 rounded-full bg-ean-gold/5 blur-[130px] pointer-events-none" />
@@ -163,7 +163,7 @@ export default function ServicesPage() {
                       <motion.div
                         whileHover={{ y: -6 }}
                         transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className={`relative bg-linear-to-b from-[#2D0710] via-[#1E050B] to-[#140307] border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col ${
+                        className={`relative bg-linear-to-b from-ean-burgundy-mid via-ean-burgundy-deep to-ean-burgundy-dark border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col ${
                           isImageRight ? 'lg:flex-row-reverse' : 'lg:flex-row'
                         } h-full group transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden`}
                       >
@@ -180,8 +180,8 @@ export default function ServicesPage() {
                           <div
                             className={`absolute inset-0 bg-linear-to-t ${
                               isImageRight
-                                ? 'lg:bg-linear-to-l from-[#1E050B]/85 via-[#1E050B]/30 to-transparent'
-                                : 'lg:bg-linear-to-r from-[#1E050B]/85 via-[#1E050B]/30 to-transparent'
+                                ? 'lg:bg-linear-to-l from-ean-burgundy-deep/85 via-ean-burgundy-deep/30 to-transparent'
+                                : 'lg:bg-linear-to-r from-ean-burgundy-deep/85 via-ean-burgundy-deep/30 to-transparent'
                             }`}
                           />
                         </div>
@@ -190,10 +190,10 @@ export default function ServicesPage() {
                         <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between space-y-6 lg:w-1/2 relative z-10">
                           {/* Header row: Icon & Number Badge */}
                           <div className="flex items-center justify-between">
-                            <div className="p-3 bg-[#22060D]/90 border border-white/20 text-ean-gold rounded-xs shadow-md transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold group-hover:bg-ean-gold/10">
+                            <div className="p-3 bg-ean-burgundy-dark/90 border border-white/20 text-ean-gold rounded-xs shadow-md transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold group-hover:bg-ean-gold/10">
                               <Icon className="w-5 h-5" />
                             </div>
-                            <span className="font-mono text-xs font-bold tracking-widest text-ean-gold bg-[#22060D]/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
+                            <span className="font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-burgundy-dark/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
                               0{idx + 1}
                             </span>
                           </div>
@@ -247,7 +247,7 @@ export default function ServicesPage() {
                       <motion.div
                         whileHover={{ y: -6 }}
                         transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className="relative bg-linear-to-b from-[#2D0710] via-[#1E050B] to-[#140307] border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col justify-between h-full group transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden min-h-125 lg:min-h-full"
+                        className="relative bg-linear-to-b from-ean-burgundy-mid via-ean-burgundy-deep to-ean-burgundy-dark border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col justify-between h-full group transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden min-h-125 lg:min-h-full"
                       >
                         {/* Background Image */}
                         <div className="absolute inset-0 w-full h-full overflow-hidden">
@@ -259,16 +259,16 @@ export default function ServicesPage() {
                             className="object-cover transition-transform duration-750 group-hover:scale-105"
                             quality={90}
                           />
-                          <div className="absolute inset-0 bg-linear-to-b from-[#1E050B]/75 via-[#1E050B]/90 to-[#140307]" />
+                          <div className="absolute inset-0 bg-linear-to-b from-ean-burgundy-deep/75 via-ean-burgundy-deep/90 to-ean-burgundy-dark" />
                         </div>
 
                         {/* Card Content */}
                         <div className="relative z-10 p-6 sm:p-8 flex-1 flex flex-col justify-between h-full space-y-8">
                           <div className="flex justify-between items-center">
-                            <div className="p-3 bg-[#22060D]/90 border border-white/20 text-ean-gold rounded-xs shadow-md backdrop-blur-xs transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold">
+                            <div className="p-3 bg-ean-burgundy-dark/90 border border-white/20 text-ean-gold rounded-xs shadow-md backdrop-blur-xs transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold">
                               <Icon className="w-5 h-5" />
                             </div>
-                            <span className="font-mono text-xs font-bold tracking-widest text-ean-gold bg-[#22060D]/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
+                            <span className="font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-burgundy-dark/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
                               0{idx + 1}
                             </span>
                           </div>
@@ -321,7 +321,7 @@ export default function ServicesPage() {
                       <motion.div
                         whileHover={{ y: -6 }}
                         transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className="bg-linear-to-b from-[#2D0710] via-[#1E050B] to-[#140307] border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col justify-between h-full group transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden"
+                        className="bg-linear-to-b from-ean-burgundy-mid via-ean-burgundy-deep to-ean-burgundy-dark border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col justify-between h-full group transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden"
                       >
                         {/* Card Image */}
                         <div className="relative h-48 w-full overflow-hidden shrink-0">
@@ -333,8 +333,8 @@ export default function ServicesPage() {
                             className="object-cover transition-transform duration-750 group-hover:scale-105"
                             quality={90}
                           />
-                          <div className="absolute inset-0 bg-linear-to-t from-[#140307] via-[#1E050B]/40 to-transparent" />
-                          <div className="absolute top-4 right-4 font-mono text-xs font-bold tracking-widest text-ean-gold bg-[#22060D]/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
+                          <div className="absolute inset-0 bg-linear-to-t from-ean-burgundy-dark via-ean-burgundy-deep/40 to-transparent" />
+                          <div className="absolute top-4 right-4 font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-burgundy-dark/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
                             0{idx + 1}
                           </div>
                         </div>

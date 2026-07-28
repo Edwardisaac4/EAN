@@ -166,6 +166,12 @@ export default function ContactPage() {
 
       if (resData.success && resData.lead) {
         addLeadToStore(resData.lead);
+        // Track Google Analytics conversion event ONLY when confirmed success
+        sendGAEvent('event', 'generate_lead', {
+          category: 'Inquiry',
+          service: formData.service,
+          value: 1,
+        });
       } else {
         // Fallback local lead creation if API route offline
         const fallbackLead = {
@@ -196,13 +202,6 @@ export default function ContactPage() {
         addLeadToStore(fallbackLead);
       }
 
-      // Track Google Analytics conversion event
-      sendGAEvent('event', 'generate_lead', {
-        category: 'Inquiry',
-        service: formData.service,
-        value: 1,
-      });
-
       setIsSubmitting(false);
       setSubmitSuccess(true);
       setFormData({
@@ -216,7 +215,7 @@ export default function ContactPage() {
     } catch (err) {
       console.error('Error submitting lead form:', err);
       setIsSubmitting(false);
-      setSubmitSuccess(true);
+      setErrors({ form: 'Network error submitting form. Please try again or call our 24/7 desk.' });
     }
   };
 

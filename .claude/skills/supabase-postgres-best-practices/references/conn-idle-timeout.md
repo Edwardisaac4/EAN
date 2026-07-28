@@ -25,20 +25,19 @@ where state = 'idle in transaction';
 **Correct (automatic cleanup of idle connections):**
 
 ```sql
--- Terminate transactions idle in transaction after 30 seconds (safe server default)
-alter system set idle_in_transaction_session_timeout = '30s';
+-- Managed Supabase: Set timeouts via Dashboard Settings or role-scoped SET commands:
+alter role authenticated set idle_in_transaction_session_timeout = '30s';
+alter role authenticated set idle_session_timeout = '10min';
 
--- For idle sessions in self-hosted Postgres or scoped to specific interactive roles:
-alter role interactive_user set idle_session_timeout = '10min';
-
--- Reload configuration
-select pg_reload_conf();
+-- Self-Hosted PostgreSQL (Requires superuser privileges):
+-- alter system set idle_in_transaction_session_timeout = '30s';
+-- select pg_reload_conf();
 ```
 
-For pooled connections (Supavisor / PgBouncer), configure idle timeouts at the pooler level:
+For PgBouncer connection poolers (`pgbouncer.ini`), configure pooler-level idle timeouts (or configure Supavisor pool timeouts in Dashboard):
 
 ```ini
-# pgbouncer.ini
+# pgbouncer.ini (PgBouncer-specific)
 server_idle_timeout = 60
 client_idle_timeout = 300
 ```

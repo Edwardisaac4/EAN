@@ -12,6 +12,16 @@
   --color-ean-white: #ffffff;
   --color-ean-surface: #fdf6f7;
 
+  /* Burgundy Palette */
+  --color-ean-burgundy: #4a0d1a;
+  --color-ean-burgundy-mid: #2d0710;
+  --color-ean-burgundy-deep: #1e050b;
+  --color-ean-burgundy-dark: #140307;
+  --color-ean-burgundy-night: #070103;
+  --color-ean-burgundy-rich: #3b0913;
+  --color-ean-burgundy-accent: #641224;
+  --color-ean-burgundy-dusk: #2a050d;
+
   /* Accent */
   --color-ean-gold: #c4952a;
   --color-ean-gold-light: #d4ab50;

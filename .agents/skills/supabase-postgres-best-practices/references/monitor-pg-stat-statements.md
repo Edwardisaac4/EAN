@@ -39,7 +39,7 @@ from pg_stat_statements
 order by calls desc
 limit 10;
 
--- WARNING: pg_stat_statements_reset() clears ALL collected statistics cluster-wide and requires superuser.
+-- WARNING: pg_stat_statements_reset() clears ALL collected statistics cluster-wide and requires superuser privileges by default.
 -- Prefer scoped reset where supported: select pg_stat_statements_reset(userid, dbid, queryid);
 ```
 

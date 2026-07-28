@@ -41,8 +41,11 @@ commit;  -- Lock held for milliseconds
 Use `statement_timeout` to prevent runaway transactions:
 
 ```sql
--- Global or session timeout:
+-- Session timeout (applies to current session only):
 set statement_timeout = '30s';
+
+-- Server-wide default timeout (requires ALTER SYSTEM or postgresql.conf):
+-- alter system set statement_timeout = '30s';
 
 -- Transaction-scoped timeout (SET LOCAL must run inside a transaction block):
 begin;

@@ -41,7 +41,7 @@ export default function ServicesSection() {
     <section
       ref={containerRef}
       id="services-section"
-      className="bg-linear-to-b from-[#2B050D] via-[#180408] to-[#2D0710] text-white py-20 sm:py-24 relative overflow-hidden border-y border-white/10 select-none"
+      className="bg-linear-to-b from-ean-burgundy-dusk via-ean-burgundy-dark to-ean-burgundy-mid text-white py-20 sm:py-24 relative overflow-hidden border-y border-white/10 select-none"
     >
       {/* Subtle Ambient Radial Gold Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-180 h-180 rounded-full bg-ean-gold/5 blur-[140px] pointer-events-none" />
@@ -187,7 +187,7 @@ export default function ServicesSection() {
                       priority
                     />
                     {/* Soft Shadow Gradient Overlay */}
-                    <div className="absolute inset-0 bg-linear-to-t from-[#0D0204]/80 via-[#0D0204]/20 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-ean-black/80 via-ean-black/20 to-transparent" />
 
                     {/* Top Icon Badge - Crisp White Glass */}
                     <div className="absolute top-4 left-4 p-3.5 bg-white/95 border border-slate-200 text-ean-navy rounded-xs shadow-md backdrop-blur-xs">

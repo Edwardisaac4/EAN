@@ -21,13 +21,12 @@ show max_connections;  -- 500 (way too high for 4GB RAM)
 
 **Correct (calculate based on resources):**
 
-```sql
--- Recommended settings for 4GB RAM
-alter system set max_connections = 100;
+> Note: The settings below are illustrative examples for a 4GB RAM node. Both `max_connections` and `work_mem` must be calculated based on deployment resources and workload concurrency. For managed Supabase instances, connection limits are managed automatically via Dashboard settings.
 
--- Size work_mem based on workload analysis (accounting for concurrent sort/hash
--- operations per query, active parallel workers, and active session concurrency)
-alter system set work_mem = '8MB';
+```sql
+-- Illustrative example settings (derived from server memory & concurrency):
+-- max_connections = 100;
+-- work_mem = '8MB'; (based on workload analysis accounting for active parallel workers)
 ```
 
 Monitor connection usage:

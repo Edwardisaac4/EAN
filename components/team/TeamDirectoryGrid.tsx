@@ -16,7 +16,7 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
 
   return (
     <>
-      <section className="bg-linear-to-b from-[#FAF0F2] via-[#FDF6F7] to-[#F5E6E9] text-ean-text-dark py-20 sm:py-24 relative border-b border-ean-border-light">
+      <section className="bg-linear-to-b from-ean-surface via-white to-ean-surface text-ean-text-dark py-20 sm:py-24 relative border-b border-ean-border-light">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">

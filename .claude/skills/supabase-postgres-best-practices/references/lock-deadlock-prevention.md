@@ -60,7 +60,7 @@ Monitor deadlocks:
 -- Check database-level cumulative deadlock count:
 select datname, deadlocks from pg_stat_database where deadlocks > 0;
 
--- Enable deadlock logging (note: SET commands apply to current session unless set via ALTER SYSTEM or postgresql.conf)
+-- Enable lock-wait logging (note: SET commands apply to current session unless set via ALTER SYSTEM or postgresql.conf)
 set log_lock_waits = on;
 set deadlock_timeout = '1s';
 ```

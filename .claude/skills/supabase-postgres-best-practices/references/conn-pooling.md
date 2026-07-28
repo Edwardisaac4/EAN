@@ -36,6 +36,6 @@ select count(*) from pg_stat_activity;
 Pool modes:
 
 - **Transaction mode**: connection returned after each transaction (best for serverless / stateless web apps)
-- **Session mode**: connection held for entire session (needed for prepared statements, temp tables, LISTEN/NOTIFY)
+- **Session mode**: connection held for entire session (needed only for session-scoped named prepared statements, temp tables, and LISTEN/NOTIFY)
 
 Reference: [Connection Pooling](https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pooler)
