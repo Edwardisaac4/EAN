@@ -41,18 +41,19 @@ select * from orders where customer_id = 123;  -- Index Scan
 delete from customers where id = 123;          -- Uses index, fast cascade
 ```
 
-Find missing FK indexes:
+Find missing FK indexes (matching complete FK column order against index leading columns):
 
 ```sql
 select
-  conrelid::regclass as table_name,
-  a.attname as fk_column
+  c.conrelid::regclass as table_name,
+  c.conname as fk_name,
+  pg_get_constraintdef(c.oid) as fk_definition
 from pg_constraint c
-join pg_attribute a on a.attrelid = c.conrelid and a.attnum = any(c.conkey)
 where c.contype = 'f'
   and not exists (
     select 1 from pg_index i
-    where i.indrelid = c.conrelid and a.attnum = any(i.indkey)
+    where i.indrelid = c.conrelid
+      and i.indkey[0 : cardinality(c.conkey) - 1] = c.conkey
   );
 ```
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import PublicShell from "@/components/layout/PublicShell";
 import "./globals.css";
 
@@ -29,6 +30,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
   return (
     <html
       lang="en"
@@ -39,6 +42,7 @@ export default function RootLayout({
         <PublicShell>
           {children}
         </PublicShell>
+        {gaId && <GoogleAnalytics gaId={gaId} />}
       </body>
     </html>
   );

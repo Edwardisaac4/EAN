@@ -43,12 +43,18 @@ create role app_user login password 'xxx';
 grant app_writer to app_user;
 ```
 
-Revoke public defaults:
+Revoke public defaults on current and future objects:
 
 ```sql
--- Revoke default public access
+-- Revoke default public access on existing objects
 revoke all on schema public from public;
 revoke all on all tables in schema public from public;
+revoke all on all sequences in schema public from public;
+
+-- Revoke default public access on future tables, sequences, and functions created in schema public
+alter default privileges in schema public revoke all on tables from public;
+alter default privileges in schema public revoke all on sequences from public;
+alter default privileges in schema public revoke all on functions from public;
 ```
 
 Reference: [Roles and Privileges](https://supabase.com/blog/postgres-roles-and-privileges)

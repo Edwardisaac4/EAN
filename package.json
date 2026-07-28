@@ -11,6 +11,7 @@
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@gsap/react": "^2.1.2",
+    "@next/third-parties": "^16.2.12",
     "@sanity/client": "^7.23.2",
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.110.9",

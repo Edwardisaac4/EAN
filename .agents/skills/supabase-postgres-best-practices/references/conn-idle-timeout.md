@@ -7,7 +7,7 @@ tags: connections, timeout, idle, resource-management
 
 ## Configure Idle Connection Timeouts
 
-Idle connections waste resources. Configure timeouts to automatically reclaim them.
+Idle connections waste resources. Configure timeouts to automatically reclaim them. Note: In pooled Supabase deployments, avoid global `idle_session_timeout` via `ALTER SYSTEM` as it can disconnect pooler backends; scope `idle_session_timeout` to interactive roles or pooler settings instead.
 
 **Incorrect (connections held indefinitely):**
 
@@ -25,17 +25,17 @@ where state = 'idle in transaction';
 **Correct (automatic cleanup of idle connections):**
 
 ```sql
--- Terminate connections idle in transaction after 30 seconds
+-- Terminate transactions idle in transaction after 30 seconds (safe server default)
 alter system set idle_in_transaction_session_timeout = '30s';
 
--- Terminate completely idle connections after 10 minutes
-alter system set idle_session_timeout = '10min';
+-- For idle sessions in self-hosted Postgres or scoped to specific interactive roles:
+alter role interactive_user set idle_session_timeout = '10min';
 
 -- Reload configuration
 select pg_reload_conf();
 ```
 
-For pooled connections, configure at the pooler level:
+For pooled connections (Supavisor / PgBouncer), configure idle timeouts at the pooler level:
 
 ```ini
 # pgbouncer.ini

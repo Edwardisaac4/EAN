@@ -49,7 +49,7 @@ Common sources of mixed-case identifiers:
 -- Some GUI tools quote identifiers by default - disable this
 
 -- If stuck with mixed-case, create views as a compatibility layer
-CREATE VIEW users AS SELECT "userId" AS user_id, "firstName" AS first_name FROM "Users";
+CREATE VIEW users AS SELECT "userId" AS user_id, "firstName" AS first_name, "lastName" AS last_name FROM "Users";
 ```
 
 Reference: [Identifiers and Key Words](https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS)

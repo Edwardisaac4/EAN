@@ -12,13 +12,13 @@ Individual INSERT statements have high overhead. Batch multiple rows in single s
 **Incorrect (individual inserts):**
 
 ```sql
--- Each insert is a separate transaction and round trip
+-- Each insert requires a separate network round trip (and separate transaction under autocommit)
 insert into events (user_id, action) values (1, 'click');
 insert into events (user_id, action) values (1, 'view');
 insert into events (user_id, action) values (2, 'click');
 -- ... 1000 more individual inserts
 
--- 1000 inserts = 1000 round trips = slow
+-- 1000 inserts = 1000 network round trips = high latency overhead
 ```
 
 **Correct (batch insert):**
@@ -38,12 +38,12 @@ insert into events (user_id, action) values
 For large imports, use COPY:
 
 ```sql
--- COPY is fastest for bulk loading
+-- COPY FROM 'path' reads a file on the PostgreSQL server filesystem
 copy events (user_id, action, created_at)
 from '/path/to/data.csv'
 with (format csv, header true);
 
--- Or from stdin in application
+-- For managed Supabase, stream via client-side COPY ... FROM STDIN or platform import tooling:
 copy events (user_id, action) from stdin with (format csv);
 1,click
 1,view

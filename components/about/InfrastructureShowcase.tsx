@@ -88,7 +88,7 @@ export default function InfrastructureShowcase() {
   return (
     <section className="bg-ean-navy-mid text-white py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
       {/* Ambient Radial Backlight Glow */}
-      <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-128 h-128 rounded-full bg-ean-gold/5 blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-lg h-lg rounded-full bg-ean-gold/5 blur-[160px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 space-y-12">
         {/* Section Header */}

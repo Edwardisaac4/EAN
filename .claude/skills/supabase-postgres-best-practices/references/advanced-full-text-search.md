@@ -7,15 +7,15 @@ tags: full-text-search, tsvector, gin, search
 
 ## Use tsvector for Full-Text Search
 
-LIKE with wildcards can't use indexes. Full-text search with tsvector is orders of magnitude faster.
+Leading-wildcard patterns (like `%postgresql%`) generally cannot use ordinary B-tree indexes, though `pg_trgm` GIN/GIST indexes can accelerate `LIKE`/`ILIKE`. For natural language search with stemming, stop words, and relevance ranking, full-text search with `tsvector` is orders of magnitude faster.
 
-**Incorrect (LIKE pattern matching):**
+**Incorrect (unindexed or basic LIKE pattern matching):**
 
 ```sql
--- Cannot use index, scans all rows
+-- Cannot use standard B-tree index, scans all rows
 select * from articles where content like '%postgresql%';
 
--- Case-insensitive makes it worse
+-- Case-insensitive makes it worse without pg_trgm
 select * from articles where lower(content) like '%postgresql%';
 ```
 
@@ -28,18 +28,18 @@ alter table articles add column search_vector tsvector
 
 create index articles_search_idx on articles using gin (search_vector);
 
--- Fast full-text search
+-- Fast full-text search with user query
 select * from articles
-where search_vector @@ to_tsquery('english', 'postgresql & performance');
+where search_vector @@ websearch_to_tsquery('english', 'postgresql performance');
 
 -- With ranking
 select *, ts_rank(search_vector, query) as rank
-from articles, to_tsquery('english', 'postgresql') query
+from articles, websearch_to_tsquery('english', 'postgresql') query
 where search_vector @@ query
 order by rank desc;
 ```
 
-Search multiple terms:
+Deliberately constructed tsquery expressions:
 
 ```sql
 -- AND: both terms required

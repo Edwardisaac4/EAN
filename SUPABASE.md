@@ -1,10 +1,16 @@
 # SKILL: Supabase
 # Project: EAN Aviation (ean.aero)
-# Stack: Next.js 15 App Router, TypeScript, Supabase + @supabase/ssr
+# Stack: Next.js 16 App Router, TypeScript, Supabase + @supabase/ssr
 
 Read this file fully before writing any Supabase code.
-Every pattern here is chosen specifically for Next.js 15 App Router.
+Every pattern here is chosen specifically for Next.js 16 App Router.
 Do not use deprecated packages or old patterns.
+
+> ⚠️ NEXT.JS 16 BREAKING CHANGES THAT AFFECT SUPABASE:
+> 1. cookies() is now async — must await it in server client
+> 2. Cookie methods changed from get/set/remove → getAll/setAll
+> 3. params in dynamic routes are Promises — must await params before use
+> 4. createClient() in server.ts must be async function
 
 ---
 
@@ -32,20 +38,27 @@ admin.ts   → /api/admin/* routes ONLY — bypasses RLS
 
 ```ts
 // src/lib/supabase/server.ts
+// ⚠️ Next.js 16 — createClient must be async
 import { createServerClient } from '@supabase/ssr'
 import { cookies }            from 'next/headers'
 import type { Database }      from '@/types/supabase'
 
-export function createClient() {
-  const cookieStore = cookies()
+export async function createClient() {
+  // ⚠️ Next.js 16 — cookies() is now async, must await
+  const cookieStore = await cookies()
+
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name)              { return cookieStore.get(name)?.value },
-        set(name, value, opts) { cookieStore.set({ name, value, ...opts }) },
-        remove(name, opts)     { cookieStore.set({ name, value: '', ...opts }) },
+        // ⚠️ Next.js 16 — getAll/setAll replace get/set/remove
+        getAll: () => cookieStore.getAll(),
+        setAll: (cookiesToSet) => {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options)
+          })
+        },
       },
     }
   )
@@ -628,12 +641,27 @@ const { data: slugs } = await supabase
   .eq('status', 'published')
 
 // Single post by slug
-const { data: post } = await supabase
-  .from('blog_posts')
-  .select('*')
-  .eq('slug', slug)
-  .eq('status', 'published')
-  .single()
+// ⚠️ Next.js 16 — params is a Promise, must await before destructuring
+// src/app/(site)/blog/[slug]/page.tsx
+interface Props { params: Promise<{ slug: string }> }
+
+export default async function BlogPostPage({ params }: Props) {
+  const { slug } = await params   // ← await required in Next.js 16
+
+  const supabase = await createClient()
+  const { data: post } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', slug)
+    .eq('status', 'published')
+    .single()
+}
+
+// generateMetadata also receives Promise params
+export async function generateMetadata({ params }: Props) {
+  const { slug } = await params   // ← await here too
+  // ... rest of metadata
+}
 ```
 
 ---
@@ -722,4 +750,61 @@ const { data } = await supabase
   .from('enquiries')
   .select('*')
   .range(0, 19)
+
+// ─────────────────────────────────────────────────────────────
+// NEXT.JS 16 SPECIFIC MISTAKES
+// ─────────────────────────────────────────────────────────────
+
+// ❌ WRONG — synchronous cookies() (Next.js 15 pattern)
+export function createClient() {
+  const cookieStore = cookies()  // ← breaks in Next.js 16
+  return createServerClient(...)
+}
+
+// ✅ CORRECT — async cookies() for Next.js 16
+export async function createClient() {
+  const cookieStore = await cookies()  // ← must await
+  return createServerClient(...)
+}
+
+// ❌ WRONG — old get/set/remove cookie methods (Next.js 15 pattern)
+cookies: {
+  get(name)              { return cookieStore.get(name)?.value },
+  set(name, value, opts) { cookieStore.set({ name, value, ...opts }) },
+  remove(name, opts)     { cookieStore.set({ name, value: '', ...opts }) },
+}
+
+// ✅ CORRECT — getAll/setAll for Next.js 16
+cookies: {
+  getAll: () => cookieStore.getAll(),
+  setAll: (cookiesToSet) => {
+    cookiesToSet.forEach(({ name, value, options }) => {
+      cookieStore.set(name, value, options)
+    })
+  },
+}
+
+// ❌ WRONG — accessing params directly (Next.js 15 pattern)
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { slug: string }   // ← wrong type in Next.js 16
+}) {
+  const slug = params.slug   // ← breaks — params is a Promise now
+}
+
+// ✅ CORRECT — awaiting params in Next.js 16
+export default async function BlogPostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>  // ← correct type
+}) {
+  const { slug } = await params      // ← must await
+}
+
+// ❌ WRONG — calling createClient() without await in API routes
+const supabase = createClient()       // ← sync call, returns Promise not client
+
+// ✅ CORRECT — await the async createClient
+const supabase = await createClient()
 ```

@@ -124,9 +124,9 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
   };
 
   return (
-    <section id="gsap-team-timeline" className="bg-gradient-to-b from-[#2B050D] via-[#1A0307] to-[#2D060F] text-white py-20 sm:py-24 relative overflow-hidden border-b border-white/10">
+    <section id="gsap-team-timeline" className="bg-linear-to-b from-[#2B050D] via-[#1A0307] to-[#2D060F] text-white py-20 sm:py-24 relative overflow-hidden border-b border-white/10">
       {/* Background Lighting Gradients */}
-      <div className="absolute top-0 right-1/3 w-128 h-128 bg-ean-gold/5 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute top-0 right-1/3 w-lg h-lg bg-ean-gold/5 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
         {/* Section Header */}

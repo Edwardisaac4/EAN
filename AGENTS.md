@@ -21,7 +21,7 @@ ready, immediately shippable code every single time.
 
 ### 0.1 Who You Are
 
-- You specialize in Next.js 15 App Router, TypeScript, and Tailwind CSS v4
+- You specialize in Next.js 16 App Router, TypeScript, and Tailwind CSS v4
 - You have deep experience with GSAP animation systems and Framer Motion
 - You have built luxury brand websites before — you understand that
   pixel precision, typography hierarchy, and motion quality are not
@@ -153,7 +153,7 @@ operate the first fully integrated FBO hangar in Nigeria and are the only
 Airbus-approved helicopter distributor in West Africa. Their client base
 is HNIs, C-suite executives, and corporate aviation operators.
 
-**This is a frontend-heavy project built in Next.js 15 (App Router).**
+**This is a frontend-heavy project built in Next.js 16 (App Router).**
 There is no user authentication, no admin dashboard, and no database.
 The only backend surface is a single API route for the inquiry form.
 Blog content is managed externally via Sanity CMS.
@@ -164,7 +164,7 @@ Blog content is managed externally via Sanity CMS.
 
 | Layer | Tool |
 |---|---|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js 16 (App Router) |
 | Language | TypeScript (strict mode) |
 | Styling | Tailwind CSS v4 |
 | UI Components | shadcn/ui |
@@ -643,67 +643,78 @@ export const ALL_SLUGS_QUERY = `
 ```tsx
 // src/app/(site)/blog/[slug]/page.tsx
 import type { Metadata }    from 'next'
-import { sanityClient }     from '@/lib/sanity/client'
+import { createClient }     from '@/lib/supabase/server'
 import { PAGE_SEO, SEO_BASE, getHreflang } from '@/lib/seo'
 import {
   POST_BY_SLUG_QUERY,
   ALL_SLUGS_QUERY,
 } from '@/lib/sanity/queries'
-import type { BlogPost }    from '@/types/blog'
+import type { BlogPost }    from '@/types/database'
 
-interface Props { params: { slug: string } }
+// ⚠️ Next.js 16 — params is a Promise, type it accordingly
+interface Props { params: Promise<{ slug: string }> }
 
 // 1. Pre-render every post at build time
 export async function generateStaticParams() {
-  const slugs = await sanityClient.fetch(ALL_SLUGS_QUERY)
-  return slugs.map(({ slug }: { slug: string }) => ({ slug }))
+  const supabase = await createClient()
+  const { data: slugs } = await supabase
+    .from('blog_posts')
+    .select('slug')
+    .eq('status', 'published')
+  return (slugs ?? []).map(({ slug }) => ({ slug }))
 }
 
 // 2. Dynamic metadata + hreflang per post
+// ⚠️ Next.js 16 — must await params before destructuring
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post: BlogPost = await sanityClient.fetch(
-    POST_BY_SLUG_QUERY, { slug: params.slug }
-  )
-  const pagePath = `/blog/${params.slug}`
+  const { slug }  = await params
+  const supabase  = await createClient()
+  const { data: post } = await supabase
+    .from('blog_posts')
+    .select('title, excerpt, seo_title, seo_description, og_image_url, cover_image_url, published_at')
+    .eq('slug', slug)
+    .single()
+
+  const pagePath = `/blog/${slug}`
 
   return {
-    title:       post.seoTitle ?? post.title,
-    description: post.seoDescription ?? post.excerpt,
+    title:       post?.seo_title    ?? post?.title,
+    description: post?.seo_description ?? post?.excerpt,
     alternates: {
       canonical: `${SEO_BASE.siteUrl}${pagePath}`,
       languages: getHreflang(pagePath),
     },
     openGraph: {
-      title:            post.seoTitle ?? post.title,
-      description:      post.seoDescription ?? post.excerpt,
+      title:            post?.seo_title    ?? post?.title,
+      description:      post?.seo_description ?? post?.excerpt,
       type:             'article',
-      publishedTime:    post.publishedAt,
+      publishedTime:    post?.published_at ?? undefined,
       locale:           'en_NG',
       localeAlternates: SEO_BASE.localeAlternate,
-      images: [post.ogImage?.asset?.url ?? post.coverImage?.asset?.url],
-    },
-    twitter: {
-      card:        'summary_large_image',
-      title:       post.seoTitle ?? post.title,
-      description: post.seoDescription ?? post.excerpt,
-      images:      [post.ogImage?.asset?.url ?? post.coverImage?.asset?.url],
+      images:           [post?.og_image_url ?? post?.cover_image_url ?? ''],
     },
   }
 }
 
-// 3. Page component with JSON-LD
+// 3. Page component
+// ⚠️ Next.js 16 — must await params before destructuring
 export default async function BlogPostPage({ params }: Props) {
-  const post: BlogPost = await sanityClient.fetch(
-    POST_BY_SLUG_QUERY, { slug: params.slug }
-  )
+  const { slug }  = await params
+  const supabase  = await createClient()
+  const { data: post } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', slug)
+    .eq('status', 'published')
+    .single()
 
   const jsonLd = {
     '@context':    'https://schema.org',
     '@type':       'Article',
-    headline:      post.title,
-    description:   post.excerpt,
-    datePublished: post.publishedAt,
-    image:         post.coverImage?.asset?.url,
+    headline:      post?.title,
+    description:   post?.excerpt,
+    datePublished: post?.published_at,
+    image:         post?.cover_image_url,
     author: {
       '@type': 'Organization',
       name:    'EAN Aviation',
@@ -1658,17 +1669,19 @@ const BlogCard = (props: any) => { ... }
 - Use `font-display` for all headlines (Cormorant Garamond)
 - Use `font-ui` for all body/UI text (Inter)
 - Use the exact service slugs, names, and descriptions from Section 7
-- Use plain `<img>` tags with `loading="lazy"` for all images below the fold
-- Use `loading="eager"` only on the hero slide images (above fold)
-- Use React Router `<Link>` from react-router-dom for all internal navigation
-- Use `<Helmet>` from react-helmet-async on every page for SEO meta tags
-- Use `useSanityQuery` hook for all Sanity data fetching
-- Use `sendInquiry` from `@/lib/emailjs` for the contact form — no fetch/axios
-- Use `useGSAP` from `@gsap/react` for all GSAP animations — never raw useEffect
+- Use `next/image` for every image — never a raw `<img>` tag
+- Use `next/link` for every internal link — never a raw `<a href>` tag
+- Use `next/font` for fonts — never a Google Fonts `<link>` in `<head>`
+- Add `generateMetadata` export to every public page
+- Add `generateStaticParams` to `blog/[slug]/page.tsx`
+- Add `'use client'` to every component that uses GSAP, Framer Motion, hooks, or browser APIs
+- Use `useGSAP` from `@gsap/react` for all GSAP — never raw `useEffect` with gsap
 - Wrap page bodies in `<PageTransition>` for route-level fade transitions
 - Add `SectionReveal` around each homepage section for scroll reveals
-- Add `'use client'` to every component that uses GSAP, Framer Motion, hooks, or browser APIs
 - Server Components are the default — only add `'use client'` when genuinely needed
+- Always `await createClient()` from `@/lib/supabase/server` — it is async in Next.js 16
+- Always type dynamic route `params` as `Promise<{ slug: string }>` — Next.js 16
+- Always `await params` before destructuring in both page components and `generateMetadata`
 
 ---
 
@@ -1678,16 +1691,19 @@ const BlogCard = (props: any) => { ... }
 - Do NOT write `import { Link } from 'react-router-dom'` — use `next/link`
 - Do NOT write `<img>` tags — use `next/image` always
 - Do NOT load fonts via Google Fonts `<link>` — use `next/font/google`
-- Do NOT create a database, Supabase client, or Prisma schema
-- Do NOT add more API routes beyond `/api/inquiry/route.ts`
-- Do NOT install `axios` — use native `fetch` or the Sanity client
+- Do NOT add more API routes beyond what is defined in Section 4
+- Do NOT install `axios` — use native `fetch` or the Supabase client
 - Do NOT use `useEffect` with GSAP — always `useGSAP` from `@gsap/react`
 - Do NOT mix Framer Motion and GSAP on the same element
 - Do NOT import GSAP premium plugins — only `ScrollTrigger` and `TextPlugin` (free)
 - Do NOT add `'use client'` unless the component genuinely needs it
 - Do NOT use gold (`ean-gold`) as a background for large surfaces
 - Do NOT install `moment.js` — use `Intl.DateTimeFormat` or `date-fns`
-- Do NOT hardcode EAN brand copy — reference constants or Sanity data
+- Do NOT hardcode EAN brand copy — reference constants or Supabase data
+- Do NOT import `adminSupabase` from `@/lib/supabase/admin` in any `'use client'` component
+- Do NOT use `cookies()` synchronously — it is async in Next.js 16, already handled in `server.ts`
+- Do NOT type `params` as `{ slug: string }` — it is `Promise<{ slug: string }>` in Next.js 16
+- Do NOT call `createClient()` without `await` in API routes or Server Components
 
 ---
 

@@ -26,16 +26,17 @@ select * from resource_locks where resource_name = 'report_generator' for update
 **Correct (advisory locks):**
 
 ```sql
--- Session-level advisory lock (released on disconnect or unlock)
-select pg_advisory_lock(hashtext('report_generator'));
--- ... do exclusive work ...
-select pg_advisory_unlock(hashtext('report_generator'));
-
--- Transaction-level lock (released on commit/rollback)
+-- Transaction-level lock (recommended for pooled connections like Supavisor/PgBouncer)
 begin;
 select pg_advisory_xact_lock(hashtext('daily_report'));
 -- ... do work ...
-commit;  -- Lock automatically released
+commit;  -- Lock automatically released at transaction end
+
+-- Session-level advisory lock (REQUIRES exact same physical connection for lock & unlock;
+-- risky in transaction-mode pooling unless connection is pinned and unlocked in finally block)
+select pg_advisory_lock(hashtext('report_generator'));
+-- ... do exclusive work on pinned connection ...
+select pg_advisory_unlock(hashtext('report_generator'));
 ```
 
 Try-lock for non-blocking operations:

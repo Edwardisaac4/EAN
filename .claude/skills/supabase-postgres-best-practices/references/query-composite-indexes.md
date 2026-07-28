@@ -7,26 +7,26 @@ tags: indexes, composite-index, multi-column, query-optimization
 
 ## Create Composite Indexes for Multi-Column Queries
 
-When queries filter on multiple columns, a composite index is more efficient than separate single-column indexes.
+When queries frequently filter on multiple columns together, a composite index can provide an efficient single-index path. PostgreSQL's planner chooses execution plans based on data selectivity—it may use a composite index, combine separate indexes via Bitmap Index Scans, or use a single index. Validate query plans with `EXPLAIN (ANALYZE, BUFFERS)`.
 
-**Incorrect (separate indexes require bitmap scan):**
+**Incorrect (separate single-column indexes for multi-column filters):**
 
 ```sql
--- Two separate indexes
+-- Two separate single-column indexes
 create index orders_status_idx on orders (status);
 create index orders_created_idx on orders (created_at);
 
--- Query must combine both indexes (slower)
+-- Query may require combining indexes via BitmapAnd scan or scanning one index
 select * from orders where status = 'pending' and created_at > '2024-01-01';
 ```
 
 **Correct (composite index):**
 
 ```sql
--- Single composite index (leftmost column first for equality checks)
+-- Single composite index (equality columns first, range columns last)
 create index orders_status_created_idx on orders (status, created_at);
 
--- Query uses one efficient index scan
+-- Query can use a direct composite index scan
 select * from orders where status = 'pending' and created_at > '2024-01-01';
 ```
 

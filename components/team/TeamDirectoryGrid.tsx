@@ -16,7 +16,7 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
 
   return (
     <>
-      <section className="bg-gradient-to-b from-[#FAF0F2] via-[#FDF6F7] to-[#F5E6E9] text-ean-text-dark py-20 sm:py-24 relative border-b border-ean-border-light">
+      <section className="bg-linear-to-b from-[#FAF0F2] via-[#FDF6F7] to-[#F5E6E9] text-ean-text-dark py-20 sm:py-24 relative border-b border-ean-border-light">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
@@ -53,7 +53,7 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
                       quality={95}
                     />
                     {/* Services-Style Gradient Blur Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-ean-navy/90 via-ean-navy/30 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-linear-to-t from-ean-navy/90 via-ean-navy/30 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-300" />
                     
                     {/* Top Department Badge - Glass */}
                     <div className="absolute top-3 left-3 px-3 py-1 bg-ean-navy/80 backdrop-blur-md rounded-xs border border-ean-gold/30 font-mono text-[9px] text-ean-gold uppercase tracking-widest shadow-md">

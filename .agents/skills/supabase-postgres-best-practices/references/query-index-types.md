@@ -41,7 +41,7 @@ create index locations_idx on places using gist (location);
 -- BRIN: large time-series tables (10-100x smaller)
 create index events_time_idx on events using brin (created_at);
 
--- Hash: equality-only (slightly faster than B-tree for =)
+-- Hash: equality-only lookups (=); evaluate performance via benchmarking against default B-tree
 create index sessions_token_idx on sessions using hash (token);
 ```
 

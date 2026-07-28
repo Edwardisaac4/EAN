@@ -7,7 +7,7 @@ tags: pg-stat-statements, monitoring, statistics, performance
 
 ## Enable pg_stat_statements for Query Analysis
 
-pg_stat_statements tracks execution statistics for all queries, helping identify slow and frequent queries.
+`pg_stat_statements` tracks execution statistics for all queries, helping identify slow and frequent queries.
 
 **Incorrect (no visibility into query patterns):**
 
@@ -19,7 +19,8 @@ pg_stat_statements tracks execution statistics for all queries, helping identify
 **Correct (enable and query pg_stat_statements):**
 
 ```sql
--- Enable the extension
+-- Enable the extension (Pre-configured in Supabase; for self-hosted Postgres,
+-- `shared_preload_libraries = 'pg_stat_statements'` must first be set in postgresql.conf and server restarted)
 create extension if not exists pg_stat_statements;
 
 -- Find slowest queries by total time
@@ -38,8 +39,8 @@ from pg_stat_statements
 order by calls desc
 limit 10;
 
--- Reset statistics after optimization
-select pg_stat_statements_reset();
+-- WARNING: pg_stat_statements_reset() clears ALL collected statistics cluster-wide and requires superuser.
+-- Prefer scoped reset where supported: select pg_stat_statements_reset(userid, dbid, queryid);
 ```
 
 Key metrics to monitor:

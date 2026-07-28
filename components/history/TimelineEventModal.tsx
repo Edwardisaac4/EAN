@@ -49,10 +49,10 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-3xl bg-gradient-to-b from-[#1E050B] via-[#140307] to-[#0D0204] text-white border border-ean-gold/40 rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.7)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col"
+            className="relative w-full max-w-3xl bg-linear-to-b from-[#1E050B] via-[#140307] to-[#0D0204] text-white border border-ean-gold/40 rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.7)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col"
           >
             {/* Header Strip */}
-            <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#3B0913] via-[#2A050D] to-[#1E050B] border-b border-white/10 shadow-md">
+            <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4 bg-linear-to-r from-[#3B0913] via-[#2A050D] to-[#1E050B] border-b border-white/10 shadow-md">
               <div className="flex items-center gap-2.5">
                 <span className="px-2 py-0.5 bg-ean-gold/15 border border-ean-gold/30 rounded-xs text-ean-gold font-mono text-xs font-bold">
                   {event.year}
@@ -85,7 +85,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
                     quality={95}
                     priority
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#140307] via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-[#140307] via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
                     <span className="font-mono text-4xl sm:text-5xl font-extrabold text-ean-gold/90 drop-shadow-md">
                       {event.year}
@@ -124,7 +124,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
               {/* Key Highlights */}
               {event.highlights && event.highlights.length > 0 && (
                 <div className="space-y-3 border-t border-white/10 pt-6">
-                  <span className="font-ui text-xs font-bold uppercase tracking-[0.2em] text-ean-gold block flex items-center gap-1.5">
+                  <span className="font-ui text-xs font-bold uppercase tracking-[0.2em] text-ean-gold flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-ean-gold" />
                     Key Milestone Achievements
                   </span>
@@ -142,7 +142,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
 
             {/* Footer Action Strip */}
             <div className="px-6 py-4 bg-[#140307] border-t border-white/10 flex items-center justify-between">
-              <span className="text-xs text-white/40 font-ui hidden sm:inline-block font-mono">
+              <span className="text-xs text-white/40 hidden sm:inline-block font-mono">
                 EAN Aviation History & Heritage
               </span>
               <div className="flex items-center gap-3 w-full sm:w-auto justify-end">

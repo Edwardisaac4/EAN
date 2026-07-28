@@ -53,13 +53,14 @@ where id in (1, 2);
 commit;
 ```
 
-Detect deadlocks in logs:
+Monitor deadlocks:
 
 ```sql
--- Check for recent deadlocks
-select * from pg_stat_database where deadlocks > 0;
+-- pg_stat_database.deadlocks tracks cumulative deadlocks since last stats reset.
+-- Check database-level cumulative deadlock count:
+select datname, deadlocks from pg_stat_database where deadlocks > 0;
 
--- Enable deadlock logging
+-- Enable deadlock logging (note: SET commands apply to current session unless set via ALTER SYSTEM or postgresql.conf)
 set log_lock_waits = on;
 set deadlock_timeout = '1s';
 ```

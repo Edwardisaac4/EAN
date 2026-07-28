@@ -5,6 +5,7 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { sendGAEvent } from '@next/third-parties/google';
 import { 
   MapPin, 
   Phone, 
@@ -24,6 +25,7 @@ import GoldButton from '@/components/shared/GoldButton';
 import { FAQ_ITEMS, LAGOS_HQ } from '@/lib/constants';
 import { getTrackingContext } from '@/lib/lead-tracking';
 import { addLeadToStore, getAllLeadsFromStore } from '@/lib/leads-store';
+import { ServiceCategory } from '@/lib/admin-leads-data';
 
 // Helper to map service slug to form select option value
 const getServiceFromSlug = (slug: string): string => {
@@ -172,7 +174,7 @@ export default function ContactPage() {
           email: formData.email,
           phone: formData.phone,
           company: formData.company,
-          service: formData.service as any,
+          service: formData.service as ServiceCategory,
           message: formData.message,
           status: 'new' as const,
           priority: 'high' as const,
@@ -193,6 +195,13 @@ export default function ContactPage() {
         };
         addLeadToStore(fallbackLead);
       }
+
+      // Track Google Analytics conversion event
+      sendGAEvent('event', 'generate_lead', {
+        category: 'Inquiry',
+        service: formData.service,
+        value: 1,
+      });
 
       setIsSubmitting(false);
       setSubmitSuccess(true);

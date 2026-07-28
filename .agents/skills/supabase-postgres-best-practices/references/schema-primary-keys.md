@@ -7,18 +7,17 @@ tags: primary-key, identity, uuid, serial, schema
 
 ## Select Optimal Primary Key Strategy
 
-Primary key choice affects insert performance, index size, and replication
-efficiency.
+Primary key choice affects insert performance, index size, and replication efficiency.
 
 **Incorrect (problematic PK choices):**
 
 ```sql
--- identity is the SQL-standard approach
+-- legacy SERIAL type (works, but IDENTITY is SQL-standard)
 create table users (
-  id serial primary key  -- Works, but IDENTITY is recommended
+  id serial primary key
 );
 
--- Random UUIDs (v4) cause index fragmentation
+-- Random UUIDs (v4) cause B-tree index fragmentation under heavy load
 create table orders (
   id uuid default gen_random_uuid() primary key  -- UUIDv4 = random = scattered inserts
 );
@@ -32,13 +31,13 @@ create table users (
   id bigint generated always as identity primary key
 );
 
--- For distributed systems needing UUIDs, use UUIDv7 (time-ordered)
--- Requires pg_uuidv7 extension: create extension pg_uuidv7;
+-- For distributed systems needing UUIDs, use UUIDv7 (time-ordered sequential UUIDs)
+-- Native uuidv7() built-in available in PostgreSQL 18+ (or client-side UUIDv7 library / pg_uuidv7 extension on older Postgres)
 create table orders (
-  id uuid default uuid_generate_v7() primary key  -- Time-ordered, no fragmentation
+  id uuid default uuidv7() primary key  -- Time-ordered, improves B-tree index locality
 );
 
--- Alternative: time-prefixed IDs for sortable, distributed IDs (no extension needed)
+-- Alternative: time-prefixed text IDs for sortable, distributed IDs
 create table events (
   id text default concat(
     to_char(now() at time zone 'utc', 'YYYYMMDDHH24MISSMS'),
@@ -50,12 +49,8 @@ create table events (
 Guidelines:
 
 - Single database: `bigint identity` (sequential, 8 bytes, SQL-standard)
-- Distributed/exposed IDs: UUIDv7 (requires pg_uuidv7) or ULID (time-ordered, no
-  fragmentation)
-- `serial` works but `identity` is SQL-standard and preferred for new
-  applications
-- Avoid random UUIDs (v4) as primary keys on large tables (causes index
-  fragmentation)
+- Distributed/exposed IDs: UUIDv7 (improves index locality over random UUIDv4)
+- `serial` works, but `identity` is SQL-standard and preferred for new schemas
+- Avoid random UUIDs (v4) as primary keys on large, high-write tables to reduce B-tree fragmentation
 
-Reference:
-[Identity Columns](https://www.postgresql.org/docs/current/sql-createtable.html#SQL-CREATETABLE-PARMS-GENERATED-IDENTITY)
+Reference: [Data Types - UUID](https://www.postgresql.org/docs/current/datatype-uuid.html)

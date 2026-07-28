@@ -23,19 +23,19 @@ select count(*) from pg_stat_activity;  -- 487 connections!
 **Correct (connection pooling):**
 
 ```sql
--- Use a pooler like PgBouncer between app and database
--- Application connects to pooler, pooler reuses a small pool to Postgres
+-- Use a pooler like Supavisor or PgBouncer between app and database
+-- Application connects to pooler, pooler reuses a small pool of backend connections
 
--- Configure pool_size based on: (CPU cores * 2) + spindle_count
--- Example for 4 cores: pool_size = 10
+-- Size pools based on measured workload, peak concurrency, and instance tier limits
+-- while reserving connections for direct admin/migrations (e.g. 80% pool / 20% reserved)
 
--- Result: 500 concurrent users share 10 actual connections
-select count(*) from pg_stat_activity;  -- 10 connections
+-- Result: Concurrent application requests share a small pool of active backend connections
+select count(*) from pg_stat_activity;
 ```
 
 Pool modes:
 
-- **Transaction mode**: connection returned after each transaction (best for most apps)
-- **Session mode**: connection held for entire session (needed for prepared statements, temp tables)
+- **Transaction mode**: connection returned after each transaction (best for serverless / stateless web apps)
+- **Session mode**: connection held for entire session (needed for prepared statements, temp tables, LISTEN/NOTIFY)
 
 Reference: [Connection Pooling](https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pooler)

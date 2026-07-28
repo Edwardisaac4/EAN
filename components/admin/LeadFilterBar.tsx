@@ -40,7 +40,7 @@ export function LeadFilterBar({
       {/* Top Controls Row */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         {/* Search */}
-        <div className="relative flex-1 min-w-[260px]">
+        <div className="relative flex-1 min-w-65">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-ean-muted-light/60" />
           <input
             type="text"

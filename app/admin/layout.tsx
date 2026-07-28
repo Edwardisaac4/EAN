@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <AdminSidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-gradient-to-b from-ean-black-pure via-ean-black to-ean-black-accent min-h-screen overflow-x-hidden">
+      <div className="flex-1 flex flex-col min-w-0 bg-linear-to-b from-ean-black-pure via-ean-black to-ean-black-accent min-h-screen overflow-x-hidden">
         {children}
       </div>
     </div>

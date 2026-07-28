@@ -1,13 +1,13 @@
 ---
 title: Use Cursor-Based Pagination Instead of OFFSET
 impact: MEDIUM-HIGH
-impactDescription: Consistent O(1) performance regardless of page depth
+impactDescription: Consistent index-backed performance regardless of page depth
 tags: pagination, cursor, keyset, offset, performance
 ---
 
 ## Use Cursor-Based Pagination Instead of OFFSET
 
-OFFSET-based pagination scans all skipped rows, getting slower on deeper pages. Cursor pagination is O(1).
+OFFSET-based pagination scans and discards all skipped rows, becoming progressively slower on deeper pages. Keyset (cursor) pagination uses an index on ordered columns for fast, constant-time page lookups with stable ordering.
 
 **Incorrect (OFFSET pagination):**
 
@@ -18,8 +18,8 @@ select * from products order by id limit 20 offset 0;
 -- Page 100: scans 2000 rows to skip 1980
 select * from products order by id limit 20 offset 1980;
 
--- Page 10000: scans 200,000 rows!
-select * from products order by id limit 20 offset 199980;
+-- Deep page: scans hundreds of thousands of rows!
+select * from products order by id limit 20 offset $offset;
 ```
 
 **Correct (cursor/keyset pagination):**
@@ -27,22 +27,21 @@ select * from products order by id limit 20 offset 199980;
 ```sql
 -- Page 1: get first 20
 select * from products order by id limit 20;
--- Application stores last_id = 20
+-- Application records the last returned ID ($last_id)
 
--- Page 2: start after last ID
-select * from products where id > 20 order by id limit 20;
--- Uses index, always fast regardless of page depth
+-- Page 2: seek directly after last ID
+select * from products where id > $last_id order by id limit 20;
 
--- Page 10000: same speed as page 1
-select * from products where id > 199980 order by id limit 20;
+-- Deep page: same speed as page 1 when index exists on ordered cursor columns
+select * from products where id > $last_id order by id limit 20;
 ```
 
-For multi-column sorting:
+For multi-column sorting (note: `created_at` must be `NOT NULL` for tuple comparisons):
 
 ```sql
--- Cursor must include all sort columns
+-- Cursor must include all sort columns to guarantee stable ordering
 select * from products
-where (created_at, id) > ('2024-01-15 10:00:00', 12345)
+where (created_at, id) > ($last_created_at, $last_id)
 order by created_at, id
 limit 20;
 ```

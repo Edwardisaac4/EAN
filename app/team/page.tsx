@@ -92,11 +92,11 @@ export default function TeamPage() {
     <>
       <Navbar />
 
-      <main className="flex-1 flex flex-col bg-[#0D0204] text-white">
+      <main className="flex-1 flex flex-col bg-ean-black text-white">
         {/* SECTION 1: Deep Midnight Cinematic Hero */}
         <section
           ref={heroRef}
-          className="relative w-full h-[60vh] min-h-110 overflow-hidden bg-gradient-to-b from-[#070103] via-[#1E050B] to-[#2D0710] flex items-center border-b border-white/10"
+          className="relative w-full h-[60vh] min-h-110 overflow-hidden bg-linear-to-b from-[#070103] via-[#1E050B] to-[#2D0710] flex items-center border-b border-white/10"
         >
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%]">
@@ -110,7 +110,7 @@ export default function TeamPage() {
               quality={95}
             />
             {/* Immersive dark radial & linear overlay gradients */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0D0204] via-[#1E050B]/80 to-[#070103]/90" />
+            <div className="absolute inset-0 bg-linear-to-t from-[#0D0204] via-[#1E050B]/80 to-[#070103]/90" />
             <div className="absolute inset-0 bg-radial-at-c from-transparent via-[#070103]/60 to-[#070103]/95" />
           </div>
 
@@ -163,7 +163,7 @@ export default function TeamPage() {
         <TeamDirectoryGrid members={TEAM_MEMBERS} />
 
         {/* SECTION 4: Gold & Onyx Executive Call to Action */}
-        <section className="bg-gradient-to-r from-[#070103] via-[#2A050D] to-[#0D0204] py-20 sm:py-24 relative overflow-hidden border-t border-white/10">
+        <section className="bg-linear-to-r from-[#070103] via-[#2A050D] to-[#0D0204] py-20 sm:py-24 relative overflow-hidden border-t border-white/10">
           <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/10 blur-[120px] pointer-events-none" />
 
           <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 text-center">

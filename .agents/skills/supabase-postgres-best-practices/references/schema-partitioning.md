@@ -23,7 +23,7 @@ select * from events where created_at > '2024-01-01';  -- Slow
 vacuum events;  -- Takes hours, locks table
 ```
 
-**Correct (partitioned by time range):**
+**Correct (partitioned by time range with default partition):**
 
 ```sql
 create table events (
@@ -32,18 +32,21 @@ create table events (
   data jsonb
 ) partition by range (created_at);
 
--- Create partitions for each month
+-- Create partitions for specific monthly ranges
 create table events_2024_01 partition of events
   for values from ('2024-01-01') to ('2024-02-01');
 
 create table events_2024_02 partition of events
   for values from ('2024-02-01') to ('2024-03-01');
 
--- Queries only scan relevant partitions
-select * from events where created_at > '2024-01-15';  -- Only scans events_2024_01+
+-- Catch-all default partition for out-of-range dates (prevents insert errors)
+create table events_default partition of events default;
 
--- Drop old data instantly
-drop table events_2023_01;  -- Instant vs DELETE taking hours
+-- Query filtering created_at between '2024-01-15' and '2024-02-15' scans only events_2024_01 and events_2024_02
+select * from events where created_at >= '2024-01-15' and created_at < '2024-02-15';
+
+-- Drop old partition instantly
+drop table events_2024_01;  -- Instant vs DELETE taking hours
 ```
 
 When to partition:

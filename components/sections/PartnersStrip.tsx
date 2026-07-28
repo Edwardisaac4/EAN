@@ -15,8 +15,8 @@ export default function PartnersStrip() {
 
       <div className="relative w-full overflow-hidden flex flex-row group">
         {/* Left & right edge gradient masks */}
-        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-28 bg-gradient-to-r from-ean-surface dark:from-ean-navy to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-28 bg-gradient-to-l from-ean-surface dark:from-ean-navy to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-28 bg-linear-to-r from-ean-surface dark:from-ean-navy to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-28 bg-linear-to-l from-ean-surface dark:from-ean-navy to-transparent z-10 pointer-events-none" />
 
         {/* Infinite CSS marquee wrapper */}
         <div className="flex w-max animate-marquee space-x-6 sm:space-x-8 pr-6 sm:pr-8 items-center group-hover:[animation-play-state:paused]">

@@ -22,13 +22,14 @@ update orders set status = 'paid' where id = 1;
 commit;  -- Lock held for entire duration
 ```
 
-**Correct (minimal transaction scope):**
+**Correct (minimal transaction scope with idempotency):**
 
 ```sql
--- Validate data and call APIs outside transaction
--- Application: response = await paymentAPI.charge(...)
+-- 1. Perform external calls outside transaction using a durable idempotency key:
+-- const idempotencyKey = `order_${orderId}_payment`;
+-- const response = await paymentAPI.charge({ amount, idempotencyKey });
 
--- Only hold lock for the actual update
+-- 2. Only hold database lock for the brief status update (with reconciliation handling):
 begin;
 update orders
 set status = 'paid', payment_id = $1
@@ -40,11 +41,14 @@ commit;  -- Lock held for milliseconds
 Use `statement_timeout` to prevent runaway transactions:
 
 ```sql
--- Abort queries running longer than 30 seconds
+-- Global or session timeout:
 set statement_timeout = '30s';
 
--- Or per-session
+-- Transaction-scoped timeout (SET LOCAL must run inside a transaction block):
+begin;
 set local statement_timeout = '5s';
+-- ... short queries ...
+commit;
 ```
 
 Reference: [Transaction Management](https://www.postgresql.org/docs/current/tutorial-transactions.html)

@@ -136,7 +136,7 @@ Do NOT use `apply_migration` to change a local database schema — it writes a m
 
 1. **Run advisors** → `supabase db advisors` (CLI v2.81.3+) or MCP `get_advisors`. Fix any issues.
 2. **Review the Security Checklist above** if your changes involve views, functions, triggers, or storage.
-3. **Generate the migration** → `supabase db pull <descriptive-name> --local --yes`
+3. **Generate the migration** → `supabase db diff -f <descriptive-name>`
 4. **Verify** → `supabase migration list --local`
 
 ## Reference Guides

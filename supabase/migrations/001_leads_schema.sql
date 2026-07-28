@@ -153,15 +153,18 @@ DECLARE
   year_str text;
 BEGIN
   year_str := to_char(now(), 'YYYY');
+
+  -- Acquire transaction-level advisory lock per year to prevent concurrent sequence race conditions
+  PERFORM pg_advisory_xact_lock(hashtext('lead_code_' || year_str));
+
   SELECT COALESCE(MAX(
     CAST(
-      NULLIF(regexp_replace(lead_code, '^EAN-LD-\d{4}-', ''), '')
-      AS integer
+      substring(lead_code from '^EAN-LD-\d{4}-(\d+)$') AS integer
     )
   ), 0) + 1
   INTO next_num
   FROM leads
-  WHERE lead_code LIKE 'EAN-LD-' || year_str || '-%';
+  WHERE lead_code ~ ('^EAN-LD-' || year_str || '-\d+$');
 
   NEW.lead_code := 'EAN-LD-' || year_str || '-' || lpad(next_num::text, 3, '0');
   RETURN NEW;
