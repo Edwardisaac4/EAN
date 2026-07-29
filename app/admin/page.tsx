@@ -186,8 +186,13 @@ export default function AdminDashboardPage() {
     <div className="flex-1 flex flex-col min-w-0">
       {/* Header */}
       <AdminHeader
+        leads={leads}
         onSearchChange={setGlobalSearch}
         onOpenCreateModal={() => setIsCreateModalOpen(true)}
+        onSelectLead={(leadId) => {
+          const target = leads.find((l) => l.id === leadId);
+          if (target) setSelectedLead(target);
+        }}
         unreadCount={stats.newLeads}
       />
 

@@ -114,7 +114,7 @@ export interface TeamMember {
   id: string;
   name: string;
   role: string;
-  department: 'Executive' | 'Operations' | 'Finance' | 'Marketing' | 'Maintenance' | 'Quality and safety' | 'IT & Business Intelligence' | 'Facilities' | 'Legal' | 'Human Resources';
+  department: 'Executive' | 'Operations' | 'Finance' | 'Marketing' | 'Maintenance' | 'Quality and safety' | 'Quality & Safety' | 'IT & Business Intelligence' | 'Facilities' | 'Legal' | 'Human Resources';
   departmentLabel: string;
   image: string;
   quote?: string;
@@ -911,20 +911,21 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     id: "tunde-awe",
-    name: "Tunde Tunde-AWE",
-    role: "Head, P.M.O",
+    name: "Tunde Awe",
+    role: "Head, Project Management Office",
     department: "Executive",
     departmentLabel: "P.M.O",
     image: "/images/leadership/tunde-awe.jpg",
     quote:
       "Strategic project delivery in aviation relies on rigorous governance, cross-functional precision, and uncompromising quality control.",
     bio: [
-      "Tunde Awe leads the Project Management Office (PMO) at EAN Aviation, driving strategic capital initiatives, infrastructure expansion, and corporate operational alignment across West Africa.",
-      "With extensive project management and technical expertise, Tunde ensures every major aviation infrastructure project and executive program is executed to world-class standards.",
+      "Tunde oversees a multi-programme portfolio at EAN Aviation Group spanning aviation infrastructure development, charter operations, digital transformation, and new business development. He is building the PMO’s maturity as a strategic function within EAN.",
+      "His strengths lie in critical thinking, stakeholder management, and problem-solving, aligning consultants, regulators, and internal teams toward shared outcomes. He brings hands-on execution to corporate goals, closing the gap between strategy and delivery.",
+      "Tunde holds a BSc in Geology and is PRINCE2 Practitioner certified, with executive education in Systems Thinking (MIT), Developing and Financing Infrastructure Projects (Brickstone Africa), and AI Infrastructure & Operations (NVIDIA). He is currently completing the Senior Management Programme at Lagos Business School.",
     ],
     credentials: [
       "Head of PMO",
-      "Project Management Professional",
+      "PRINCE2 Practitioner",
       "Aviation Infrastructure Specialist",
     ],
     highlights: [
@@ -974,9 +975,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "bukunola-hundeyin",
     name: "Olubukunola Hundeyin",
-    role: "Head, Quality And Safety",
-    department: "Facilities",
-    departmentLabel: "Facilities",
+    role: "Head of Quality & Safety",
+    department: "Quality & Safety",
+    departmentLabel: "Quality & Safety",
     image: "/images/leadership/bukky-nbac.jpg",
     quote:
       "World-class aviation facilities depend on seamless maintenance, security protocols, and operational readiness.",
@@ -989,9 +990,10 @@ export const TEAM_MEMBERS: TeamMember[] = [
       "Recognized for her collaborative leadership, integrity, and results-driven approach, Olubukunola is passionate about building high-performing teams, fostering a proactive safety culture, and implementing management systems that deliver measurable value. She remains committed to advancing quality and safety standards, strengthening regulatory compliance, and helping organizations achieve operational excellence in an evolving global aviation industry.",
     ],
     credentials: [
-      "Facilities Management Lead",
-      "Aviation Security Auditor",
-      "Infrastructure Specialist",
+      "ASQ Certified Quality Auditor (CQA)",
+      "ISO 9001:2015 Lead Auditor",
+      "NEBOSH IGC Certified",
+      "QMS & Safety Management Lead",
     ],
     highlights: [{ label: "Hangar & Terminal Uptime", value: "99.9%" }],
   },
@@ -1005,13 +1007,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
     quote:
       "Data-driven insights and real-time revenue analytics empower strategic growth and operational efficiency.",
     bio: [
-      "Osayuwamen Abu is a Certified Information Technology Professional with over a decade of experience in financial management, strategy, and business intelligence. He leads EAN Aviation’s financial planning, performance analytics, and revenue optimization efforts.",
-      "Osayuwamen leverages enterprise data models to streamline flight dispatch metrics, maintenance accounting, and client service metrics.",
+      "Yuwa Abu is a technology and data leader with almost a decade of experience delivering data, analytics, and digital transformation initiatives across the telecommunications, e-commerce, FMCG, and aviation industries. He specializes in leveraging data and technology to improve decision-making, optimize business performance, and drive innovation through scalable enterprise solutions.",
+      "He holds a Bachelor’s degree in Economics and Statistics from the University of Benin and is a Member of the Chartered Institute of Statisticians of Nigeria (CISON).",
     ],
     credentials: [
-      "Certified IT Professional",
-      "Business Intelligence Specialist",
-      "Financial Strategy & Revenue Optimization",
+      "BSc Economics & Statistics (Uniben)",
+      "Member, CISON",
+      "Business Intelligence & Analytics Leader",
     ],
     highlights: [{ label: "Revenue Analytics Precision", value: "99.5%" }],
   },
@@ -1025,63 +1027,68 @@ export const TEAM_MEMBERS: TeamMember[] = [
     quote:
       "Operational infrastructure must be seamless, secure, and engineered to accelerate executive movement.",
     bio: [
-      "Ineh Osikhekha oversees EAN Aviation’s integrated Safety Management System (SMS), risk assessments, and regulatory audit compliance. He works directly with the NCAA, IATA, and international aviation safety bodies to maintain EAN’s flawless safety record.",
+      "Ineh Osikhekha leads all lease, commercial strategy, aviation, and real estate infrastructure projects, facility management, and engineering functions at EAN Aviation, ensuring seamless facility management and infrastructure excellence.",
+      "With over 15 years of expertise spanning civil construction, office planning, infrastructure management, energy management, transport & logistics, service charge management, health, safety, and security, he plays a pivotal role in sustaining operational integrity both within and beyond company premises. Ineh holds a Bachelor’s degree in Electrical & Electronic Engineering from the University of Benin and a Master’s in Facility Management from the University of Lagos.",
+      "He is a member of the Nigeria Society of Engineers (MNSE) and the Council for the Regulation of Engineering in Nigeria (COREN). Ineh is also certified from the International Project Management Institute (PMI). He also holds certification in Systems Thinking from the Massachusetts Institute of Technology (MIT) and Developing Project Infrastructure from Brickstone Africa. Ineh’s leadership is defined by his technical precision and commitment to operational excellence, ensuring every facility reflects the company’s elite standards.",
     ],
     credentials: [
-      "ICAO SMS Manager",
-      "NCAA Certified Auditor",
-      "IS-BAO Lead Inspector",
-      "Flight Safety Specialist",
+      "B.Eng Electrical & Electronic Engineering",
+      "M.Sc. Facility Management",
+      "MNSE & COREN Registered Engineer",
+      "PMI & MIT Certified",
     ],
     highlights: [
       { label: "Operational Safety Audit Score", value: "100%" },
-      { label: "Continuous SMS Reviews", value: "Quarterly" },
+      { label: "Infrastructure Excellence", value: "15+ Yrs" },
     ],
   },
   {
     id: "vivian-okoh-olutunfese",
     name: "Vivian Okoh-Olutunfese",
-    role: "Head, Legal",
+    role: "Head, Legal Services",
     department: "Legal",
-    departmentLabel: "Legal & Corporate Communications",
+    departmentLabel: "Legal Services",
     image: "/images/hero/slide-4.png",
     quote:
       "Navigating the complexities of international aviation demands precision, proactive engagement, and absolute regulatory alignment.",
     bio: [
-      "Vivian Okoh-Olutunfese is a dual-qualified lawyer with extensive experience in corporate law, regulatory compliance, and international aviation policy. She serves as the Head of Legal & Corporate Communications at EAN Aviation.",
-      "Her expertise ensures that EAN Aviation operates with complete alignment to NCAA, ICAO, and international regulatory frameworks while maintaining seamless communications with all aviation stakeholders.",
+      "Vivian is an experienced legal business partner with over 15 years of experience spanning private legal practice, in-house advisory, and corporate leadership within multinational organizations.",
+      "Prior to joining EAN, Vivian served as Lead Corporate & Commercial Counsel at Baywood Holdings Limited, a pan-African conglomerate with interests across Oil & gas, financial services, and aviation. She has also held key legal roles at Hayat Kimya Nigeria Limited and CWAY Group, where she strengthened compliance frameworks and governance standards.",
+      "Vivian holds a Master of Laws (LL.M.) from the University of Lagos, a Bachelor of Laws (LL.B.) from Olabisi Onabanjo University, and is a Barrister and solicitor of the Supreme Court of Nigeria. She is also an Associate of the Chartered Institute of Secretaries and Administrators of Nigeria (ICSAN) and a member of the Nigerian Institute of Management (Chartered).",
+      "Vivian is passionate about driving ethical business practices and leveraging legal innovation to support strategic growth.",
     ],
     credentials: [
-      "Dual-qualified lawyer",
-      "Corporate law",
-      "Regulatory compliance",
-      "International aviation policy",
+      "LL.M. (Unilag), LL.B., BL",
+      "Associate, ICSAN",
+      "Member, NIM (Chartered)",
+      "15+ Yrs Corporate & Commercial Law",
     ],
     highlights: [
-      { label: "Gourmet In-Flight Meals Delivered", value: "8,500+" },
-      { label: "Custom Menu Turnaround", value: "2 Hours" },
+      { label: "Governance Compliance", value: "100%" },
+      { label: "Corporate Advisory Experience", value: "15+ Years" },
     ],
   },
   {
-    id: "alexey-saliu-lawal",
-    name: "Alexey Alyosha Saliu-Lawal",
-    role: "Head, Maintenance",
+    id: "omoruyi-saliu-lawal",
+    name: "Omoruyi Saliu-Lawal",
+    role: "Hangar Manager",
     department: "Maintenance",
-    departmentLabel: "Maintenance",
+    departmentLabel: "Hangar & Maintenance",
     image: "/images/contact-cta.png",
     quote:
-      "Modern flight decks depend on flawless digital integrity — satellite nav, radar, and telemetry must function with absolute fidelity.",
+      "Ensuring that EAN's hangar and ground support operations run with precision, safety, and efficiency.",
     bio: [
-      "Alexey Alyosha Saliu-Lawal leads EAN Aviation’s engineering and maintenance department. He specializes in flight management systems (FMS), satellite communications (Satcom), and radar diagnostics across business aircraft models including Honeywell Primus and Collins Pro Line suites.",
-      "Alexey brings 15 years of technical engineering experience in real-time troubleshooting and line maintenance updates for private jet fleets.",
+      "Omoruyi Saliu-Lawal is an accomplished aviation engineer with over 21 years of combined experience spanning aircraft maintenance, facility management, and engineering project delivery across Nigeria's aviation and industrial sectors. Since joining EAN Aviation in 2011, first as Head, Facilities, and since 2014, as Hangar Manager, his technical leadership has ensured that EAN's hangar and ground support operations run with precision, safety, and efficiency.",
+      "He holds a Nigerian Civil Aviation Authority (NCAA) Aircraft Maintenance Engineer's license with type ratings on the Challenger 601/604/605 series and GE CF-34-3B engines and completed EASA Part 66 (Category B1.1) approved training in Aircraft Maintenance Engineering at Air Service Training, Scotland. He is also a certified Level 2 Non-Destructive Testing (NDT) Inspector, trained in Penetrant, Magnetic Particle, and Eddy Current Inspection to EN4179/NAS410 standards, and holds a Wheels and Brakes qualification with Distinction from the Nigerian College of Aviation Technology, Zaria.",
+      "Omoruyi oversees all aircraft maintenance, hangar, and ground service equipment operations with meticulous attention to safety, quality, and international best practice, including ICAO, NCAA, and IS-BAH standards, delivering engineering excellence that supports EAN's reputation for reliability and uncompromising service.",
     ],
     credentials: [
-      "Aircraft Maintenance and Engineering (AME)",
-      "Certified Aviation Professional (CAP)",
-      "Airworthiness and Compliance Specialist",
-      "Aircraft Maintenance and Engineering (AME)",
+      "NCAA AME License (Challenger 601/604/605)",
+      "EASA Part 66 (Cat B1.1) Training",
+      "Certified Level 2 NDT Inspector",
+      "21+ Yrs Aviation Engineering",
     ],
-    highlights: [{ label: "Avionics Diagnostic Accuracy", value: "99.8%" }],
+    highlights: [{ label: "Engineering Leadership", value: "21+ Years" }],
   },
   {
     id: "tomilara-adewale",
@@ -1093,7 +1100,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     quote:
       "True service is anticipating needs before they are articulated, ensuring absolute privacy, comfort, and peace of mind.",
     bio: [
-      "Tomilara Adewale directs human resource management,  at EAN Aviation. She oversees client communications from initial flight inquiry through to ground arrival.",
+      "Tomilara Adewale directs human resource management at EAN Aviation. She oversees client communications from initial flight inquiry through to ground arrival.",
       "Tomilara has established long-standing partnerships with multinational corporate travel desks, HNWI family offices, and diplomatic missions across Africa.",
     ],
     credentials: [
@@ -1129,43 +1136,46 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "okechukwu-umeh",
     name: "Okechukwu Umeh",
-    role: "Flight Operations Manager",
+    role: "Manager, Operations Support",
     department: "Operations",
-    departmentLabel: "Operations",
+    departmentLabel: "Operations Support",
     image: "/images/hero/slide-2.png",
     quote:
-      "Precision weather tracking, aircrew discipline, and total situational readiness define our flight operations standard.",
+      "Maintaining the highest standards of safety, regulatory compliance, and service excellence across all operational touchpoints.",
     bio: [
-      "Okechukwu Umeh manages the planning, coordination, and execution of all ground and air operations, ensuring seamless service delivery for private, corporate, and government clients across Africa.",
+      "Umeh Okechukwu serves as the operations support manager at EAN Aviation Limited, Nigeria's first fully integrated Fixed Base Operator (FBO) and maintenance organization, headquartered at Murtala Muhammed International Airport in Lagos.",
+      "With over twelve years of experience in aviation operations, Okechukwu oversees the full scope of EAN Aviation's ground and flight service delivery, ensuring seamless coordination across VIP terminal operations, business jet charter services, aircraft maintenance, and the company's role as the authorized Airbus Helicopters distributor for West Africa.",
+      "In this role, Okechukwu is responsible for maintaining the highest standards of safety, regulatory compliance, and service excellence across all operational touchpoints, from passenger and crew handling at the VIP terminal to charter flight logistics and maintenance turnaround. Okechukwu's leadership has been instrumental in positioning EAN Aviation as a benchmark for private and business aviation services in Nigeria and the broader West African region, supporting a growing base of corporate, government, and high-net-worth clients who rely on the company for discreet, efficient, and world-class aviation solutions.",
+      "Drawing on a career built across various facets of aviation operations, Okechukwu combines technical expertise with a strong operational management background, driving continuous improvement in service delivery while ensuring EAN Aviation's operations align with international aviation safety and quality standards.",
     ],
     credentials: [
-      "Flight Operations Officer (FOO)",
-      "Airline/Aviation Management",
+      "12+ Yrs Aviation Operations Management",
+      "FBO & VIP Terminal Operations Lead",
+      "Airbus Helicopters Distribution Operations",
     ],
-    highlights: [{ label: "Aircraft Transactions Closed", value: "$120M+" }],
+    highlights: [{ label: "Operations Excellence", value: "12+ Years" }],
   },
   {
     id: "tosin-taiwo",
-    name: "Tosin Taiwo",
+    name: "Oluwatosin Taiwo",
     role: "Ramp Manager",
     department: "Operations",
-    departmentLabel: "Operational Excellence",
+    departmentLabel: "Ramp Operations",
     image: "/images/hero/slide-2.png",
     quote:
-      "Financial strategy must be precise, transparent, and aligned with long-term infrastructure development.",
+      "Overseeing ground operations with a sharp focus on safety, efficiency, and resource optimization.",
     bio: [
-      "Ahmed Kazeem manages financial planning, fiscal risk management, charter revenue accounting, and corporate governance at EAN Aviation.",
-      "With a background in global aircraft transaction advisory, Ahmed assists corporate entities and private individuals with aircraft sourcing, pre-purchase inspections, registration, and delivery.",
+      "Oluwatosin Taiwo is a skilled ramp manager, responsible for overseeing ground operations with a sharp focus on safety, efficiency, and resource optimization.",
+      "He holds a bachelor’s degree in chemical engineering from Ladoke Akintola University of Technology and an MBA in finance management. Complemented by certifications in IATA Ground Operations Management, IATA Safety Management Systems, Workplace Safety & Health, and ISO 45001 Occupational Health & Safety, Oluwatosin brings comprehensive expertise to his role. He advises executive leadership on operational matters while serving as a human factors and ramp safety trainer.",
+      "His leadership ensures that ground operations run smoothly, meeting the highest standards of safety and service excellence, reinforcing EAN Aviation’s commitment to impeccable operational precision.",
     ],
     credentials: [
-      "Advanced Diploma in Logistics and Supply Chain Management",
-      "Diploma in Aeronautical Engineering",
-      "FAA Dangerous Goods Training",
-      "Advanced certificate in Project Management",
-      "Certificate in Aviation Safety and Security Management",
-      "Certificate in Leadership and Change Management",
+      "B.Tech Chemical Engineering (LAUTECH)",
+      "MBA Finance Management",
+      "IATA Ground Operations & SMS Certified",
+      "ISO 45001 Certified",
     ],
-    highlights: [{ label: "Aircraft Turnaround Time", value: "30 minutes" }],
+    highlights: [{ label: "Ramp Safety Record", value: "100%" }],
   },
 ];
 

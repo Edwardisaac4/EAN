@@ -198,8 +198,13 @@ export default function MasterLeadHubPage() {
     <div className="flex-1 flex flex-col min-w-0">
       {/* Top Bar Header */}
       <AdminHeader
+        leads={leads}
         onSearchChange={setSearchQuery}
         onOpenCreateModal={() => setIsCreateModalOpen(true)}
+        onSelectLead={(leadId) => {
+          const target = leads.find((l) => l.id === leadId);
+          if (target) setSelectedLead(target);
+        }}
       />
 
       <main className="flex-1 p-6 md:p-8 space-y-6 max-w-7xl w-full mx-auto">
