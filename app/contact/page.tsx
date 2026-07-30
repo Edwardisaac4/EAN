@@ -39,10 +39,12 @@ const getServiceFromSlug = (slug: string): string => {
     'charter': 'charter',
     'wings-catering': 'catering',
     'catering': 'catering',
-    'vip-lounge': 'lounge',
-    'lounge': 'lounge',
-    'leased-offices': 'offices',
-    'offices': 'offices',
+    'vip-lounge': 'vip',
+    'lounge': 'vip',
+    'vip': 'vip',
+    'leased-offices': 'leasing',
+    'offices': 'leasing',
+    'leasing': 'leasing',
   };
   return mapping[val] || 'general';
 };
@@ -52,8 +54,8 @@ const AVAILABLE_SERVICES = [
   { id: 'fbo', label: 'FBO & Ground Support' },
   { id: 'maintenance', label: 'Aircraft Maintenance (AMO)' },
   { id: 'catering', label: 'Wings™ Catering' },
-  { id: 'lounge', label: 'VIP Lounge Experience' },
-  { id: 'offices', label: 'Hangar & Office Leases' },
+  { id: 'vip', label: 'VIP Lounge Experience' },
+  { id: 'leasing', label: 'Hangar & Office Leases' },
   { id: 'general', label: 'General Business Inquiry' },
 ];
 
@@ -451,13 +453,22 @@ export default function ContactPage() {
                                     return (
                                       <label
                                         key={srv.id}
-                                        onClick={() => handleServiceToggle(srv.id)}
+                                        htmlFor={`srv-${srv.id}`}
                                         className={`flex items-center gap-3 p-3 rounded-xs border cursor-pointer transition-all duration-200 ${
                                           isChecked
                                             ? 'bg-ean-gold/15 border-ean-gold text-white shadow-[0_0_12px_rgba(196,149,42,0.2)]'
                                             : 'bg-white/5 border-white/10 text-ean-muted-light hover:border-white/25 hover:text-white'
                                         }`}
                                       >
+                                        <input
+                                          type="checkbox"
+                                          id={`srv-${srv.id}`}
+                                          name="selectedServices"
+                                          value={srv.id}
+                                          checked={isChecked}
+                                          onChange={() => handleServiceToggle(srv.id)}
+                                          className="sr-only"
+                                        />
                                         <div
                                           className={`w-4 h-4 rounded-xs border flex items-center justify-center transition-all ${
                                             isChecked
@@ -465,7 +476,7 @@ export default function ContactPage() {
                                               : 'border-white/30 bg-black/20'
                                           }`}
                                         >
-                                          {isChecked && <CheckCircle className="w-3.5 h-3.5 stroke-[3]" />}
+                                          {isChecked && <CheckCircle className="w-3.5 h-3.5 stroke-3" />}
                                         </div>
                                         <span className="text-xs font-medium">{srv.label}</span>
                                       </label>

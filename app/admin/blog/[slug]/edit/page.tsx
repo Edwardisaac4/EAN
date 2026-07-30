@@ -107,20 +107,35 @@ export default function EditBlogPostPage({ params }: EditPageProps) {
 
       setSaveStatus('saved')
       setLastSaved(new Date())
+
+      if (slug && slug !== routeSlug) {
+        router.replace(`/admin/blog/${encodeURIComponent(slug)}/edit`)
+      }
     } catch (err) {
       console.error('Save failed:', err)
       setSaveStatus('error')
     }
-  }, [title, slug, category, excerpt, content, featuredImg, seoTitle, seoDesc, ogImage, status, routeSlug])
+  }, [title, slug, category, excerpt, content, featuredImg, seoTitle, seoDesc, ogImage, status, routeSlug, router])
+
+  // Clear autosave timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autosaveTimer.current) {
+        clearTimeout(autosaveTimer.current)
+        autosaveTimer.current = null
+      }
+    }
+  }, [])
 
   // Trigger Debounced Autosave (3s) for drafts
   const triggerAutosave = useCallback(() => {
     if (status === 'published') return
     if (!title.trim()) return
 
-    setSaveStatus('idle')
-
-    if (autosaveTimer.current) clearTimeout(autosaveTimer.current)
+    if (autosaveTimer.current) {
+      clearTimeout(autosaveTimer.current)
+      autosaveTimer.current = null
+    }
     autosaveTimer.current = setTimeout(() => {
       saveDraft()
     }, 3000)
@@ -137,6 +152,11 @@ export default function EditBlogPostPage({ params }: EditPageProps) {
     if (!title.trim()) {
       setToastMessage({ type: 'error', text: 'Please enter a post title' })
       return
+    }
+
+    if (autosaveTimer.current) {
+      clearTimeout(autosaveTimer.current)
+      autosaveTimer.current = null
     }
 
     setPublishing(true)
@@ -159,7 +179,11 @@ export default function EditBlogPostPage({ params }: EditPageProps) {
         }),
       })
 
-      if (!saveRes.ok) throw new Error('Failed to update post content')
+      const saveJson = await saveRes.json()
+
+      if (!saveRes.ok || !saveJson.success) {
+        throw new Error(saveJson.error || 'Failed to update post content')
+      }
 
       const pubRes = await fetch(`/api/admin/blog/${encodeURIComponent(slug)}/publish`, {
         method: 'PATCH',
@@ -213,7 +237,7 @@ export default function EditBlogPostPage({ params }: EditPageProps) {
           <div className="h-4 w-px bg-ean-border-dark hidden sm:block" />
 
           <div className="hidden sm:flex items-center gap-2">
-            <span className="text-xs font-medium text-ean-white truncate max-w-[200px]">
+            <span className="text-xs font-medium text-ean-white truncate max-w-50">
               Editing: {title || routeSlug}
             </span>
             {status === 'published' ? (

@@ -38,18 +38,6 @@ interface ResolvedArticle {
   isFeatured?: boolean;
 }
 
-// Tiptap JSON block shapes
-interface TiptapTextNode {
-  type: string;
-  text: string;
-}
-
-interface TiptapBlock {
-  type: string;
-  attrs?: Record<string, number | string>;
-  content?: TiptapTextNode[];
-}
-
 interface Props {
   params: Promise<{ slug: string }>;
 }
@@ -75,14 +63,104 @@ export async function generateStaticParams() {
   return staticSlugs;
 }
 
+import { cookies } from 'next/headers';
+import { createClient } from '@/utils/supabase/server';
+
+// HTML Sanitizer for raw HTML content
+function sanitizeHtml(html: string): string {
+  if (!html) return '';
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+    .replace(/\s*on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+    .replace(/href\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*'|javascript:[^\s>]+)/gi, 'href="#"');
+}
+
+// Full recursive Tiptap JSON node renderer
+interface TiptapMark {
+  type: string;
+  attrs?: Record<string, string | number | boolean | null>;
+}
+
+interface TiptapNode {
+  type: string;
+  text?: string;
+  attrs?: Record<string, string | number | boolean | null>;
+  marks?: TiptapMark[];
+  content?: TiptapNode[];
+}
+
+function renderTiptapNode(node: TiptapNode, key: number | string): React.ReactNode {
+  if (!node) return null;
+
+  if (node.type === 'text') {
+    let element: React.ReactNode = node.text || '';
+    if (node.marks) {
+      node.marks.forEach((mark) => {
+        if (mark.type === 'bold') element = <strong>{element}</strong>;
+        if (mark.type === 'italic') element = <em>{element}</em>;
+        if (mark.type === 'code') element = <code className="bg-ean-gold/10 px-1 py-0.5 rounded text-sm font-mono">{element}</code>;
+        const href = typeof mark.attrs?.href === 'string' ? mark.attrs.href : '';
+        if (mark.type === 'link' && href) {
+          const safeHref = href.startsWith('javascript:') ? '#' : href;
+          element = (
+            <a href={safeHref} target="_blank" rel="noopener noreferrer" className="text-ean-gold underline hover:text-ean-gold-light">
+              {element}
+            </a>
+          );
+        }
+      });
+    }
+    return <React.Fragment key={key}>{element}</React.Fragment>;
+  }
+
+  const children = node.content ? node.content.map((child, idx) => renderTiptapNode(child, idx)) : null;
+
+  switch (node.type) {
+    case 'heading': {
+      const level = typeof node.attrs?.level === 'number' ? node.attrs.level : 2;
+      if (level === 1) return <h1 key={key} className="font-display text-3xl sm:text-4xl text-ean-navy font-semibold pt-4">{children}</h1>;
+      if (level === 3) return <h3 key={key} className="font-display text-xl sm:text-2xl text-ean-navy font-semibold pt-4">{children}</h3>;
+      return <h2 key={key} className="font-display text-2xl sm:text-3xl text-ean-navy font-semibold pt-4">{children}</h2>;
+    }
+    case 'paragraph':
+      return <p key={key} className="leading-relaxed my-3">{children}</p>;
+    case 'blockquote':
+      return <blockquote key={key} className="border-l-2 border-ean-gold pl-6 py-2 my-6 italic text-ean-navy bg-ean-gold/5 rounded-r-xs">{children}</blockquote>;
+    case 'bulletList':
+      return <ul key={key} className="list-disc list-inside my-4 space-y-2">{children}</ul>;
+    case 'orderedList':
+      return <ol key={key} className="list-decimal list-inside my-4 space-y-2">{children}</ol>;
+    case 'listItem':
+      return <li key={key} className="text-ean-text-dark">{children}</li>;
+    case 'image': {
+      const imgSrc = typeof node.attrs?.src === 'string' ? node.attrs.src : '';
+      const imgAlt = typeof node.attrs?.alt === 'string' ? node.attrs.alt : '';
+      if (!imgSrc) return null;
+      return (
+        <div key={key} className="my-6 relative w-full h-64 sm:h-96 rounded-xs overflow-hidden border border-ean-border-light">
+          <Image src={imgSrc} alt={imgAlt} fill className="object-cover" />
+        </div>
+      );
+    }
+    case 'horizontalRule':
+      return <hr key={key} className="my-8 border-ean-border-light" />;
+    default:
+      return <div key={key}>{children}</div>;
+  }
+}
+
 // Helper to get article data from DB or static constants
 async function getArticleData(slug: string): Promise<ResolvedArticle | null> {
-  // 1. Check Supabase first
+  // 1. Check Supabase first for published posts
   try {
-    const { data: dbPost } = await adminSupabase
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+    const { data: dbPost } = await supabase
       .from('blog_posts')
       .select('*')
       .eq('slug', slug)
+      .eq('status', 'published')
       .single();
 
     if (dbPost) {
@@ -111,21 +189,6 @@ async function getArticleData(slug: string): Promise<ResolvedArticle | null> {
   if (staticArt) {
     return {
       ...staticArt,
-      isFromDb: false,
-    };
-  }
-
-  // 3. Fallback check for admin template articles or formatted slugs
-  const formattedTitle = slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-  if (slug.length > 3) {
-    return {
-      slug,
-      title: formattedTitle,
-      category: 'Aviation Insights',
-      excerpt: 'Executive analysis and insights for corporate aircraft operations in West Africa.',
-      publishedAt: 'July 2026',
-      readTime: '4 min read',
-      image: '/images/vip-lounge.jpg',
       isFromDb: false,
     };
   }
@@ -180,50 +243,16 @@ function renderArticleBody(article: ResolvedArticle) {
       return (
         <div 
           className="prose prose-lg prose-slate dark:prose-invert max-w-none font-ui leading-relaxed space-y-6"
-          dangerouslySetInnerHTML={{ __html: article.content }} 
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.content) }} 
         />
       );
     }
-    if (typeof article.content === 'object' && article.content !== null && !Array.isArray(article.content)) {
-      const doc = article.content as { content?: TiptapBlock[] };
+    if (typeof article.content === 'object' && article.content !== null) {
+      const doc = (article.content as unknown) as TiptapNode;
       if (doc.content) {
         return (
           <div className="space-y-6 font-ui text-ean-text-dark text-base sm:text-lg leading-relaxed">
-            {doc.content.map((block: TiptapBlock, idx: number) => {
-              if (block.type === 'heading') {
-                const level = block.attrs?.level || 2;
-                const text = block.content?.map((c: TiptapTextNode) => c.text).join('') || '';
-                if (level === 1) {
-                  return (
-                    <h1 key={idx} className="font-display text-3xl sm:text-4xl text-ean-navy font-semibold pt-4">
-                      {text}
-                    </h1>
-                  );
-                }
-                if (level === 3) {
-                  return (
-                    <h3 key={idx} className="font-display text-xl sm:text-2xl text-ean-navy font-semibold pt-4">
-                      {text}
-                    </h3>
-                  );
-                }
-                return (
-                  <h2 key={idx} className="font-display text-2xl sm:text-3xl text-ean-navy font-semibold pt-4">
-                    {text}
-                  </h2>
-                );
-              }
-              if (block.type === 'blockquote') {
-                const text = block.content?.map((c: TiptapTextNode) => c.text).join('') || '';
-                return (
-                  <blockquote key={idx} className="border-l-2 border-ean-gold pl-6 py-2 my-6 italic text-ean-navy bg-ean-gold/5 rounded-r-xs">
-                    &ldquo;{text}&rdquo;
-                  </blockquote>
-                );
-              }
-              const text = block.content?.map((c: TiptapTextNode) => c.text).join('') || '';
-              return <p key={idx}>{text}</p>;
-            })}
+            {doc.content.map((child, idx) => renderTiptapNode(child, idx))}
           </div>
         );
       }

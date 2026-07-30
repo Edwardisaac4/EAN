@@ -217,7 +217,7 @@ export function SEOPanel({
             />
 
             {ogImage ? (
-              <div className="relative w-full h-[100px] rounded-lg overflow-hidden border border-ean-border-dark group bg-ean-black-pure">
+              <div className="relative w-full h-25 rounded-lg overflow-hidden border border-ean-border-dark group bg-ean-black-pure">
                 <Image
                   src={ogImage}
                   alt="OG Preview"
@@ -235,9 +235,11 @@ export function SEOPanel({
                 </button>
               </div>
             ) : (
-              <div
+              <button
+                type="button"
+                aria-label="Upload OG Image"
                 onClick={() => ogFileInputRef.current?.click()}
-                className="w-full h-[100px] rounded-lg border border-dashed border-ean-border-dark bg-ean-black-pure hover:border-ean-gold/50 flex flex-col items-center justify-center p-2 text-center cursor-pointer transition-colors"
+                className="w-full h-25 rounded-lg border border-dashed border-ean-border-dark bg-ean-black-pure hover:border-ean-gold/50 flex flex-col items-center justify-center p-2 text-center cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-ean-gold"
               >
                 {isUploadingOg ? (
                   <Loader2 className="w-5 h-5 text-ean-gold animate-spin" />
@@ -246,11 +248,11 @@ export function SEOPanel({
                     <Upload className="w-5 h-5 text-ean-gold mb-1" />
                     <span className="text-xs font-medium text-ean-white">Upload OG Image</span>
                     <span className="text-[10px] text-ean-muted-light/60">
-                      Fallback: Featured Image
+                      {featuredImage ? 'Fallback: Using Featured Image' : 'Fallback: Featured Image'}
                     </span>
                   </>
                 )}
-              </div>
+              </button>
             )}
 
             {ogError && (
@@ -262,7 +264,7 @@ export function SEOPanel({
 
           {/* LIVE GOOGLE PREVIEW */}
           <div className="pt-2 border-t border-ean-border-dark/50">
-            <span className="text-[11px] font-semibold text-ean-muted-light uppercase tracking-wider block mb-2 flex items-center gap-1">
+            <span className="text-[11px] font-semibold text-ean-muted-light uppercase tracking-wider mb-2 flex items-center gap-1">
               <Globe className="w-3 h-3 text-ean-gold" />
               Live Google Search Preview
             </span>

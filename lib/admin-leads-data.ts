@@ -42,6 +42,7 @@ export interface LeadStats {
   inProgressLeads: number;
   qualifiedLeads: number;
   closedWonLeads: number;
+  dailyInquiryRate?: number;
   avgResponseSlaMinutes: number;
   conversionRate: number;
   totalEstimatedPipeline: number;
@@ -413,12 +414,15 @@ export function getLeadStats(leads: Lead[]): LeadStats {
     .map(([page, count]) => ({ page, count }))
     .sort((a, b) => b.count - a.count);
 
+  const dailyInquiryRate = totalLeads > 0 ? Math.round((totalLeads / 7) * 10) / 10 : 0;
+
   return {
     totalLeads,
     newLeads,
     inProgressLeads,
     qualifiedLeads,
     closedWonLeads,
+    dailyInquiryRate,
     avgResponseSlaMinutes: 24,
     conversionRate,
     totalEstimatedPipeline,

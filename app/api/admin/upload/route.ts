@@ -71,14 +71,11 @@ export async function POST(req: NextRequest) {
       })
 
     if (uploadError) {
-      console.warn('[Upload API] Supabase storage upload warning:', uploadError.message)
-      // Fallback: If bucket does not exist or upload failed, return mock/fallback URL or structured error
-      const mockUrl = `/images/blog/${fileName}`
-      return NextResponse.json({
-        success: true,
-        data: { url: mockUrl },
-        warning: 'Uploaded with local storage fallback',
-      })
+      console.warn('[Upload API] Supabase storage upload error:', uploadError.message)
+      return NextResponse.json(
+        { success: false, error: uploadError.message || 'File upload failed' },
+        { status: 500 }
+      )
     }
 
     const { data: publicUrlData } = adminSupabase.storage

@@ -34,11 +34,11 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       .single()
 
     if (error) {
-      console.warn('[Publish API] Supabase publish warning:', error.message)
-      return NextResponse.json({
-        success: true,
-        data: { slug, status: 'published', published_at: new Date().toISOString() },
-      })
+      console.warn('[Publish API] Supabase publish error:', error.message)
+      return NextResponse.json(
+        { success: false, error: error.message || 'Failed to publish post' },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json({ success: true, data })

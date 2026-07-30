@@ -519,13 +519,15 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
             {/* TAB 1 — Upload */}
             {imageTab === 'upload' && (
               <div className="space-y-3">
-                <div
+                <button
+                  type="button"
+                  aria-label="Upload inline image"
                   onDragOver={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
                   }}
                   onDrop={handleImageDrop}
-                  className="w-full h-[160px] rounded-xl border-2 border-dashed border-ean-border-dark bg-ean-black-pure flex flex-col items-center justify-center p-4 text-center hover:border-ean-gold/50 transition-all cursor-pointer relative"
+                  className="w-full h-40 rounded-xl border-2 border-dashed border-ean-border-dark bg-ean-black-pure flex flex-col items-center justify-center p-4 text-center hover:border-ean-gold/50 transition-all cursor-pointer relative focus:outline-none focus:ring-2 focus:ring-ean-gold"
                   onClick={() => {
                     const input = document.createElement('input')
                     input.type = 'file'
@@ -553,7 +555,7 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
                       </span>
                     </>
                   )}
-                </div>
+                </button>
 
                 {uploadError && (
                   <p className="text-xs text-red-400 bg-red-500/10 p-2 rounded border border-red-500/20">

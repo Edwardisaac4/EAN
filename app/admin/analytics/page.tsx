@@ -22,7 +22,7 @@ export default function AnalyticsPage() {
   useEffect(() => {
     async function loadGraphQLStats() {
       try {
-        const res = await graphqlQuery<{ leadStats: any }>(QUERY_GET_LEAD_STATS);
+        const res = await graphqlQuery<{ leadStats: ReturnType<typeof getLeadStats> }>(QUERY_GET_LEAD_STATS);
         if (res?.leadStats) {
           setStats(res.leadStats);
           setGraphqlStatus('connected');
@@ -89,8 +89,8 @@ export default function AnalyticsPage() {
           />
           <LeadStatCard
             title="Inquiries Rate (Daily)"
-            value="14 / day"
-            change="Strong Influx"
+            value={stats.dailyInquiryRate ? `${stats.dailyInquiryRate} / day` : `${(stats.totalLeads / 7).toFixed(1)} / day`}
+            change={stats.dailyInquiryRate ? "Live Rate" : "Target: 7-day Avg"}
             changeType="positive"
             icon={Globe}
             accentColor="text-amber-400"
@@ -108,10 +108,13 @@ export default function AnalyticsPage() {
           <ServiceDonutChart
             distribution={
               Array.isArray(stats.serviceDistribution)
-                ? stats.serviceDistribution.reduce((acc: any, item: any) => {
-                    acc[item.category] = item.count;
-                    return acc;
-                  }, {})
+                ? (stats.serviceDistribution as Array<{ category: string; count: number }>).reduce(
+                    (acc: Record<string, number>, item: { category: string; count: number }) => {
+                      acc[item.category] = item.count;
+                      return acc;
+                    },
+                    {}
+                  )
                 : stats.serviceDistribution
             }
             total={stats.totalLeads}
@@ -133,7 +136,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className="space-y-3 text-xs">
-              {stats.trackingDistribution?.topLandingPages?.map((lp: any) => (
+              {stats.trackingDistribution?.topLandingPages?.map((lp: { page: string; count: number }) => (
                 <div key={lp.page} className="p-3.5 rounded-xl bg-ean-black-pure border border-ean-border-dark flex items-center justify-between">
                   <span className="font-mono text-ean-gold font-semibold">{lp.page}</span>
                   <span className="text-ean-muted-light font-mono font-bold">{lp.count} arrivals</span>
@@ -152,7 +155,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className="grid grid-cols-3 gap-3 text-center text-xs">
-              {Object.entries(stats.trackingDistribution?.devices || {}).map(([dev, count]: [string, any]) => {
+              {Object.entries(stats.trackingDistribution?.devices || {}).map(([dev, count]: [string, number]) => {
                 const percentage = stats.totalLeads > 0 ? Math.round((count / stats.totalLeads) * 100) : 0;
                 return (
                   <div key={dev} className="p-4 rounded-xl bg-ean-black-pure border border-ean-border-dark space-y-1">

@@ -26,8 +26,29 @@ import type {
 // ---------------------------------------------------------------------------
 
 function derivePriority(service: string, message: string): LeadPriorityEnum {
-  // All incoming inquiries are treated as urgent on the EAN command center
-  return 'urgent'
+  const text = (message || '').toLowerCase();
+  
+  if (
+    text.includes('urgent') ||
+    text.includes('aog') ||
+    text.includes('asap') ||
+    text.includes('today') ||
+    text.includes('immediately') ||
+    service === 'fbo' ||
+    service === 'maintenance'
+  ) {
+    return 'urgent';
+  }
+
+  if (service === 'charter' || service === 'leasing' || text.includes('quote') || text.includes('charter')) {
+    return 'high';
+  }
+
+  if (service === 'catering' || service === 'vip') {
+    return 'normal';
+  }
+
+  return 'low';
 }
 
 // ---------------------------------------------------------------------------

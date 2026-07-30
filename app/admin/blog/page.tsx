@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 import { BLOG_TEMPLATES, BlogTemplate } from '@/lib/blog-templates';
 import { 
@@ -75,6 +76,7 @@ const INITIAL_ARTICLES: MockArticle[] = [
 ];
 
 export default function BlogCMSPage() {
+  const router = useRouter();
   const [articles, setArticles] = useState<MockArticle[]>(INITIAL_ARTICLES);
   const [search, setSearch] = useState('');
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
@@ -104,32 +106,53 @@ export default function BlogCMSPage() {
     setNewContent(template.defaultContent);
   };
 
-  const handleCreateArticleSubmit = (e: React.FormEvent) => {
+  const handleCreateArticleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
 
-    const slug = newTitle
+    const targetSlug = newTitle
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)+/g, '');
 
-    const newArt: MockArticle = {
-      id: `art-${Date.now()}`,
-      title: newTitle,
-      slug,
-      category: newCategory,
-      publishedAt: new Date().toISOString().split('T')[0],
-      views: 1,
-      status: 'published',
-      leadsGenerated: 0,
-      content: newContent,
-    };
+    try {
+      const res = await fetch('/api/admin/blog', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: newTitle,
+          slug: targetSlug,
+          category: newCategory,
+          content: newContent,
+          status: 'draft',
+        }),
+      });
 
-    setArticles([newArt, ...articles]);
-    setIsTemplateModalOpen(false);
-    setSelectedTemplate(null);
-    setNewTitle('');
-    setNewContent('');
+      const json = await res.json();
+      const finalSlug = json.data?.slug || targetSlug;
+
+      const newArt: MockArticle = {
+        id: json.data?.id || `art-${Date.now()}`,
+        title: newTitle,
+        slug: finalSlug,
+        category: newCategory,
+        publishedAt: new Date().toISOString().split('T')[0],
+        views: 1,
+        status: 'draft',
+        leadsGenerated: 0,
+        content: newContent,
+      };
+
+      setArticles((prev) => [newArt, ...prev]);
+      setIsTemplateModalOpen(false);
+      setSelectedTemplate(null);
+      setNewTitle('');
+      setNewContent('');
+
+      router.push(`/admin/blog/${encodeURIComponent(finalSlug)}/edit`);
+    } catch (err) {
+      console.error('Failed to create article via template:', err);
+    }
   };
 
   const renderIcon = (iconName: string) => {
@@ -297,10 +320,11 @@ export default function BlogCMSPage() {
               {BLOG_TEMPLATES.map((tmpl) => {
                 const isSelected = selectedTemplate?.id === tmpl.id;
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={tmpl.id}
                     onClick={() => handleApplyTemplate(tmpl)}
-                    className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                    className={`p-4 rounded-xl border cursor-pointer transition-all text-left w-full focus:outline-none focus:ring-2 focus:ring-ean-gold ${
                       isSelected
                         ? 'bg-ean-gold/15 border-ean-gold text-white shadow-[0_0_15px_rgba(196,149,42,0.25)]'
                         : 'bg-ean-black-pure border-ean-border-dark text-ean-muted-light hover:border-white/20 hover:text-white'
@@ -316,7 +340,7 @@ export default function BlogCMSPage() {
                     <p className="text-[11px] text-ean-muted-light line-clamp-2 leading-relaxed">
                       {tmpl.description}
                     </p>
-                  </div>
+                  </button>
                 );
               })}
             </div>

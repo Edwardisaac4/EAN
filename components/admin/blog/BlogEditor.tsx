@@ -81,7 +81,7 @@ export function BlogEditor({
   }, [editor, onEditorReady])
 
   return (
-    <div className="w-full bg-ean-black-accent/80 border border-ean-border-dark rounded-xl overflow-hidden shadow-lg flex flex-col min-h-[600px]">
+    <div className="w-full bg-ean-black-accent/80 border border-ean-border-dark rounded-xl overflow-hidden shadow-lg flex flex-col min-h-150">
       {/* Sticky Formatting Toolbar */}
       <EditorToolbar editor={editor} />
 

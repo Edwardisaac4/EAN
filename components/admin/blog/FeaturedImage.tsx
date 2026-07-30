@@ -110,24 +110,28 @@ export function FeaturedImage({ value, onChange, onRemove }: FeaturedImageProps)
 
       {value ? (
         /* STATE B — Image Uploaded */
-        <div 
-          className="relative w-full h-[220px] rounded-xl overflow-hidden border border-ean-border-dark group bg-ean-black-pure cursor-pointer"
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <Image
-            src={value}
-            alt="Featured Cover"
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            unoptimized
-          />
-          
-          {/* Subtle Overlay on hover */}
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <span className="text-xs font-semibold text-white bg-black/60 px-3 py-1.5 rounded-lg border border-white/20">
-              Click to replace image
-            </span>
-          </div>
+        <div className="relative">
+          <button 
+            type="button"
+            aria-label="Replace image"
+            className="w-full h-55 rounded-xl overflow-hidden border border-ean-border-dark group bg-ean-black-pure cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-ean-gold"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Image
+              src={value}
+              alt="Featured Cover"
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              unoptimized
+            />
+            
+            {/* Subtle Overlay on hover */}
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span className="text-xs font-semibold text-white bg-black/60 px-3 py-1.5 rounded-lg border border-white/20">
+                Replace image
+              </span>
+            </div>
+          </button>
 
           {/* Top-Right Trash Button */}
           <button
@@ -155,7 +159,7 @@ export function FeaturedImage({ value, onChange, onRemove }: FeaturedImageProps)
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`relative w-full h-[220px] rounded-xl border-2 border-dashed transition-all cursor-pointer flex flex-col items-center justify-center p-4 text-center ${
+          className={`relative w-full h-55 rounded-xl border-2 border-dashed transition-all cursor-pointer flex flex-col items-center justify-center p-4 text-center ${
             isDragging
               ? 'border-ean-gold bg-ean-gold/10'
               : 'border-ean-border-dark bg-ean-black-pure/70 hover:border-ean-gold/50 hover:bg-ean-black-pure'

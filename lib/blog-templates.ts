@@ -9,6 +9,47 @@ export interface BlogTemplate {
   defaultContent: string;
 }
 
+export function markdownToHtml(md: string): string {
+  if (!md) return '';
+  return md
+    .split('\n\n')
+    .map((block) => {
+      const trimmed = block.trim();
+      if (!trimmed) return '';
+      if (trimmed.startsWith('## ')) {
+        return `<h2>${trimmed.substring(3)}</h2>`;
+      }
+      if (trimmed.startsWith('### ')) {
+        return `<h3>${trimmed.substring(4)}</h3>`;
+      }
+      if (trimmed.startsWith('> ')) {
+        return `<blockquote>${trimmed.substring(2)}</blockquote>`;
+      }
+      if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+        const items = trimmed
+          .split('\n')
+          .map((line) => `<li>${line.replace(/^[*|-]\s+/, '')}</li>`)
+          .join('');
+        return `<ul>${items}</ul>`;
+      }
+      if (/^\d+\.\s+/.test(trimmed)) {
+        const items = trimmed
+          .split('\n')
+          .map((line) => `<li>${line.replace(/^\d+\.\s+/, '')}</li>`)
+          .join('');
+        return `<ol>${items}</ol>`;
+      }
+      if (trimmed === '---') {
+        return '<hr />';
+      }
+      let formatted = trimmed
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>');
+      return `<p>${formatted}</p>`;
+    })
+    .join('\n');
+}
+
 export const BLOG_TEMPLATES: BlogTemplate[] = [
   {
     id: 'press-release',

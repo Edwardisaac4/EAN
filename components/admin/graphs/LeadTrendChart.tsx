@@ -18,16 +18,21 @@ const DEFAULT_TREND_DATA: TrendPoint[] = [
   { label: 'Jul 25', count: 18 },
 ];
 
-export function LeadTrendChart() {
+export interface LeadTrendChartProps {
+  data?: TrendPoint[];
+}
+
+export function LeadTrendChart({ data }: LeadTrendChartProps) {
   const [hoveredPoint, setHoveredPoint] = useState<TrendPoint | null>(null);
 
-  const maxCount = Math.max(...DEFAULT_TREND_DATA.map((d) => d.count), 20);
+  const trendData = data && data.length > 0 ? data : DEFAULT_TREND_DATA;
+  const maxCount = Math.max(...trendData.map((d) => d.count), 20);
   const chartHeight = 160;
   const chartWidth = 500;
 
   // Calculate SVG curve points
-  const points = DEFAULT_TREND_DATA.map((d, index) => {
-    const x = (index / (DEFAULT_TREND_DATA.length - 1)) * chartWidth;
+  const points = trendData.map((d, index) => {
+    const x = (index / (trendData.length - 1)) * chartWidth;
     const y = chartHeight - (d.count / maxCount) * chartHeight;
     return `${x},${y}`;
   }).join(' ');

@@ -9,6 +9,17 @@ interface RouteParams {
 
 export async function GET(req: NextRequest, { params }: RouteParams) {
   try {
+    const cookieStore = await cookies()
+    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value
+    const payload = sessionCookie ? await verifySessionToken(sessionCookie) : null
+
+    if (!payload || payload.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized. Valid admin session required.' },
+        { status: 401 }
+      )
+    }
+
     const { slug } = await params
 
     const { data, error } = await adminSupabase
@@ -17,33 +28,15 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
       .eq('slug', slug)
       .single()
 
-    if (error || !data) {
-      // Mock post fallback if not found in db
-      return NextResponse.json({
-        success: true,
-        data: {
-          id: `post-${slug}`,
-          title: slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-          slug,
-          category: 'Business Aviation',
-          excerpt: 'Executive overview and insights for corporate aircraft operations in West Africa.',
-          content: {
-            type: 'doc',
-            content: [
-              {
-                type: 'paragraph',
-                content: [{ type: 'text', text: 'Welcome to the post editor.' }],
-              },
-            ],
-          },
-          cover_image_url: null,
-          seo_title: '',
-          seo_description: '',
-          og_image_url: null,
-          status: 'draft',
-          created_at: new Date().toISOString(),
-        },
-      })
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ success: false, error: 'Blog post not found' }, { status: 404 })
+      }
+      return NextResponse.json({ success: false, error: error.message || 'Database error' }, { status: 500 })
+    }
+
+    if (!data) {
+      return NextResponse.json({ success: false, error: 'Blog post not found' }, { status: 404 })
     }
 
     return NextResponse.json({ success: true, data })
@@ -80,11 +73,11 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       .single()
 
     if (error) {
-      console.warn('[Blog API PATCH] Supabase update warning:', error.message)
-      return NextResponse.json({
-        success: true,
-        data: { slug: targetSlug, ...body },
-      })
+      console.warn('[Blog API PATCH] Supabase update error:', error.message)
+      return NextResponse.json(
+        { success: false, error: error.message || 'Failed to update post' },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json({ success: true, data })

@@ -59,15 +59,11 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (error) {
-      console.warn('[Blog API] Supabase insert warning:', error.message)
-      // Fallback response for dev/local testing if table doesn't exist
-      return NextResponse.json({
-        success: true,
-        data: {
-          id: `post-${Date.now()}`,
-          ...postPayload,
-        },
-      })
+      console.warn('[Blog API] Supabase insert error:', error.message)
+      return NextResponse.json(
+        { success: false, error: error.message || 'Failed to create blog post' },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json({

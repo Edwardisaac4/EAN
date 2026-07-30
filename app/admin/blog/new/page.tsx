@@ -32,8 +32,9 @@ export default function NewBlogPostPage() {
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false)
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  // Autosave timer reference
+  // Autosave timer and saved slug references
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const savedSlugRef = useRef<string | null>(null)
 
   // Save Draft Action
   const saveDraft = useCallback(async () => {
@@ -41,9 +42,11 @@ export default function NewBlogPostPage() {
 
     setSaveStatus('saving')
     try {
+      const currentSlug = savedSlugRef.current || slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+
       const payload = {
         title,
-        slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        slug: currentSlug,
         category,
         excerpt,
         content,
@@ -54,16 +57,30 @@ export default function NewBlogPostPage() {
         status: 'draft',
       }
 
-      const res = await fetch('/api/admin/blog', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
+      let res: Response
+      if (savedSlugRef.current) {
+        res = await fetch(`/api/admin/blog/${encodeURIComponent(savedSlugRef.current)}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      } else {
+        res = await fetch('/api/admin/blog', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      }
 
       const json = await res.json()
 
       if (!res.ok || !json.success) {
         throw new Error(json.error || 'Failed to save draft')
+      }
+
+      if (json.data?.slug) {
+        savedSlugRef.current = json.data.slug
+        setSlug(json.data.slug)
       }
 
       setSaveStatus('saved')
@@ -74,6 +91,16 @@ export default function NewBlogPostPage() {
     }
   }, [title, slug, category, excerpt, content, featuredImg, seoTitle, seoDesc, ogImage])
 
+  // Clear timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autosaveTimer.current) {
+        clearTimeout(autosaveTimer.current)
+        autosaveTimer.current = null
+      }
+    }
+  }, [])
+
   // Trigger Debounced Autosave (3s)
   const triggerAutosave = useCallback(() => {
     if (status === 'published') return
@@ -81,7 +108,10 @@ export default function NewBlogPostPage() {
 
     setSaveStatus('idle')
 
-    if (autosaveTimer.current) clearTimeout(autosaveTimer.current)
+    if (autosaveTimer.current) {
+      clearTimeout(autosaveTimer.current)
+      autosaveTimer.current = null
+    }
     autosaveTimer.current = setTimeout(() => {
       saveDraft()
     }, 3000)
@@ -101,28 +131,53 @@ export default function NewBlogPostPage() {
       return
     }
 
+    if (autosaveTimer.current) {
+      clearTimeout(autosaveTimer.current)
+      autosaveTimer.current = null
+    }
+
     setPublishing(true)
     setIsPublishModalOpen(false)
 
     try {
-      const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+      const finalSlug = savedSlugRef.current || slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 
-      const saveRes = await fetch('/api/admin/blog', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          slug: finalSlug,
-          category,
-          excerpt,
-          content,
-          featuredImg,
-          seoTitle,
-          seoDesc,
-          ogImage,
-          status: 'published',
-        }),
-      })
+      let saveRes: Response
+      if (savedSlugRef.current) {
+        saveRes = await fetch(`/api/admin/blog/${encodeURIComponent(savedSlugRef.current)}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title,
+            slug: finalSlug,
+            category,
+            excerpt,
+            content,
+            featuredImg,
+            seoTitle,
+            seoDesc,
+            ogImage,
+            status: 'draft',
+          }),
+        })
+      } else {
+        saveRes = await fetch('/api/admin/blog', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title,
+            slug: finalSlug,
+            category,
+            excerpt,
+            content,
+            featuredImg,
+            seoTitle,
+            seoDesc,
+            ogImage,
+            status: 'draft',
+          }),
+        })
+      }
 
       const saveJson = await saveRes.json()
 
@@ -130,8 +185,11 @@ export default function NewBlogPostPage() {
         throw new Error(saveJson.error || 'Failed to create post')
       }
 
+      const actualSlug = saveJson.data?.slug || finalSlug
+      savedSlugRef.current = actualSlug
+
       // Call publish endpoint
-      const pubRes = await fetch(`/api/admin/blog/${encodeURIComponent(finalSlug)}/publish`, {
+      const pubRes = await fetch(`/api/admin/blog/${encodeURIComponent(actualSlug)}/publish`, {
         method: 'PATCH',
       })
 

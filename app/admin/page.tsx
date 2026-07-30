@@ -82,7 +82,9 @@ export default function AdminDashboardPage() {
     );
   });
 
-  const urgentLeads = leads;
+  const urgentLeads = leads.filter(
+    (l) => l.priority === 'urgent' && l.status !== 'closed_won' && l.status !== 'closed_lost' && l.status !== 'contacted'
+  );
 
   // GraphQL Mutation Handlers
   const handleQuickStatusChange = async (leadId: string, newStatus: LeadStatus) => {
