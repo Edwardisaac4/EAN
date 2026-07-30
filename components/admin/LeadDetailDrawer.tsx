@@ -23,7 +23,8 @@ import {
   Share2,
   Send,
   CheckCircle2,
-  UserCheck
+  UserCheck,
+  AlertTriangle
 } from 'lucide-react';
 
 export interface LeadDetailDrawerProps {
@@ -67,6 +68,7 @@ export function LeadDetailDrawer({
   const [redirectNote, setRedirectNote] = useState('');
   const [isForwarding, setIsForwarding] = useState(false);
   const [forwardSuccessMessage, setForwardSuccessMessage] = useState<string | null>(null);
+  const [forwardErrorMessage, setForwardErrorMessage] = useState<string | null>(null);
 
   if (!lead) return null;
 
@@ -91,6 +93,7 @@ export function LeadDetailDrawer({
 
     setIsForwarding(true);
     setForwardSuccessMessage(null);
+    setForwardErrorMessage(null);
 
     const presetMatch = STAFF_PRESETS.find((s) => s.email === recipientEmail);
     const recipientName = presetMatch ? presetMatch.name : recipientEmail;
@@ -115,29 +118,31 @@ export function LeadDetailDrawer({
         }),
       });
 
-      const resData = await response.json();
+      const resData = await response.json().catch(() => null);
 
-      if (resData.success) {
-        onAssignLead(lead.id, recipientName);
-        onAddNote(
-          lead.id,
-          `Lead redirected & forwarded email to ${recipientName} (${recipientEmail})${
-            redirectNote ? `. Note: "${redirectNote.trim()}"` : ''
-          }`
-        );
-        setForwardSuccessMessage(`Lead summary forwarded to ${recipientName}`);
-        setTimeout(() => {
-          setShowRedirectModal(false);
-          setForwardSuccessMessage(null);
-          setRedirectNote('');
-          setCustomRecipientEmail('');
-        }, 2000);
-      } else {
-        alert(resData.error || 'Failed to forward lead email');
+      if (!response.ok || !resData?.success) {
+        const errorMsg = resData?.error || `Request failed (${response.status})`;
+        setForwardErrorMessage(errorMsg);
+        return;
       }
+
+      onAssignLead(lead.id, recipientName);
+      onAddNote(
+        lead.id,
+        `Lead redirected & forwarded email to ${recipientName} (${recipientEmail})${
+          redirectNote ? `. Note: "${redirectNote.trim()}"` : ''
+        }`
+      );
+      setForwardSuccessMessage(`Lead summary forwarded to ${recipientName}`);
+      setTimeout(() => {
+        setShowRedirectModal(false);
+        setForwardSuccessMessage(null);
+        setRedirectNote('');
+        setCustomRecipientEmail('');
+      }, 2000);
     } catch (err) {
       console.error('Error forwarding lead email:', err);
-      alert('Network error forwarding lead email.');
+      setForwardErrorMessage('Network error forwarding lead email.');
     } finally {
       setIsForwarding(false);
     }
@@ -285,6 +290,20 @@ export function LeadDetailDrawer({
                   <div className="p-2.5 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                     <span>{forwardSuccessMessage}</span>
+                  </div>
+                ) : forwardErrorMessage ? (
+                  <div className="space-y-2">
+                    <div className="p-2.5 rounded-lg bg-red-500/20 border border-red-500/40 text-red-300 text-xs flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+                      <span>{forwardErrorMessage}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setForwardErrorMessage(null)}
+                      className="w-full py-2 bg-white/5 hover:bg-white/10 text-white/70 text-xs rounded-lg transition-all cursor-pointer"
+                    >
+                      Dismiss & Retry
+                    </button>
                   </div>
                 ) : (
                   <button

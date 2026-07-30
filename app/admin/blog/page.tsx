@@ -3,7 +3,21 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { AdminHeader } from '@/components/admin/AdminHeader';
-import { FileText, Plus, Search, Eye, Edit3, Trash2, CheckCircle2, Clock, Globe } from 'lucide-react';
+import { BLOG_TEMPLATES, BlogTemplate } from '@/lib/blog-templates';
+import { 
+  FileText, 
+  Plus, 
+  Search, 
+  Eye, 
+  Trash2, 
+  Globe, 
+  Sparkles, 
+  X, 
+  Check, 
+  Building2, 
+  BookOpen, 
+  Award 
+} from 'lucide-react';
 
 interface MockArticle {
   id: string;
@@ -14,6 +28,7 @@ interface MockArticle {
   views: number;
   status: 'published' | 'draft';
   leadsGenerated: number;
+  content?: string;
 }
 
 const INITIAL_ARTICLES: MockArticle[] = [
@@ -62,6 +77,13 @@ const INITIAL_ARTICLES: MockArticle[] = [
 export default function BlogCMSPage() {
   const [articles, setArticles] = useState<MockArticle[]>(INITIAL_ARTICLES);
   const [search, setSearch] = useState('');
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<BlogTemplate | null>(null);
+
+  // Form State for new article creation
+  const [newTitle, setNewTitle] = useState('');
+  const [newCategory, setNewCategory] = useState('Company News');
+  const [newContent, setNewContent] = useState('');
 
   const filtered = articles.filter((a) => a.title.toLowerCase().includes(search.toLowerCase()));
 
@@ -73,6 +95,51 @@ export default function BlogCMSPage() {
 
   const deleteArticle = (id: string) => {
     setArticles((prev) => prev.filter((a) => a.id !== id));
+  };
+
+  const handleApplyTemplate = (template: BlogTemplate) => {
+    setSelectedTemplate(template);
+    setNewTitle(template.defaultTitle);
+    setNewCategory(template.category);
+    setNewContent(template.defaultContent);
+  };
+
+  const handleCreateArticleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTitle.trim()) return;
+
+    const slug = newTitle
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+
+    const newArt: MockArticle = {
+      id: `art-${Date.now()}`,
+      title: newTitle,
+      slug,
+      category: newCategory,
+      publishedAt: new Date().toISOString().split('T')[0],
+      views: 1,
+      status: 'published',
+      leadsGenerated: 0,
+      content: newContent,
+    };
+
+    setArticles([newArt, ...articles]);
+    setIsTemplateModalOpen(false);
+    setSelectedTemplate(null);
+    setNewTitle('');
+    setNewContent('');
+  };
+
+  const renderIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Building2': return <Building2 className="w-5 h-5 text-ean-gold" />;
+      case 'BookOpen': return <BookOpen className="w-5 h-5 text-sky-400" />;
+      case 'Sparkles': return <Sparkles className="w-5 h-5 text-amber-400" />;
+      case 'Award': return <Award className="w-5 h-5 text-emerald-400" />;
+      default: return <FileText className="w-5 h-5 text-ean-gold" />;
+    }
   };
 
   return (
@@ -93,13 +160,23 @@ export default function BlogCMSPage() {
             </p>
           </div>
 
-          <button
-            onClick={() => alert("Article Editor dialog opened. Here you can write markdown content, set cover image, and publish.")}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-ean-gold hover:bg-ean-gold-light text-ean-black font-semibold text-xs transition-all shadow-[0_0_15px_rgba(196,149,42,0.2)]"
-          >
-            <Plus className="w-4 h-4 stroke-3" />
-            <span>Create New Article</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/admin/blog/new"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-ean-border-dark hover:border-ean-gold/50 text-ean-white font-semibold text-xs transition-all cursor-pointer"
+            >
+              <Plus className="w-4 h-4 text-ean-gold" />
+              <span>New Blank Post</span>
+            </Link>
+
+            <button
+              onClick={() => setIsTemplateModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-ean-gold hover:bg-ean-gold-light text-ean-black font-semibold text-xs transition-all shadow-[0_0_15px_rgba(196,149,42,0.25)] cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 stroke-3" />
+              <span>Create Article with Template</span>
+            </button>
+          </div>
         </div>
 
         {/* Search */}
@@ -162,6 +239,13 @@ export default function BlogCMSPage() {
                   <td className="py-4 px-4 text-right">
                     <div className="flex items-center justify-end gap-1">
                       <Link
+                        href={`/admin/blog/${art.slug}/edit`}
+                        className="p-1.5 rounded-lg bg-white/5 hover:bg-ean-gold/20 text-ean-muted-light hover:text-ean-gold transition-colors"
+                        title="Edit Article"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                      </Link>
+                      <Link
                         href={`/blog/${art.slug}`}
                         target="_blank"
                         className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-ean-muted-light hover:text-ean-white"
@@ -171,7 +255,7 @@ export default function BlogCMSPage() {
                       </Link>
                       <button
                         onClick={() => deleteArticle(art.id)}
-                        className="p-1.5 rounded-lg bg-white/5 hover:bg-rose-500/20 text-ean-muted-light hover:text-rose-400"
+                        className="p-1.5 rounded-lg bg-white/5 hover:bg-rose-500/20 text-ean-muted-light hover:text-rose-400 cursor-pointer"
                         title="Delete Article"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -185,6 +269,112 @@ export default function BlogCMSPage() {
         </div>
 
       </main>
+
+      {/* Blog Posting Templates Modal */}
+      {isTemplateModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-ean-black-accent border border-ean-border-dark rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-6">
+            <div className="flex items-center justify-between border-b border-ean-border-dark pb-4">
+              <div>
+                <h2 className="text-lg font-bold font-display text-ean-white flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-ean-gold" />
+                  Select Blog Posting Template
+                </h2>
+                <p className="text-xs text-ean-muted-light">
+                  Choose a pre-structured template for press releases, industry guides, or client case studies.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsTemplateModalOpen(false)}
+                className="p-2 rounded-lg text-ean-muted-light hover:text-white hover:bg-white/10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Template Selection Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {BLOG_TEMPLATES.map((tmpl) => {
+                const isSelected = selectedTemplate?.id === tmpl.id;
+                return (
+                  <div
+                    key={tmpl.id}
+                    onClick={() => handleApplyTemplate(tmpl)}
+                    className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                      isSelected
+                        ? 'bg-ean-gold/15 border-ean-gold text-white shadow-[0_0_15px_rgba(196,149,42,0.25)]'
+                        : 'bg-ean-black-pure border-ean-border-dark text-ean-muted-light hover:border-white/20 hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        {renderIcon(tmpl.iconName)}
+                        <span className="font-semibold text-xs text-ean-white">{tmpl.name}</span>
+                      </div>
+                      {isSelected && <Check className="w-4 h-4 text-ean-gold" />}
+                    </div>
+                    <p className="text-[11px] text-ean-muted-light line-clamp-2 leading-relaxed">
+                      {tmpl.description}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Article Content Form */}
+            {selectedTemplate && (
+              <form onSubmit={handleCreateArticleSubmit} className="space-y-4 pt-4 border-t border-ean-border-dark">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-ean-white">Article Title</label>
+                  <input
+                    type="text"
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                    className="w-full px-3 py-2 bg-ean-black-pure border border-ean-border-dark rounded-lg text-xs text-ean-white focus:outline-none focus:border-ean-gold"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-ean-white">Article Category</label>
+                  <input
+                    type="text"
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    className="w-full px-3 py-2 bg-ean-black-pure border border-ean-border-dark rounded-lg text-xs text-ean-white focus:outline-none focus:border-ean-gold"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-ean-white">Pre-formatted Body Content</label>
+                  <textarea
+                    rows={8}
+                    value={newContent}
+                    onChange={(e) => setNewContent(e.target.value)}
+                    className="w-full px-3 py-2 bg-ean-black-pure border border-ean-border-dark rounded-lg text-xs text-ean-white font-mono focus:outline-none focus:border-ean-gold resize-none"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsTemplateModalOpen(false)}
+                    className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-ean-muted-light"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-lg bg-ean-gold hover:bg-ean-gold-light text-ean-black font-semibold text-xs shadow-md"
+                  >
+                    Publish Article with Template
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

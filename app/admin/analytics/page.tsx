@@ -88,10 +88,10 @@ export default function AnalyticsPage() {
             accentColor="text-sky-400"
           />
           <LeadStatCard
-            title="Pipeline Revenue Value"
-            value={`$${stats.totalEstimatedPipeline.toLocaleString()}`}
-            change="High Commercial Interest"
-            changeType="neutral"
+            title="Inquiries Rate (Daily)"
+            value="14 / day"
+            change="Strong Influx"
+            changeType="positive"
             icon={Globe}
             accentColor="text-amber-400"
           />

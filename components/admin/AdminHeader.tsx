@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useSyncExternalStore, useMemo } from 'react';
 import { Search, Bell, Plus, Clock, Globe, ShieldAlert, ChevronRight, Menu, CheckCheck } from 'lucide-react';
 import { Lead } from '@/lib/admin-leads-data';
 
 export interface AdminHeaderProps {
   onSearchChange?: (query: string) => void;
-  onOpenCreateModal?: () => void;
   onSelectLead?: (leadId: string) => void;
   onToggleSidebar?: () => void;
   leads?: Lead[];
@@ -15,9 +14,25 @@ export interface AdminHeaderProps {
 
 const READ_STORAGE_KEY = 'ean_read_notifications_v1';
 
+const subscribeReadNotifications = (callback: () => void) => {
+  if (typeof window === 'undefined') return () => {};
+  window.addEventListener('storage', callback);
+  window.addEventListener('ean-read-notifications-updated', callback);
+  return () => {
+    window.removeEventListener('storage', callback);
+    window.removeEventListener('ean-read-notifications-updated', callback);
+  };
+};
+
+const getReadNotificationsSnapshot = () => {
+  if (typeof window === 'undefined') return '[]';
+  return localStorage.getItem(READ_STORAGE_KEY) || '[]';
+};
+
+const getReadNotificationsServerSnapshot = () => '[]';
+
 export function AdminHeader({
   onSearchChange,
-  onOpenCreateModal,
   onSelectLead,
   onToggleSidebar,
   leads = [],
@@ -26,21 +41,24 @@ export function AdminHeader({
   const [utcTime, setUtcTime] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
-  const [readIds, setReadIds] = useState<string[]>([]);
 
-  // Load read notification IDs from localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem(READ_STORAGE_KEY);
-        if (stored) {
-          setReadIds(JSON.parse(stored));
-        }
-      } catch (e) {
-        console.error('Failed to load read notification IDs:', e);
+  const rawReadIds = useSyncExternalStore(
+    subscribeReadNotifications,
+    getReadNotificationsSnapshot,
+    getReadNotificationsServerSnapshot
+  );
+
+  const readIds = useMemo(() => {
+    try {
+      const parsed: unknown = JSON.parse(rawReadIds);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((v): v is string => typeof v === 'string');
       }
+    } catch (e) {
+      console.error('Failed to parse read notification IDs:', e);
     }
-  }, []);
+    return [];
+  }, [rawReadIds]);
 
   // Update clocks every second
   useEffect(() => {
@@ -88,10 +106,10 @@ export function AdminHeader({
   const markAsRead = (leadId: string) => {
     if (!readIds.includes(leadId)) {
       const nextRead = [...readIds, leadId];
-      setReadIds(nextRead);
       if (typeof window !== 'undefined') {
         try {
           localStorage.setItem(READ_STORAGE_KEY, JSON.stringify(nextRead));
+          window.dispatchEvent(new Event('ean-read-notifications-updated'));
         } catch (e) {
           console.error('Failed to save read notification IDs:', e);
         }
@@ -102,10 +120,10 @@ export function AdminHeader({
   const handleMarkAllAsRead = () => {
     const allIds = activeAlertLeads.map((l) => l.id);
     const nextRead = Array.from(new Set([...readIds, ...allIds]));
-    setReadIds(nextRead);
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem(READ_STORAGE_KEY, JSON.stringify(nextRead));
+        window.dispatchEvent(new Event('ean-read-notifications-updated'));
       } catch (e) {
         console.error('Failed to save read notification IDs:', e);
       }
@@ -216,15 +234,14 @@ export function AdminHeader({
                       <button
                         key={item.id}
                         onClick={() => handleNotificationClick(item.id)}
-                        className={`w-full text-left p-3 rounded-lg border transition-all cursor-pointer group relative ${
-                          isRead
-                            ? 'bg-white/2 border-ean-border-dark/60 opacity-60 hover:opacity-100 hover:bg-white/5'
-                            : isUrgent
+                        className={`w-full text-left p-3 rounded-lg border transition-all cursor-pointer group relative ${isRead
+                          ? 'bg-white/2 border-ean-border-dark/60 opacity-60 hover:opacity-100 hover:bg-white/5'
+                          : isUrgent
                             ? 'bg-rose-500/10 border-rose-500/40 hover:bg-rose-500/20 shadow-xs'
                             : isHigh
-                            ? 'bg-amber-500/10 border-amber-500/40 hover:bg-amber-500/20 shadow-xs'
-                            : 'bg-ean-gold/10 border-ean-gold/30 hover:bg-ean-gold/20'
-                        }`}
+                              ? 'bg-amber-500/10 border-amber-500/40 hover:bg-amber-500/20 shadow-xs'
+                              : 'bg-ean-gold/10 border-ean-gold/30 hover:bg-ean-gold/20'
+                          }`}
                       >
                         <div className="flex items-center justify-between font-semibold mb-1 text-xs">
                           <span className="flex items-center gap-1.5">
@@ -261,12 +278,12 @@ export function AdminHeader({
                     No urgent or unhandled lead alerts at this time.
                   </div>
                 )}
-              </div>
-
-              <div className="pt-2 border-t border-ean-border-dark flex items-center justify-between text-[11px]">
-                <span className="text-ean-muted-light text-[10px]">
+                <div className="pt-2 border-t border-ean-border-dark flex items-center justify-between text-[11px]">
+                  <span className="text-ean-muted-light text-[10px]">
+                    {activeAlertLeads.length - unreadBadgeCount} of {activeAlertLeads.length} alerts read
+                  </span>
                   {readIds.length} read in session
-                </span>
+                </div>
                 <button
                   onClick={() => setShowNotifications(false)}
                   className="text-ean-gold hover:underline font-medium cursor-pointer"
@@ -278,16 +295,6 @@ export function AdminHeader({
           )}
         </div>
 
-        {/* Create Lead Button */}
-        {onOpenCreateModal && (
-          <button
-            onClick={onOpenCreateModal}
-            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg bg-ean-gold hover:bg-ean-gold-light text-ean-black font-semibold text-xs transition-all shadow-[0_0_15px_rgba(196,149,42,0.3)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-          >
-            <Plus className="w-3.5 h-3.5 stroke-3" />
-            <span className="hidden sm:inline">Log Lead</span>
-          </button>
-        )}
       </div>
     </header>
   );

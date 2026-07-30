@@ -203,6 +203,57 @@ export interface Database {
           }
         ]
       }
+      blog_posts: {
+        Row: {
+          id: string
+          title: string
+          slug: string
+          category: string
+          excerpt: string
+          content: Json
+          cover_image_url: string | null
+          seo_title: string | null
+          seo_description: string | null
+          og_image_url: string | null
+          status: 'draft' | 'published'
+          published_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          slug: string
+          category?: string
+          excerpt?: string
+          content?: Json
+          cover_image_url?: string | null
+          seo_title?: string | null
+          seo_description?: string | null
+          og_image_url?: string | null
+          status?: 'draft' | 'published'
+          published_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          slug?: string
+          category?: string
+          excerpt?: string
+          content?: Json
+          cover_image_url?: string | null
+          seo_title?: string | null
+          seo_description?: string | null
+          og_image_url?: string | null
+          status?: 'draft' | 'published'
+          published_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

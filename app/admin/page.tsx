@@ -21,7 +21,6 @@ import { AdminHeader } from '@/components/admin/AdminHeader';
 import { LeadStatCard } from '@/components/admin/LeadStatCard';
 import { LeadDataTable } from '@/components/admin/LeadDataTable';
 import { LeadDetailDrawer } from '@/components/admin/LeadDetailDrawer';
-import { CreateLeadModal } from '@/components/admin/CreateLeadModal';
 
 // Visual Graph Components
 import { LeadTrendChart } from '@/components/admin/graphs/LeadTrendChart';
@@ -43,7 +42,6 @@ import {
 export default function AdminDashboardPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
   const [graphqlStatus, setGraphqlStatus] = useState<'connected' | 'loading' | 'fallback'>('loading');
 
@@ -84,7 +82,7 @@ export default function AdminDashboardPage() {
     );
   });
 
-  const urgentLeads = leads.filter((l) => l.priority === 'urgent' || l.status === 'new');
+  const urgentLeads = leads;
 
   // GraphQL Mutation Handlers
   const handleQuickStatusChange = async (leadId: string, newStatus: LeadStatus) => {
@@ -158,37 +156,12 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleCreateLead = async (
-    newLeadData: Omit<Lead, 'id' | 'createdAt' | 'updatedAt' | 'activities' | 'notes'>
-  ) => {
-    const newId = `EAN-LD-2026-${String(leads.length + 90).padStart(3, '0')}`;
-    const now = new Date().toISOString();
-    const created: Lead = {
-      ...newLeadData,
-      id: newId,
-      createdAt: now,
-      updatedAt: now,
-      notes: [],
-      activities: [
-        {
-          id: `act-${Date.now()}`,
-          timestamp: now,
-          author: 'Lead Admin',
-          action: 'Manually logged new inquiry',
-        },
-      ],
-    };
-    addLeadToStore(created);
-    setLeads(getAllLeadsFromStore());
-  };
-
   return (
     <div className="flex-1 flex flex-col min-w-0">
       {/* Header */}
       <AdminHeader
         leads={leads}
         onSearchChange={setGlobalSearch}
-        onOpenCreateModal={() => setIsCreateModalOpen(true)}
         onSelectLead={(leadId) => {
           const target = leads.find((l) => l.id === leadId);
           if (target) setSelectedLead(target);
@@ -260,11 +233,11 @@ export default function AdminDashboardPage() {
             accentColor="text-emerald-400"
           />
           <LeadStatCard
-            title="Qualified Pipeline Value"
-            value={`$${stats.totalEstimatedPipeline.toLocaleString()}`}
-            change="+14%"
+            title="Inquiries Per Day"
+            value="14 / day"
+            change="+18%"
             changeType="positive"
-            subtitle={`${stats.conversionRate}% Conversion Rate`}
+            subtitle="7-day avg daily influx"
             icon={TrendingUp}
             accentColor="text-amber-400"
           />
@@ -376,13 +349,6 @@ export default function AdminDashboardPage() {
         onUpdatePriority={handleUpdatePriority}
         onAssignLead={handleAssignLead}
         onAddNote={handleAddNote}
-      />
-
-      {/* Create Lead Modal */}
-      <CreateLeadModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onCreateLead={handleCreateLead}
       />
     </div>
   );

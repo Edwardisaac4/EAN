@@ -1054,7 +1054,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     bio: [
       "Vivian is an experienced legal business partner with over 15 years of experience spanning private legal practice, in-house advisory, and corporate leadership within multinational organizations.",
       "Prior to joining EAN, Vivian served as Lead Corporate & Commercial Counsel at Baywood Holdings Limited, a pan-African conglomerate with interests across Oil & gas, financial services, and aviation. She has also held key legal roles at Hayat Kimya Nigeria Limited and CWAY Group, where she strengthened compliance frameworks and governance standards.",
-      "Vivian holds a Master of Laws (LL.M.) from the University of Lagos, a Bachelor of Laws (LL.B.) from Olabisi Onabanjo University, and is a Barrister and solicitor of the Supreme Court of Nigeria. She is also an Associate of the Chartered Institute of Secretaries and Administrators of Nigeria (ICSAN) and a member of the Nigerian Institute of Management (Chartered).",
+      "Vivian holds a Master of Laws (LL.M.) from the University of Lagos, a Bachelor of Laws (LL.B.) from Olabisi Onabanjo University, and is a Barrister and Solicitor of the Supreme Court of Nigeria. She is also an Associate of the Chartered Institute of Secretaries and Administrators of Nigeria (ICSAN) and a member of the Nigerian Institute of Management (Chartered).",
       "Vivian is passionate about driving ethical business practices and leveraging legal innovation to support strategic growth.",
     ],
     credentials: [

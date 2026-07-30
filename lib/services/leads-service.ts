@@ -26,23 +26,8 @@ import type {
 // ---------------------------------------------------------------------------
 
 function derivePriority(service: string, message: string): LeadPriorityEnum {
-  const lowerMsg = message.toLowerCase()
-
-  if (
-    lowerMsg.includes('urgent') ||
-    lowerMsg.includes('asap') ||
-    lowerMsg.includes('immediately') ||
-    lowerMsg.includes('tarmac') ||
-    service === 'fbo'
-  ) {
-    return 'urgent'
-  }
-
-  if (service === 'charter' || service === 'maintenance') {
-    return 'high'
-  }
-
-  return 'normal'
+  // All incoming inquiries are treated as urgent on the EAN command center
+  return 'urgent'
 }
 
 // ---------------------------------------------------------------------------
