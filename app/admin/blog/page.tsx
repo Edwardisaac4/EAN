@@ -87,16 +87,72 @@ export default function BlogCMSPage() {
   const [newCategory, setNewCategory] = useState('Company News');
   const [newContent, setNewContent] = useState('');
 
+  // Fetch live articles from Supabase API
+  React.useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const res = await fetch('/api/admin/blog');
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          const mapped: MockArticle[] = json.data.map((item: any) => ({
+            id: item.id,
+            title: item.title,
+            slug: item.slug,
+            category: item.category || 'Company News',
+            publishedAt: item.published_at ? item.published_at.split('T')[0] : (item.created_at ? item.created_at.split('T')[0] : ''),
+            views: item.views || 0,
+            status: item.status || 'draft',
+            leadsGenerated: 0,
+            content: typeof item.content === 'string' ? item.content : JSON.stringify(item.content),
+          }));
+          setArticles(mapped);
+        }
+      } catch (err) {
+        console.error('Failed to fetch blog posts from API:', err);
+      }
+    }
+    fetchPosts();
+  }, []);
+
   const filtered = articles.filter((a) => a.title.toLowerCase().includes(search.toLowerCase()));
 
-  const toggleStatus = (id: string) => {
+  const toggleStatus = async (id: string) => {
+    const article = articles.find((a) => a.id === id);
+    if (!article) return;
+
+    const nextStatus = article.status === 'published' ? 'draft' : 'published';
+    
+    // Optimistic UI update
     setArticles((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, status: a.status === 'published' ? 'draft' : 'published' } : a))
+      prev.map((a) => (a.id === id ? { ...a, status: nextStatus } : a))
     );
+
+    try {
+      if (nextStatus === 'published') {
+        await fetch(`/api/admin/blog/${encodeURIComponent(article.slug)}/publish`, { method: 'PATCH' });
+      } else {
+        await fetch(`/api/admin/blog/${encodeURIComponent(article.slug)}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'draft' }),
+        });
+      }
+    } catch (err) {
+      console.error('Failed to toggle post status:', err);
+    }
   };
 
-  const deleteArticle = (id: string) => {
+  const deleteArticle = async (id: string) => {
+    const article = articles.find((a) => a.id === id);
+    if (!article) return;
+
     setArticles((prev) => prev.filter((a) => a.id !== id));
+
+    try {
+      await fetch(`/api/admin/blog/${encodeURIComponent(article.slug)}`, { method: 'DELETE' });
+    } catch (err) {
+      console.error('Failed to delete post:', err);
+    }
   };
 
   const handleApplyTemplate = (template: BlogTemplate) => {
