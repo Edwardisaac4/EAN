@@ -42,6 +42,7 @@ export interface LeadStats {
   inProgressLeads: number;
   qualifiedLeads: number;
   closedWonLeads: number;
+  dailyInquiryRate?: number;
   avgResponseSlaMinutes: number;
   conversionRate: number;
   totalEstimatedPipeline: number;
@@ -131,7 +132,7 @@ export const INITIAL_LEADS: Lead[] = [
     service: "charter",
     message: "Looking for executive jet charter quote for 6 passengers from Lagos to Port Harcourt (round trip) on August 2nd. Prefer Hawker 900XP or similar mid-size cabin jet.",
     status: "contacted",
-    priority: "high",
+    priority: "urgent",
     createdAt: "2026-07-24T16:40:00Z",
     updatedAt: "2026-07-25T06:30:00Z",
     source: "LinkedIn Campaign",
@@ -180,7 +181,7 @@ export const INITIAL_LEADS: Lead[] = [
     service: "maintenance",
     message: "Inquiring about scheduled 100-hour inspection and avionics diagnostic check for Challenger 604 at EAN NCAA-approved MRO facility in Hangar B.",
     status: "qualified",
-    priority: "high",
+    priority: "urgent",
     createdAt: "2026-07-23T11:20:00Z",
     updatedAt: "2026-07-24T14:10:00Z",
     source: "Direct Referral",
@@ -229,7 +230,7 @@ export const INITIAL_LEADS: Lead[] = [
     service: "leasing",
     message: "Interested in leasing a 250 sqm executive office suite overlooking the tarmac at EAN Executive Aviation Center for our private flight operations team.",
     status: "proposal_sent",
-    priority: "normal",
+    priority: "urgent",
     createdAt: "2026-07-21T09:00:00Z",
     updatedAt: "2026-07-23T10:15:00Z",
     source: "Google Organic",
@@ -278,7 +279,7 @@ export const INITIAL_LEADS: Lead[] = [
     service: "catering",
     message: "Pre-order VIP gourmet catering for 14 passengers on outbound flight from Lagos to Paris CDG. Requires halal menu and champagne selection.",
     status: "closed_won",
-    priority: "normal",
+    priority: "urgent",
     createdAt: "2026-07-19T14:15:00Z",
     updatedAt: "2026-07-20T11:00:00Z",
     source: "Email Campaign",
@@ -327,7 +328,7 @@ export const INITIAL_LEADS: Lead[] = [
     service: "general",
     message: "Inquiry regarding partnership opportunities for corporate travel management.",
     status: "new",
-    priority: "low",
+    priority: "urgent",
     createdAt: "2026-07-25T05:45:00Z",
     updatedAt: "2026-07-25T05:45:00Z",
     source: "Direct Visit",
@@ -413,12 +414,15 @@ export function getLeadStats(leads: Lead[]): LeadStats {
     .map(([page, count]) => ({ page, count }))
     .sort((a, b) => b.count - a.count);
 
+  const dailyInquiryRate = totalLeads > 0 ? Math.round((totalLeads / 7) * 10) / 10 : 0;
+
   return {
     totalLeads,
     newLeads,
     inProgressLeads,
     qualifiedLeads,
     closedWonLeads,
+    dailyInquiryRate,
     avgResponseSlaMinutes: 24,
     conversionRate,
     totalEstimatedPipeline,

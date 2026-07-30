@@ -39,13 +39,25 @@ const getServiceFromSlug = (slug: string): string => {
     'charter': 'charter',
     'wings-catering': 'catering',
     'catering': 'catering',
-    'vip-lounge': 'lounge',
-    'lounge': 'lounge',
-    'leased-offices': 'offices',
-    'offices': 'offices',
+    'vip-lounge': 'vip',
+    'lounge': 'vip',
+    'vip': 'vip',
+    'leased-offices': 'leasing',
+    'offices': 'leasing',
+    'leasing': 'leasing',
   };
   return mapping[val] || 'general';
 };
+
+const AVAILABLE_SERVICES = [
+  { id: 'charter', label: 'Private Jet & Helicopter Charter' },
+  { id: 'fbo', label: 'FBO & Ground Support' },
+  { id: 'maintenance', label: 'Aircraft Maintenance (AMO)' },
+  { id: 'catering', label: 'Wings™ Catering' },
+  { id: 'vip', label: 'VIP Lounge Experience' },
+  { id: 'leasing', label: 'Hangar & Office Leases' },
+  { id: 'general', label: 'General Business Inquiry' },
+];
 
 export default function ContactPage() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -59,13 +71,24 @@ export default function ContactPage() {
     email: '',
     phone: '',
     company: '',
-    service: 'charter',
     message: '',
   });
 
+  const [selectedServices, setSelectedServices] = useState<string[]>(['charter']);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const handleServiceToggle = (serviceId: string) => {
+    setSelectedServices((prev) => {
+      if (prev.includes(serviceId)) {
+        if (prev.length === 1) return prev;
+        return prev.filter((id) => id !== serviceId);
+      } else {
+        return [...prev, serviceId];
+      }
+    });
+  };
 
   // Auto-select service from URL query params
   useEffect(() => {
@@ -75,7 +98,7 @@ export default function ContactPage() {
       if (serviceParam) {
         const mappedService = getServiceFromSlug(serviceParam);
         setTimeout(() => {
-          setFormData((prev) => ({ ...prev, service: mappedService }));
+          setSelectedServices([mappedService]);
         }, 0);
       }
     }
@@ -155,7 +178,8 @@ export default function ContactPage() {
           email: formData.email,
           phone: formData.phone,
           company: formData.company,
-          service: formData.service,
+          service: selectedServices[0] || 'general',
+          selectedServices,
           message: formData.message,
           tracking: trackingContext,
           clientLeads: existingClientLeads,
@@ -169,21 +193,22 @@ export default function ContactPage() {
         // Track Google Analytics conversion event ONLY when confirmed success
         sendGAEvent('event', 'generate_lead', {
           category: 'Inquiry',
-          service: formData.service,
+          service: selectedServices.join(', '),
           value: 1,
         });
       } else {
         // Fallback local lead creation if API route offline
+        const primaryService = (selectedServices[0] || 'general') as ServiceCategory;
         const fallbackLead = {
           id: `EAN-LD-2026-${String(existingClientLeads.length + 90).padStart(3, '0')}`,
           fullName: formData.name,
           email: formData.email,
           phone: formData.phone,
           company: formData.company,
-          service: formData.service as ServiceCategory,
-          message: formData.message,
+          service: primaryService,
+          message: `[Services Required: ${selectedServices.join(', ')}]\n${formData.message}`,
           status: 'new' as const,
-          priority: 'high' as const,
+          priority: 'urgent' as const,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           source: trackingContext.utmSource || 'Contact Form',
@@ -209,9 +234,9 @@ export default function ContactPage() {
         email: '',
         phone: '',
         company: '',
-        service: 'charter',
         message: '',
       });
+      setSelectedServices(['charter']);
     } catch (err) {
       console.error('Error submitting lead form:', err);
       setIsSubmitting(false);
@@ -399,8 +424,8 @@ export default function ContactPage() {
                               </div>
                             </div>
 
-                            {/* Row 3: Company & Service */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            {/* Row 3: Company & Services Required */}
+                            <div className="flex flex-col gap-4">
                               <div className="flex flex-col gap-1.5">
                                 <label htmlFor="company" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
                                   Company Name
@@ -416,29 +441,47 @@ export default function ContactPage() {
                                 />
                               </div>
 
-                              <div className="flex flex-col gap-1.5">
-                                <label htmlFor="service" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
-                                  Service Required
+                              <div className="flex flex-col gap-2 pt-2">
+                                <label className="text-xs uppercase tracking-wider text-ean-muted-light font-medium flex items-center justify-between">
+                                  <span>Services Required (Select all that apply)</span>
+                                  <span className="text-[10px] text-ean-gold font-normal">Tick boxes</span>
                                 </label>
-                                <div className="relative">
-                                  <select
-                                    id="service"
-                                    name="service"
-                                    value={formData.service}
-                                    onChange={handleChange}
-                                    className="w-full bg-white/5 border border-white/10 px-4 py-3 text-sm rounded-xs focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 appearance-none cursor-pointer text-white"
-                                  >
-                                    <option value="charter" className="bg-ean-navy text-white">Private Jet & Helicopter Charter</option>
-                                    <option value="fbo" className="bg-ean-navy text-white">FBO & Ground Support</option>
-                                    <option value="maintenance" className="bg-ean-navy text-white">Aircraft Maintenance (AMO)</option>
-                                    <option value="catering" className="bg-ean-navy text-white">Wings™ Catering</option>
-                                    <option value="lounge" className="bg-ean-navy text-white">VIP Lounge Experience</option>
-                                    <option value="offices" className="bg-ean-navy text-white">Hangar & Office Leases</option>
-                                    <option value="general" className="bg-ean-navy text-white">General Business Inquiry</option>
-                                  </select>
-                                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-ean-gold">
-                                    <ChevronDown className="w-4 h-4" />
-                                  </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                                  {AVAILABLE_SERVICES.map((srv) => {
+                                    const isChecked = selectedServices.includes(srv.id);
+                                    return (
+                                      <label
+                                        key={srv.id}
+                                        htmlFor={`srv-${srv.id}`}
+                                        className={`flex items-center gap-3 p-3 rounded-xs border cursor-pointer transition-all duration-200 ${
+                                          isChecked
+                                            ? 'bg-ean-gold/15 border-ean-gold text-white shadow-[0_0_12px_rgba(196,149,42,0.2)]'
+                                            : 'bg-white/5 border-white/10 text-ean-muted-light hover:border-white/25 hover:text-white'
+                                        }`}
+                                      >
+                                        <input
+                                          type="checkbox"
+                                          id={`srv-${srv.id}`}
+                                          name="selectedServices"
+                                          value={srv.id}
+                                          checked={isChecked}
+                                          onChange={() => handleServiceToggle(srv.id)}
+                                          className="sr-only"
+                                        />
+                                        <div
+                                          className={`w-4 h-4 rounded-xs border flex items-center justify-center transition-all ${
+                                            isChecked
+                                              ? 'bg-ean-gold border-ean-gold text-ean-black'
+                                              : 'border-white/30 bg-black/20'
+                                          }`}
+                                        >
+                                          {isChecked && <CheckCircle className="w-3.5 h-3.5 stroke-3" />}
+                                        </div>
+                                        <span className="text-xs font-medium">{srv.label}</span>
+                                      </label>
+                                    );
+                                  })}
                                 </div>
                               </div>
                             </div>

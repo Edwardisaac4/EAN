@@ -22,13 +22,11 @@ import { LeadFilterBar } from '@/components/admin/LeadFilterBar';
 import { LeadDataTable } from '@/components/admin/LeadDataTable';
 import { LeadPipelineKanban } from '@/components/admin/LeadPipelineKanban';
 import { LeadDetailDrawer } from '@/components/admin/LeadDetailDrawer';
-import { CreateLeadModal } from '@/components/admin/CreateLeadModal';
-import { Users, Plus, Cpu } from 'lucide-react';
+import { Users, Cpu } from 'lucide-react';
 
 export default function MasterLeadHubPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'table' | 'kanban'>('table');
 
   // Filter States
@@ -145,30 +143,6 @@ export default function MasterLeadHubPage() {
     }
   };
 
-  const handleCreateLead = async (
-    newLeadData: Omit<Lead, 'id' | 'createdAt' | 'updatedAt' | 'activities' | 'notes'>
-  ) => {
-    const newId = `EAN-LD-2026-${String(leads.length + 90).padStart(3, '0')}`;
-    const now = new Date().toISOString();
-    const created: Lead = {
-      ...newLeadData,
-      id: newId,
-      createdAt: now,
-      updatedAt: now,
-      notes: [],
-      activities: [
-        {
-          id: `act-${Date.now()}`,
-          timestamp: now,
-          author: 'Lead Admin',
-          action: 'Manually logged new inquiry',
-        },
-      ],
-    };
-    addLeadToStore(created);
-    loadLeadsGraphQL();
-  };
-
   const handleExportCsv = () => {
     const headers = ['Lead ID', 'Full Name', 'Email', 'Phone', 'Company', 'Service', 'Referral Source', 'Priority', 'Status', 'Submitted At'];
     const rows = leads.map((l) => [
@@ -198,8 +172,12 @@ export default function MasterLeadHubPage() {
     <div className="flex-1 flex flex-col min-w-0">
       {/* Top Bar Header */}
       <AdminHeader
+        leads={leads}
         onSearchChange={setSearchQuery}
-        onOpenCreateModal={() => setIsCreateModalOpen(true)}
+        onSelectLead={(leadId) => {
+          const target = leads.find((l) => l.id === leadId);
+          if (target) setSelectedLead(target);
+        }}
       />
 
       <main className="flex-1 p-6 md:p-8 space-y-6 max-w-7xl w-full mx-auto">
@@ -218,16 +196,6 @@ export default function MasterLeadHubPage() {
             <p className="text-xs text-ean-muted-light mt-0.5">
               Comprehensive GraphQL-driven CRM triaging, referral source tracking, and inquiry pipeline table for EAN Aviation.
             </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsCreateModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-ean-gold hover:bg-ean-gold-light text-ean-black font-semibold text-xs transition-all shadow-[0_0_15px_rgba(196,149,42,0.2)]"
-            >
-              <Plus className="w-4 h-4 stroke-3" />
-              <span>Log Inquiry</span>
-            </button>
           </div>
         </div>
 
@@ -272,13 +240,6 @@ export default function MasterLeadHubPage() {
         onUpdatePriority={handleUpdatePriority}
         onAssignLead={handleAssignLead}
         onAddNote={handleAddNote}
-      />
-
-      {/* Create Lead Modal */}
-      <CreateLeadModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onCreateLead={handleCreateLead}
       />
     </div>
   );

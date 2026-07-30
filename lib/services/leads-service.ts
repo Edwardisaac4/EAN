@@ -26,23 +26,29 @@ import type {
 // ---------------------------------------------------------------------------
 
 function derivePriority(service: string, message: string): LeadPriorityEnum {
-  const lowerMsg = message.toLowerCase()
-
+  const text = (message || '').toLowerCase();
+  
   if (
-    lowerMsg.includes('urgent') ||
-    lowerMsg.includes('asap') ||
-    lowerMsg.includes('immediately') ||
-    lowerMsg.includes('tarmac') ||
-    service === 'fbo'
+    text.includes('urgent') ||
+    text.includes('aog') ||
+    text.includes('asap') ||
+    text.includes('today') ||
+    text.includes('immediately') ||
+    service === 'fbo' ||
+    service === 'maintenance'
   ) {
-    return 'urgent'
+    return 'urgent';
   }
 
-  if (service === 'charter' || service === 'maintenance') {
-    return 'high'
+  if (service === 'charter' || service === 'leasing' || text.includes('quote') || text.includes('charter')) {
+    return 'high';
   }
 
-  return 'normal'
+  if (service === 'catering' || service === 'vip') {
+    return 'normal';
+  }
+
+  return 'low';
 }
 
 // ---------------------------------------------------------------------------

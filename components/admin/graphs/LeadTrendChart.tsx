@@ -6,29 +6,33 @@ import { TrendingUp, Calendar } from 'lucide-react';
 export interface TrendPoint {
   label: string;
   count: number;
-  value: number;
 }
 
 const DEFAULT_TREND_DATA: TrendPoint[] = [
-  { label: 'Jul 19', count: 4, value: 12000 },
-  { label: 'Jul 20', count: 7, value: 24000 },
-  { label: 'Jul 21', count: 5, value: 18000 },
-  { label: 'Jul 22', count: 12, value: 45000 },
-  { label: 'Jul 23', count: 9, value: 32000 },
-  { label: 'Jul 24', count: 15, value: 68000 },
-  { label: 'Jul 25', count: 18, value: 85000 },
+  { label: 'Jul 19', count: 4 },
+  { label: 'Jul 20', count: 7 },
+  { label: 'Jul 21', count: 5 },
+  { label: 'Jul 22', count: 12 },
+  { label: 'Jul 23', count: 9 },
+  { label: 'Jul 24', count: 15 },
+  { label: 'Jul 25', count: 18 },
 ];
 
-export function LeadTrendChart() {
+export interface LeadTrendChartProps {
+  data?: TrendPoint[];
+}
+
+export function LeadTrendChart({ data }: LeadTrendChartProps) {
   const [hoveredPoint, setHoveredPoint] = useState<TrendPoint | null>(null);
 
-  const maxCount = Math.max(...DEFAULT_TREND_DATA.map((d) => d.count), 20);
+  const trendData = data && data.length > 0 ? data : DEFAULT_TREND_DATA;
+  const maxCount = Math.max(...trendData.map((d) => d.count), 20);
   const chartHeight = 160;
   const chartWidth = 500;
 
   // Calculate SVG curve points
-  const points = DEFAULT_TREND_DATA.map((d, index) => {
-    const x = (index / (DEFAULT_TREND_DATA.length - 1)) * chartWidth;
+  const points = trendData.map((d, index) => {
+    const x = (index / (trendData.length - 1)) * chartWidth;
     const y = chartHeight - (d.count / maxCount) * chartHeight;
     return `${x},${y}`;
   }).join(' ');
@@ -42,9 +46,9 @@ export function LeadTrendChart() {
         <div>
           <h3 className="text-sm font-bold text-ean-white flex items-center gap-2 font-display">
             <TrendingUp className="w-4 h-4 text-ean-gold" />
-            Lead Acquisition & Pipeline Volume Graph
+            Daily Inquiries Trend Graph
           </h3>
-          <p className="text-[11px] text-ean-muted-light">7-day inquiry influx trend and pipeline velocity.</p>
+          <p className="text-[11px] text-ean-muted-light">7-day daily inquiry arrival rate and influx trend.</p>
         </div>
 
         <div className="flex items-center gap-2 font-mono text-[10px] bg-ean-black-pure px-3 py-1.5 rounded-lg border border-ean-border-dark text-ean-gold">
@@ -59,7 +63,7 @@ export function LeadTrendChart() {
         {hoveredPoint && (
           <div className="absolute top-0 right-4 px-3 py-1.5 rounded-lg bg-ean-navy border border-ean-gold/40 text-xs text-ean-white font-mono shadow-xl z-20">
             <span className="text-ean-gold font-bold">{hoveredPoint.label}: </span>
-            <span>{hoveredPoint.count} Inquiries</span> (${hoveredPoint.value.toLocaleString()})
+            <span>{hoveredPoint.count} Inquiries / Day</span>
           </div>
         )}
 
