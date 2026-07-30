@@ -3,6 +3,42 @@ import { cookies } from 'next/headers'
 import { adminSupabase } from '@/utils/supabase/admin'
 import { verifySessionToken, SESSION_COOKIE_NAME } from '@/lib/auth'
 
+export async function GET(req: NextRequest) {
+  try {
+    const cookieStore = await cookies()
+    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value
+    const payload = sessionCookie ? await verifySessionToken(sessionCookie) : null
+
+    if (!payload || payload.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized. Valid admin session required.' },
+        { status: 401 }
+      )
+    }
+
+    const { data, error } = await adminSupabase
+      .from('blog_posts')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.warn('[Blog API GET] Supabase fetch error:', error.message)
+      return NextResponse.json(
+        { success: false, error: error.message || 'Failed to fetch blog posts' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ success: true, data })
+  } catch (err) {
+    console.error('GET /api/admin/blog error:', err)
+    return NextResponse.json(
+      { success: false, error: 'Failed to fetch blog posts' },
+      { status: 500 }
+    )
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const cookieStore = await cookies()
@@ -23,10 +59,14 @@ export async function POST(req: NextRequest) {
       category = 'Business Aviation',
       excerpt = '',
       content = {},
-      featuredImg = null,
-      seoTitle = '',
-      seoDesc = '',
-      ogImage = null,
+      featuredImg,
+      cover_image_url,
+      seoTitle,
+      seo_title,
+      seoDesc,
+      seo_description,
+      ogImage,
+      og_image_url,
       status = 'draft',
     } = body
 
@@ -37,17 +77,17 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Try inserting into Supabase blog_posts table
+    // Prepare clean DB insert payload
     const postPayload = {
       title,
       slug,
       category,
       excerpt,
-      content,
-      cover_image_url: featuredImg,
-      seo_title: seoTitle,
-      seo_description: seoDesc,
-      og_image_url: ogImage,
+      content: typeof content === 'string' ? { text: content } : content,
+      cover_image_url: featuredImg ?? cover_image_url ?? null,
+      seo_title: seoTitle || seo_title || title,
+      seo_description: seoDesc || seo_description || excerpt,
+      og_image_url: ogImage ?? og_image_url ?? null,
       status,
       updated_at: new Date().toISOString(),
     }
@@ -59,7 +99,7 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (error) {
-      console.warn('[Blog API] Supabase insert error:', error.message)
+      console.warn('[Blog API POST] Supabase insert error:', error.message)
       return NextResponse.json(
         { success: false, error: error.message || 'Failed to create blog post' },
         { status: 500 }
@@ -78,3 +118,4 @@ export async function POST(req: NextRequest) {
     )
   }
 }
+
