@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useQuery }                    from '@tanstack/react-query'
 import { Search, Loader2, AlertCircle, PenLine, Plane, ChevronDown } from 'lucide-react'
-import { getBand, BANDS }              from '@/lib/pricing/bands'
 import type { Aircraft }               from '@/types/pricing'
 
 interface AircraftSelectorProps {
@@ -101,14 +100,22 @@ export default function AircraftSelector({
               type="number"
               placeholder="e.g. 17145"
               value={manualMtow ?? ''}
-              onChange={(e) => onManualMtow(e.target.value ? Number(e.target.value) : null)}
+              onChange={(e) => {
+                if (!e.target.value) {
+                  onManualMtow(null)
+                } else {
+                  const val = Number(e.target.value)
+                  const clamped = Math.min(Math.max(val, 500), 600000)
+                  onManualMtow(clamped)
+                }
+              }}
               min={500}
               max={600000}
               className="w-full px-4 py-3 bg-ean-surface border border-ean-border-light rounded-lg text-ean-navy text-sm font-ui focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold transition-colors"
             />
             {manualMtow ? (
               <p className="mt-2 text-sm text-ean-gold font-medium">
-                → {BANDS[getBand(manualMtow)].label} (Band {getBand(manualMtow)})
+                → Specified MTOW: {manualMtow.toLocaleString()} kg
               </p>
             ) : null}
           </div>
@@ -186,7 +193,7 @@ export default function AircraftSelector({
             {/* Sub-header */}
             <div className="px-4 py-2 bg-ean-surface text-[11px] font-ui font-semibold text-ean-muted-dark uppercase tracking-wider sticky top-0 border-b border-ean-border-light flex items-center justify-between">
               <span>{debouncedQ.length >= 2 ? `Search Results for "${query}"` : 'Select from Business Aviation Fleet'}</span>
-              {data && <span className="text-ean-gold">{data.length} Available</span>}
+              {data && <span className="text-ean-gold">{data.length} Models</span>}
             </div>
 
             {/* Error state */}
@@ -216,7 +223,6 @@ export default function AircraftSelector({
 
             {/* Results List */}
             {data && data.length > 0 && data.map((aircraft) => {
-              const band = aircraft.mtow_kg ? getBand(aircraft.mtow_kg) : 'A'
               const isSelected = value?.id === aircraft.id
               return (
                 <button
@@ -240,11 +246,8 @@ export default function AircraftSelector({
                   <div className="shrink-0 text-right ml-3">
                     <span className="inline-block bg-ean-gold/10 text-ean-gold
                                      text-xs font-semibold px-2.5 py-1 rounded-full">
-                      Band {band}
-                    </span>
-                    <p className="text-[11px] text-gray-400 mt-0.5 font-mono">
                       {aircraft.mtow_kg ? `${aircraft.mtow_kg.toLocaleString()} kg` : 'N/A'}
-                    </p>
+                    </span>
                   </div>
                 </button>
               )
@@ -279,9 +282,6 @@ export default function AircraftSelector({
               {value.range_nm && <span>Range: <strong>{value.range_nm.toLocaleString()} nm</strong></span>}
               {value.wingspan_m && <span>Wingspan: <strong>{value.wingspan_m} m</strong></span>}
             </div>
-            <p className="text-xs font-semibold text-ean-gold mt-1">
-              {BANDS[getBand(value.mtow_kg)].label}
-            </p>
           </div>
         )}
 

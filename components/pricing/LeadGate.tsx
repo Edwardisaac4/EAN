@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { LeadDetails, QuoteResult, QuoteState } from '@/types/pricing'
 import { Lock, Sparkles, User, Mail, Phone, Building2, Loader2 } from 'lucide-react'
 
@@ -17,6 +17,11 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
   const [company, setCompany] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const firstInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    firstInputRef.current?.focus()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,18 +36,17 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
     const lead: LeadDetails = { name, email, phone, company }
 
     const aircraftName = state?.aircraft?.name ?? (state?.mtow_manual ? `Aircraft (${state.mtow_manual}kg)` : 'Unspecified Aircraft')
-    const locationLabel = state?.location === 'LOS' ? 'Lagos MMIA' : 'Abuja NAIA font'
+    const locationLabel = state?.location === 'LOS' ? 'Lagos MMIA' : 'Abuja NAIA'
     const totalDisplay = quote?.totalDisplay ? `Estimated Total: ${quote.totalDisplay}` : ''
 
     const inquiryMessage = `Pricing Portal Quote Request:
-- Aircraft: ${aircraftName} (${quote?.bandLabel || 'Band'})
+- Aircraft: ${aircraftName}
 - Airport: ${locationLabel} | Operation: ${state?.operation || 'domestic'}
 - Passengers: ${state?.pax ?? 4} pax | Movement: ${state?.stay === 'over' ? `${state.nights} nights overnight` : 'Same-day turnaround'}
 - ${totalDisplay}`
 
     try {
-      // Save lead to database via /api/leads (creates record in Supabase leads table with tracking & admin notification)
-      await fetch('/api/leads', {
+      const res = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -59,21 +63,35 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
           },
         }),
       })
-    } catch (err) {
-      console.warn('Lead submission warning:', err)
-    }
 
-    setIsSubmitting(false)
-    onSubmitLead(lead)
+      if (!res.ok) {
+        console.error('Lead submission failed with status:', res.status)
+        setError('Could not submit lead details. Please try again.')
+        setIsSubmitting(false)
+        return
+      }
+
+      setIsSubmitting(false)
+      onSubmitLead(lead)
+    } catch (err) {
+      console.error('Lead submission network exception:', err)
+      setError('Network error submitting lead. Please try again.')
+      setIsSubmitting(false)
+    }
   }
 
   return (
-    <div className="absolute inset-0 z-20 backdrop-blur-md bg-ean-navy/85 rounded-xl flex flex-col justify-center items-center p-6 text-center text-white border border-ean-gold/40 shadow-2xl animate-in fade-in duration-300">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="lead-gate-title"
+      className="absolute inset-0 z-20 backdrop-blur-md bg-ean-navy/85 rounded-xl flex flex-col justify-center items-center p-6 text-center text-white border border-ean-gold/40 shadow-2xl animate-in fade-in duration-300"
+    >
       <div className="w-12 h-12 rounded-full bg-ean-gold/20 flex items-center justify-center text-ean-gold mb-3 border border-ean-gold/40 shadow-inner">
         <Lock className="w-6 h-6 text-ean-gold" />
       </div>
 
-      <h4 className="font-display font-bold text-xl text-white mb-1">
+      <h4 id="lead-gate-title" className="font-display font-bold text-xl text-white mb-1">
         See Your Full Estimate
       </h4>
       <p className="text-xs font-ui text-ean-muted-light max-w-xs mb-5 leading-relaxed">
@@ -94,6 +112,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
           <div className="relative">
             <input
               id="lead-name"
+              ref={firstInputRef}
               type="text"
               required
               value={name}

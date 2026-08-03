@@ -67,14 +67,15 @@ export default function ServiceOptions({
       </div>
 
       {/* SECTION 1 — Location */}
-      <div>
-        <label className="block text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-2 flex items-center gap-1.5">
+      <fieldset className="border-0 p-0 m-0">
+        <legend className="block text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-2 flex items-center gap-1.5">
           <MapPin className="w-3.5 h-3.5 text-ean-gold" />
           Airport Location
-        </label>
+        </legend>
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
+            aria-pressed={location === 'LOS'}
             onClick={() => onChangeLocation('LOS')}
             className={`py-3 px-4 rounded-lg font-ui text-sm font-medium border text-center transition-all ${
               location === 'LOS'
@@ -86,6 +87,7 @@ export default function ServiceOptions({
           </button>
           <button
             type="button"
+            aria-pressed={location === 'ABV'}
             onClick={() => onChangeLocation('ABV')}
             className={`py-3 px-4 rounded-lg font-ui text-sm font-medium border text-center transition-all ${
               location === 'ABV'
@@ -96,17 +98,18 @@ export default function ServiceOptions({
             Abuja (NAIA) — ABV
           </button>
         </div>
-      </div>
+      </fieldset>
 
       {/* SECTION 2 — Operation Type */}
-      <div>
-        <label className="block text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-2 flex items-center gap-1.5">
+      <fieldset className="border-0 p-0 m-0">
+        <legend className="block text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-2 flex items-center gap-1.5">
           <Globe className="w-3.5 h-3.5 text-ean-gold" />
           Operation Type
-        </label>
+        </legend>
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
+            aria-pressed={operation === 'dom'}
             onClick={() => handleOperationSelect('dom')}
             className={`py-3 px-4 rounded-lg font-ui text-sm font-medium border text-center transition-all ${
               operation === 'dom'
@@ -118,6 +121,7 @@ export default function ServiceOptions({
           </button>
           <button
             type="button"
+            aria-pressed={operation === 'intl'}
             onClick={() => handleOperationSelect('intl')}
             className={`py-3 px-4 rounded-lg font-ui text-sm font-medium border text-center transition-all ${
               operation === 'intl'
@@ -128,17 +132,18 @@ export default function ServiceOptions({
             International Flight
           </button>
         </div>
-      </div>
+      </fieldset>
 
       {/* SECTION 3 — Stay Type & Nights */}
-      <div>
-        <label className="block text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-2 flex items-center gap-1.5">
+      <fieldset className="border-0 p-0 m-0">
+        <legend className="block text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-2 flex items-center gap-1.5">
           <Clock className="w-3.5 h-3.5 text-ean-gold" />
           Stay Duration & Movement
-        </label>
+        </legend>
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
+            aria-pressed={stay === 'same'}
             onClick={() => onChangeStay('same')}
             className={`py-3 px-4 rounded-lg font-ui text-sm font-medium border text-center transition-all ${
               stay === 'same'
@@ -150,6 +155,7 @@ export default function ServiceOptions({
           </button>
           <button
             type="button"
+            aria-pressed={stay === 'over'}
             onClick={() => onChangeStay('over')}
             className={`py-3 px-4 rounded-lg font-ui text-sm font-medium border text-center transition-all ${
               stay === 'over'
@@ -187,7 +193,7 @@ export default function ServiceOptions({
             </div>
           </div>
         )}
-      </div>
+      </fieldset>
 
       {/* SECTION 4 — Passengers */}
       <div>
@@ -213,14 +219,15 @@ export default function ServiceOptions({
 
       {/* SECTION 5 — Day Type (Staff Mode only) */}
       {isStaff && (
-        <div className="p-4 bg-amber-500/5 rounded-lg border border-amber-500/20 space-y-3">
-          <div className="text-xs font-ui uppercase tracking-wider text-ean-gold font-bold flex items-center gap-1.5">
+        <fieldset className="p-4 bg-amber-500/5 rounded-lg border border-amber-500/20 space-y-3 m-0">
+          <legend className="text-xs font-ui uppercase tracking-wider text-ean-gold font-bold flex items-center gap-1.5 px-1">
             <Calendar className="w-3.5 h-3.5" />
             Staff Controls — Movement Day
-          </div>
+          </legend>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
+              aria-pressed={day === 'wd'}
               onClick={() => onChangeDay('wd')}
               className={`py-2 px-3 rounded text-xs font-ui font-medium border ${
                 day === 'wd'
@@ -232,6 +239,7 @@ export default function ServiceOptions({
             </button>
             <button
               type="button"
+              aria-pressed={day === 'we'}
               onClick={() => onChangeDay('we')}
               className={`py-2 px-3 rounded text-xs font-ui font-medium border ${
                 day === 'we'
@@ -247,18 +255,19 @@ export default function ServiceOptions({
               Weekend note: Some surcharges may apply to out-of-hours handling operations.
             </p>
           )}
-        </div>
+        </fieldset>
       )}
 
       {/* SECTION 6 — Handling Tier (Lagos & Staff mode only) */}
       {isStaff && hasTierOptions && (
-        <div className="p-4 bg-ean-navy/5 rounded-lg border border-ean-navy/10 space-y-3">
-          <div className="text-xs font-ui uppercase tracking-wider text-ean-navy font-bold">
+        <fieldset className="p-4 bg-ean-navy/5 rounded-lg border border-ean-navy/10 space-y-3 m-0">
+          <legend className="text-xs font-ui uppercase tracking-wider text-ean-navy font-bold px-1">
             3. Ground Handling Tier (Lagos MMIA)
-          </div>
+          </legend>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
+              aria-pressed={handling === 'min'}
               onClick={() => onChangeHandling('min')}
               className={`py-2 px-3 rounded text-xs font-ui font-medium border ${
                 handling === 'min'
@@ -270,6 +279,7 @@ export default function ServiceOptions({
             </button>
             <button
               type="button"
+              aria-pressed={handling === 'standard'}
               onClick={() => onChangeHandling('standard')}
               className={`py-2 px-3 rounded text-xs font-ui font-medium border ${
                 handling === 'standard'
@@ -280,7 +290,7 @@ export default function ServiceOptions({
               Standard Rate
             </button>
           </div>
-        </div>
+        </fieldset>
       )}
     </div>
   )

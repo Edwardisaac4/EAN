@@ -10,6 +10,9 @@ export const BANDS: Record<MtowBand, { label: string; min: number; max: number |
 }
 
 export function getBand(mtow_kg: number): MtowBand {
+  if (typeof mtow_kg !== 'number' || !Number.isFinite(mtow_kg) || mtow_kg < 0) {
+    throw new Error(`Invalid MTOW weight value: ${mtow_kg}`)
+  }
   if (mtow_kg <= 5700)  return 'A'
   if (mtow_kg <= 15000) return 'B'
   if (mtow_kg <= 30000) return 'C'

@@ -44,7 +44,7 @@ export default function LeadFormSection({
       company,
       service: 'fbo',
       message: `ESTIMATED QUOTE INQUIRY: ${quote.totalDisplay}
-Aircraft: ${aircraftName} (${quote.bandLabel})
+Aircraft: ${aircraftName}
 Airport: ${locationLabel} | Operation: ${state.operation} | Pax: ${state.pax}
 Additional Notes: ${notes || 'None'}`,
     }

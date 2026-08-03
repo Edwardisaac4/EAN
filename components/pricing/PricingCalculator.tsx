@@ -38,10 +38,27 @@ export default function PricingCalculator() {
   const [lead, setLead] = useState<LeadDetails | null>(null)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
-  // Generate Request Order reference ONCE per session state
+  const handleSelectAircraft = (selected: Aircraft | null) => {
+    setAircraft(selected)
+    if (selected) {
+      setManualMtow(null)
+    }
+  }
+
+  const handleSetManualMtow = (mtow: number | null) => {
+    setManualMtow(mtow)
+    if (mtow !== null) {
+      setAircraft(null)
+    }
+  }
+
+  // Generate Request Order reference ONCE per session state using unique UUID
   const [refCode] = useState<string>(() => {
-    const timestampPart = Math.floor(100000 + Math.random() * 900000)
-    return `EAN-${timestampPart}`
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return `EAN-${crypto.randomUUID().slice(0, 8).toUpperCase()}`
+    }
+    const uniqueSuffix = Date.now().toString(36).toUpperCase() + Math.floor(Math.random() * 1000).toString(36).toUpperCase()
+    return `EAN-${uniqueSuffix}`
   })
 
   // Construct QuoteState object
@@ -121,8 +138,8 @@ export default function PricingCalculator() {
           <AircraftSelector
             value={aircraft}
             manualMtow={manualMtow}
-            onSelect={setAircraft}
-            onManualMtow={setManualMtow}
+            onSelect={handleSelectAircraft}
+            onManualMtow={handleSetManualMtow}
           />
 
           {/* STEP 2: FLIGHT DETAILS & PARAMETERS */}
@@ -159,7 +176,7 @@ export default function PricingCalculator() {
               <div className="flex items-center justify-between pb-2 border-b border-ean-border-light">
                 <h3 className="font-display font-semibold text-xl text-ean-navy flex items-center gap-2">
                   <FileSpreadsheet className="w-5 h-5 text-ean-gold" />
-                  Staff Reference — CAA MTOW Tariff Bands
+                  Staff Reference — Ground Handling Rates by Weight Category
                 </h3>
                 <span className="text-xs font-ui uppercase tracking-wider text-ean-navy bg-ean-navy/10 px-2.5 py-1 rounded-full font-semibold">
                   Official Rate Sheet
@@ -170,8 +187,7 @@ export default function PricingCalculator() {
                 <table className="w-full text-left font-ui text-xs">
                   <thead>
                     <tr className="bg-ean-surface border-b border-ean-border-light text-ean-navy uppercase tracking-wider font-semibold">
-                      <th className="py-3 px-4">Band</th>
-                      <th className="py-3 px-4">MTOW Weight Range</th>
+                      <th className="py-3 px-4">MTOW Weight Category</th>
                       <th className="py-3 px-4">Lagos Floor Rate</th>
                       <th className="py-3 px-4">Lagos Standard Rate</th>
                       <th className="py-3 px-4">Abuja Rate</th>
@@ -191,12 +207,7 @@ export default function PricingCalculator() {
                             isCurrent ? 'bg-ean-gold/10 font-semibold text-ean-navy' : 'hover:bg-gray-50 text-ean-text-dark'
                           }`}
                         >
-                          <td className="py-3 px-4">
-                            <span className={`px-2 py-0.5 rounded font-bold ${isCurrent ? 'bg-ean-gold text-white' : 'bg-ean-surface text-ean-navy'}`}>
-                              Band {b}
-                            </span>
-                          </td>
-                          <td className="py-3 px-4 font-medium">{BANDS[b].label}</td>
+                          <td className="py-3 px-4 font-medium">{BANDS[b].label.replace(/^Band [A-E] — /, '')}</td>
                           <td className="py-3 px-4 font-mono">{minRate}</td>
                           <td className="py-3 px-4 font-mono">{stdRate}</td>
                           <td className="py-3 px-4 font-mono">${HANDLING_ABV}</td>

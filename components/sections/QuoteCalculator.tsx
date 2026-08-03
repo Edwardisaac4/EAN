@@ -33,9 +33,10 @@ import {
 } from 'lucide-react';
 import GoldButton from '@/components/shared/GoldButton';
 import SectionReveal from '@/components/shared/SectionReveal';
+import { Aircraft } from '@/types/pricing';
 import {
   AIRCRAFT_DATASET,
-  Aircraft,
+  FleetAircraft,
   calculateEstimatedQuote,
   QuoteCalculationResult,
   USD_TO_NGN_RATE,
@@ -54,42 +55,36 @@ interface SavedQuote {
 }
 
 export default function QuoteCalculator() {
-  // Unique accessible IDs for inputs
+  const searchId = useId();
   const nameId = useId();
   const emailId = useId();
-  const phoneId = useId();
   const companyId = useId();
-  const searchId = useId();
+  const phoneId = useId();
 
-  // Application View Mode: 'calculator' | 'fleet' | 'tariff'
+  // App Workspace Tabs State
   const [appMode, setAppMode] = useState<'calculator' | 'fleet' | 'tariff'>('calculator');
-
-  // Currency Selection: 'USD' | 'NGN' | 'EUR'
   const [currency, setCurrency] = useState<'USD' | 'NGN' | 'EUR'>('USD');
-  const eurRate = 0.92;
+  const [eurRate] = useState<number>(0.92); // EUR/USD exchange rate reference
 
-  // Selected Category Filter for Aircraft Combobox
+  // Interactive Flight Configurator State
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('All');
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
-  // Form State
   const [location, setLocation] = useState<'lagos' | 'abuja'>('lagos');
-  const [operation, setOperation] = useState<'domestic' | 'international'>('domestic');
+  const [operation, setOperation] = useState<'domestic' | 'international'>('international');
   const [movement, setMovement] = useState<'weekday' | 'weekend'>('weekday');
   const [passengers, setPassengers] = useState<number>(4);
   const [stay, setStay] = useState<'same_day' | 'overnight'>('same_day');
   const [overnightNights, setOvernightNights] = useState<number>(1);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-
-  // Executive Add-ons State
-  const [addOns, setAddOns] = useState({
-    vipLounge: false,
+  const [addOns, setAddOns] = useState<{ vipLounge: boolean; catering: boolean; gpuPower: boolean; waterService: boolean }>({
+    vipLounge: true,
     catering: false,
-    gpuPower: false,
+    gpuPower: true,
     waterService: false,
   });
 
-  // Lead Collection & Price Gating State
+  // Lead Collection & Pricing Reveal State
   const [isPriceRevealed, setIsPriceRevealed] = useState<boolean>(false);
   const [leadForm, setLeadForm] = useState({
     fullName: '',
@@ -99,8 +94,8 @@ export default function QuoteCalculator() {
   });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  // Saved Quotes & PDF Modal State
   const [savedQuotes, setSavedQuotes] = useState<SavedQuote[]>(() => {
+    if (typeof window === 'undefined') return [];
     try {
       const raw = localStorage.getItem('ean_saved_quotes_v1');
       return raw ? JSON.parse(raw) : [];
@@ -108,14 +103,16 @@ export default function QuoteCalculator() {
       return [];
     }
   });
+  const [submitError, setSubmitError] = useState<string>('');
+
   const [isSavedDrawerOpen, setIsSavedDrawerOpen] = useState<boolean>(false);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState<boolean>(false);
-  const [quoteReferenceId, setQuoteReferenceId] = useState<string>('EAN-QT-2026-104');
+  const [quoteReferenceId, setQuoteReferenceId] = useState<string>(() => `EAN-QT-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`);
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
 
   // Live API Aircraft List & Selection State
-  const [apiAircraftList, setApiAircraftList] = useState<Aircraft[]>(AIRCRAFT_DATASET);
-  const [selectedAircraft, setSelectedAircraft] = useState<Aircraft>(AIRCRAFT_DATASET[0]);
+  const [apiAircraftList, setApiAircraftList] = useState<FleetAircraft[]>(AIRCRAFT_DATASET);
+  const [selectedAircraft, setSelectedAircraft] = useState<FleetAircraft>(AIRCRAFT_DATASET[0]);
   const [isLoadingApi, setIsLoadingApi] = useState<boolean>(false);
 
   // Live API Search Fetcher
@@ -131,8 +128,23 @@ export default function QuoteCalculator() {
         const res = await fetch(`/api/aircraft/search?q=${encodeURIComponent(searchQuery)}`);
         if (res.ok) {
           const data = await res.json();
-          if (isMounted && data.success && Array.isArray(data.aircraft) && data.aircraft.length > 0) {
-            setApiAircraftList(data.aircraft);
+          if (isMounted && data.success && Array.isArray(data.data || data.aircraft)) {
+            const items = (data.data || data.aircraft) as Record<string, unknown>[];
+            const mapped: FleetAircraft[] = items.map(item => ({
+              id: String(item.id || `custom-${item.name}`),
+              name: String(item.name || 'Aircraft'),
+              manufacturer: String(item.manufacturer || 'General Aviation'),
+              category: (item.category as FleetAircraft['category']) || 'Heavy Jet',
+              mtowKg: Number(item.mtow_kg || item.mtowKg || 15000),
+              mtowRange: item.mtow_kg ? `${Number(item.mtow_kg).toLocaleString()} kg` : 'Standard',
+              maxPassengers: Number(item.pax_max || item.maxPassengers || 12),
+              icao: String(item.icao_code || item.icao || 'AVIA'),
+              rangeNm: Number(item.range_nm || item.rangeNm || 3000),
+              baseHandlingFeeUsd: { domestic: 2500, international: 3500 },
+              landingParkingFeeUsdPerDay: { domestic: 500, international: 800 },
+              paxFeeUsdPerPax: 50,
+            }));
+            setApiAircraftList(mapped);
           }
         }
       } catch (err) {
@@ -158,7 +170,10 @@ export default function QuoteCalculator() {
     return list;
   }, [apiAircraftList, selectedCategoryFilter]);
 
-  // Sub-millisecond Live Quote Calculation
+  const effectivePassengers = useMemo(() => {
+    return selectedAircraft ? Math.min(passengers, selectedAircraft.maxPassengers) : passengers;
+  }, [passengers, selectedAircraft]);
+
   const quoteResult: QuoteCalculationResult = useMemo(() => {
     return calculateEstimatedQuote({
       aircraftId: selectedAircraft.id,
@@ -166,7 +181,7 @@ export default function QuoteCalculator() {
       location,
       operation,
       movement,
-      passengers,
+      passengers: effectivePassengers,
       stay,
       overnightNights,
       addOns,
@@ -190,17 +205,22 @@ export default function QuoteCalculator() {
   const handleRevealPrice = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!leadForm.fullName.trim() || !leadForm.email.trim()) {
-      alert('Please enter your full name and business email to unlock pricing.');
+      setSubmitError('Please enter your full name and business email to unlock pricing.');
       return;
     }
 
     setIsSubmitting(true);
-    const newRefId = `EAN-QT-2026-${Math.floor(100 + Math.random() * 900)}`;
+    setSubmitError('');
+
+    const randomSuffix = typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID().slice(0, 8).toUpperCase()
+      : Math.floor(100 + Math.random() * 900).toString();
+    const newRefId = `EAN-QT-${new Date().getFullYear()}-${randomSuffix}`;
     setQuoteReferenceId(newRefId);
 
     try {
       // Post lead payload to backend endpoint
-      await fetch('/api/pricing/quote', {
+      const res = await fetch('/api/pricing/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -215,6 +235,10 @@ export default function QuoteCalculator() {
           contact: leadForm,
         }),
       });
+
+      if (!res.ok) {
+        throw new Error(`Quote calculation server returned status ${res.status}`);
+      }
 
       // Save to saved quotes history
       const newSavedItem: SavedQuote = {
@@ -235,7 +259,7 @@ export default function QuoteCalculator() {
       setIsPriceRevealed(true);
     } catch (err) {
       console.error('Error submitting lead:', err);
-      setIsPriceRevealed(true);
+      setSubmitError('Failed to process submission. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -257,11 +281,17 @@ export default function QuoteCalculator() {
   };
 
   // Share URL Generator
-  const handleShareLink = () => {
-    const url = `${window.location.origin}/pricing?aircraft=${selectedAircraft.id}&location=${location}&op=${operation}&pax=${passengers}`;
-    navigator.clipboard.writeText(url);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 3000);
+  const handleShareLink = async () => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        const url = `${window.location.origin}/pricing?aircraft=${selectedAircraft.id}&location=${location}&op=${operation}&pax=${passengers}`;
+        await navigator.clipboard.writeText(url);
+        setCopiedLink(true);
+        setTimeout(() => setCopiedLink(false), 3000);
+      }
+    } catch (err) {
+      console.error('Failed to copy share link:', err);
+    }
   };
 
   return (
@@ -395,9 +425,11 @@ export default function QuoteCalculator() {
                 </label>
 
                 {/* Selected Aircraft Card Header */}
-                <div
+                <button
+                  type="button"
+                  aria-expanded={isDropdownOpen}
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="w-full bg-ean-black-pure/80 hover:bg-ean-black-accent border border-ean-gold/30 hover:border-ean-gold/60 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all duration-200 shadow-inner"
+                  className="w-full bg-ean-black-pure/80 hover:bg-ean-black-accent border border-ean-gold/30 hover:border-ean-gold/60 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all duration-200 shadow-inner text-left"
                 >
                   <div className="flex items-center gap-3.5">
                     <div className="w-11 h-11 rounded-xl bg-linear-to-br from-ean-gold/20 to-amber-500/10 border border-ean-gold/40 flex items-center justify-center text-ean-gold shrink-0">
@@ -416,7 +448,7 @@ export default function QuoteCalculator() {
                     </div>
                   </div>
                   <ChevronDown className={`w-5 h-5 text-ean-gold transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
-                </div>
+                </button>
 
                 {/* Dropdown Popup Menu */}
                 {isDropdownOpen && (
@@ -438,26 +470,42 @@ export default function QuoteCalculator() {
                       </div>
 
                       {/* Filter Category Chips */}
-                      <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                        {['All', 'Heavy Jet', 'Ultra Long Range', 'Super Midsize', 'Midsize Jet', 'Light Jet', 'Helicopter'].map((cat) => (
+                      <div className="flex flex-wrap items-center gap-1.5 pt-1 overflow-x-auto max-w-full pb-1">
+                        {[
+                          { id: 'All', label: `All (${apiAircraftList.length})` },
+                          { id: 'Ultra Long Range', label: `Ultra Long Range (${apiAircraftList.filter(a => a.category === 'Ultra Long Range').length})` },
+                          { id: 'Heavy Jet', label: `Heavy Jet (${apiAircraftList.filter(a => a.category === 'Heavy Jet').length})` },
+                          { id: 'Super Midsize', label: `Super Midsize (${apiAircraftList.filter(a => a.category === 'Super Midsize').length})` },
+                          { id: 'Midsize Jet', label: `Midsize Jet (${apiAircraftList.filter(a => a.category === 'Midsize Jet').length})` },
+                          { id: 'Light Jet', label: `Light Jet (${apiAircraftList.filter(a => a.category === 'Light Jet').length})` },
+                          { id: 'Turboprop', label: `Turboprop (${apiAircraftList.filter(a => a.category === 'Turboprop').length})` },
+                          { id: 'Helicopter', label: `Helicopter (${apiAircraftList.filter(a => a.category === 'Helicopter').length})` },
+                          { id: 'VIP Airliner', label: `VIP Airliner (${apiAircraftList.filter(a => a.category === 'VIP Airliner').length})` },
+                        ].map((cat) => (
                           <button
-                            key={cat}
+                            key={cat.id}
                             type="button"
-                            onClick={() => setSelectedCategoryFilter(cat)}
-                            className={`px-2.5 py-0.5 rounded text-[11px] font-medium transition-all cursor-pointer ${
-                              selectedCategoryFilter === cat
+                            onClick={() => setSelectedCategoryFilter(cat.id)}
+                            className={`px-2.5 py-0.5 rounded text-[11px] font-medium transition-all cursor-pointer whitespace-nowrap ${
+                              selectedCategoryFilter === cat.id
                                 ? 'bg-ean-gold text-ean-burgundy-night font-bold'
                                 : 'bg-ean-black-accent border border-white/10 text-ean-muted-light hover:text-white hover:border-ean-gold/30'
                             }`}
                           >
-                            {cat}
+                            {cat.label}
                           </button>
                         ))}
                       </div>
                     </div>
 
+                    {/* Aircraft Count Header */}
+                    <div className="px-3 py-1.5 bg-ean-black-pure/70 border-b border-ean-gold/10 flex items-center justify-between text-[11px] text-ean-gold">
+                      <span>Showing {filteredAircraft.length} aircraft models</span>
+                      <span className="text-[10px] text-ean-muted-light">Scroll to view all models</span>
+                    </div>
+
                     {/* Aircraft Scrollable List */}
-                    <div className="overflow-y-auto divide-y divide-white/5 p-2 space-y-1">
+                    <div className="overflow-y-auto divide-y divide-white/5 p-2 space-y-1 max-h-80">
                       {isLoadingApi ? (
                         <div className="flex items-center justify-center gap-2 p-6">
                           <Loader2 className="w-4 h-4 text-ean-gold animate-spin" />
@@ -487,7 +535,7 @@ export default function QuoteCalculator() {
                                 )}
                               </div>
                               <p className="text-[11px] text-ean-muted-light mt-0.5">
-                                {ac.category} • Max {ac.maxPassengers} pax • ICAO: {ac.icao}
+                                {ac.manufacturer} • {ac.category} • Max {ac.maxPassengers} pax • ICAO: {ac.icao}
                               </p>
                             </div>
                             <span className="text-xs text-ean-gold font-medium">
@@ -987,6 +1035,12 @@ export default function QuoteCalculator() {
                           </div>
                         </div>
 
+                        {submitError && (
+                          <p className="text-xs text-rose-400 font-medium bg-rose-500/10 border border-rose-500/20 p-2.5 rounded-xl">
+                            {submitError}
+                          </p>
+                        )}
+
                         <GoldButton
                           type="submit"
                           disabled={isSubmitting}
@@ -1029,7 +1083,7 @@ export default function QuoteCalculator() {
                 </p>
               </div>
               <span className="text-xs text-ean-gold font-semibold bg-ean-gold/10 px-3 py-1.5 rounded-full border border-ean-gold/30">
-                16 Aircraft Models Pre-Mapped
+                {AIRCRAFT_DATASET.length} Aircraft Models Pre-Mapped
               </span>
             </div>
 

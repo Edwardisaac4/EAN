@@ -13,8 +13,13 @@ import {
 } from './bands'
 
 export function buildQuote(state: QuoteState): QuoteResult {
-  const mtow    = state.aircraft?.mtow_kg ?? state.mtow_manual ?? 0
-  const band    = getBand(mtow)
+  const rawMtow = state.aircraft?.mtow_kg ?? state.mtow_manual
+  const isWeightMissing = rawMtow === null || rawMtow === undefined || rawMtow <= 0
+  const mtow = isWeightMissing ? 5700 : rawMtow
+  const band = getBand(mtow)
+
+  const nights = Math.max(0, state.nights ?? 0)
+  const pax = Math.max(0, state.pax ?? 0)
 
   const items:    QuoteLineItem[] = []
   const ngnItems: QuoteLineItem[] = []
@@ -27,12 +32,21 @@ export function buildQuote(state: QuoteState): QuoteResult {
       : handlingRate
     items.push({
       label: 'Ground handling',
-      sub:   `per turnaround · ${state.handling === 'min' ? 'floor rate' : 'standard'}`,
+      sub:   isWeightMissing
+        ? 'per turnaround · pending MTOW confirmation'
+        : `per turnaround · ${state.handling === 'min' ? 'floor rate' : 'standard'}`,
       value,
       currency: 'USD',
+      provisional: isWeightMissing,
     })
   } else {
-    items.push({ label: 'Ground handling (Abuja)', sub: 'per turnaround', value: HANDLING_ABV, currency: 'USD' })
+    items.push({
+      label: 'Ground handling (Abuja)',
+      sub: isWeightMissing ? 'per turnaround · pending MTOW confirmation' : 'per turnaround',
+      value: HANDLING_ABV,
+      currency: 'USD',
+      provisional: isWeightMissing,
+    })
   }
 
   // International terminal fee
@@ -41,35 +55,37 @@ export function buildQuote(state: QuoteState): QuoteResult {
   }
 
   // CIQ
-  if (state.addons.ciq || state.operation === 'intl') {
+  if (state.addons?.ciq || state.operation === 'intl') {
     items.push({ label: 'CIQ (customs / immigration / quarantine)', value: CIQ_USD, currency: 'USD' })
   }
 
   // Overnight parking
-  if (state.stay === 'over') {
+  if (state.stay === 'over' && nights > 0) {
     items.push({
       label: 'Overnight parking',
-      sub:   `${state.nights} night${state.nights > 1 ? 's' : ''}`,
-      value: PARKING_PER_NIGHT_USD * state.nights,
+      sub:   `${nights} night${nights > 1 ? 's' : ''}`,
+      value: PARKING_PER_NIGHT_USD * nights,
       currency: 'USD',
     })
   }
 
   // Add-on services
-  ADDONS.forEach((addon) => {
-    if (!state.addons[addon.id]) return
-    const value = addon.per === 'flat'
-      ? addon.value
-      : addon.values[band]
-    items.push({ label: addon.label, value, currency: 'USD' })
-  })
+  if (state.addons) {
+    ADDONS.forEach((addon) => {
+      if (!state.addons[addon.id]) return
+      const value = addon.per === 'flat'
+        ? addon.value
+        : addon.values[band]
+      items.push({ label: addon.label, value, currency: 'USD' })
+    })
+  }
 
   // Passenger service charge — international
-  if (state.pax > 0 && state.operation === 'intl') {
+  if (pax > 0 && state.operation === 'intl') {
     items.push({
       label:       'Passenger service charge (intl)',
-      sub:         `${state.pax} pax × $${PSC.intl_usd} · proposed`,
-      value:       PSC.intl_usd * state.pax,
+      sub:         `${pax} pax × $${PSC.intl_usd} · proposed`,
+      value:       PSC.intl_usd * pax,
       currency:    'USD',
       provisional: true,
     })
@@ -78,11 +94,11 @@ export function buildQuote(state: QuoteState): QuoteResult {
   // NGN items — domestic only
   if (state.operation === 'dom') {
     ngnItems.push({ label: 'VIP lounge (local operators)', value: VIP_LOCAL_NGN, currency: 'NGN' })
-    if (state.pax > 0) {
+    if (pax > 0) {
       ngnItems.push({
         label: 'Passenger service charge (local)',
-        sub:   `${state.pax} pax × ₦${PSC.dom_ngn.toLocaleString()} · proposed`,
-        value: PSC.dom_ngn * state.pax,
+        sub:   `${pax} pax × ₦${PSC.dom_ngn.toLocaleString()} · proposed`,
+        value: PSC.dom_ngn * pax,
         currency: 'NGN',
         provisional: true,
       })

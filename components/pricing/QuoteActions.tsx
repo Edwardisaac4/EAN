@@ -20,12 +20,12 @@ export default function QuoteActions({
   const [waCopied, setWaCopied] = useState(false)
   const [emailCopied, setEmailCopied] = useState(false)
 
-  const aircraftName = state.aircraft?.name ?? `Aircraft (${state.mtow_manual?.toLocaleString()} kg)`
+  const aircraftName = state.aircraft?.name ?? (state.mtow_manual ? `Aircraft (${state.mtow_manual.toLocaleString()} kg)` : 'Unspecified Aircraft')
   const locationLabel = state.location === 'LOS' ? 'Lagos (MMIA)' : 'Abuja (NAIA)'
   const opLabel = state.operation === 'intl' ? 'International' : 'Domestic'
   const stayLabel = state.stay === 'over' ? `Overnight (${state.nights} nights)` : 'Same-day'
 
-  const handleCopyWhatsApp = () => {
+  const handleCopyWhatsApp = async () => {
     const waText = `✈️ EAN Aviation — FBO Handling Quote
 Aircraft: ${aircraftName}
 ${locationLabel} · ${opLabel} · ${stayLabel}
@@ -36,19 +36,25 @@ TOTAL: ${quote.totalDisplay}
 
 Fuel at Platts pricing on request. PSC subject to CAA ratification.`
 
-    navigator.clipboard.writeText(waText)
-    setWaCopied(true)
-    setTimeout(() => setWaCopied(false), 1500)
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(waText)
+        setWaCopied(true)
+        setTimeout(() => setWaCopied(false), 1500)
+      }
+    } catch (err) {
+      console.error('Failed to copy to clipboard:', err)
+    }
   }
 
-  const handleCopyEmail = () => {
+  const handleCopyEmail = async () => {
     const emailSubject = `EAN Aviation — Handling quote, ${aircraftName}`
     const emailBody = `Dear Operations Team,
 
 Please find below the estimated ground handling cost summary for ${aircraftName}:
 
 Flight Details:
-- Aircraft: ${aircraftName} (${quote.bandLabel})
+- Aircraft: ${aircraftName}
 - Airport: ${locationLabel}
 - Operation: ${opLabel}
 - Stay: ${stayLabel}
@@ -67,9 +73,15 @@ EAN Aviation Flight Support
 ops@ean.aero | +234 1 291 1000`
 
     const fullContent = `Subject: ${emailSubject}\n\n${emailBody}`
-    navigator.clipboard.writeText(fullContent)
-    setEmailCopied(true)
-    setTimeout(() => setEmailCopied(false), 1500)
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(fullContent)
+        setEmailCopied(true)
+        setTimeout(() => setEmailCopied(false), 1500)
+      }
+    } catch (err) {
+      console.error('Failed to copy email to clipboard:', err)
+    }
   }
 
   return (

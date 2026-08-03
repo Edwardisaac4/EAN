@@ -34,14 +34,19 @@ export default function AddonsGrid({ addons, band, onToggleAddon }: AddonsGridPr
           return (
             <label
               key={addon.id}
-              onClick={() => onToggleAddon(addon.id)}
-              className={`flex items-start gap-3 p-3.5 rounded-lg border transition-all cursor-pointer select-none ${
+              className={`flex items-start gap-3 p-3.5 rounded-lg border transition-all cursor-pointer select-none focus-within:ring-2 focus-within:ring-ean-gold ${
                 isChecked
                   ? 'bg-ean-navy/5 border-ean-gold shadow-sm'
                   : 'bg-ean-surface border-ean-border-light hover:bg-gray-50'
               }`}
             >
-              <div className="mt-0.5 text-ean-gold">
+              <input
+                type="checkbox"
+                className="sr-only"
+                checked={isChecked}
+                onChange={() => onToggleAddon(addon.id)}
+              />
+              <div className="mt-0.5 text-ean-gold shrink-0">
                 {isChecked ? (
                   <CheckSquare className="w-4 h-4 text-ean-gold fill-ean-gold/20" />
                 ) : (
@@ -54,7 +59,7 @@ export default function AddonsGrid({ addons, band, onToggleAddon }: AddonsGridPr
                     {addon.label}
                   </span>
                   <span className="text-[10px] font-ui text-ean-muted-dark uppercase tracking-wider">
-                    {addon.per === 'flat' ? 'Flat rate' : `Band ${band} rate`}
+                    {addon.per === 'flat' ? 'Flat rate' : 'Standard rate'}
                   </span>
                 </div>
                 <span className="text-xs font-ui font-bold text-ean-gold tabular-nums ml-2">

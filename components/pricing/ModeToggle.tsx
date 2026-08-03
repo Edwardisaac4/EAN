@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Mode } from '@/types/pricing'
 import { Shield, User } from 'lucide-react'
 
@@ -10,14 +10,30 @@ interface ModeToggleProps {
 }
 
 export default function ModeToggle({ mode, onChange }: ModeToggleProps) {
+  const [isAdmin] = useState<boolean>(() => {
+    if (typeof document !== 'undefined') {
+      return document.cookie.includes('admin_session=')
+    }
+    return false
+  })
+
   useEffect(() => {
+    const hasAdminCookie = typeof document !== 'undefined' && document.cookie.includes('admin_session=')
     const saved = localStorage.getItem('ean_pricing_mode') as Mode | null
-    if (saved === 'client' || saved === 'staff') {
+    if (saved === 'staff' && !hasAdminCookie) {
+      // Unauthenticated users cannot enable staff mode
+      localStorage.setItem('ean_pricing_mode', 'client')
+      onChange('client')
+    } else if (saved === 'client' || (saved === 'staff' && hasAdminCookie)) {
       onChange(saved)
     }
   }, [onChange])
 
   const handleToggle = (newMode: Mode) => {
+    if (newMode === 'staff' && !isAdmin) {
+      // Prevent staff mode selection for non-admin
+      return
+    }
     localStorage.setItem('ean_pricing_mode', newMode)
     onChange(newMode)
   }
@@ -39,9 +55,13 @@ export default function ModeToggle({ mode, onChange }: ModeToggleProps) {
       <button
         type="button"
         onClick={() => handleToggle('staff')}
+        disabled={!isAdmin && mode !== 'staff'}
+        title={!isAdmin ? 'Staff Mode requires Admin Login' : 'Switch to Staff Mode'}
         className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-ui font-medium transition-all duration-200 ${
           mode === 'staff'
             ? 'bg-ean-gold text-white shadow-md'
+            : !isAdmin
+            ? 'text-ean-muted-light/40 cursor-not-allowed'
             : 'text-ean-muted-light hover:text-white'
         }`}
       >

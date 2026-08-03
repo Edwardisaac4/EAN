@@ -1,9 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type { Aircraft } from '@/types/pricing'
+import { AIRCRAFT_DATASET } from '@/lib/aircraftData'
 
-const POPULAR_FLEET_QUERIES = [
-  'Gulfstream', 'Challenger', 'Falcon', 'Citation', 'Global', '737', 'A318', 'Embraer', 'Hawker', 'Learjet', 'Phenom'
-]
+// Simple IP rate limiter: max 30 requests per minute per IP
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+
+function isRateLimited(ip: string, limit = 30, windowMs = 60000): boolean {
+  const now = Date.now()
+  const record = rateLimitMap.get(ip)
+
+  if (!record || now > record.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + windowMs })
+    return false
+  }
+
+  if (record.count >= limit) {
+    return true
+  }
+
+  record.count += 1
+  return false
+}
 
 interface ApiNinjasAircraft {
   manufacturer?: string
@@ -21,10 +38,14 @@ interface ApiNinjasAircraft {
   engine_type?: string | null
 }
 
-async function fetchApiNinjas(q: string, apiKey: string): Promise<ApiNinjasAircraft[]> {
-  const isRapidApi = apiKey.includes('jsn') || apiKey.length > 40
-  
-  const urls = isRapidApi
+async function fetchApiNinjas(q: string): Promise<ApiNinjasAircraft[]> {
+  const rapidApiKey = process.env.RAPIDAPI_KEY || process.env.RAPIDAPI_AERODATABOX_KEY
+  const apiNinjasKey = process.env.API_NINJAS_KEY
+
+  const provider = rapidApiKey ? 'rapidapi' : apiNinjasKey ? 'apininjas' : null
+  if (!provider) return []
+
+  const urls = provider === 'rapidapi'
     ? [
         `https://aircraft-by-api-ninjas.p.rapidapi.com/v1/aircraft?model=${encodeURIComponent(q)}`,
         `https://aircraft-by-api-ninjas.p.rapidapi.com/v1/aircraft?manufacturer=${encodeURIComponent(q)}`
@@ -34,18 +55,18 @@ async function fetchApiNinjas(q: string, apiKey: string): Promise<ApiNinjasAircr
         `https://api.api-ninjas.com/v1/aircraft?manufacturer=${encodeURIComponent(q)}`
       ]
 
-  const headers: Record<string, string> = isRapidApi
+  const headers: Record<string, string> = provider === 'rapidapi'
     ? {
-        'x-rapidapi-key': apiKey,
+        'x-rapidapi-key': rapidApiKey!,
         'x-rapidapi-host': 'aircraft-by-api-ninjas.p.rapidapi.com',
       }
     : {
-        'X-Api-Key': apiKey,
+        'X-Api-Key': apiNinjasKey!,
       }
 
   try {
     const responses = await Promise.all(
-      urls.map(url => fetch(url, { headers, next: { revalidate: 86400 } }))
+      urls.map(url => fetch(url, { headers, signal: AbortSignal.timeout(8000), next: { revalidate: 86400 } }))
     )
 
     const dataArrays = await Promise.all(
@@ -57,52 +78,85 @@ async function fetchApiNinjas(q: string, apiKey: string): Promise<ApiNinjasAircr
     )
 
     return dataArrays.flat()
-  } catch {
+  } catch (err) {
+    console.error('API Ninjas fetch error details:', err)
     return []
   }
 }
 
 export async function GET(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1'
+
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { success: false, error: 'Too many search requests. Please wait a moment.' },
+      { status: 429 }
+    )
+  }
+
   const { searchParams } = new URL(req.url)
   const query = searchParams.get('q')?.trim()
 
   try {
-    const apiKey = process.env.API_NINJAS_KEY || process.env.RAPIDAPI_KEY || process.env.RAPIDAPI_AERODATABOX_KEY
-    if (!apiKey) {
-      return NextResponse.json(
-        { success: false, error: 'Aircraft API key is missing' },
-        { status: 500 }
-      )
-    }
-
-    let rawItems: ApiNinjasAircraft[] = []
-
+    // Return full dataset if query is empty or short
     if (!query || query.length < 2) {
-      // Query default popular fleet
-      const fleetResults = await Promise.all(
-        POPULAR_FLEET_QUERIES.map(term => fetchApiNinjas(term, apiKey))
-      )
-      rawItems = fleetResults.flat()
-    } else {
-      rawItems = await fetchApiNinjas(query, apiKey)
+      const curated: Aircraft[] = AIRCRAFT_DATASET.map(fa => ({
+        id: fa.id,
+        name: fa.name,
+        manufacturer: fa.manufacturer,
+        mtow_kg: fa.mtowKg,
+        mtow_lbs: Math.round(fa.mtowKg / 0.453592),
+        category: fa.category,
+        range_nm: fa.rangeNm,
+        pax_max: fa.maxPassengers,
+        icao_code: fa.icao,
+        source: 'database' as const,
+      }))
+
+      return NextResponse.json({ success: true, data: curated, count: curated.length })
     }
+
+    // 1. Local search from comprehensive dataset
+    const qLower = query.toLowerCase()
+    const localMatches: Aircraft[] = AIRCRAFT_DATASET
+      .filter(fa => 
+        fa.name.toLowerCase().includes(qLower) ||
+        fa.manufacturer.toLowerCase().includes(qLower) ||
+        fa.icao.toLowerCase().includes(qLower) ||
+        fa.category.toLowerCase().includes(qLower)
+      )
+      .map(fa => ({
+        id: fa.id,
+        name: fa.name,
+        manufacturer: fa.manufacturer,
+        mtow_kg: fa.mtowKg,
+        mtow_lbs: Math.round(fa.mtowKg / 0.453592),
+        category: fa.category,
+        range_nm: fa.rangeNm,
+        pax_max: fa.maxPassengers,
+        icao_code: fa.icao,
+        source: 'database' as const,
+      }))
+
+    // 2. Fetch live API Ninjas search results
+    const rawItems = await fetchApiNinjas(query)
 
     // Deduplicate by manufacturer + model
-    const seen = new Set<string>()
+    const seen = new Set<string>(localMatches.map(m => m.name.toLowerCase()))
     const deduplicated: ApiNinjasAircraft[] = []
 
     for (const item of rawItems) {
       if (!item || !item.model) continue
-      const key = `${item.manufacturer || ''}_${item.model}`.toLowerCase()
+      const key = item.model.toLowerCase()
       if (!seen.has(key)) {
         seen.add(key)
         deduplicated.push(item)
       }
     }
 
-    // Normalize into Aircraft type
-    const normalized: Aircraft[] = deduplicated.map((a: ApiNinjasAircraft) => {
-      const rawWeight = a.gross_weight_lbs || a.max_gross_weight_lbs || a.max_takeoff_weight_lbs
+    // Normalize API Ninjas items
+    const apiNormalized: Aircraft[] = deduplicated.map((a: ApiNinjasAircraft) => {
+      const rawWeight = a.max_takeoff_weight_lbs || a.gross_weight_lbs || a.max_gross_weight_lbs
       const mtow_lbs = rawWeight ? parseFloat(String(rawWeight).replace(/,/g, '')) : null
       const mtow_kg = mtow_lbs && !isNaN(mtow_lbs) ? Math.round(mtow_lbs * 0.453592) : null
 
@@ -128,12 +182,13 @@ export async function GET(req: NextRequest) {
       }
     })
 
-    // Filter out results with no MTOW
-    const usable = normalized.filter((a: Aircraft) => a.mtow_kg !== null && a.mtow_kg > 0)
+    const usableApi = apiNormalized.filter((a: Aircraft) => a.mtow_kg !== null && a.mtow_kg > 0)
+    const combined = [...localMatches, ...usableApi]
 
-    return NextResponse.json({ success: true, data: usable })
+    return NextResponse.json({ success: true, data: combined, count: combined.length })
 
-  } catch {
+  } catch (err) {
+    console.error('Error in aircraft search route:', err)
     return NextResponse.json(
       { success: false, error: 'Failed to reach aircraft service' },
       { status: 500 }

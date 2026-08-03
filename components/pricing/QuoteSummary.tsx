@@ -61,7 +61,6 @@ export default function QuoteSummary({
             {aircraftName}
           </h2>
           <div className="text-xs font-ui text-ean-muted-light mt-1 flex flex-wrap gap-1.5">
-            <span className="bg-white/10 px-2 py-0.5 rounded text-[11px]">{quote.bandLabel.split('—')[0].trim()}</span>
             <span className="bg-white/10 px-2 py-0.5 rounded text-[11px]">{locationLabel}</span>
             <span className="bg-white/10 px-2 py-0.5 rounded text-[11px]">{opLabel}</span>
             <span className="bg-white/10 px-2 py-0.5 rounded text-[11px]">{stayLabel}</span>

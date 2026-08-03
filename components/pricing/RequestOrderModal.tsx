@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
-import { QuoteResult, QuoteState, LeadDetails, Aircraft } from '@/types/pricing'
+import React, { useState, useEffect, useRef } from 'react'
+import { QuoteResult, QuoteState, LeadDetails } from '@/types/pricing'
 import { FileText, Copy, Mail, Check, X } from 'lucide-react'
 
 interface RequestOrderModalProps {
@@ -22,39 +22,61 @@ export default function RequestOrderModal({
   refCode,
 }: RequestOrderModalProps) {
   const [copied, setCopied] = useState(false)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (isOpen) {
+      closeButtonRef.current?.focus()
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          onClose()
+        }
+      }
+
+      window.addEventListener('keydown', handleKeyDown)
+      return () => window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, onClose])
 
   if (!isOpen) return null
 
-  const aircraftName = state.aircraft?.name ?? `Manual Aircraft (${state.mtow_manual?.toLocaleString()} kg)`
+  const aircraftName = state.aircraft?.name ?? (state.mtow_manual ? `Manual Aircraft (${state.mtow_manual.toLocaleString()} kg)` : 'Unspecified Aircraft')
   const locationLabel = state.location === 'LOS' ? 'Lagos (MMIA)' : 'Abuja (NAIA)'
   const opLabel = state.operation === 'intl' ? 'International' : 'Domestic'
   const stayLabel = state.stay === 'over' ? `Overnight (${state.nights} nights)` : 'Same-day turnaround'
 
   const orderText = `EAN REQUEST ORDER · ${refCode}
-────────────────────────────────
+--------------------------------
 Client: ${lead?.name || 'Staff / Direct Client'}
 Email: ${lead?.email || 'N/A'}
 Phone: ${lead?.phone || 'N/A'}
 Company: ${lead?.company || 'N/A'}
-────────────────────────────────
-Aircraft: ${aircraftName} (${quote.bandLabel})
+--------------------------------
+Aircraft: ${aircraftName}
 Location: ${locationLabel}
 Operation: ${opLabel}
 Movement: Arrival + departure (${stayLabel})
 Passengers: ${state.pax} (estimated — CRO confirms on arrival)
-────────────────────────────────
+--------------------------------
 Requested services:
 
 ${quote.items.map(i => `${i.label}${i.sub ? ` (${i.sub})` : ''}: ${i.currency === 'USD' ? 'USD ' : '₦'}${i.value.toLocaleString()}`).join('\n')}
-────────────────────────────────
+--------------------------------
 Estimated total: ${quote.totalDisplay}
-────────────────────────────────
+--------------------------------
 Status: NEW — route to Operations (ABO One / RPS)`
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(orderText)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
+  const handleCopy = async () => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(orderText)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 1500)
+      }
+    } catch (err) {
+      console.error('Failed to copy order text:', err)
+    }
   }
 
   const handleEmailOps = () => {
@@ -64,17 +86,23 @@ Status: NEW — route to Operations (ABO One / RPS)`
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="request-order-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200"
+    >
       <div className="bg-ean-navy border border-ean-gold/40 rounded-xl shadow-2xl w-full max-w-lg overflow-hidden text-white flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="px-6 py-4 border-b border-ean-border-dark flex items-center justify-between bg-ean-navy-mid">
           <div className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-ean-gold" />
-            <h3 className="font-display font-semibold text-lg text-white">
+            <h3 id="request-order-title" className="font-display font-semibold text-lg text-white">
               EAN Formal Request Order
             </h3>
           </div>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             className="text-ean-muted-light hover:text-white transition-colors p-1"
