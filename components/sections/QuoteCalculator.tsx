@@ -130,20 +130,92 @@ export default function QuoteCalculator() {
           const data = await res.json();
           if (isMounted && data.success && Array.isArray(data.data || data.aircraft)) {
             const items = (data.data || data.aircraft) as Record<string, unknown>[];
-            const mapped: FleetAircraft[] = items.map(item => ({
-              id: String(item.id || `custom-${item.name}`),
-              name: String(item.name || 'Aircraft'),
-              manufacturer: String(item.manufacturer || 'General Aviation'),
-              category: (item.category as FleetAircraft['category']) || 'Heavy Jet',
-              mtowKg: Number(item.mtow_kg || item.mtowKg || 15000),
-              mtowRange: item.mtow_kg ? `${Number(item.mtow_kg).toLocaleString()} kg` : 'Standard',
-              maxPassengers: Number(item.pax_max || item.maxPassengers || 12),
-              icao: String(item.icao_code || item.icao || 'AVIA'),
-              rangeNm: Number(item.range_nm || item.rangeNm || 3000),
-              baseHandlingFeeUsd: { domestic: 2500, international: 3500 },
-              landingParkingFeeUsdPerDay: { domestic: 500, international: 800 },
-              paxFeeUsdPerPax: 50,
-            }));
+            const mapped: FleetAircraft[] = items.map(item => {
+              const existingId = String(item.id || '');
+              const curated = AIRCRAFT_DATASET.find(a => a.id === existingId || a.name.toLowerCase() === String(item.name || '').toLowerCase());
+              if (curated) return curated;
+
+              const mtowKg = item.mtow_kg !== undefined && item.mtow_kg !== null ? Number(item.mtow_kg) : (item.mtowKg ? Number(item.mtowKg) : null);
+              const rawCategory = item.category ? String(item.category) : undefined;
+              const rawPax = item.pax_max !== undefined && item.pax_max !== null ? Number(item.pax_max) : (item.maxPassengers ? Number(item.maxPassengers) : undefined);
+
+              const validCategories = ['Light Jet', 'Midsize Jet', 'Super Midsize', 'Heavy Jet', 'Ultra Long Range', 'Helicopter', 'VIP Airliner', 'Turboprop'] as const;
+              let category: FleetAircraft['category'] = 'Midsize Jet';
+              if (rawCategory && validCategories.includes(rawCategory as typeof validCategories[number])) {
+                category = rawCategory as FleetAircraft['category'];
+              } else if (mtowKg && mtowKg > 0) {
+                if (mtowKg <= 5000) category = 'Light Jet';
+                else if (mtowKg <= 10000) category = 'Light Jet';
+                else if (mtowKg <= 15000) category = 'Midsize Jet';
+                else if (mtowKg <= 20000) category = 'Super Midsize';
+                else if (mtowKg <= 30000) category = 'Heavy Jet';
+                else if (mtowKg <= 60000) category = 'Ultra Long Range';
+                else category = 'VIP Airliner';
+              }
+
+              let maxPassengers = rawPax && rawPax > 0 ? rawPax : 8;
+              if (!rawPax || rawPax <= 0) {
+                if (category === 'Light Jet') maxPassengers = 7;
+                else if (category === 'Midsize Jet') maxPassengers = 8;
+                else if (category === 'Super Midsize') maxPassengers = 10;
+                else if (category === 'Heavy Jet') maxPassengers = 13;
+                else if (category === 'Ultra Long Range') maxPassengers = 16;
+                else if (category === 'VIP Airliner') maxPassengers = 25;
+                else if (category === 'Turboprop') maxPassengers = 8;
+                else if (category === 'Helicopter') maxPassengers = 6;
+              }
+
+              let baseHandlingFeeUsd = { domestic: 1300, international: 2050 };
+              let landingParkingFeeUsdPerDay = { domestic: 210, international: 420 };
+              let paxFeeUsdPerPax = 35;
+
+              if (mtowKg && mtowKg > 0) {
+                if (mtowKg <= 5000) {
+                  baseHandlingFeeUsd = { domestic: 850, international: 1350 };
+                  landingParkingFeeUsdPerDay = { domestic: 120, international: 240 };
+                  paxFeeUsdPerPax = 25;
+                } else if (mtowKg <= 10000) {
+                  baseHandlingFeeUsd = { domestic: 1100, international: 1750 };
+                  landingParkingFeeUsdPerDay = { domestic: 170, international: 340 };
+                  paxFeeUsdPerPax = 30;
+                } else if (mtowKg <= 15000) {
+                  baseHandlingFeeUsd = { domestic: 1300, international: 2050 };
+                  landingParkingFeeUsdPerDay = { domestic: 210, international: 420 };
+                  paxFeeUsdPerPax = 35;
+                } else if (mtowKg <= 20000) {
+                  baseHandlingFeeUsd = { domestic: 1550, international: 2400 };
+                  landingParkingFeeUsdPerDay = { domestic: 260, international: 510 };
+                  paxFeeUsdPerPax = 40;
+                } else if (mtowKg <= 30000) {
+                  baseHandlingFeeUsd = { domestic: 1850, international: 2950 };
+                  landingParkingFeeUsdPerDay = { domestic: 320, international: 650 };
+                  paxFeeUsdPerPax = 45;
+                } else if (mtowKg <= 60000) {
+                  baseHandlingFeeUsd = { domestic: 2300, international: 3600 };
+                  landingParkingFeeUsdPerDay = { domestic: 470, international: 920 };
+                  paxFeeUsdPerPax = 50;
+                } else {
+                  baseHandlingFeeUsd = { domestic: 3800, international: 5900 };
+                  landingParkingFeeUsdPerDay = { domestic: 850, international: 1650 };
+                  paxFeeUsdPerPax = 65;
+                }
+              }
+
+              return {
+                id: String(item.id || `custom-${item.name}`),
+                name: String(item.name || 'Aircraft'),
+                manufacturer: String(item.manufacturer || 'General Aviation'),
+                category,
+                mtowKg: mtowKg ?? 12000,
+                mtowRange: mtowKg ? `${mtowKg.toLocaleString()} kg` : 'Standard MTOW',
+                maxPassengers,
+                icao: String(item.icao_code || item.icao || 'AVIA'),
+                rangeNm: Number(item.range_nm || item.rangeNm || 2500),
+                baseHandlingFeeUsd,
+                landingParkingFeeUsdPerDay,
+                paxFeeUsdPerPax,
+              };
+            });
             setApiAircraftList(mapped);
           }
         }
