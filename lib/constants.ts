@@ -141,13 +141,14 @@ export const NAV_ITEMS: NavItem[] = [
   },
   { name: 'Our Team', href: '/team' },
   { name: 'Services', href: '/services' },
+  { name: 'Pricing', href: '/pricing' },
   { name: 'Contact Us', href: '/contact' },
   { name: 'Blog', href: '/blog' },
 ];
 
 export const NAV_CTA = {
-  name: 'Inquiry',
-  href: '/contact',
+  name: 'Get a Quote',
+  href: '/pricing',
 };
 
 export const FOOTER_SERVICES_LINKS = [
