@@ -1,6 +1,42 @@
 {
   "version": 1,
   "skills": {
+    "architect": {
+      "source": "jsmastery-pro/skills",
+      "sourceType": "github",
+      "skillPath": "skills/architect/SKILL.md",
+      "computedHash": "7e3c50f2b72f52663f08876618b0b7fe56052868800b5ef0bdb6a5e664b6592b"
+    },
+    "audit": {
+      "source": "jsmastery-pro/skills",
+      "sourceType": "github",
+      "skillPath": "skills/audit/SKILL.md",
+      "computedHash": "6f71e38e19b6ac06e432ea5e31b11db84084a27a88765665b819ab0f8dad9e44"
+    },
+    "check": {
+      "source": "jsmastery-pro/skills",
+      "sourceType": "github",
+      "skillPath": "skills/check/SKILL.md",
+      "computedHash": "248ab1db7d502d8cc8c4e13d4c571a2a9325ed60d0265f26ea1c7e047af806f2"
+    },
+    "debug": {
+      "source": "jsmastery-pro/skills",
+      "sourceType": "github",
+      "skillPath": "skills/debug/SKILL.md",
+      "computedHash": "e53d22a8af6ca09037aa6c38ed2e49909fe3886888b11371998aed806289362d"
+    },
+    "develop": {
+      "source": "jsmastery-pro/skills",
+      "sourceType": "github",
+      "skillPath": "skills/develop/SKILL.md",
+      "computedHash": "3b09d03acd545eccafb409df024517bc2cb055246ac18c65beb8b12ca1a830c9"
+    },
+    "document": {
+      "source": "jsmastery-pro/skills",
+      "sourceType": "github",
+      "skillPath": "skills/document/SKILL.md",
+      "computedHash": "761eb9edfa6a5845e8ec0c535a361df4956d308e65fdc8153a60a005c542296f"
+    },
     "gsap-core": {
       "source": "greensock/gsap-skills",
       "sourceType": "github",
@@ -49,6 +85,12 @@
       "skillPath": "skills/gsap-utils/SKILL.md",
       "computedHash": "72af4a036d417d6eaef7478eca2f28e760631fb78db822ba34a9c706797aab62"
     },
+    "scope": {
+      "source": "jsmastery-pro/skills",
+      "sourceType": "github",
+      "skillPath": "skills/scope/SKILL.md",
+      "computedHash": "819b024b6823f9f23f88d859801238d33742c76d46767cb4e31a9b32605be2c1"
+    },
     "supabase": {
       "source": "supabase/agent-skills",
       "sourceType": "github",
@@ -60,6 +102,18 @@
       "sourceType": "github",
       "skillPath": "skills/supabase-postgres-best-practices/SKILL.md",
       "computedHash": "768f9a7532780a72165f79c91d71a4bf82abd9ed31045238c2acb40322fc1d0a"
+    },
+    "sync": {
+      "source": "jsmastery-pro/skills",
+      "sourceType": "github",
+      "skillPath": "skills/sync/SKILL.md",
+      "computedHash": "e45b0f42ddce6621d4831878fa03b1de2bbb9ab8bc7c28c359790a139045c74f"
+    },
+    "test": {
+      "source": "jsmastery-pro/skills",
+      "sourceType": "github",
+      "skillPath": "skills/test/SKILL.md",
+      "computedHash": "1bb665096a5a1bd7e99c80a66c0f472ced2fc5c0e03b76b6a36bd272f19c725a"
     }
   }
 }

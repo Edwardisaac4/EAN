@@ -35,8 +35,8 @@ export interface QuoteState {
   day:          DayType
   handling:     HandingTier
   addons:       Record<string, boolean>
-  mode:         Mode
-  revealed:     boolean        // client mode — has entered details
+  mode?:        Mode
+  revealed:     boolean        // price revealed after lead submit
 }
 
 export interface QuoteLineItem {

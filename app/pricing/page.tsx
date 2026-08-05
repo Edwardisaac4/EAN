@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
 import PricingCalculator from '@/components/pricing/PricingCalculator'
 
 export const metadata: Metadata = {
@@ -9,8 +11,13 @@ export const metadata: Metadata = {
 
 export default function PricingPage() {
   return (
-    <main className="flex-1">
-      <PricingCalculator />
-    </main>
+    <>
+      <Navbar />
+      <main className="flex-1">
+        <PricingCalculator />
+      </main>
+      <Footer />
+    </>
   )
 }
+

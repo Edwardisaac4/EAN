@@ -54,8 +54,8 @@ export function buildQuote(state: QuoteState): QuoteResult {
     items.push({ label: 'International terminal / VIP fee', value: TERMINAL_INTL_USD, currency: 'USD' })
   }
 
-  // CIQ
-  if (state.addons?.ciq || state.operation === 'intl') {
+  // Statutory CIQ fee (if international and not explicitly selected in add-ons)
+  if (state.operation === 'intl' && !state.addons?.ciq) {
     items.push({ label: 'CIQ (customs / immigration / quarantine)', value: CIQ_USD, currency: 'USD' })
   }
 
@@ -73,10 +73,7 @@ export function buildQuote(state: QuoteState): QuoteResult {
   if (state.addons) {
     ADDONS.forEach((addon) => {
       if (!state.addons[addon.id]) return
-      const value = addon.per === 'flat'
-        ? addon.value
-        : addon.values[band]
-      items.push({ label: addon.label, value, currency: 'USD' })
+      items.push({ label: addon.label, value: addon.value, currency: 'USD' })
     })
   }
 

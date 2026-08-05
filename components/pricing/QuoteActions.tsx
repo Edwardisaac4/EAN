@@ -1,20 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
-import { QuoteResult, QuoteState, Mode } from '@/types/pricing'
+import { QuoteResult, QuoteState } from '@/types/pricing'
 import { MessageSquare, Mail, FileCheck, Check } from 'lucide-react'
 
 interface QuoteActionsProps {
   quote: QuoteResult
   state: QuoteState
-  mode: Mode
   onOpenRequestOrder: () => void
 }
 
 export default function QuoteActions({
   quote,
   state,
-  mode,
   onOpenRequestOrder,
 }: QuoteActionsProps) {
   const [waCopied, setWaCopied] = useState(false)
@@ -106,8 +104,8 @@ ops@ean.aero | +234 1 291 1000`
         {emailCopied ? 'Email Copied ✓' : 'Copy Quote as Formal Email'}
       </button>
 
-      {/* BUTTON 3 — Generate Request Order (staff or revealed leads) */}
-      {(mode === 'staff' || state.revealed) && (
+      {/* BUTTON 3 — Generate Request Order (revealed leads) */}
+      {state.revealed && (
         <button
           type="button"
           onClick={onOpenRequestOrder}

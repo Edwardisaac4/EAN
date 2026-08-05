@@ -5,6 +5,7 @@ import AboutSection from "@/components/sections/AboutSection";
 import ServicesSection from "@/components/sections/ServicesSection";
 import VIPSection from "@/components/sections/VIPSection";
 import CharterSection from "@/components/sections/CharterSection";
+import PricingSection from "@/components/sections/PricingSection";
 import PartnersStrip from "@/components/sections/PartnersStrip";
 import ContactSection from "@/components/sections/ContactSection";
 
@@ -19,9 +20,11 @@ export default function Home() {
         <ServicesSection />
         <VIPSection />
         <CharterSection />
+        <PricingSection />
         <PartnersStrip />
         <ContactSection />
       </main>
     </>
   );
 }
+
