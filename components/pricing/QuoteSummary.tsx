@@ -35,7 +35,7 @@ export default function QuoteSummary({
   const stayLabel = state.stay === 'over' ? `overnight (${state.nights}n)` : 'same-day turnaround'
 
   return (
-    <div className="w-full lg:w-[400px] shrink-0 sticky top-24 space-y-4">
+    <div className="w-full lg:w-100 shrink-0 sticky top-24 space-y-4">
       <div className="relative bg-white rounded-2xl shadow-sm border border-[#EBE5DF] overflow-hidden">
         {/* HEADER (DARK BURGUNDY / MAROON BANNER #581825) */}
         <div className="p-6 bg-[#581825] text-white space-y-1">

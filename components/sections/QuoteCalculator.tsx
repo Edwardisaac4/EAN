@@ -33,7 +33,6 @@ import {
 } from 'lucide-react';
 import GoldButton from '@/components/shared/GoldButton';
 import SectionReveal from '@/components/shared/SectionReveal';
-import { Aircraft } from '@/types/pricing';
 import {
   AIRCRAFT_DATASET,
   FleetAircraft,
@@ -258,7 +257,7 @@ export default function QuoteCalculator() {
       overnightNights,
       addOns,
     });
-  }, [selectedAircraft, location, operation, movement, passengers, stay, overnightNights, addOns]);
+  }, [selectedAircraft, location, operation, movement, passengers, effectivePassengers, stay, overnightNights, addOns]);
 
   // Formatter for currency display
   const formatMoney = (usdAmount: number) => {
