@@ -91,32 +91,29 @@ export default function HeroSection() {
 
   useGSAP(
     () => {
-      // 3. Parallax scroll effect across all backgrounds
-      gsap.to('.slide-bg', {
-        yPercent: 18,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
+      const rafId = requestAnimationFrame(() => {
+        if (!containerRef.current) return;
+        // 3. Parallax scroll effect across all backgrounds
+        gsap.to('.slide-bg', {
+          yPercent: 18,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+        });
+
+        // 4. Reveal scroll indicator
+        gsap.fromTo(
+          scrollIndicatorRef.current,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 1, delay: 0.8, ease: 'power3.out' }
+        );
       });
 
-      // 4. Subtle hover/bounce animation for scroll indicator
-      gsap.fromTo(
-        scrollIndicatorRef.current,
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 1, delay: 1.2, ease: 'power3.out' }
-      );
-
-      gsap.to(scrollIndicatorRef.current, {
-        y: 6,
-        repeat: -1,
-        yoyo: true,
-        duration: 1.2,
-        ease: 'power1.inOut',
-      });
+      return () => cancelAnimationFrame(rafId);
     },
     { scope: containerRef }
   );
