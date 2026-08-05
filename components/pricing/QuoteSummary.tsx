@@ -80,9 +80,9 @@ export default function QuoteSummary({
           ) : (
             /* REVEALED PRICE DETAILS & ITEMIZED BREAKDOWN */
             <div className="space-y-5 animate-fadeIn">
-              <div className="flex items-center justify-between text-ean-gold pb-2 border-b border-ean-border-light">
-                <span className="text-xs font-ui uppercase tracking-widest font-semibold flex items-center gap-1.5">
-                  <Calculator className="w-4 h-4" />
+              <div className="flex items-center justify-between pb-2 border-b border-[#EBE5DF]">
+                <span className="text-xs font-ui uppercase tracking-widest font-semibold flex items-center gap-1.5 text-[#581825]">
+                  <Calculator className="w-4 h-4 text-ean-gold" />
                   Itemized Charge Summary
                 </span>
               </div>
