@@ -893,7 +893,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Head, Marketing",
     department: "Marketing",
     departmentLabel: "Marketing",
-    image: "/images/leadership/josephine-nbac.jpg",
+    image: "/images/leadership/Josephine Kolawole Head, Marketing.jpg",
     quote:
       "Every marketing strategy begins with brand clarity — articulating our commitment to safety, luxury, and unmatched service in business aviation.",
     bio: [
@@ -940,7 +940,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Head, Client Relations",
     department: "Operations",
     departmentLabel: "Client Relations",
-    image: "/images/leadership/ann-umeh-nbac.jpg",
+    image: "/images/leadership/Ann Umeh Client Relations Manager.jpg",
     quote:
       "The airport experience for executive travelers should be entirely effortless — discreet, instantaneous, and tailored to individual preference.",
     bio: [
@@ -1024,7 +1024,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Head, Facilities",
     department: "Facilities",
     departmentLabel: "Facilities",
-    image: "/images/hero/slide-1.png",
+    image: "/images/leadership/Ineh Osikhekha facilities manager (2) (1).jpg",
     quote:
       "Operational infrastructure must be seamless, secure, and engineered to accelerate executive movement.",
     bio: [
@@ -1049,7 +1049,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Head, Legal Services",
     department: "Legal",
     departmentLabel: "Legal Services",
-    image: "/images/hero/slide-4.png",
+    image: "/images/leadership/Vivian Okoh-Olutunfese Head, Legal Services.png",
     quote:
       "Navigating the complexities of international aviation demands precision, proactive engagement, and absolute regulatory alignment.",
     bio: [
@@ -1075,7 +1075,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Hangar Manager",
     department: "Maintenance",
     departmentLabel: "Hangar & Maintenance",
-    image: "/images/contact-cta.png",
+    image: "/images/leadership/Alexey Saliu-Lawal hangar Manager (1) (1).jpg",
     quote:
       "Ensuring that EAN's hangar and ground support operations run with precision, safety, and efficiency.",
     bio: [
@@ -1097,7 +1097,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Human Resource Manager",
     department: "Human Resources",
     departmentLabel: "Human Resources",
-    image: "/images/vip-lounge.jpg",
+    image: "/images/leadership/Tomilara Adewale HR Manager.jpg",
     quote:
       "True service is anticipating needs before they are articulated, ensuring absolute privacy, comfort, and peace of mind.",
     bio: [
@@ -1118,7 +1118,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Head, Finance",
     department: "Finance",
     departmentLabel: "Finance & Governance",
-    image: "/images/hero/slide-2.png",
+    image: "/images/leadership/Ahmed Kazeem Head, Finance.jpg",
     quote:
       "Financial strategy must be precise, transparent, and aligned with long-term infrastructure development.",
     bio: [
@@ -1140,7 +1140,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Manager, Operations Support",
     department: "Operations",
     departmentLabel: "Operations Support",
-    image: "/images/hero/slide-2.png",
+    image: "/images/leadership/Okechukwu Umeh Operations Support Manager.jpg",
     quote:
       "Maintaining the highest standards of safety, regulatory compliance, and service excellence across all operational touchpoints.",
     bio: [
@@ -1162,7 +1162,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Ramp Manager",
     department: "Operations",
     departmentLabel: "Ramp Operations",
-    image: "/images/hero/slide-2.png",
+    image: "/images/leadership/Oluwatosin Taiwo Ramp Manager.jpg",
     quote:
       "Overseeing ground operations with a sharp focus on safety, efficiency, and resource optimization.",
     bio: [

@@ -51,18 +51,21 @@ export const PSC = {
 // VIP lounge (local operators)
 export const VIP_LOCAL_NGN = 85000
 
-// Add-on services — value can be flat or per-band
+// Add-on services — optional ground & facilitation services
 export const ADDONS = [
-  { id: 'airstairs',   label: 'Airstairs',              per: 'band',    values: { A: 200, B: 250, C: 300, D: 350, E: 400 } },
-  { id: 'gpu',         label: 'Ground Power Unit (GPU)', per: 'band',   values: { A: 150, B: 200, C: 300, D: 400, E: 500 } },
-  { id: 'lav',         label: 'Lavatory service',        per: 'band',   values: { A: 250, B: 280, C: 300, D: 320, E: 350 } },
-  { id: 'water',       label: 'Water service',           per: 'band',   values: { A: 150, B: 180, C: 200, D: 220, E: 250 } },
-  { id: 'tow_in',      label: 'Aircraft tow (in)',       per: 'band',   values: { A: 200, B: 250, C: 350, D: 450, E: 600 } },
-  { id: 'tow_out',     label: 'Aircraft tow (out)',      per: 'band',   values: { A: 200, B: 250, C: 350, D: 450, E: 600 } },
-  { id: 'vip_tx',      label: 'VIP transport (landside)', per: 'flat',  value: 250 },
-  { id: 'customs',     label: 'Customs facilitation',    per: 'flat',   value: 250 },
-  { id: 'security',    label: 'Security escort',         per: 'flat',   value: 300 },
-  { id: 'marshalling', label: 'Marshalling',             per: 'flat',   value: 80  },
-  { id: 'crew_tx',     label: 'Crew transport',          per: 'flat',   value: 150 },
-  { id: 'deice',       label: 'De-icing (if required)',  per: 'flat',   value: 400 },
+  { id: 'ciq',            label: 'CIQ (Customs / Immigration / Quarantine)', per: 'flat', value: 600 },
+  { id: 'apron_parking',  label: 'Apron parking (day)',                     per: 'flat', value: 200 },
+  { id: 'hangarage',      label: 'Hangarage (day)',                         per: 'flat', value: 300 },
+  { id: 'ext_wash_intl',  label: 'External wash (intl)',                     per: 'flat', value: 900 },
+  { id: 'ext_wash_local', label: 'External wash (local)',                    per: 'flat', value: 450 },
+  { id: 'interior_clean', label: 'Interior clean',                          per: 'flat', value: 150 },
+  { id: 'toilet_intl',    label: 'Toilet service (intl)',                   per: 'flat', value: 150 },
+  { id: 'water_intl',     label: 'Potable water (intl)',                    per: 'flat', value: 150 },
+  { id: 'towing_intl',    label: 'Towing (intl)',                           per: 'flat', value: 250 },
+  { id: 'gpu_diesel',     label: 'GPU (diesel)',                            per: 'flat', value: 100 },
+  { id: 'pushback',       label: 'Pushback',                                per: 'flat', value: 100 },
+  { id: 'baggage',        label: 'Baggage handling (per 10 bags)',           per: 'flat', value: 100 },
+  { id: 'crew_tx',        label: 'Crew transfer / dispatch',                per: 'flat', value: 500 },
+  { id: 'laundry',        label: 'Laundry',                                 per: 'flat', value: 50  },
+  { id: 'ambulance',      label: 'Ambulance tarmac pass',                   per: 'flat', value: 250 },
 ] as const

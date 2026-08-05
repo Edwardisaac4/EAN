@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Location, Operation, StayType, HandingTier, DayType, Mode, MtowBand } from '@/types/pricing'
-import { MapPin, Globe, Clock, Users, Calendar, Settings2, Plus, Minus } from 'lucide-react'
+import { Location, Operation, StayType, HandingTier, DayType, MtowBand } from '@/types/pricing'
+import { MapPin, Globe, Clock, Users, Settings2, Plus, Minus } from 'lucide-react'
 
 interface ServiceOptionsProps {
   location: Location
@@ -12,7 +12,6 @@ interface ServiceOptionsProps {
   pax: number
   day: DayType
   handling: HandingTier
-  mode: Mode
   band: MtowBand
   onChangeLocation: (loc: Location) => void
   onChangeOperation: (op: Operation) => void
@@ -32,7 +31,6 @@ export default function ServiceOptions({
   pax,
   day,
   handling,
-  mode,
   band,
   onChangeLocation,
   onChangeOperation,
@@ -49,10 +47,6 @@ export default function ServiceOptions({
       onAutoCheckCiq()
     }
   }
-
-  const isStaff = mode === 'staff'
-  const isLagos = location === 'LOS'
-  const hasTierOptions = isLagos && (band === 'A' || band === 'B' || band === 'C' || band === 'D')
 
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-ean-border-light space-y-6">
@@ -216,82 +210,6 @@ export default function ServiceOptions({
           Estimated — CRO confirms final count on arrival
         </p>
       </div>
-
-      {/* SECTION 5 — Day Type (Staff Mode only) */}
-      {isStaff && (
-        <fieldset className="p-4 bg-amber-500/5 rounded-lg border border-amber-500/20 space-y-3 m-0">
-          <legend className="text-xs font-ui uppercase tracking-wider text-ean-gold font-bold flex items-center gap-1.5 px-1">
-            <Calendar className="w-3.5 h-3.5" />
-            Staff Controls — Movement Day
-          </legend>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              aria-pressed={day === 'wd'}
-              onClick={() => onChangeDay('wd')}
-              className={`py-2 px-3 rounded text-xs font-ui font-medium border ${
-                day === 'wd'
-                  ? 'bg-ean-navy text-white border-ean-navy'
-                  : 'bg-white text-ean-navy border-ean-border-light'
-              }`}
-            >
-              Weekday Movement
-            </button>
-            <button
-              type="button"
-              aria-pressed={day === 'we'}
-              onClick={() => onChangeDay('we')}
-              className={`py-2 px-3 rounded text-xs font-ui font-medium border ${
-                day === 'we'
-                  ? 'bg-ean-navy text-white border-ean-navy'
-                  : 'bg-white text-ean-navy border-ean-border-light'
-              }`}
-            >
-              Weekend Movement
-            </button>
-          </div>
-          {day === 'we' && (
-            <p className="text-[11px] font-ui text-amber-700 font-medium">
-              Weekend note: Some surcharges may apply to out-of-hours handling operations.
-            </p>
-          )}
-        </fieldset>
-      )}
-
-      {/* SECTION 6 — Handling Tier (Lagos & Staff mode only) */}
-      {isStaff && hasTierOptions && (
-        <fieldset className="p-4 bg-ean-navy/5 rounded-lg border border-ean-navy/10 space-y-3 m-0">
-          <legend className="text-xs font-ui uppercase tracking-wider text-ean-navy font-bold px-1">
-            3. Ground Handling Tier (Lagos MMIA)
-          </legend>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              aria-pressed={handling === 'min'}
-              onClick={() => onChangeHandling('min')}
-              className={`py-2 px-3 rounded text-xs font-ui font-medium border ${
-                handling === 'min'
-                  ? 'bg-ean-navy text-white border-ean-navy'
-                  : 'bg-white text-ean-navy border-ean-border-light'
-              }`}
-            >
-              Floor Rate (Minimum)
-            </button>
-            <button
-              type="button"
-              aria-pressed={handling === 'standard'}
-              onClick={() => onChangeHandling('standard')}
-              className={`py-2 px-3 rounded text-xs font-ui font-medium border ${
-                handling === 'standard'
-                  ? 'bg-ean-navy text-white border-ean-navy'
-                  : 'bg-white text-ean-navy border-ean-border-light'
-              }`}
-            >
-              Standard Rate
-            </button>
-          </div>
-        </fieldset>
-      )}
     </div>
   )
 }

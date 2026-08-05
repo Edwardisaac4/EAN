@@ -9,21 +9,18 @@ import {
   StayType,
   HandingTier,
   DayType,
-  Mode,
   LeadDetails,
 } from '@/types/pricing'
 import { buildQuote } from '@/lib/pricing/calculations'
-import { BANDS, HANDLING_LOS, HANDLING_ABV } from '@/lib/pricing/bands'
-import ModeToggle from './ModeToggle'
-import AircraftSelector from './AircraftSelector'
-import ServiceOptions from './ServiceOptions'
+import BuildYourQuoteCard from './BuildYourQuoteCard'
 import AddonsGrid from './AddonsGrid'
 import QuoteSummary from './QuoteSummary'
 import RequestOrderModal from './RequestOrderModal'
-import { Calculator, FileSpreadsheet } from 'lucide-react'
+import PriceListDirectory from './PriceListDirectory'
+import { Calculator } from 'lucide-react'
 
 export default function PricingCalculator() {
-  const [mode, setMode] = useState<Mode>('client')
+  const [activeTab, setActiveTab] = useState<'quote' | 'pricelist'>('quote')
   const [aircraft, setAircraft] = useState<Aircraft | null>(null)
   const [manualMtow, setManualMtow] = useState<number | null>(null)
   const [location, setLocation] = useState<Location>('LOS')
@@ -73,7 +70,7 @@ export default function PricingCalculator() {
     day,
     handling,
     addons,
-    mode,
+    mode: 'client',
     revealed,
   }), [
     aircraft,
@@ -86,7 +83,6 @@ export default function PricingCalculator() {
     day,
     handling,
     addons,
-    mode,
     revealed,
   ])
 
@@ -123,113 +119,90 @@ export default function PricingCalculator() {
               Instant ground handling estimates, passenger facilitation fees, and customizable add-ons for Lagos MMIA & Abuja NAIA.
             </p>
           </div>
-
-          <div className="shrink-0">
-            <ModeToggle mode={mode} onChange={setMode} />
-          </div>
         </div>
       </section>
 
-      {/* TWO-COLUMN CALCULATOR LAYOUT */}
-      <div className="max-w-7xl mx-auto px-6 mt-8 flex flex-col lg:flex-row gap-8 items-start">
-        {/* CALCULATOR MAIN PANEL */}
-        <div className="flex-1 w-full space-y-6">
-          {/* STEP 1: AIRCRAFT SELECTOR (LIVE API SEARCH) */}
-          <AircraftSelector
-            value={aircraft}
-            manualMtow={manualMtow}
-            onSelect={handleSelectAircraft}
-            onManualMtow={handleSetManualMtow}
-          />
+      {/* HORIZONTAL TAB NAVIGATION (GET A QUOTE / PRICE LIST) */}
+      <div className="bg-white border-b border-ean-border-light shadow-xs sticky top-0 z-20">
+        <div className="max-w-7xl mx-auto px-6 flex items-center gap-8">
+          <button
+            type="button"
+            onClick={() => setActiveTab('quote')}
+            className={`py-4 px-1 font-ui text-sm tracking-wide transition-all relative font-semibold ${
+              activeTab === 'quote'
+                ? 'text-ean-gold border-b-2 border-ean-gold'
+                : 'text-ean-muted-dark hover:text-ean-navy border-b-2 border-transparent'
+            }`}
+          >
+            Get a Quote
+          </button>
 
-          {/* STEP 2: FLIGHT DETAILS & PARAMETERS */}
-          <ServiceOptions
-            location={location}
-            operation={operation}
-            stay={stay}
-            nights={nights}
-            pax={pax}
-            day={day}
-            handling={handling}
-            mode={mode}
-            band={quote.band}
-            onChangeLocation={setLocation}
-            onChangeOperation={setOperation}
-            onChangeStay={setStay}
-            onChangeNights={setNights}
-            onChangePax={setPax}
-            onChangeDay={setDay}
-            onChangeHandling={setHandling}
-            onAutoCheckCiq={handleAutoCheckCiq}
-          />
-
-          {/* STEP 3: ADD-ON SERVICES */}
-          <AddonsGrid
-            addons={addons}
-            band={quote.band}
-            onToggleAddon={handleToggleAddon}
-          />
-
-          {/* STAFF MODE MTOW TARIFF REFERENCE TABLE */}
-          {mode === 'staff' && (
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-ean-border-light space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-ean-border-light">
-                <h3 className="font-display font-semibold text-xl text-ean-navy flex items-center gap-2">
-                  <FileSpreadsheet className="w-5 h-5 text-ean-gold" />
-                  Staff Reference — Ground Handling Rates by Weight Category
-                </h3>
-                <span className="text-xs font-ui uppercase tracking-wider text-ean-navy bg-ean-navy/10 px-2.5 py-1 rounded-full font-semibold">
-                  Official Rate Sheet
-                </span>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-left font-ui text-xs">
-                  <thead>
-                    <tr className="bg-ean-surface border-b border-ean-border-light text-ean-navy uppercase tracking-wider font-semibold">
-                      <th className="py-3 px-4">MTOW Weight Category</th>
-                      <th className="py-3 px-4">Lagos Floor Rate</th>
-                      <th className="py-3 px-4">Lagos Standard Rate</th>
-                      <th className="py-3 px-4">Abuja Rate</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {(['A', 'B', 'C', 'D', 'E'] as const).map((b) => {
-                      const rate = HANDLING_LOS[b]
-                      const isCurrent = quote.band === b
-                      const minRate = typeof rate === 'object' ? `$${rate.min}` : `$${rate}`
-                      const stdRate = typeof rate === 'object' ? `$${rate.standard}` : `$${rate}`
-
-                      return (
-                        <tr
-                          key={b}
-                          className={`transition-colors ${
-                            isCurrent ? 'bg-ean-gold/10 font-semibold text-ean-navy' : 'hover:bg-gray-50 text-ean-text-dark'
-                          }`}
-                        >
-                          <td className="py-3 px-4 font-medium">{BANDS[b].label.replace(/^Band [A-E] — /, '')}</td>
-                          <td className="py-3 px-4 font-mono">{minRate}</td>
-                          <td className="py-3 px-4 font-mono">{stdRate}</td>
-                          <td className="py-3 px-4 font-mono">${HANDLING_ABV}</td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+          <button
+            type="button"
+            onClick={() => setActiveTab('pricelist')}
+            className={`py-4 px-1 font-ui text-sm tracking-wide transition-all relative font-semibold ${
+              activeTab === 'pricelist'
+                ? 'text-ean-gold border-b-2 border-ean-gold'
+                : 'text-ean-muted-dark hover:text-ean-navy border-b-2 border-transparent'
+            }`}
+          >
+            Price List
+          </button>
         </div>
+      </div>
 
-        {/* QUOTE SUMMARY STICKY SIDEBAR */}
-        <QuoteSummary
-          quote={quote}
-          state={state}
-          mode={mode}
-          lead={lead}
-          onSubmitLead={handleLeadSubmit}
-          onOpenRequestOrder={() => setIsModalOpen(true)}
-        />
+      {/* TAB CONTENT VIEW */}
+      <div className="max-w-7xl mx-auto px-6 mt-8">
+        {activeTab === 'quote' ? (
+          /* TWO-COLUMN CALCULATOR LAYOUT */
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            {/* CALCULATOR MAIN PANEL */}
+            <div className="flex-1 w-full space-y-6">
+              {/* BUILD YOUR QUOTE CARD */}
+              <BuildYourQuoteCard
+                aircraft={aircraft}
+                manualMtow={manualMtow}
+                onSelectAircraft={handleSelectAircraft}
+                onSetManualMtow={handleSetManualMtow}
+                location={location}
+                operation={operation}
+                day={day}
+                pax={pax}
+                stay={stay}
+                nights={nights}
+                handling={handling}
+                band={quote.band}
+                onChangeLocation={setLocation}
+                onChangeOperation={setOperation}
+                onChangeDay={setDay}
+                onChangePax={setPax}
+                onChangeStay={setStay}
+                onChangeNights={setNights}
+                onChangeHandling={setHandling}
+                onAutoCheckCiq={handleAutoCheckCiq}
+              />
+
+              {/* STEP 3: ADD-ON SERVICES */}
+              <AddonsGrid
+                addons={addons}
+                band={quote.band}
+                onToggleAddon={handleToggleAddon}
+              />
+            </div>
+
+            {/* QUOTE SUMMARY STICKY SIDEBAR */}
+            <QuoteSummary
+              quote={quote}
+              state={state}
+              lead={lead}
+              onSubmitLead={handleLeadSubmit}
+              onOpenRequestOrder={() => setIsModalOpen(true)}
+            />
+          </div>
+        ) : (
+          /* PRICE LIST DIRECTORY VIEW */
+          <PriceListDirectory onSwitchToQuote={() => setActiveTab('quote')} />
+        )}
       </div>
 
       {/* FORMAL REQUEST ORDER MODAL */}
