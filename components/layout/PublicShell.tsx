@@ -18,7 +18,13 @@ export default function PublicShell({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (!isAdmin) {
-      initAttributionTracking();
+      if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+        const handle = window.requestIdleCallback(() => initAttributionTracking());
+        return () => window.cancelIdleCallback(handle);
+      } else {
+        const timer = setTimeout(() => initAttributionTracking(), 1000);
+        return () => clearTimeout(timer);
+      }
     }
   }, [isAdmin]);
 

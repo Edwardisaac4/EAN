@@ -20,21 +20,26 @@ export default function SectionReveal({ children, className = '', id }: SectionR
 
   useGSAP(
     () => {
-      gsap.fromTo(
-        containerRef.current,
-        { opacity: 0, y: 32 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none none',
-          },
-        }
-      );
+      const rafId = requestAnimationFrame(() => {
+        if (!containerRef.current) return;
+        gsap.fromTo(
+          containerRef.current,
+          { opacity: 0, y: 32 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
+      });
+
+      return () => cancelAnimationFrame(rafId);
     },
     { scope: containerRef }
   );
