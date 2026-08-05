@@ -12,12 +12,15 @@ import {
   LeadDetails,
 } from '@/types/pricing'
 import { buildQuote } from '@/lib/pricing/calculations'
+import dynamic from 'next/dynamic'
 import BuildYourQuoteCard from './BuildYourQuoteCard'
 import AddonsGrid from './AddonsGrid'
 import QuoteSummary from './QuoteSummary'
-import RequestOrderModal from './RequestOrderModal'
-import PriceListDirectory from './PriceListDirectory'
 import { Calculator } from 'lucide-react'
+
+// Dynamically import heavy tab contents & modals to cut down JS bundle size & main-thread execution time
+const RequestOrderModal = dynamic(() => import('./RequestOrderModal'))
+const PriceListDirectory = dynamic(() => import('./PriceListDirectory'))
 
 export default function PricingCalculator() {
   const [activeTab, setActiveTab] = useState<'quote' | 'pricelist'>('quote')
