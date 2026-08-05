@@ -7,13 +7,8 @@ import {
   FileSpreadsheet,
   Search,
   Printer,
-  ShieldCheck,
-  Plane,
-  Building2,
-  CheckCircle2,
   HelpCircle,
   ArrowRight,
-  MapPin,
   Sparkles,
   Calculator,
 } from 'lucide-react'
@@ -374,7 +369,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
       </div>
 
       {/* FOOTER CTA STRIP — SWITCH TO CALCULATOR */}
-      <div className="bg-gradient-to-r from-ean-navy to-ean-navy-mid text-white rounded-xl p-8 shadow-xl border border-ean-gold/30 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="bg-linear-to-r from-ean-navy to-ean-navy-mid text-white rounded-xl p-8 shadow-xl border border-ean-gold/30 flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
           <h3 className="font-display font-bold text-2xl text-white">
             Need an Exact Tailored Quote for Your Flight?

@@ -1,16 +1,13 @@
-import dynamic from "next/dynamic";
 import Navbar from "@/components/layout/Navbar";
 import HeroSection from "@/components/sections/HeroSection";
 import TrustBar from "@/components/sections/TrustBar";
-
-// Dynamically import below-the-fold sections for maximum performance (drastically reduces TBT & JS bundle size)
-const AboutSection = dynamic(() => import("@/components/sections/AboutSection"));
-const ServicesSection = dynamic(() => import("@/components/sections/ServicesSection"));
-const VIPSection = dynamic(() => import("@/components/sections/VIPSection"));
-const CharterSection = dynamic(() => import("@/components/sections/CharterSection"));
-const PricingSection = dynamic(() => import("@/components/sections/PricingSection"));
-const PartnersStrip = dynamic(() => import("@/components/sections/PartnersStrip"));
-const ContactSection = dynamic(() => import("@/components/sections/ContactSection"));
+import AboutSection from "@/components/sections/AboutSection";
+import ServicesSection from "@/components/sections/ServicesSection";
+import VIPSection from "@/components/sections/VIPSection";
+import CharterSection from "@/components/sections/CharterSection";
+import PricingSection from "@/components/sections/PricingSection";
+import PartnersStrip from "@/components/sections/PartnersStrip";
+import ContactSection from "@/components/sections/ContactSection";
 
 export default function Home() {
   return (
@@ -30,4 +27,3 @@ export default function Home() {
     </>
   );
 }
-

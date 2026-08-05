@@ -43,7 +43,7 @@ export default function SectionReveal({ children, className = '', id }: SectionR
     <div
       ref={containerRef}
       id={id}
-      className={`${className} [will-change:transform,opacity]`}
+      className={`${className} will-change-[transform,opacity]`}
     >
       {children}
     </div>

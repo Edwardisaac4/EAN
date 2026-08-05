@@ -45,7 +45,7 @@ export default function AddonsGrid({ addons, band, onToggleAddon }: AddonsGridPr
                 {ciqAddon.label}
               </span>
             </div>
-            <span className="font-ui font-mono text-sm text-[#94A3B8] shrink-0">
+            <span className="font-ui text-sm text-[#94A3B8] shrink-0">
               ${ciqAddon.value}
             </span>
           </label>
@@ -73,7 +73,7 @@ export default function AddonsGrid({ addons, band, onToggleAddon }: AddonsGridPr
                     {addon.label}
                   </span>
                 </div>
-                <span className="font-ui font-mono text-sm text-[#94A3B8] shrink-0 ml-2">
+                <span className="font-ui text-sm text-[#94A3B8] shrink-0 ml-2">
                   {priceDisplay}
                 </span>
               </label>
