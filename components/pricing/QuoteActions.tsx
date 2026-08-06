@@ -109,9 +109,9 @@ ops@ean.aero | +234 1 291 1000`
         <button
           type="button"
           onClick={onOpenRequestOrder}
-          className="w-full py-3 px-4 bg-ean-gold hover:bg-ean-gold-light text-white font-ui font-bold text-xs tracking-wider uppercase rounded-lg transition-colors shadow-lg flex items-center justify-center gap-2"
+          className="w-full py-3 px-4 bg-ean-gold hover:bg-ean-gold-light text-[#581825] font-ui font-bold text-xs tracking-wider uppercase rounded-lg transition-colors shadow-lg flex items-center justify-center gap-2"
         >
-          <FileCheck className="w-4 h-4" />
+          <FileCheck className="w-4 h-4 text-[#581825]" />
           Generate Request Order
         </button>
       )}
