@@ -8,7 +8,6 @@ const AboutSection = dynamic(() => import("@/components/sections/AboutSection"))
 const ServicesSection = dynamic(() => import("@/components/sections/ServicesSection"));
 const VIPSection = dynamic(() => import("@/components/sections/VIPSection"));
 const CharterSection = dynamic(() => import("@/components/sections/CharterSection"));
-const PricingSection = dynamic(() => import("@/components/sections/PricingSection"));
 const PartnersStrip = dynamic(() => import("@/components/sections/PartnersStrip"));
 const ContactSection = dynamic(() => import("@/components/sections/ContactSection"));
 
@@ -23,7 +22,6 @@ export default function Home() {
         <ServicesSection />
         <VIPSection />
         <CharterSection />
-        <PricingSection />
         <PartnersStrip />
         <ContactSection />
       </main>
