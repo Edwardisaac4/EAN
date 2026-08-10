@@ -3,24 +3,24 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Backgrounds */
-  --color-ean-navy: #4a0d1a;
-  --color-ean-navy-mid: #2d0710;
-  --color-ean-black: #0d0204;
-  --color-ean-black-pure: #050102;
-  --color-ean-black-accent: #141213;
+  /* Backgrounds & Footer Base Palette */
+  --color-ean-navy: #2d0710;
+  --color-ean-navy-mid: #1e050b;
+  --color-ean-black: #140307;
+  --color-ean-black-pure: #070103;
+  --color-ean-black-accent: #1e050b;
   --color-ean-white: #ffffff;
   --color-ean-surface: #fdf6f7;
 
-  /* Burgundy Palette */
-  --color-ean-burgundy: #4a0d1a;
+  /* Burgundy Palette - Toned down to Footer's deep wine-black shades */
+  --color-ean-burgundy: #2d0710;
   --color-ean-burgundy-mid: #2d0710;
   --color-ean-burgundy-deep: #1e050b;
   --color-ean-burgundy-dark: #140307;
   --color-ean-burgundy-night: #070103;
   --color-ean-burgundy-rich: #3b0913;
-  --color-ean-burgundy-accent: #641224;
-  --color-ean-burgundy-dusk: #2a050d;
+  --color-ean-burgundy-accent: #3b0913;
+  --color-ean-burgundy-dusk: #22060d;
 
   /* Accent */
   --color-ean-gold: #c4952a;

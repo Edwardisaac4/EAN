@@ -3,20 +3,20 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { 
-  Plane, 
-  Wrench, 
-  BadgeCheck, 
-  UtensilsCrossed, 
-  Star, 
-  Building2, 
-  CheckCircle2, 
-  ArrowLeft, 
-  ChevronRight, 
-  Phone, 
-  Mail, 
-  Clock, 
-  ShieldCheck, 
+import {
+  Plane,
+  Wrench,
+  BadgeCheck,
+  UtensilsCrossed,
+  Star,
+  Building2,
+  CheckCircle2,
+  ArrowLeft,
+  ChevronRight,
+  Phone,
+  Mail,
+  Clock,
+  ShieldCheck,
   Sparkles,
   MapPin
 } from 'lucide-react';
@@ -176,7 +176,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
           <div className="max-w-7xl mx-auto px-6 md:px-8 space-y-16">
             <SectionReveal>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-                
+
                 {/* Left Column: Narrative Description */}
                 <div className="lg:col-span-7 space-y-6">
                   <div className="space-y-2">

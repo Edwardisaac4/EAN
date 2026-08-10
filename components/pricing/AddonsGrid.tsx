@@ -19,10 +19,10 @@ export default function AddonsGrid({ addons, band, onToggleAddon }: AddonsGridPr
     <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#EBE5DF] space-y-6">
       {/* HEADER SECTION */}
       <div>
-        <h2 className="font-display font-bold text-2xl md:text-3xl text-[#581825] tracking-tight">
+        <h2 className="font-ui font-bold text-lg md:text-xl text-[#581825] tracking-tight">
           Add services
         </h2>
-        <p className="font-ui text-xs md:text-sm text-ean-muted-dark mt-1">
+        <p className="font-ui text-xs md:text-sm text-ean-muted-dark mt-0.5">
           Optional. Prices update as you select.
         </p>
       </div>

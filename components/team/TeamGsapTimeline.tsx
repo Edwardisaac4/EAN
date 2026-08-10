@@ -4,10 +4,10 @@ import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  ShieldCheck, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  ShieldCheck,
   Sparkles,
   Users
 } from 'lucide-react';

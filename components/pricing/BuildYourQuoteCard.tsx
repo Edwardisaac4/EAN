@@ -111,10 +111,10 @@ export default function BuildYourQuoteCard({
     <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#EBE5DF] space-y-6">
       {/* HEADER SECTION */}
       <div>
-        <h2 className="font-display font-bold text-2xl md:text-3xl text-[#581825] tracking-tight">
+        <h2 className="font-display font-medium text-xl md:text-2xl text-[#581825] tracking-wide">
           Build your quote
         </h2>
-        <p className="font-ui text-xs md:text-sm text-ean-muted-dark mt-1">
+        <p className="font-ui text-xs md:text-sm text-ean-muted-dark mt-0.5">
           Select the aircraft and visit details. Pricing is drawn live from EAN&apos;s approved rate schedule.
         </p>
       </div>

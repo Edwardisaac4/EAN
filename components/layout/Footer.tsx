@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { 
-  MapPin, 
-  Phone, 
+import {
+  MapPin,
+  Phone,
   Mail,
   ArrowUpRight,
   ArrowUp,
@@ -85,7 +85,7 @@ export default function Footer() {
       <div className="absolute top-0 left-10 w-72 h-72 rounded-full bg-blue-950/30 blur-[100px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-6 md:px-8 relative z-10 space-y-10 sm:space-y-12">
-        
+
         {/* Pre-Footer Action Banner */}
         <div className="p-4 sm:p-6 bg-gradient-to-r from-[#3B0913]/90 via-[#22060D]/80 to-[#3B0913]/90 border border-white/15 rounded-xs backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
           <div className="flex items-center gap-3 text-center md:text-left">
@@ -122,7 +122,7 @@ export default function Footer() {
 
         {/* Main Grid: Mobile, iPad & Desktop Optimized */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 pb-10 sm:pb-12 border-b border-ean-border-dark">
-          
+
           {/* Brand & Overview (Mobile: Full width, iPad: md:col-span-2, Desktop: lg:col-span-4) */}
           <div className="md:col-span-2 lg:col-span-4 space-y-5">
             <div className="space-y-2">
@@ -179,8 +179,8 @@ export default function Footer() {
               <ul className="space-y-3 font-ui text-xs sm:text-sm text-ean-muted-light">
                 {FOOTER_SERVICES_LINKS.map((link) => (
                   <li key={link.href}>
-                    <Link 
-                      href={link.href} 
+                    <Link
+                      href={link.href}
                       className="hover:text-white transition-colors flex items-center gap-1.5 group py-0.5"
                     >
                       <span>{link.name}</span>
@@ -200,8 +200,8 @@ export default function Footer() {
               <ul className="space-y-3 font-ui text-xs sm:text-sm text-ean-muted-light">
                 {FOOTER_COMPANY_LINKS.map((link) => (
                   <li key={link.href}>
-                    <Link 
-                      href={link.href} 
+                    <Link
+                      href={link.href}
                       className="hover:text-white transition-colors flex items-center gap-1.5 group py-0.5"
                     >
                       <span>{link.name}</span>
@@ -219,20 +219,20 @@ export default function Footer() {
               <MapPin className="w-3.5 h-3.5 text-ean-gold" />
               Inquiries & Access
             </h4>
-            
+
             <div className="p-4 bg-ean-navy-mid/60 border border-white/10 rounded-xs space-y-3.5 backdrop-blur-xs font-ui text-xs sm:text-sm text-ean-muted-light">
               <div className="flex gap-3 items-start">
                 <MapPin className="w-4 h-4 text-ean-gold shrink-0 mt-0.5" />
                 <span className="leading-relaxed text-white/90">MMIA Airport Hangar, Ikeja, Lagos, Nigeria</span>
               </div>
-              
+
               <div className="flex gap-3 items-center pt-1 border-t border-white/5">
                 <Phone className="w-4 h-4 text-ean-gold shrink-0" />
                 <a href="tel:+2348050333410" className="hover:text-white transition-colors text-white/90">
                   +234 (0) 805 033 3410
                 </a>
               </div>
-              
+
               <div className="flex gap-3 items-center">
                 <Mail className="w-4 h-4 text-ean-gold shrink-0" />
                 <a href="mailto:info@ean.aero" className="hover:text-white transition-colors text-white/90">
@@ -246,7 +246,7 @@ export default function Footer() {
                   <span className="w-1.5 h-1.5 rounded-full bg-ean-gold animate-pulse" />
                   24/7 Ops Desk
                 </span>
-                
+
                 {lagosTime && (
                   <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/5 text-white/80 font-mono text-[10px] tracking-wider px-2.5 py-1 rounded-xs">
                     <Clock className="w-3 h-3 text-ean-gold/70" />
@@ -273,7 +273,7 @@ export default function Footer() {
             <Link href="/terms-of-use" className="hover:text-white transition-colors text-xs">
               Terms of Use
             </Link>
-            
+
             {/* Touch-Friendly Back to Top Button */}
             <button
               onClick={scrollToTop}

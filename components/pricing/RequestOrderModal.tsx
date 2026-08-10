@@ -97,7 +97,7 @@ Status: NEW — route to Operations (ABO One / RPS)`
         <div className="px-6 py-4 border-b border-ean-border-dark flex items-center justify-between bg-ean-navy-mid">
           <div className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-ean-gold" />
-            <h3 id="request-order-title" className="font-display font-semibold text-lg text-white">
+            <h3 id="request-order-title" className="font-display font-medium text-lg text-white tracking-wide">
               EAN Formal Request Order
             </h3>
           </div>
