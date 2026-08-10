@@ -390,7 +390,7 @@ export default function QuoteCalculator() {
                     EAN Aviation Rates Portal • Lagos & Abuja
                   </span>
                 </div>
-                <h1 className="font-display text-xl sm:text-2xl font-semibold text-white tracking-tight">
+                <h1 className="font-display text-xl sm:text-2xl font-light text-white tracking-wide">
                   Pricing & FBO Ground Support Desk
                 </h1>
               </div>
@@ -909,7 +909,7 @@ export default function QuoteCalculator() {
                     </span>
                   </div>
 
-                  <h3 className="font-display text-3xl font-semibold text-white">{quoteResult.aircraft.name}</h3>
+                  <h3 className="font-display text-2xl sm:text-3xl font-light text-white tracking-wide">{quoteResult.aircraft.name}</h3>
 
                   <div className="text-xs text-ean-muted-light space-y-1.5 pt-1 border-t border-white/10">
                     <p className="flex items-center justify-between">
@@ -956,7 +956,7 @@ export default function QuoteCalculator() {
                       <p className="text-xs text-ean-gold uppercase font-semibold tracking-widest">
                         Total Estimated Handling Fee
                       </p>
-                      <p className="font-display text-4xl sm:text-5xl font-bold text-white tracking-tight">
+                      <p className="font-display text-3xl sm:text-4xl font-light text-white tracking-tight">
                         {formatMoney(quoteResult.totalUsd)}
                       </p>
                       <p className="text-xs text-ean-muted-light pt-1">

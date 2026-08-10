@@ -51,7 +51,7 @@ export default function ServiceOptions({
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-ean-border-light space-y-6">
       <div className="flex items-center justify-between pb-2 border-b border-ean-border-light">
-        <h3 className="font-display font-semibold text-xl text-ean-navy flex items-center gap-2">
+        <h3 className="font-display font-medium text-xl text-ean-navy flex items-center gap-2">
           <Settings2 className="w-5 h-5 text-ean-gold" />
           2. Flight Details & Parameters
         </h3>

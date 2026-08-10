@@ -39,7 +39,7 @@ export default function QuoteSummary({
       <div className="relative bg-white rounded-2xl shadow-sm border border-[#EBE5DF] overflow-hidden">
         {/* HEADER (DARK BURGUNDY / MAROON BANNER #581825) */}
         <div className="p-6 bg-[#581825] text-white space-y-1">
-          <h2 className="font-display font-bold text-2xl text-white tracking-tight truncate">
+          <h2 className="font-display font-medium text-xl md:text-2xl text-white tracking-wide truncate">
             {aircraftName}
           </h2>
           <div className="text-xs font-ui text-white/80">

@@ -18,12 +18,10 @@ import AddonsGrid from './AddonsGrid'
 import QuoteSummary from './QuoteSummary'
 import { Calculator } from 'lucide-react'
 
-// Dynamically import heavy tab contents & modals to cut down JS bundle size & main-thread execution time
+// Dynamically import heavy modals to cut down JS bundle size & main-thread execution time
 const RequestOrderModal = dynamic(() => import('./RequestOrderModal'))
-const PriceListDirectory = dynamic(() => import('./PriceListDirectory'))
 
 export default function PricingCalculator() {
-  const [activeTab, setActiveTab] = useState<'quote' | 'pricelist'>('quote')
   const [aircraft, setAircraft] = useState<Aircraft | null>(null)
   const [manualMtow, setManualMtow] = useState<number | null>(null)
   const [location, setLocation] = useState<Location>('LOS')
@@ -107,105 +105,74 @@ export default function PricingCalculator() {
 
   return (
     <div className="min-h-screen bg-ean-surface text-ean-text-dark pb-20">
-      {/* HERO STRIP */}
-      <section className="bg-ean-navy text-white pt-24 pb-16 px-6 relative border-b border-ean-gold/30">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+      {/* ELEGANT & COMPACT HERO SECTION WITH NAVBAR CLEARANCE */}
+      <section className="bg-gradient-to-b from-ean-navy-mid via-ean-navy to-ean-navy text-white pt-28 pb-8 md:pt-32 md:pb-10 px-6 relative overflow-hidden border-b border-ean-gold/30 shadow-md">
+        {/* Subtle Ambient Gold Blur */}
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-ean-gold/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-ui tracking-widest uppercase text-ean-gold font-semibold bg-ean-gold/10 px-3 py-1 rounded-full mb-3 border border-ean-gold/30">
+            <div className="inline-flex items-center gap-2 text-xs font-ui tracking-widest uppercase text-ean-gold font-semibold bg-ean-gold/10 px-3.5 py-1 rounded-full mb-3 border border-ean-gold/30 backdrop-blur-xs shadow-[0_0_15px_rgba(196,149,42,0.1)]">
               <Calculator className="w-3.5 h-3.5" />
               Official FBO Tariff & Calculator
             </div>
-            <h1 className="font-display font-bold text-3xl md:text-5xl text-white tracking-tight">
-              FBO Pricing & Quote Portal
+            <h1 className="font-display font-light text-2xl sm:text-3xl text-white tracking-wide leading-snug">
+              FBO Pricing &amp; Quote Portal
             </h1>
-            <p className="font-ui text-ean-muted-light text-base md:text-lg mt-2 max-w-2xl">
-              Instant ground handling estimates, passenger facilitation fees, and customizable add-ons for Lagos MMIA & Abuja NAIA.
+            <p className="font-ui text-ean-muted-light text-xs sm:text-sm md:text-base mt-2 max-w-2xl leading-relaxed">
+              Instant ground handling estimates, passenger facilitation fees, and customizable add-ons for Lagos MMIA &amp; Abuja NAIA.
             </p>
           </div>
         </div>
       </section>
 
-      {/* HORIZONTAL TAB NAVIGATION (GET A QUOTE / PRICE LIST) */}
-      <div className="bg-white border-b border-ean-border-light shadow-xs sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-6 flex items-center gap-8">
-          <button
-            type="button"
-            onClick={() => setActiveTab('quote')}
-            className={`py-4 px-1 font-ui text-sm tracking-wide transition-all relative font-semibold ${
-              activeTab === 'quote'
-                ? 'text-ean-gold border-b-2 border-ean-gold'
-                : 'text-ean-muted-dark hover:text-ean-navy border-b-2 border-transparent'
-            }`}
-          >
-            Get a Quote
-          </button>
+      {/* CALCULATOR CONTAINER VIEW */}
+      <div className="max-w-7xl mx-auto px-6 mt-6 md:mt-8">
+        {/* TWO-COLUMN CALCULATOR LAYOUT */}
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          {/* CALCULATOR MAIN PANEL */}
+          <div className="flex-1 w-full space-y-6">
+            {/* BUILD YOUR QUOTE CARD */}
+            <BuildYourQuoteCard
+              aircraft={aircraft}
+              manualMtow={manualMtow}
+              onSelectAircraft={handleSelectAircraft}
+              onSetManualMtow={handleSetManualMtow}
+              location={location}
+              operation={operation}
+              day={day}
+              pax={pax}
+              stay={stay}
+              nights={nights}
+              handling={handling}
+              band={quote.band}
+              onChangeLocation={setLocation}
+              onChangeOperation={setOperation}
+              onChangeDay={setDay}
+              onChangePax={setPax}
+              onChangeStay={setStay}
+              onChangeNights={setNights}
+              onChangeHandling={setHandling}
+              onAutoCheckCiq={handleAutoCheckCiq}
+            />
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('pricelist')}
-            className={`py-4 px-1 font-ui text-sm tracking-wide transition-all relative font-semibold ${
-              activeTab === 'pricelist'
-                ? 'text-ean-gold border-b-2 border-ean-gold'
-                : 'text-ean-muted-dark hover:text-ean-navy border-b-2 border-transparent'
-            }`}
-          >
-            Price List
-          </button>
-        </div>
-      </div>
-
-      {/* TAB CONTENT VIEW */}
-      <div className="max-w-7xl mx-auto px-6 mt-8">
-        {activeTab === 'quote' ? (
-          /* TWO-COLUMN CALCULATOR LAYOUT */
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
-            {/* CALCULATOR MAIN PANEL */}
-            <div className="flex-1 w-full space-y-6">
-              {/* BUILD YOUR QUOTE CARD */}
-              <BuildYourQuoteCard
-                aircraft={aircraft}
-                manualMtow={manualMtow}
-                onSelectAircraft={handleSelectAircraft}
-                onSetManualMtow={handleSetManualMtow}
-                location={location}
-                operation={operation}
-                day={day}
-                pax={pax}
-                stay={stay}
-                nights={nights}
-                handling={handling}
-                band={quote.band}
-                onChangeLocation={setLocation}
-                onChangeOperation={setOperation}
-                onChangeDay={setDay}
-                onChangePax={setPax}
-                onChangeStay={setStay}
-                onChangeNights={setNights}
-                onChangeHandling={setHandling}
-                onAutoCheckCiq={handleAutoCheckCiq}
-              />
-
-              {/* STEP 3: ADD-ON SERVICES */}
-              <AddonsGrid
-                addons={addons}
-                band={quote.band}
-                onToggleAddon={handleToggleAddon}
-              />
-            </div>
-
-            {/* QUOTE SUMMARY STICKY SIDEBAR */}
-            <QuoteSummary
-              quote={quote}
-              state={state}
-              lead={lead}
-              onSubmitLead={handleLeadSubmit}
-              onOpenRequestOrder={() => setIsModalOpen(true)}
+            {/* STEP 3: ADD-ON SERVICES */}
+            <AddonsGrid
+              addons={addons}
+              band={quote.band}
+              onToggleAddon={handleToggleAddon}
             />
           </div>
-        ) : (
-          /* PRICE LIST DIRECTORY VIEW */
-          <PriceListDirectory onSwitchToQuote={() => setActiveTab('quote')} />
-        )}
+
+          {/* QUOTE SUMMARY STICKY SIDEBAR */}
+          <QuoteSummary
+            quote={quote}
+            state={state}
+            lead={lead}
+            onSubmitLead={handleLeadSubmit}
+            onOpenRequestOrder={() => setIsModalOpen(true)}
+          />
+        </div>
       </div>
 
       {/* FORMAL REQUEST ORDER MODAL */}

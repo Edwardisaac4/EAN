@@ -125,10 +125,10 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
 
       {/* CARD HEADINGS */}
       <div>
-        <h3 className="font-display font-bold text-xl md:text-2xl text-[#581825]">
+        <h3 className="font-ui font-bold text-base md:text-lg text-[#581825]">
           Enter your details to reveal pricing
         </h3>
-        <p className="font-ui text-xs md:text-sm text-ean-muted-dark mt-1">
+        <p className="font-ui text-xs md:text-sm text-ean-muted-dark mt-0.5">
           So our team can follow up and prepare your handling.
         </p>
       </div>

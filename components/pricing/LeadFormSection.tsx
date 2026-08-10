@@ -76,13 +76,13 @@ Additional Notes: ${notes || 'None'}`,
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-ean-border-light space-y-4">
       <div className="flex items-center justify-between pb-2 border-b border-ean-border-light">
-        <h3 className="font-display font-semibold text-xl text-ean-navy flex items-center gap-2">
-          <Send className="w-5 h-5 text-ean-gold" />
-          Submit Quote Inquiry to Operations
+        <h3 className="font-ui font-semibold text-lg text-ean-navy flex items-center gap-2">
+          <User className="w-5 h-5 text-ean-gold" />
+          4. Contact Details
         </h3>
-        <span className="text-xs font-ui uppercase tracking-wider text-ean-gold bg-ean-gold/10 px-2.5 py-1 rounded-full font-semibold">
-          Direct API Routing
-        </span>
+        <p className="font-ui text-xs text-ean-muted-dark mt-1">
+          Enter your details to generate an official PDF quote and submit your request to EAN Operations.
+        </p>
       </div>
 
       {isSubmitted ? (
@@ -90,7 +90,7 @@ Additional Notes: ${notes || 'None'}`,
           <div className="w-12 h-12 rounded-full bg-green-100 text-green-600 mx-auto flex items-center justify-center">
             <CheckCircle2 className="w-6 h-6" />
           </div>
-          <h4 className="font-display font-bold text-lg text-green-900">
+          <h4 className="font-ui font-bold text-lg text-green-900">
             Quote Inquiry Received!
           </h4>
           <p className="text-xs font-ui text-green-700 max-w-md mx-auto">

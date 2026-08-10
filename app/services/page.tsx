@@ -7,13 +7,13 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion } from 'framer-motion';
-import { 
-  Plane, 
-  Wrench, 
-  BadgeCheck, 
-  UtensilsCrossed, 
-  Star, 
-  Building2, 
+import {
+  Plane,
+  Wrench,
+  BadgeCheck,
+  UtensilsCrossed,
+  Star,
+  Building2,
   CheckCircle2,
   ChevronRight,
   Sparkles
@@ -153,7 +153,7 @@ export default function ServicesPage() {
               {SERVICES_DATA.map((srv, idx) => {
                 const Icon = iconMap[srv.iconName];
                 const config = bentoConfigs[srv.slug] || { gridClass: 'lg:col-span-1 lg:row-span-1', cardType: 'square' };
-                
+
                 // Card #1 is image-right on desktop, Card #6 is image-left on desktop
                 const isImageRight = srv.slug === 'fbo-ground-support';
 
@@ -163,9 +163,8 @@ export default function ServicesPage() {
                       <motion.div
                         whileHover={{ y: -6 }}
                         transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className={`relative bg-linear-to-b from-ean-burgundy-mid via-ean-burgundy-deep to-ean-burgundy-dark border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col ${
-                          isImageRight ? 'lg:flex-row-reverse' : 'lg:flex-row'
-                        } h-full group transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden`}
+                        className={`relative bg-linear-to-b from-ean-burgundy-mid via-ean-burgundy-deep to-ean-burgundy-dark border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col ${isImageRight ? 'lg:flex-row-reverse' : 'lg:flex-row'
+                          } h-full group transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden`}
                       >
                         {/* Image Section */}
                         <div className="relative h-52 sm:h-60 lg:h-auto lg:w-1/2 overflow-hidden shrink-0 min-h-55">
@@ -178,11 +177,10 @@ export default function ServicesPage() {
                             quality={90}
                           />
                           <div
-                            className={`absolute inset-0 bg-linear-to-t ${
-                              isImageRight
+                            className={`absolute inset-0 bg-linear-to-t ${isImageRight
                                 ? 'lg:bg-linear-to-l from-ean-burgundy-deep/85 via-ean-burgundy-deep/30 to-transparent'
                                 : 'lg:bg-linear-to-r from-ean-burgundy-deep/85 via-ean-burgundy-deep/30 to-transparent'
-                            }`}
+                              }`}
                           />
                         </div>
 
@@ -225,14 +223,14 @@ export default function ServicesPage() {
                           </div>
 
                           <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                            <Link 
+                            <Link
                               href={`/services/${srv.slug}`}
                               className="text-xs font-semibold uppercase tracking-wider text-ean-muted-light hover:text-white transition-colors"
                             >
                               <span>View Details</span>
                             </Link>
-                            <Link 
-                              href={`/contact?service=${srv.slug}`} 
+                            <Link
+                              href={`/contact?service=${srv.slug}`}
                               className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ean-gold hover:text-ean-gold-light group/link"
                             >
                               <span>Inquire</span>
@@ -299,14 +297,14 @@ export default function ServicesPage() {
                           </div>
 
                           <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                            <Link 
+                            <Link
                               href={`/services/${srv.slug}`}
                               className="text-xs font-semibold uppercase tracking-wider text-ean-muted-light hover:text-white transition-colors"
                             >
                               <span>View Details</span>
                             </Link>
-                            <Link 
-                              href={`/contact?service=${srv.slug}`} 
+                            <Link
+                              href={`/contact?service=${srv.slug}`}
                               className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ean-gold hover:text-ean-gold-light group/link"
                             >
                               <span>Inquire</span>
@@ -367,14 +365,14 @@ export default function ServicesPage() {
                           </div>
 
                           <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                            <Link 
+                            <Link
                               href={`/services/${srv.slug}`}
                               className="text-xs font-semibold uppercase tracking-wider text-ean-muted-light hover:text-white transition-colors"
                             >
                               <span>View Details</span>
                             </Link>
-                            <Link 
-                              href={`/contact?service=${srv.slug}`} 
+                            <Link
+                              href={`/contact?service=${srv.slug}`}
                               className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ean-gold hover:text-ean-gold-light group/link"
                             >
                               <span>Inquire</span>

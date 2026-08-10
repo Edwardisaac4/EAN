@@ -84,7 +84,7 @@ export default function AircraftSelector({
     return (
       <div className="bg-white rounded-xl p-6 shadow-sm border border-ean-border-light space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-display font-semibold text-xl text-ean-navy flex items-center gap-2">
+          <h3 className="font-ui font-semibold text-lg text-ean-navy flex items-center gap-2">
             <Plane className="w-5 h-5 text-ean-gold" />
             1. Select Aircraft (Manual MTOW)
           </h3>
@@ -135,7 +135,7 @@ export default function AircraftSelector({
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-ean-border-light space-y-4" ref={dropRef}>
       <div className="flex items-center justify-between">
-        <h3 className="font-display font-semibold text-xl text-ean-navy flex items-center gap-2">
+        <h3 className="font-ui font-semibold text-lg text-ean-navy flex items-center gap-2">
           <Plane className="w-5 h-5 text-ean-gold" />
           1. Select Aircraft
         </h3>

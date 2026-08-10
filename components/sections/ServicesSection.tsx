@@ -87,11 +87,10 @@ export default function ServicesSection() {
                 <button
                   key={srv.slug}
                   onClick={() => setActiveTab(idx)}
-                  className={`relative flex items-center gap-2.5 px-5 py-3 rounded-xs font-ui text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap transition-all duration-300 cursor-pointer ${
-                    isActive
+                  className={`relative flex items-center gap-2.5 px-5 py-3 rounded-xs font-ui text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive
                       ? 'text-ean-navy font-semibold'
                       : 'text-ean-muted-light hover:text-white bg-ean-navy-mid/70 border border-white/10 hover:border-white/25'
-                  }`}
+                    }`}
                 >
                   {isActive && (
                     <motion.div
