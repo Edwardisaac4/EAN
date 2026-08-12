@@ -131,7 +131,7 @@ export function LeadDataTable({ leads, onSelectLead, onQuickStatusChange }: Lead
                           {lead.fullName}
                         </span>
                         <span className="font-mono text-[10px] text-ean-muted-light/60">
-                          {lead.id}
+                          {lead.leadCode ?? lead.id}
                         </span>
                       </div>
                       <div className="flex flex-wrap items-center gap-3 mt-1 text-[11px] text-ean-muted-light">
@@ -206,7 +206,7 @@ export function LeadDataTable({ leads, onSelectLead, onQuickStatusChange }: Lead
                       <Eye className="w-3.5 h-3.5" />
                     </button>
                     <a
-                      href={`mailto:${lead.email}?subject=RE: EAN Aviation Inquiry (${lead.id})`}
+                      href={`mailto:${lead.email}?subject=RE: EAN Aviation Inquiry (${lead.leadCode ?? lead.id})`}
                       className="p-1.5 rounded-lg bg-white/5 hover:bg-ean-gold/20 text-ean-muted-light hover:text-ean-gold transition-colors"
                       title="Email Lead"
                     >

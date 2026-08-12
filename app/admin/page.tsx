@@ -8,14 +8,14 @@ import {
   LeadStatus, 
   LeadPriority 
 } from '@/lib/admin-leads-data';
-import { getAllLeadsFromStore, updateLeadInStore, addLeadToStore } from '@/lib/leads-store';
-import { 
-  graphqlQuery, 
-  QUERY_GET_LEADS, 
-  MUTATION_UPDATE_LEAD_STATUS, 
-  MUTATION_UPDATE_LEAD_PRIORITY, 
-  MUTATION_ASSIGN_LEAD, 
-  MUTATION_ADD_LEAD_NOTE 
+import {
+  graphqlQuery,
+  QUERY_GET_LEADS,
+  MUTATION_UPDATE_LEAD_STATUS,
+  MUTATION_UPDATE_LEAD_PRIORITY,
+  MUTATION_ASSIGN_LEAD,
+  MUTATION_ADD_LEAD_NOTE,
+  type LeadsQueryResult,
 } from '@/lib/graphql-client';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 import { LeadStatCard } from '@/components/admin/LeadStatCard';
@@ -43,30 +43,54 @@ export default function AdminDashboardPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [globalSearch, setGlobalSearch] = useState('');
-  const [graphqlStatus, setGraphqlStatus] = useState<'connected' | 'loading' | 'fallback'>('loading');
+  const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState(0);
 
-  // Load leads via GraphQL Query
-  const fetchLeadsGraphQL = useCallback(async (searchQuery = '') => {
-    setGraphqlStatus('loading');
-    try {
-      const data = await graphqlQuery<{ leads: Lead[] }>(QUERY_GET_LEADS, { search: searchQuery });
-      if (data && data.leads && data.leads.length > 0) {
-        setLeads(data.leads);
-        setGraphqlStatus('connected');
-        return;
-      }
-      setLeads(getAllLeadsFromStore());
-      setGraphqlStatus('connected');
-    } catch (err) {
-      console.warn('GraphQL Query fallback to local store:', err);
-      setLeads(getAllLeadsFromStore());
-      setGraphqlStatus('fallback');
-    }
-  }, []);
-
+  // Leads are read live from the database — no local/mock fallback, so an
+  // outage shows as an error rather than as a plausible-looking empty pipeline.
   useEffect(() => {
-    fetchLeadsGraphQL();
-  }, [fetchLeadsGraphQL]);
+    let cancelled = false;
+
+    async function load() {
+      try {
+        const data = await graphqlQuery<LeadsQueryResult>(QUERY_GET_LEADS, {});
+        if (cancelled) return;
+
+        const fetched = data.leads ?? [];
+        setLeads(fetched);
+        setLoadState('ready');
+        setLoadError(null);
+        setSelectedLead((current) =>
+          current ? fetched.find((l) => l.id === current.id) ?? current : current
+        );
+      } catch (err) {
+        if (cancelled) return;
+        setLeads([]);
+        setLoadState('error');
+        setLoadError(err instanceof Error ? err.message : 'Could not load leads.');
+      }
+    }
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshToken]);
+
+  /** Persists a change, then refetches so the dashboard shows stored state. */
+  const runMutation = useCallback(
+    async (document: string, variables: Record<string, unknown>) => {
+      try {
+        await graphqlQuery(document, variables);
+        setRefreshToken((token) => token + 1);
+      } catch (err) {
+        setLoadError(err instanceof Error ? err.message : 'Update failed.');
+      }
+    },
+    []
+  );
 
   const stats = getLeadStats(leads);
 
@@ -76,7 +100,7 @@ export default function AdminDashboardPage() {
     return (
       l.fullName.toLowerCase().includes(q) ||
       l.email.toLowerCase().includes(q) ||
-      l.id.toLowerCase().includes(q) ||
+      (l.leadCode ?? l.id).toLowerCase().includes(q) ||
       (l.company && l.company.toLowerCase().includes(q)) ||
       (l.source && l.source.toLowerCase().includes(q))
     );
@@ -86,77 +110,18 @@ export default function AdminDashboardPage() {
     (l) => l.priority === 'urgent' && l.status !== 'closed_won' && l.status !== 'closed_lost' && l.status !== 'contacted'
   );
 
-  // GraphQL Mutation Handlers
-  const handleQuickStatusChange = async (leadId: string, newStatus: LeadStatus) => {
-    const updatedLocally = updateLeadInStore(leadId, { status: newStatus });
-    if (updatedLocally) {
-      setLeads(getAllLeadsFromStore());
-      if (selectedLead?.id === leadId) setSelectedLead(updatedLocally);
-    }
+  // Mutation handlers — write to the database, then refetch
+  const handleQuickStatusChange = (leadId: string, newStatus: LeadStatus) =>
+    runMutation(MUTATION_UPDATE_LEAD_STATUS, { id: leadId, status: newStatus });
 
-    try {
-      await graphqlQuery(MUTATION_UPDATE_LEAD_STATUS, { id: leadId, status: newStatus });
-    } catch (err) {
-      console.error('GraphQL status mutation failed:', err);
-    }
-  };
+  const handleUpdatePriority = (leadId: string, priority: LeadPriority) =>
+    runMutation(MUTATION_UPDATE_LEAD_PRIORITY, { id: leadId, priority });
 
-  const handleUpdatePriority = async (leadId: string, priority: LeadPriority) => {
-    const updatedLocally = updateLeadInStore(leadId, { priority });
-    if (updatedLocally) {
-      setLeads(getAllLeadsFromStore());
-      if (selectedLead?.id === leadId) setSelectedLead(updatedLocally);
-    }
+  const handleAssignLead = (leadId: string, staffName: string) =>
+    runMutation(MUTATION_ASSIGN_LEAD, { id: leadId, staffName });
 
-    try {
-      await graphqlQuery(MUTATION_UPDATE_LEAD_PRIORITY, { id: leadId, priority });
-    } catch (err) {
-      console.error('GraphQL priority mutation failed:', err);
-    }
-  };
-
-  const handleAssignLead = async (leadId: string, staffName: string) => {
-    const updatedLocally = updateLeadInStore(leadId, { assignedTo: staffName });
-    if (updatedLocally) {
-      setLeads(getAllLeadsFromStore());
-      if (selectedLead?.id === leadId) setSelectedLead(updatedLocally);
-    }
-
-    try {
-      await graphqlQuery(MUTATION_ASSIGN_LEAD, { id: leadId, staffName });
-    } catch (err) {
-      console.error('GraphQL assign lead mutation failed:', err);
-    }
-  };
-
-  const handleAddNote = async (leadId: string, noteText: string) => {
-    const currentTarget = leads.find((l) => l.id === leadId);
-    if (!currentTarget) return;
-
-    const newActivity = {
-      id: `act-${Date.now()}`,
-      timestamp: new Date().toISOString(),
-      author: 'Lead Admin',
-      action: 'Added internal note',
-      note: noteText,
-    };
-
-    const updatedLocally = updateLeadInStore(leadId, {
-      notes: [noteText, ...currentTarget.notes],
-      activities: [newActivity, ...currentTarget.activities],
-    });
-
-    if (updatedLocally) {
-      setLeads(getAllLeadsFromStore());
-      if (selectedLead?.id === leadId) setSelectedLead(updatedLocally);
-    }
-
-    try {
-      await graphqlQuery(MUTATION_ADD_LEAD_NOTE, { id: leadId, note: noteText });
-    } catch (err) {
-      console.error('GraphQL note mutation failed:', err);
-    }
-  };
+  const handleAddNote = (leadId: string, noteText: string) =>
+    runMutation(MUTATION_ADD_LEAD_NOTE, { id: leadId, note: noteText });
 
   return (
     <div className="flex-1 flex flex-col min-w-0">
@@ -184,7 +149,7 @@ export default function AdminDashboardPage() {
               </span>
               <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1">
                 <Cpu className="w-3 h-3" />
-                GraphQL Powered ({graphqlStatus})
+                Live database ({loadState})
               </span>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold font-display text-ean-white tracking-tight">
@@ -205,6 +170,19 @@ export default function AdminDashboardPage() {
             </Link>
           </div>
         </div>
+
+        {loadError && (
+          <div
+            role="alert"
+            className="flex items-start gap-2 p-4 rounded-xl bg-rose-500/10 border border-rose-500/40 text-xs text-rose-300"
+          >
+            <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold">Could not reach the leads database</p>
+              <p className="text-rose-300/80 mt-0.5">{loadError}</p>
+            </div>
+          </div>
+        )}
 
         {/* Top Metric Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -289,7 +267,7 @@ export default function AdminDashboardPage() {
                           {l.fullName}
                         </span>
                         <span className="text-[10px] font-mono text-ean-gold px-2 py-0.5 rounded bg-ean-gold/10">
-                          {l.id}
+                          {l.leadCode ?? l.id}
                         </span>
                         <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40">
                           {l.priority}

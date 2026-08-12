@@ -1,296 +1,276 @@
-import { NextResponse } from 'next/server';
-import { 
-  INITIAL_LEADS, 
-  Lead, 
-  LeadStatus, 
-  LeadPriority, 
-  ServiceCategory, 
-  getLeadStats,
-  SERVICE_LABELS 
-} from '@/lib/admin-leads-data';
-import { deriveSourceLabel } from '@/lib/leads-store';
+// =============================================================================
+// /api/graphql — Admin lead query & mutation endpoint
+// =============================================================================
+// Backed by Supabase via leads-service. This is a hand-rolled resolver that
+// matches on operation name rather than a full GraphQL engine — the admin
+// client in lib/graphql-client.ts is the only consumer and sends a fixed set
+// of documents.
+//
+// Access is gated by middleware.ts (admin session required) because every
+// response here contains lead PII.
 
-let inMemoryLeads: Lead[] = [...INITIAL_LEADS];
+import { NextResponse } from 'next/server'
+import {
+  getLeads,
+  updateLead,
+  addLeadNote,
+  createLead,
+  LEAD_NOT_FOUND,
+} from '@/lib/services/leads-service'
+import { mapLeadRowToUiLead, mapLeadRowsToUiLeads } from '@/lib/mappers/lead-mapper'
+import { getLeadStats, SERVICE_LABELS } from '@/lib/admin-leads-data'
+import type { ServiceCategory } from '@/lib/admin-leads-data'
+import type {
+  LeadPriorityEnum,
+  LeadServiceEnum,
+  LeadStatusEnum,
+} from '@/types/database'
 
-/**
- * GraphQL Query & Mutation Engine for EAN Aviation Admin
- */
+// Admin views page through the CRM table client-side; this is the ceiling on a
+// single query. Surfaced in the response so the UI can warn when it is hit.
+const MAX_LEADS_PER_QUERY = 500
+
+interface GraphQLBody {
+  query?: string
+  variables?: Record<string, unknown>
+}
+
+function graphqlError(message: string, status = 400) {
+  return NextResponse.json({ errors: [{ message }] }, { status })
+}
+
+/** Maps a service-layer failure to the right status and a human-readable message. */
+function mutationError(error: string) {
+  if (error === LEAD_NOT_FOUND) {
+    return graphqlError(LEAD_NOT_FOUND, 404)
+  }
+  console.error('Lead mutation failed:', error)
+  return graphqlError('Could not save the change. Please try again.', 500)
+}
+
+/** Re-reads a single lead so mutations can return the fully joined record. */
+async function fetchUiLeadById(id: string) {
+  const { leads } = await getLeads({ page: 1, limit: 1, id })
+  return leads.length > 0 ? mapLeadRowToUiLead(leads[0]) : null
+}
+
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { query, variables } = body;
-
-    if (!query) {
-      return NextResponse.json({ errors: [{ message: 'No GraphQL query provided' }] }, { status: 400 });
+    let body: GraphQLBody
+    try {
+      body = (await request.json()) as GraphQLBody
+    } catch {
+      return graphqlError('Invalid JSON request body')
     }
 
-    const cleanQuery = query.replace(/\s+/g, ' ').trim();
+    const { query, variables } = body
+
+    if (!query) {
+      return graphqlError('No GraphQL query provided')
+    }
+
+    const cleanQuery = query.replace(/\s+/g, ' ').trim()
+    const vars = variables ?? {}
+
+    const asFilter = <T extends string>(value: unknown): T | 'all' => {
+      if (typeof value !== 'string' || value === '' || value === 'all') return 'all'
+      return value.toLowerCase() as T
+    }
 
     // ------------------------------------------------------------------------
     // QUERY: leadStats
     // ------------------------------------------------------------------------
     if (cleanQuery.includes('query') && cleanQuery.includes('leadStats')) {
-      const stats = getLeadStats(inMemoryLeads);
+      const { leads, error } = await getLeads({ page: 1, limit: MAX_LEADS_PER_QUERY })
 
-      const serviceDistributionArray = Object.entries(stats.serviceDistribution).map(([cat, count]) => {
-        const percentage = stats.totalLeads > 0 ? Math.round((count / stats.totalLeads) * 100) : 0;
-        return {
-          category: cat,
-          label: SERVICE_LABELS[cat as ServiceCategory] || cat,
+      if (error) {
+        return graphqlError('Failed to fetch lead stats', 500)
+      }
+
+      const stats = getLeadStats(mapLeadRowsToUiLeads(leads))
+
+      const serviceDistribution = Object.entries(stats.serviceDistribution).map(
+        ([category, count]) => ({
+          category,
+          label: SERVICE_LABELS[category as ServiceCategory] ?? category,
           count,
-          percentage,
-        };
-      });
+          percentage:
+            stats.totalLeads > 0 ? Math.round((count / stats.totalLeads) * 100) : 0,
+        })
+      )
 
       return NextResponse.json({
         data: {
           leadStats: {
-            totalLeads: stats.totalLeads,
-            newLeads: stats.newLeads,
-            inProgressLeads: stats.inProgressLeads,
-            qualifiedLeads: stats.qualifiedLeads,
-            closedWonLeads: stats.closedWonLeads,
-            avgResponseSlaMinutes: stats.avgResponseSlaMinutes,
-            conversionRate: stats.conversionRate,
+            totalLeads:             stats.totalLeads,
+            newLeads:               stats.newLeads,
+            inProgressLeads:        stats.inProgressLeads,
+            qualifiedLeads:         stats.qualifiedLeads,
+            closedWonLeads:         stats.closedWonLeads,
+            avgResponseSlaMinutes:  stats.avgResponseSlaMinutes,
+            conversionRate:         stats.conversionRate,
             totalEstimatedPipeline: stats.totalEstimatedPipeline,
-            serviceDistribution: serviceDistributionArray,
-            trackingDistribution: stats.trackingDistribution,
+            dailyInquiryRate:       stats.dailyInquiryRate,
+            serviceDistribution,
+            trackingDistribution:   stats.trackingDistribution,
           },
         },
-      });
+      })
     }
 
     // ------------------------------------------------------------------------
     // QUERY: single lead by id
     // ------------------------------------------------------------------------
     if (cleanQuery.includes('query') && cleanQuery.includes('lead(')) {
-      const id = variables?.id;
-      const target = inMemoryLeads.find((l) => l.id === id);
-      return NextResponse.json({
-        data: { lead: target || null },
-      });
+      const id = typeof vars.id === 'string' ? vars.id : null
+      if (!id) return graphqlError('lead(id:) requires an id variable')
+
+      return NextResponse.json({ data: { lead: await fetchUiLeadById(id) } })
     }
 
     // ------------------------------------------------------------------------
-    // QUERY: leads (with filtering & search)
+    // QUERY: leads (filtered + searched)
     // ------------------------------------------------------------------------
-    if (cleanQuery.includes('query') && (cleanQuery.includes('leads') || cleanQuery.includes('getLeads'))) {
-      let filtered = [...inMemoryLeads];
+    if (
+      cleanQuery.includes('query') &&
+      (cleanQuery.includes('leads') || cleanQuery.includes('getLeads'))
+    ) {
+      const { leads, total, error } = await getLeads({
+        search:   typeof vars.search === 'string' && vars.search ? vars.search : undefined,
+        status:   asFilter<LeadStatusEnum>(vars.status),
+        service:  asFilter<LeadServiceEnum>(vars.service),
+        priority: asFilter<LeadPriorityEnum>(vars.priority),
+        page:     1,
+        limit:    MAX_LEADS_PER_QUERY,
+      })
 
-      if (variables?.search) {
-        const q = variables.search.toLowerCase();
-        filtered = filtered.filter(
-          (l) =>
-            l.fullName.toLowerCase().includes(q) ||
-            l.email.toLowerCase().includes(q) ||
-            l.id.toLowerCase().includes(q) ||
-            l.phone.toLowerCase().includes(q) ||
-            (l.company && l.company.toLowerCase().includes(q)) ||
-            (l.source && l.source.toLowerCase().includes(q))
-        );
-      }
-
-      if (variables?.status && variables.status !== 'all') {
-        filtered = filtered.filter((l) => l.status === variables.status.toLowerCase());
-      }
-
-      if (variables?.service && variables.service !== 'all') {
-        filtered = filtered.filter((l) => l.service === variables.service.toLowerCase());
-      }
-
-      if (variables?.priority && variables.priority !== 'all') {
-        filtered = filtered.filter((l) => l.priority === variables.priority.toLowerCase());
+      if (error) {
+        return graphqlError('Failed to fetch leads', 500)
       }
 
       return NextResponse.json({
-        data: { leads: filtered },
-      });
+        data: {
+          leads: mapLeadRowsToUiLeads(leads),
+          leadsTotal: total,
+          leadsTruncated: total > leads.length,
+        },
+      })
     }
 
     // ------------------------------------------------------------------------
     // MUTATION: updateLeadStatus
     // ------------------------------------------------------------------------
     if (cleanQuery.includes('mutation') && cleanQuery.includes('updateLeadStatus')) {
-      const { id, status } = variables || {};
-      const leadIndex = inMemoryLeads.findIndex((l) => l.id === id);
-      if (leadIndex === -1) {
-        return NextResponse.json({ errors: [{ message: `Lead ${id} not found` }] }, { status: 404 });
-      }
+      const id = typeof vars.id === 'string' ? vars.id : null
+      const status = typeof vars.status === 'string' ? vars.status.toLowerCase() : null
+      if (!id || !status) return graphqlError('updateLeadStatus requires id and status')
 
-      const target = inMemoryLeads[leadIndex];
-      const now = new Date().toISOString();
-      const updated: Lead = {
-        ...target,
-        status: status.toLowerCase() as LeadStatus,
-        updatedAt: now,
-        activities: [
-          {
-            id: `act-${Date.now()}`,
-            timestamp: now,
-            author: 'GraphQL Admin Client',
-            action: `Status updated to ${status}`,
-          },
-          ...target.activities,
-        ],
-      };
+      const { error } = await updateLead(id, {
+        status: status as LeadStatusEnum,
+        author: 'Admin Dashboard',
+      })
+      if (error) return mutationError(error)
 
-      inMemoryLeads[leadIndex] = updated;
-      return NextResponse.json({ data: { updateLeadStatus: updated } });
+      return NextResponse.json({ data: { updateLeadStatus: await fetchUiLeadById(id) } })
     }
 
     // ------------------------------------------------------------------------
     // MUTATION: updateLeadPriority
     // ------------------------------------------------------------------------
     if (cleanQuery.includes('mutation') && cleanQuery.includes('updateLeadPriority')) {
-      const { id, priority } = variables || {};
-      const leadIndex = inMemoryLeads.findIndex((l) => l.id === id);
-      if (leadIndex === -1) {
-        return NextResponse.json({ errors: [{ message: `Lead ${id} not found` }] }, { status: 404 });
-      }
+      const id = typeof vars.id === 'string' ? vars.id : null
+      const priority = typeof vars.priority === 'string' ? vars.priority.toLowerCase() : null
+      if (!id || !priority) return graphqlError('updateLeadPriority requires id and priority')
 
-      const target = inMemoryLeads[leadIndex];
-      const now = new Date().toISOString();
-      const updated: Lead = {
-        ...target,
-        priority: priority.toLowerCase() as LeadPriority,
-        updatedAt: now,
-        activities: [
-          {
-            id: `act-${Date.now()}`,
-            timestamp: now,
-            author: 'GraphQL Admin Client',
-            action: `Priority updated to ${priority}`,
-          },
-          ...target.activities,
-        ],
-      };
+      const { error } = await updateLead(id, {
+        priority: priority as LeadPriorityEnum,
+        author: 'Admin Dashboard',
+      })
+      if (error) return mutationError(error)
 
-      inMemoryLeads[leadIndex] = updated;
-      return NextResponse.json({ data: { updateLeadPriority: updated } });
+      return NextResponse.json({ data: { updateLeadPriority: await fetchUiLeadById(id) } })
     }
 
     // ------------------------------------------------------------------------
     // MUTATION: assignLead
     // ------------------------------------------------------------------------
     if (cleanQuery.includes('mutation') && cleanQuery.includes('assignLead')) {
-      const { id, staffName } = variables || {};
-      const leadIndex = inMemoryLeads.findIndex((l) => l.id === id);
-      if (leadIndex === -1) {
-        return NextResponse.json({ errors: [{ message: `Lead ${id} not found` }] }, { status: 404 });
-      }
+      const id = typeof vars.id === 'string' ? vars.id : null
+      const staffName = typeof vars.staffName === 'string' ? vars.staffName : null
+      if (!id || !staffName) return graphqlError('assignLead requires id and staffName')
 
-      const target = inMemoryLeads[leadIndex];
-      const now = new Date().toISOString();
-      const updated: Lead = {
-        ...target,
-        assignedTo: staffName,
-        updatedAt: now,
-        activities: [
-          {
-            id: `act-${Date.now()}`,
-            timestamp: now,
-            author: 'GraphQL Admin Client',
-            action: `Assigned lead to ${staffName}`,
-          },
-          ...target.activities,
-        ],
-      };
+      const { error } = await updateLead(id, {
+        assigned_to: staffName,
+        author: 'Admin Dashboard',
+      })
+      if (error) return mutationError(error)
 
-      inMemoryLeads[leadIndex] = updated;
-      return NextResponse.json({ data: { assignLead: updated } });
+      return NextResponse.json({ data: { assignLead: await fetchUiLeadById(id) } })
     }
 
     // ------------------------------------------------------------------------
     // MUTATION: addLeadNote
     // ------------------------------------------------------------------------
     if (cleanQuery.includes('mutation') && cleanQuery.includes('addLeadNote')) {
-      const { id, note } = variables || {};
-      const leadIndex = inMemoryLeads.findIndex((l) => l.id === id);
-      if (leadIndex === -1) {
-        return NextResponse.json({ errors: [{ message: `Lead ${id} not found` }] }, { status: 404 });
-      }
+      const id = typeof vars.id === 'string' ? vars.id : null
+      const note = typeof vars.note === 'string' ? vars.note.trim() : null
+      if (!id || !note) return graphqlError('addLeadNote requires id and a non-empty note')
 
-      const target = inMemoryLeads[leadIndex];
-      const now = new Date().toISOString();
-      const updated: Lead = {
-        ...target,
-        notes: [note, ...target.notes],
-        updatedAt: now,
-        activities: [
-          {
-            id: `act-${Date.now()}`,
-            timestamp: now,
-            author: 'GraphQL Admin Client',
-            action: 'Added internal note',
-            note,
-          },
-          ...target.activities,
-        ],
-      };
+      const { error } = await addLeadNote(id, note, 'Admin Dashboard')
+      if (error) return mutationError(error)
 
-      inMemoryLeads[leadIndex] = updated;
-      return NextResponse.json({ data: { addLeadNote: updated } });
+      return NextResponse.json({ data: { addLeadNote: await fetchUiLeadById(id) } })
     }
 
     // ------------------------------------------------------------------------
-    // MUTATION: createLead
+    // MUTATION: createLead — manual entry logged by an admin
     // ------------------------------------------------------------------------
     if (cleanQuery.includes('mutation') && cleanQuery.includes('createLead')) {
-      const input = variables?.input || {};
-      const now = new Date().toISOString();
-      const nextId = `EAN-LD-${new Date().getFullYear()}-${String(inMemoryLeads.length + 90).padStart(3, '0')}`;
-      
-      const newLead: Lead = {
-        id: nextId,
-        fullName: input.fullName || input.name,
-        email: input.email,
-        phone: input.phone || 'Not provided',
-        company: input.company || undefined,
-        service: (input.service as ServiceCategory) || 'general',
-        message: input.message,
-        status: 'new',
-        priority: (input.priority as LeadPriority) || 'normal',
-        createdAt: now,
-        updatedAt: now,
-        source: deriveSourceLabel(input.tracking),
-        notes: [],
-        activities: [
-          {
-            id: `act-${Date.now()}`,
-            timestamp: now,
-            author: 'GraphQL Form Mutation',
-            action: 'Created lead via GraphQL mutation',
-          },
-        ],
-        estimatedValue: input.estimatedValue || 15000,
-        tracking: input.tracking,
-      };
+      const input = (vars.input ?? {}) as Record<string, unknown>
+      const fullName = (input.fullName ?? input.name) as string | undefined
+      const email = input.email as string | undefined
 
-      inMemoryLeads = [newLead, ...inMemoryLeads];
-      return NextResponse.json({ data: { createLead: newLead } });
+      if (!fullName || !email) {
+        return graphqlError('createLead requires fullName and email')
+      }
+
+      const { lead, error } = await createLead({
+        fullName,
+        email,
+        phone:    (input.phone as string) || undefined,
+        company:  (input.company as string) || undefined,
+        service:  ((input.service as string) || 'general') as LeadServiceEnum,
+        message:  (input.message as string) || '',
+        tracking: input.tracking as never,
+        estimatedValue:
+          typeof input.estimatedValue === 'number' ? input.estimatedValue : undefined,
+      })
+
+      if (error) return mutationError(error)
+
+      return NextResponse.json({ data: { createLead: await fetchUiLeadById(lead.id) } })
     }
 
-    // Fallback response for unhandled queries
-    return NextResponse.json({
-      data: {
-        leads: inMemoryLeads,
-        leadStats: getLeadStats(inMemoryLeads),
-      },
-    });
-
+    return graphqlError(`Unsupported GraphQL operation`, 400)
   } catch (error) {
-    console.error('GraphQL API Error:', error);
-    return NextResponse.json({ errors: [{ message: 'Internal GraphQL processing error' }] }, { status: 500 });
+    console.error('GraphQL API Error:', error)
+    return graphqlError('Internal GraphQL processing error', 500)
   }
 }
 
 export async function GET() {
   return NextResponse.json({
-    message: 'EAN Aviation GraphQL API Endpoint',
+    message: 'EAN Aviation admin lead API endpoint',
     schema: {
       queries: ['leads(search, status, service, priority)', 'lead(id)', 'leadStats'],
-      mutations: ['updateLeadStatus(id, status)', 'updateLeadPriority(id, priority)', 'assignLead(id, staffName)', 'addLeadNote(id, note)', 'createLead(input)'],
+      mutations: [
+        'updateLeadStatus(id, status)',
+        'updateLeadPriority(id, priority)',
+        'assignLead(id, staffName)',
+        'addLeadNote(id, note)',
+        'createLead(input)',
+      ],
     },
     documentation: 'Send POST requests with { query, variables } payload.',
-  });
+  })
 }

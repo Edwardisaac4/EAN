@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 import { LeadStatCard } from '@/components/admin/LeadStatCard';
-import { getLeadStats } from '@/lib/admin-leads-data';
-import { getAllLeadsFromStore } from '@/lib/leads-store';
+import type { LeadStats, ServiceCategory } from '@/lib/admin-leads-data';
 import { graphqlQuery, QUERY_GET_LEAD_STATS } from '@/lib/graphql-client';
 
 // Visual Graph Components
@@ -15,29 +14,85 @@ import { FunnelGraph } from '@/components/admin/graphs/FunnelGraph';
 
 import { BarChart3, TrendingUp, Clock, Globe, Target, Compass, Cpu, Monitor } from 'lucide-react';
 
+/**
+ * Stats as returned by the API: identical to `LeadStats` except that
+ * `serviceDistribution` arrives as an array so each entry can carry its display
+ * label and share alongside the count.
+ */
+interface AnalyticsStats extends Omit<LeadStats, 'serviceDistribution'> {
+  serviceDistribution: Array<{
+    category: string;
+    label: string;
+    count: number;
+    percentage: number;
+  }>;
+}
+
+const EMPTY_SERVICE_DISTRIBUTION: Record<ServiceCategory, number> = {
+  fbo: 0,
+  maintenance: 0,
+  charter: 0,
+  catering: 0,
+  vip: 0,
+  leasing: 0,
+  general: 0,
+};
+
+const EMPTY_STATS: AnalyticsStats = {
+  totalLeads: 0,
+  newLeads: 0,
+  inProgressLeads: 0,
+  qualifiedLeads: 0,
+  closedWonLeads: 0,
+  dailyInquiryRate: 0,
+  avgResponseSlaMinutes: 0,
+  conversionRate: 0,
+  totalEstimatedPipeline: 0,
+  serviceDistribution: [],
+  trackingDistribution: { topSources: [], topLandingPages: [], devices: {} },
+};
+
 export default function AnalyticsPage() {
-  const [stats, setStats] = useState(() => getLeadStats(getAllLeadsFromStore()));
-  const [graphqlStatus, setGraphqlStatus] = useState<'connected' | 'loading' | 'fallback'>('loading');
+  const [stats, setStats] = useState<AnalyticsStats>(EMPTY_STATS);
+  const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function loadGraphQLStats() {
+    let cancelled = false;
+
+    async function loadStats() {
       try {
-        const res = await graphqlQuery<{ leadStats: ReturnType<typeof getLeadStats> }>(QUERY_GET_LEAD_STATS);
-        if (res?.leadStats) {
-          setStats(res.leadStats);
-          setGraphqlStatus('connected');
-          return;
-        }
-        setStats(getLeadStats(getAllLeadsFromStore()));
-        setGraphqlStatus('connected');
+        const res = await graphqlQuery<{ leadStats: AnalyticsStats }>(QUERY_GET_LEAD_STATS);
+        if (cancelled) return;
+
+        setStats(res.leadStats ?? EMPTY_STATS);
+        setLoadState('ready');
+        setLoadError(null);
       } catch (err) {
-        console.warn('GraphQL Query fallback for analytics:', err);
-        setStats(getLeadStats(getAllLeadsFromStore()));
-        setGraphqlStatus('fallback');
+        if (cancelled) return;
+        setStats(EMPTY_STATS);
+        setLoadState('error');
+        setLoadError(err instanceof Error ? err.message : 'Could not load analytics.');
       }
     }
-    loadGraphQLStats();
+
+    loadStats();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  // The donut chart wants a keyed record; the API sends an array with labels.
+  const serviceDistributionRecord = useMemo(() => {
+    const record = { ...EMPTY_SERVICE_DISTRIBUTION };
+    stats.serviceDistribution.forEach((item) => {
+      if (item.category in record) {
+        record[item.category as ServiceCategory] = item.count;
+      }
+    });
+    return record;
+  }, [stats.serviceDistribution]);
 
   return (
     <div className="flex-1 flex flex-col min-w-0">
@@ -53,7 +108,7 @@ export default function AnalyticsPage() {
               <h1 className="text-2xl font-bold font-display text-ean-white">Lead Demand & Acquisition Visual Analytics</h1>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1">
                 <Cpu className="w-3 h-3" />
-                GraphQL Visual Graphs ({graphqlStatus})
+                Live database ({loadState})
               </span>
             </div>
             <p className="text-xs text-ean-muted-light mt-0.5">
@@ -61,6 +116,16 @@ export default function AnalyticsPage() {
             </p>
           </div>
         </div>
+
+        {loadError && (
+          <div
+            role="alert"
+            className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/40 text-xs text-rose-300"
+          >
+            <p className="font-bold">Could not load analytics</p>
+            <p className="text-rose-300/80 mt-0.5">{loadError}</p>
+          </div>
+        )}
 
         {/* Top KPIs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -106,17 +171,7 @@ export default function AnalyticsPage() {
         {/* VISUAL GRAPHS SECTION 2: Service Interest Donut Chart & Acquisition Channel Bar Graph */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <ServiceDonutChart
-            distribution={
-              Array.isArray(stats.serviceDistribution)
-                ? (stats.serviceDistribution as Array<{ category: string; count: number }>).reduce(
-                    (acc: Record<string, number>, item: { category: string; count: number }) => {
-                      acc[item.category] = item.count;
-                      return acc;
-                    },
-                    {}
-                  )
-                : stats.serviceDistribution
-            }
+            distribution={serviceDistributionRecord}
             total={stats.totalLeads}
           />
 

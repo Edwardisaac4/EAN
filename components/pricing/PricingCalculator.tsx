@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useSyncExternalStore } from 'react'
 import {
   QuoteState,
   Aircraft,
@@ -12,6 +12,12 @@ import {
   LeadDetails,
 } from '@/types/pricing'
 import { buildQuote } from '@/lib/pricing/calculations'
+import {
+  grantReveal,
+  subscribeToReveal,
+  getRevealSnapshot,
+  getRevealServerSnapshot,
+} from '@/lib/pricing/reveal-store'
 import dynamic from 'next/dynamic'
 import BuildYourQuoteCard from './BuildYourQuoteCard'
 import AddonsGrid from './AddonsGrid'
@@ -32,9 +38,15 @@ export default function PricingCalculator() {
   const [day, setDay] = useState<DayType>('wd')
   const [handling, setHandling] = useState<HandingTier>('standard')
   const [addons, setAddons] = useState<Record<string, boolean>>({})
-  const [revealed, setRevealed] = useState<boolean>(false)
-  const [lead, setLead] = useState<LeadDetails | null>(null)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+
+  // Reveal state lives in a session-scoped external store so it survives a page
+  // refresh — otherwise the visitor is re-gated and submits a duplicate lead.
+  const { revealed, lead } = useSyncExternalStore(
+    subscribeToReveal,
+    getRevealSnapshot,
+    getRevealServerSnapshot
+  )
 
   const handleSelectAircraft = (selected: Aircraft | null) => {
     setAircraft(selected)
@@ -99,8 +111,7 @@ export default function PricingCalculator() {
   }
 
   const handleLeadSubmit = (submittedLead: LeadDetails) => {
-    setLead(submittedLead)
-    setRevealed(true)
+    grantReveal(submittedLead)
   }
 
   return (

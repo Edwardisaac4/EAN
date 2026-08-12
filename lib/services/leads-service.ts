@@ -7,7 +7,6 @@ import { adminSupabase } from '@/utils/supabase/admin'
 import type {
   LeadRow,
   LeadWithDetails,
-  LeadTrackingRow,
   LeadActivityRow,
   LeadNoteRow,
   NewLead,
@@ -21,34 +20,55 @@ import type {
   LeadStatusEnum,
 } from '@/types/database'
 
+/** Sentinel error message callers can map to a 404. */
+export const LEAD_NOT_FOUND = 'Lead not found'
+
 // ---------------------------------------------------------------------------
 // Helper: auto-assign priority based on service + message keywords
 // ---------------------------------------------------------------------------
 
+/**
+ * Urgency is driven by intent expressed in the message, not by service type —
+ * keying `urgent` off `service === 'fbo'` made every FBO/pricing-portal lead
+ * urgent, which drained the flag of meaning. Service type only sets the
+ * baseline, and time-critical language escalates it.
+ */
+const URGENT_INTENT_KEYWORDS = [
+  'urgent',
+  'aog',
+  'asap',
+  'today',
+  'tonight',
+  'tomorrow',
+  'immediately',
+  'emergency',
+] as const
+
+const SERVICE_BASELINE_PRIORITY: Record<string, LeadPriorityEnum> = {
+  maintenance: 'high',   // AOG risk, high value
+  leasing:     'high',   // largest contract value
+  charter:     'high',
+  fbo:         'normal',
+  vip:         'normal',
+  catering:    'normal',
+  general:     'low',
+}
+
 function derivePriority(service: string, message: string): LeadPriorityEnum {
-  const text = (message || '').toLowerCase();
-  
-  if (
-    text.includes('urgent') ||
-    text.includes('aog') ||
-    text.includes('asap') ||
-    text.includes('today') ||
-    text.includes('immediately') ||
-    service === 'fbo' ||
-    service === 'maintenance'
-  ) {
-    return 'urgent';
+  const text = (message || '').toLowerCase()
+
+  if (URGENT_INTENT_KEYWORDS.some((keyword) => text.includes(keyword))) {
+    return 'urgent'
   }
 
-  if (service === 'charter' || service === 'leasing' || text.includes('quote') || text.includes('charter')) {
-    return 'high';
+  const baseline = SERVICE_BASELINE_PRIORITY[service] ?? 'low'
+
+  // A concrete quote/booking request nudges the baseline up one step.
+  if (baseline === 'normal' && (text.includes('quote') || text.includes('booking'))) {
+    return 'high'
   }
 
-  if (service === 'catering' || service === 'vip') {
-    return 'normal';
-  }
-
-  return 'low';
+  return baseline
 }
 
 // ---------------------------------------------------------------------------
@@ -101,6 +121,45 @@ function deriveSource(tracking?: LeadSubmissionPayload['tracking']): string {
 }
 
 // =============================================================================
+// DUPLICATE GUARD — collapse accidental re-submissions
+// =============================================================================
+
+/** Window in which an identical email+service submission is treated as a repeat. */
+const DUPLICATE_WINDOW_MINUTES = 10
+
+/**
+ * Finds a lead this person already submitted for the same service moments ago.
+ *
+ * Refreshing a gated pricing page or double-clicking submit would otherwise
+ * create several identical records and inflate the pipeline count.
+ */
+export async function findRecentDuplicateLead(
+  email: string,
+  service: LeadServiceEnum
+): Promise<LeadRow | null> {
+  const cutoff = new Date(
+    Date.now() - DUPLICATE_WINDOW_MINUTES * 60 * 1000
+  ).toISOString()
+
+  const { data, error } = await adminSupabase
+    .from('leads')
+    .select('*')
+    .eq('email', email)
+    .eq('service', service)
+    .gte('created_at', cutoff)
+    .order('created_at', { ascending: false })
+    .limit(1)
+
+  if (error) {
+    // Non-fatal: fall through to creating the lead rather than losing it.
+    console.error('Duplicate lead lookup failed:', error)
+    return null
+  }
+
+  return data && data.length > 0 ? data[0] : null
+}
+
+// =============================================================================
 // CREATE LEAD — atomic insert of lead + tracking + activity
 // =============================================================================
 
@@ -109,9 +168,15 @@ export async function createLead(
   ipAddress?: string
 ): Promise<{ lead: LeadRow; error: string | null }> {
   const service = (payload.service || 'general') as LeadServiceEnum
-  const priority = derivePriority(service, payload.message)
+  const priority = payload.priority ?? derivePriority(service, payload.message)
   const source = deriveSource(payload.tracking)
-  const estimatedValue = estimateValue(service)
+
+  // Prefer a real figure computed by the submitting form (e.g. the pricing
+  // portal quote total) over the coarse per-service estimate.
+  const estimatedValue =
+    typeof payload.estimatedValue === 'number' && payload.estimatedValue > 0
+      ? Math.round(payload.estimatedValue)
+      : estimateValue(service)
 
   // 1. Insert the lead
   const { data: lead, error: leadError } = await adminSupabase
@@ -192,6 +257,8 @@ export interface GetLeadsOptions {
   service?:  LeadServiceEnum | 'all'
   priority?: LeadPriorityEnum | 'all'
   search?:   string
+  /** Restrict to a single lead by uuid — used to re-read a record after a mutation. */
+  id?:       string
   page?:     number
   limit?:    number
 }
@@ -202,6 +269,7 @@ export async function getLeads(options: GetLeadsOptions = {}) {
     service = 'all',
     priority = 'all',
     search,
+    id,
     page = 1,
     limit = 20,
   } = options
@@ -220,6 +288,9 @@ export async function getLeads(options: GetLeadsOptions = {}) {
     .order('created_at', { ascending: false })
     .range((page - 1) * limit, page * limit - 1)
 
+  if (id) {
+    query = query.eq('id', id)
+  }
   if (status && status !== 'all') {
     query = query.eq('status', status)
   }
@@ -230,9 +301,14 @@ export async function getLeads(options: GetLeadsOptions = {}) {
     query = query.eq('priority', priority)
   }
   if (search) {
-    query = query.or(
-      `full_name.ilike.%${search}%,email.ilike.%${search}%,company.ilike.%${search}%,lead_code.ilike.%${search}%`
-    )
+    // Escape PostgREST `or()` metacharacters so a search term containing a comma
+    // or parenthesis cannot break out of the filter expression.
+    const safeSearch = search.replace(/[,()\\]/g, ' ').trim()
+    if (safeSearch) {
+      query = query.or(
+        `full_name.ilike.%${safeSearch}%,email.ilike.%${safeSearch}%,company.ilike.%${safeSearch}%,lead_code.ilike.%${safeSearch}%`
+      )
+    }
   }
 
   const { data, error, count } = await query
@@ -374,7 +450,13 @@ export async function updateLead(
     .from('leads')
     .select('status, priority, assigned_to')
     .eq('id', id)
-    .single()
+    .maybeSingle()
+
+  // Bail out with a clear message rather than letting the update below fail with
+  // a raw Postgres coercion error that would surface in the admin UI.
+  if (!currentLead) {
+    return { lead: null, error: LEAD_NOT_FOUND }
+  }
 
   // Apply the update
   const { data: updatedLead, error } = await adminSupabase
@@ -392,7 +474,7 @@ export async function updateLead(
   const activities: NewLeadActivity[] = []
   const actorName = author || 'Lead Admin'
 
-  if (currentLead) {
+  {
     if (dbUpdates.status && dbUpdates.status !== currentLead.status) {
       activities.push({
         lead_id: id,
@@ -445,6 +527,11 @@ export async function addLeadNote(
     .single()
 
   if (error || !note) {
+    // A foreign-key violation here means the lead id does not exist; report that
+    // rather than the raw constraint message.
+    if (error?.code === '23503') {
+      return { note: null, error: LEAD_NOT_FOUND }
+    }
     return { note: null, error: error?.message || 'Failed to add note' }
   }
 

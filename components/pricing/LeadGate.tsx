@@ -2,8 +2,6 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { LeadDetails, QuoteResult, QuoteState } from '@/types/pricing'
-import { getAllLeadsFromStore, addLeadToStore, generateNextLeadId } from '@/lib/leads-store'
-import { Lead } from '@/lib/admin-leads-data'
 import { getTrackingContext } from '@/lib/lead-tracking'
 import { Loader2 } from 'lucide-react'
 
@@ -13,11 +11,22 @@ interface LeadGateProps {
   state?: QuoteState
 }
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
+const LOCATION_LABELS: Record<string, string> = {
+  LOS: 'Lagos MMIA',
+  ABV: 'Abuja NAIA',
+}
+
+const OPERATION_LABELS: Record<string, string> = {
+  dom: 'Domestic',
+  intl: 'International',
+}
+
 export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
-  const [company, setCompany] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const firstInputRef = useRef<HTMLInputElement>(null)
@@ -26,91 +35,79 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
     firstInputRef.current?.focus()
   }, [])
 
+  // The calculator falls back to a Band A default weight when nothing is
+  // selected, so a quote always has a total. Without this check we would capture
+  // a lead against an aircraft the visitor never chose.
+  const hasAircraft = Boolean(state?.aircraft || state?.mtow_manual)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!hasAircraft) {
+      setError('Please select an aircraft or enter its MTOW before revealing pricing.')
+      return
+    }
     if (!name.trim() || !email.trim() || !phone.trim()) {
       setError('Please enter your name, email, and phone number.')
+      return
+    }
+    if (!EMAIL_PATTERN.test(email.trim())) {
+      setError('Please enter a valid email address.')
       return
     }
 
     setIsSubmitting(true)
     setError('')
 
-    const lead: LeadDetails = { name, email, phone, company }
+    const lead: LeadDetails = {
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      company: '',
+    }
 
-    const aircraftName = state?.aircraft?.name ?? (state?.mtow_manual ? `Aircraft (${state.mtow_manual}kg)` : 'Embraer Legacy 650')
-    const locationLabel = state?.location === 'LOS' ? 'Lagos MMIA' : 'Abuja NAIA'
-    const totalDisplay = quote?.totalDisplay ? `Estimated Total: ${quote.totalDisplay}` : ''
+    const aircraftName =
+      state?.aircraft?.name ??
+      (state?.mtow_manual ? `Unlisted aircraft (${state.mtow_manual.toLocaleString()} kg)` : 'Not specified')
+    const locationLabel = LOCATION_LABELS[state?.location ?? 'LOS'] ?? 'Lagos MMIA'
+    const operationLabel = OPERATION_LABELS[state?.operation ?? 'dom'] ?? 'Domestic'
+    const stayLabel = state?.stay === 'over' ? `${state.nights} night(s)` : 'Same-day turnaround'
 
     const inquiryMessage = `Pricing Portal Quote Request:
 - Aircraft: ${aircraftName}
-- Airport: ${locationLabel} | Operation: ${state?.operation || 'domestic'}
-- Passengers: ${state?.pax ?? 4} pax | Stay: ${state?.stay === 'over' ? `${state.nights} nights` : 'Same-day'}
-- ${totalDisplay}`
-
-    const trackingData = getTrackingContext('pricing_portal_reveal_gate')
+- Airport: ${locationLabel} | Operation: ${operationLabel}
+- Passengers: ${state?.pax ?? 4} pax | Stay: ${stayLabel}
+- Estimated Total: ${quote?.totalDisplay ?? 'Not calculated'}`
 
     try {
       const res = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          fullName: name,
-          email,
-          phone,
-          company,
+          fullName: lead.name,
+          email: lead.email,
+          phone: lead.phone,
           service: 'fbo',
           message: inquiryMessage,
-          tracking: trackingData,
+          // Send the real calculated total so the CRM pipeline value reflects
+          // this quote instead of a flat per-service estimate.
+          estimatedValue: quote?.usdTotal,
+          tracking: getTrackingContext('pricing_portal_reveal_gate'),
         }),
       })
 
-      if (!res.ok) {
-        console.error('Lead submission failed with status:', res.status)
-        setError('Could not submit lead details. Please try again.')
+      const data = await res.json().catch(() => null)
+
+      if (!res.ok || !data?.success) {
+        setError(data?.error ?? 'Could not submit your details. Please try again.')
         setIsSubmitting(false)
         return
       }
 
-      // Add to local admin lead store for real-time dashboard visibility
-      try {
-        const existing = getAllLeadsFromStore()
-        const nextId = generateNextLeadId(existing)
-        const newLeadObj: Lead = {
-          id: nextId,
-          fullName: name,
-          email,
-          phone,
-          company: company || 'N/A',
-          service: 'fbo',
-          message: inquiryMessage,
-          status: 'new',
-          priority: 'high',
-          estimatedValue: quote?.usdTotal ?? 15000,
-          source: 'Pricing Portal Reveal Gate',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          notes: [],
-          activities: [
-            {
-              id: `act-${Date.now()}`,
-              timestamp: new Date().toISOString(),
-              author: 'System (Pricing Portal)',
-              action: 'Lead revealed quote estimate and requested order options',
-            },
-          ],
-          tracking: trackingData,
-        }
-        addLeadToStore(newLeadObj)
-      } catch (storeErr) {
-        console.warn('Could not sync to local lead store:', storeErr)
-      }
-
       setIsSubmitting(false)
       onSubmitLead(lead)
-    } catch (err) {
-      console.error('Lead submission network exception:', err)
-      setError('Network error submitting lead. Please try again.')
+    } catch {
+      setError('Network error submitting your details. Please try again.')
       setIsSubmitting(false)
     }
   }
@@ -136,7 +133,10 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
       {/* FORM */}
       <form onSubmit={handleSubmit} className="space-y-3 pt-1">
         {error && (
-          <div className="text-xs bg-red-50 text-red-600 p-2.5 rounded-xl border border-red-200 font-ui text-center">
+          <div
+            role="alert"
+            className="text-xs bg-red-50 text-red-600 p-2.5 rounded-xl border border-red-200 font-ui text-center"
+          >
             {error}
           </div>
         )}
@@ -177,8 +177,8 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
         {/* SUBMIT BUTTON */}
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full mt-2 py-3.5 px-6 bg-[#581825] hover:bg-[#4A121A] text-white font-ui font-bold text-sm rounded-xl transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
+          disabled={isSubmitting || !hasAircraft}
+          className="w-full mt-2 py-3.5 px-6 bg-[#581825] hover:bg-[#4A121A] text-white font-ui font-bold text-sm rounded-xl transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <>
@@ -189,6 +189,12 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
             'Reveal price'
           )}
         </button>
+
+        {!hasAircraft && (
+          <p className="font-ui text-[11px] text-ean-muted-dark text-center">
+            Select an aircraft or enter its MTOW above to enable pricing.
+          </p>
+        )}
       </form>
     </div>
   )

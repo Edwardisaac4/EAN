@@ -88,7 +88,7 @@ export function LeadPipelineKanban({
                     {/* Priority indicator dot */}
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-mono text-ean-gold font-semibold">
-                        {lead.id}
+                        {lead.leadCode ?? lead.id}
                       </span>
                       <span className="flex items-center gap-1.5 text-[10px] text-ean-muted-light">
                         <span className={`w-2 h-2 rounded-full ${getPriorityDot(lead.priority)}`} />

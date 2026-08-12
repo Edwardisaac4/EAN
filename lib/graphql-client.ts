@@ -1,16 +1,27 @@
-import { Lead, LeadStats, LeadStatus, LeadPriority, ServiceCategory } from './admin-leads-data';
+import { Lead } from './admin-leads-data';
 
 export interface GraphQLResponse<T> {
   data?: T;
   errors?: Array<{ message: string }>;
 }
 
+/** Shape returned by the `leads` query. */
+export interface LeadsQueryResult {
+  leads: Lead[];
+  leadsTotal?: number;
+  leadsTruncated?: boolean;
+}
+
 /**
- * Sends a GraphQL POST request to /api/graphql
+ * Sends a GraphQL POST request to /api/graphql.
+ *
+ * The endpoint requires an admin session; an expired session returns 401, which
+ * surfaces here as an error the caller can show rather than silently rendering
+ * an empty dashboard.
  */
 export async function graphqlQuery<T>(
   query: string,
-  variables?: Record<string, any>
+  variables?: Record<string, unknown>
 ): Promise<T> {
   const response = await fetch('/api/graphql', {
     method: 'POST',
@@ -20,6 +31,10 @@ export async function graphqlQuery<T>(
     },
     body: JSON.stringify({ query, variables }),
   });
+
+  if (response.status === 401) {
+    throw new Error('Your admin session has expired. Please sign in again.');
+  }
 
   const json: GraphQLResponse<T> = await response.json();
 
@@ -42,6 +57,7 @@ export const QUERY_GET_LEADS = `
   query GetLeads($search: String, $status: String, $service: String, $priority: String) {
     leads(search: $search, status: $status, service: $service, priority: $priority) {
       id
+      leadCode
       fullName
       email
       phone
