@@ -173,7 +173,7 @@ async function getArticleData(slug: string): Promise<ResolvedArticle | null> {
           ? new Date(dbPost.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
           : 'Recent',
         readTime: '5 min read',
-        image: dbPost.cover_image_url || '/images/about-jet.png',
+        image: dbPost.cover_image_url || '/images/about-jet.jpg',
         content: dbPost.content,
         seoTitle: dbPost.seo_title,
         seoDescription: dbPost.seo_description,
@@ -464,7 +464,7 @@ export default async function BlogPostPage({ params }: Props) {
                 priority
                 sizes="(max-width: 1024px) 100vw, 80vw"
                 className="object-cover"
-                quality={90}
+                quality={80}
               />
               <div className="absolute inset-0 border border-white/10 pointer-events-none" />
             </div>

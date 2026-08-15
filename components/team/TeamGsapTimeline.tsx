@@ -184,7 +184,7 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
                 fill
                 sizes="(max-width: 1024px) 100vw, 35vw"
                 className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                quality={95}
+                quality={80}
               />
               <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-transparent to-transparent opacity-60" />
               <div className="absolute top-4 left-4 px-3 py-1 bg-ean-navy/90 backdrop-blur-md rounded-xs border border-ean-gold/30 font-mono text-[10px] text-ean-gold uppercase tracking-widest">

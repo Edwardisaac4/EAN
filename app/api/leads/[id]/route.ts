@@ -4,7 +4,7 @@
 // =============================================================================
 
 import { NextResponse } from 'next/server'
-import { getLeadById, updateLead, addLeadNote } from '@/lib/services/leads-service'
+import { getLeadById, updateLead, addLeadNote, LEAD_NOT_FOUND } from '@/lib/services/leads-service'
 import { dbError, notFound, badRequest } from '@/lib/supabase/helpers'
 
 // ---------------------------------------------------------------------------
@@ -63,27 +63,34 @@ export async function PATCH(
     if (priority) updates.priority = priority
     if (assignedTo !== undefined) updates.assigned_to = assignedTo
 
-    // Apply updates if any field changes exist
+    // Apply updates if any field changes exist. The fully joined record is
+    // re-read below, so the return value here is not needed.
     const hasFieldUpdates = status || priority || assignedTo !== undefined
-    let updatedLead = null
 
     if (hasFieldUpdates) {
-      const { lead: updated, error } = await updateLead(id, updates)
+      const { error } = await updateLead(id, updates)
+      if (error === LEAD_NOT_FOUND) {
+        return notFound('Lead not found')
+      }
       if (error) {
         return dbError('Failed to update lead')
       }
-      updatedLead = updated
     }
 
-    // Add note if provided
+    // Add note if provided. A failure here is reported rather than swallowed —
+    // otherwise the caller is told the update succeeded and the note is lost.
     if (newNote && newNote.trim()) {
       const { error: noteError } = await addLeadNote(
         id,
         newNote.trim(),
         (author as string) || 'Lead Admin'
       )
+      if (noteError === LEAD_NOT_FOUND) {
+        return notFound('Lead not found')
+      }
       if (noteError) {
         console.error('Failed to add note:', noteError)
+        return dbError('Lead fields were updated but the note could not be saved')
       }
     }
 

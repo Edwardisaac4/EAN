@@ -44,10 +44,10 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
                   src={ceoMember.image}
                   alt={ceoMember.name}
                   fill
-                  priority
+                  loading="lazy"
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                  quality={95}
+                  quality={80}
                 />
 
                 {/* Bottom Overlay Info on Mobile */}

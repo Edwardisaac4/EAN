@@ -101,13 +101,13 @@ export default function TeamPage() {
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%]">
             <Image
-              src="/images/contact-cta.png"
+              src="/images/contact-cta.jpg"
               alt="EAN Aviation executive personnel at runway sunset"
               fill
               sizes="100vw"
               priority
               className="object-cover"
-              quality={95}
+              quality={80}
             />
             {/* Immersive dark radial & linear overlay gradients */}
             <div className="absolute inset-0 bg-linear-to-t from-ean-black via-ean-burgundy-deep/80 to-ean-burgundy-night/90" />

@@ -82,8 +82,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
                     fill
                     sizes="(max-width: 768px) 100vw, 700px"
                     className="object-cover"
-                    quality={95}
-                    priority
+                    quality={80}
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-ean-burgundy-dark via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">

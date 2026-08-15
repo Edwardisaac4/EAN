@@ -49,7 +49,7 @@ export default function ContactSection() {
           fill
           sizes="100vw"
           priority={false}
-          quality={90}
+          quality={80}
           className="object-cover object-center"
         />
         {/* Luxury overlays for text visibility */}

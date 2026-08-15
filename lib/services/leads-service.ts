@@ -4,10 +4,11 @@
 // =============================================================================
 
 import { adminSupabase } from '@/utils/supabase/admin'
+import { LEAD_SERVICE_VALUES } from './lead-input'
+import type { LeadAnalytics, LeadTrendPoint } from '@/lib/admin-leads-data'
 import type {
   LeadRow,
   LeadWithDetails,
-  LeadTrackingRow,
   LeadActivityRow,
   LeadNoteRow,
   NewLead,
@@ -21,34 +22,55 @@ import type {
   LeadStatusEnum,
 } from '@/types/database'
 
+/** Sentinel error message callers can map to a 404. */
+export const LEAD_NOT_FOUND = 'Lead not found'
+
 // ---------------------------------------------------------------------------
 // Helper: auto-assign priority based on service + message keywords
 // ---------------------------------------------------------------------------
 
+/**
+ * Urgency is driven by intent expressed in the message, not by service type —
+ * keying `urgent` off `service === 'fbo'` made every FBO/pricing-portal lead
+ * urgent, which drained the flag of meaning. Service type only sets the
+ * baseline, and time-critical language escalates it.
+ */
+const URGENT_INTENT_KEYWORDS = [
+  'urgent',
+  'aog',
+  'asap',
+  'today',
+  'tonight',
+  'tomorrow',
+  'immediately',
+  'emergency',
+] as const
+
+const SERVICE_BASELINE_PRIORITY: Record<string, LeadPriorityEnum> = {
+  maintenance: 'high',   // AOG risk, high value
+  leasing:     'high',   // largest contract value
+  charter:     'high',
+  fbo:         'normal',
+  vip:         'normal',
+  catering:    'normal',
+  general:     'low',
+}
+
 function derivePriority(service: string, message: string): LeadPriorityEnum {
-  const text = (message || '').toLowerCase();
-  
-  if (
-    text.includes('urgent') ||
-    text.includes('aog') ||
-    text.includes('asap') ||
-    text.includes('today') ||
-    text.includes('immediately') ||
-    service === 'fbo' ||
-    service === 'maintenance'
-  ) {
-    return 'urgent';
+  const text = (message || '').toLowerCase()
+
+  if (URGENT_INTENT_KEYWORDS.some((keyword) => text.includes(keyword))) {
+    return 'urgent'
   }
 
-  if (service === 'charter' || service === 'leasing' || text.includes('quote') || text.includes('charter')) {
-    return 'high';
+  const baseline = SERVICE_BASELINE_PRIORITY[service] ?? 'low'
+
+  // A concrete quote/booking request nudges the baseline up one step.
+  if (baseline === 'normal' && (text.includes('quote') || text.includes('booking'))) {
+    return 'high'
   }
 
-  if (service === 'catering' || service === 'vip') {
-    return 'normal';
-  }
-
-  return 'low';
+  return baseline
 }
 
 // ---------------------------------------------------------------------------
@@ -101,6 +123,55 @@ function deriveSource(tracking?: LeadSubmissionPayload['tracking']): string {
 }
 
 // =============================================================================
+// DUPLICATE GUARD — collapse accidental re-submissions
+// =============================================================================
+
+/** Window in which an identical email+service submission is treated as a repeat. */
+const DUPLICATE_WINDOW_MINUTES = 10
+
+/**
+ * Single representation of an address used for both storage and duplicate
+ * lookups. Callers submit whatever the visitor typed, so without normalising
+ * here `Ada@Example.com ` and `ada@example.com` would be stored as two records
+ * and never match each other in the duplicate guard.
+ */
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase()
+}
+
+/**
+ * Finds a lead this person already submitted for the same service moments ago.
+ *
+ * Refreshing a gated pricing page or double-clicking submit would otherwise
+ * create several identical records and inflate the pipeline count.
+ */
+export async function findRecentDuplicateLead(
+  email: string,
+  service: LeadServiceEnum
+): Promise<LeadRow | null> {
+  const cutoff = new Date(
+    Date.now() - DUPLICATE_WINDOW_MINUTES * 60 * 1000
+  ).toISOString()
+
+  const { data, error } = await adminSupabase
+    .from('leads')
+    .select('*')
+    .eq('email', normalizeEmail(email))
+    .eq('service', service)
+    .gte('created_at', cutoff)
+    .order('created_at', { ascending: false })
+    .limit(1)
+
+  if (error) {
+    // Non-fatal: fall through to creating the lead rather than losing it.
+    console.error('Duplicate lead lookup failed:', error)
+    return null
+  }
+
+  return data && data.length > 0 ? data[0] : null
+}
+
+// =============================================================================
 // CREATE LEAD — atomic insert of lead + tracking + activity
 // =============================================================================
 
@@ -109,16 +180,22 @@ export async function createLead(
   ipAddress?: string
 ): Promise<{ lead: LeadRow; error: string | null }> {
   const service = (payload.service || 'general') as LeadServiceEnum
-  const priority = derivePriority(service, payload.message)
+  const priority = payload.priority ?? derivePriority(service, payload.message)
   const source = deriveSource(payload.tracking)
-  const estimatedValue = estimateValue(service)
+
+  // Prefer a real figure computed by the submitting form (e.g. the pricing
+  // portal quote total) over the coarse per-service estimate.
+  const estimatedValue =
+    typeof payload.estimatedValue === 'number' && payload.estimatedValue > 0
+      ? Math.round(payload.estimatedValue)
+      : estimateValue(service)
 
   // 1. Insert the lead
   const { data: lead, error: leadError } = await adminSupabase
     .from('leads')
     .insert({
       full_name: payload.fullName,
-      email: payload.email,
+      email: normalizeEmail(payload.email),
       phone: payload.phone || '',
       company: payload.company || null,
       service,
@@ -192,6 +269,8 @@ export interface GetLeadsOptions {
   service?:  LeadServiceEnum | 'all'
   priority?: LeadPriorityEnum | 'all'
   search?:   string
+  /** Restrict to a single lead by uuid — used to re-read a record after a mutation. */
+  id?:       string
   page?:     number
   limit?:    number
 }
@@ -202,6 +281,7 @@ export async function getLeads(options: GetLeadsOptions = {}) {
     service = 'all',
     priority = 'all',
     search,
+    id,
     page = 1,
     limit = 20,
   } = options
@@ -220,6 +300,9 @@ export async function getLeads(options: GetLeadsOptions = {}) {
     .order('created_at', { ascending: false })
     .range((page - 1) * limit, page * limit - 1)
 
+  if (id) {
+    query = query.eq('id', id)
+  }
   if (status && status !== 'all') {
     query = query.eq('status', status)
   }
@@ -230,9 +313,14 @@ export async function getLeads(options: GetLeadsOptions = {}) {
     query = query.eq('priority', priority)
   }
   if (search) {
-    query = query.or(
-      `full_name.ilike.%${search}%,email.ilike.%${search}%,company.ilike.%${search}%,lead_code.ilike.%${search}%`
-    )
+    // Escape PostgREST `or()` metacharacters so a search term containing a comma
+    // or parenthesis cannot break out of the filter expression.
+    const safeSearch = search.replace(/[,()\\]/g, ' ').trim()
+    if (safeSearch) {
+      query = query.or(
+        `full_name.ilike.%${safeSearch}%,email.ilike.%${safeSearch}%,company.ilike.%${safeSearch}%,lead_code.ilike.%${safeSearch}%`
+      )
+    }
   }
 
   const { data, error, count } = await query
@@ -374,7 +462,13 @@ export async function updateLead(
     .from('leads')
     .select('status, priority, assigned_to')
     .eq('id', id)
-    .single()
+    .maybeSingle()
+
+  // Bail out with a clear message rather than letting the update below fail with
+  // a raw Postgres coercion error that would surface in the admin UI.
+  if (!currentLead) {
+    return { lead: null, error: LEAD_NOT_FOUND }
+  }
 
   // Apply the update
   const { data: updatedLead, error } = await adminSupabase
@@ -392,30 +486,28 @@ export async function updateLead(
   const activities: NewLeadActivity[] = []
   const actorName = author || 'Lead Admin'
 
-  if (currentLead) {
-    if (dbUpdates.status && dbUpdates.status !== currentLead.status) {
-      activities.push({
-        lead_id: id,
-        author: actorName,
-        action: `Status updated from ${currentLead.status} to ${dbUpdates.status}`,
-      })
-    }
-    if (dbUpdates.priority && dbUpdates.priority !== currentLead.priority) {
-      activities.push({
-        lead_id: id,
-        author: actorName,
-        action: `Priority updated from ${currentLead.priority} to ${dbUpdates.priority}`,
-      })
-    }
-    if (dbUpdates.assigned_to !== undefined && dbUpdates.assigned_to !== currentLead.assigned_to) {
-      activities.push({
-        lead_id: id,
-        author: actorName,
-        action: dbUpdates.assigned_to
-          ? `Lead assigned to ${dbUpdates.assigned_to}`
-          : 'Lead unassigned',
-      })
-    }
+  if (dbUpdates.status && dbUpdates.status !== currentLead.status) {
+    activities.push({
+      lead_id: id,
+      author: actorName,
+      action: `Status updated from ${currentLead.status} to ${dbUpdates.status}`,
+    })
+  }
+  if (dbUpdates.priority && dbUpdates.priority !== currentLead.priority) {
+    activities.push({
+      lead_id: id,
+      author: actorName,
+      action: `Priority updated from ${currentLead.priority} to ${dbUpdates.priority}`,
+    })
+  }
+  if (dbUpdates.assigned_to !== undefined && dbUpdates.assigned_to !== currentLead.assigned_to) {
+    activities.push({
+      lead_id: id,
+      author: actorName,
+      action: dbUpdates.assigned_to
+        ? `Lead assigned to ${dbUpdates.assigned_to}`
+        : 'Lead unassigned',
+    })
   }
 
   if (activities.length > 0) {
@@ -445,6 +537,11 @@ export async function addLeadNote(
     .single()
 
   if (error || !note) {
+    // A foreign-key violation here means the lead id does not exist; report that
+    // rather than the raw constraint message.
+    if (error?.code === '23503') {
+      return { note: null, error: LEAD_NOT_FOUND }
+    }
     return { note: null, error: error?.message || 'Failed to add note' }
   }
 
@@ -460,69 +557,144 @@ export async function addLeadNote(
 }
 
 // =============================================================================
-// LEAD STATS — dashboard aggregation
+// LEAD ANALYTICS — database-wide aggregates via the lead_analytics() RPC
 // =============================================================================
 
-export interface LeadStats {
-  totalLeads: number
-  newLeads: number
-  inProgressLeads: number
-  qualifiedLeads: number
-  closedWonLeads: number
-  conversionRate: number
-  totalEstimatedPipeline: number
+/**
+ * Every figure the admin dashboard shows, computed in Postgres in one round trip
+ * (see supabase/migrations/003_lead_analytics.sql). Spam is excluded throughout.
+ *
+ * This replaced reducing up to 500 fully-joined lead rows in Node: that capped
+ * each figure at the page size and shipped names, emails, messages and notes
+ * across the wire only to count them.
+ */
+export async function getLeadAnalytics(): Promise<{
+  analytics: LeadAnalytics | null
+  error: string | null
+}> {
+  const { data, error } = await adminSupabase.rpc('lead_analytics')
+
+  if (error) {
+    console.error('Failed to compute lead analytics:', error)
+    return { analytics: null, error: error.message }
+  }
+
+  const analytics = parseLeadAnalytics(data)
+
+  if (!analytics) {
+    console.error('lead_analytics() returned an unexpected payload:', data)
+    return { analytics: null, error: 'Unexpected analytics payload' }
+  }
+
+  return { analytics, error: null }
 }
 
-export async function getLeadStats(): Promise<LeadStats> {
-  const [totalRes, newRes, inProgressRes, qualifiedRes, closedWonRes] =
-    await Promise.all([
-      adminSupabase
-        .from('leads')
-        .select('*', { count: 'exact', head: true }),
-      adminSupabase
-        .from('leads')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'new'),
-      adminSupabase
-        .from('leads')
-        .select('*', { count: 'exact', head: true })
-        .in('status', ['contacted', 'qualified', 'proposal_sent']),
-      adminSupabase
-        .from('leads')
-        .select('*', { count: 'exact', head: true })
-        .in('status', ['qualified', 'proposal_sent']),
-      adminSupabase
-        .from('leads')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'closed_won'),
-    ])
+/**
+ * Postgres hands the aggregate back as opaque `jsonb`, so the shape is checked
+ * once here rather than cast — a migration drift would otherwise surface as
+ * `undefined` inside a chart.
+ */
+function parseLeadAnalytics(value: unknown): LeadAnalytics | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
 
-  const total = totalRes.count ?? 0
-  const newLeads = newRes.count ?? 0
-  const inProgress = inProgressRes.count ?? 0
-  const qualified = qualifiedRes.count ?? 0
-  const closedWon = closedWonRes.count ?? 0
+  const raw = value as Record<string, unknown>
+  const num = (key: string): number => (typeof raw[key] === 'number' ? (raw[key] as number) : 0)
 
-  // Pipeline value
-  const { data: pipelineData } = await adminSupabase
-    .from('leads')
-    .select('estimated_value')
-    .in('status', ['new', 'contacted', 'qualified', 'proposal_sent'])
+  if (typeof raw.totalLeads !== 'number') return null
 
-  const totalEstimatedPipeline = (pipelineData || []).reduce(
-    (sum, row) => sum + (Number(row.estimated_value) || 0),
-    0
+  const serviceDistribution = LEAD_SERVICE_VALUES.reduce(
+    (acc, service) => {
+      const dist = raw.serviceDistribution
+      const count =
+        dist && typeof dist === 'object' && !Array.isArray(dist)
+          ? (dist as Record<string, unknown>)[service]
+          : undefined
+      acc[service] = typeof count === 'number' ? count : 0
+      return acc
+    },
+    {} as Record<LeadServiceEnum, number>
   )
 
   return {
-    totalLeads: total,
-    newLeads,
-    inProgressLeads: inProgress,
-    qualifiedLeads: qualified,
-    closedWonLeads: closedWon,
-    conversionRate: total > 0 ? Math.round((closedWon / total) * 100) : 0,
-    totalEstimatedPipeline,
+    totalLeads:             num('totalLeads'),
+    spamLeads:              num('spamLeads'),
+    newLeads:               num('newLeads'),
+    inProgressLeads:        num('inProgressLeads'),
+    qualifiedLeads:         num('qualifiedLeads'),
+    closedWonLeads:         num('closedWonLeads'),
+    closedLostLeads:        num('closedLostLeads'),
+    conversionRate:         num('conversionRate'),
+    totalEstimatedPipeline: num('totalEstimatedPipeline'),
+    dailyInquiryRate:       num('dailyInquiryRate'),
+    // Deliberately nullable: null means "nothing answered yet", not "zero minutes".
+    avgResponseSlaMinutes:
+      typeof raw.avgResponseSlaMinutes === 'number' ? raw.avgResponseSlaMinutes : null,
+    serviceDistribution,
+    trackingDistribution: {
+      topSources:      parseTopSources(raw.trackingDistribution),
+      topLandingPages: parseTopPages(raw.trackingDistribution),
+      devices:         parseDevices(raw.trackingDistribution),
+    },
+    dailyTrend: parseTrend(raw.dailyTrend),
   }
+}
+
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {}
+}
+
+function parseTopSources(tracking: unknown) {
+  const rows = asRecord(tracking).topSources
+  if (!Array.isArray(rows)) return []
+
+  return rows.flatMap((row) => {
+    const r = asRecord(row)
+    return typeof r.source === 'string'
+      ? [{
+          source:     r.source,
+          count:      typeof r.count === 'number' ? r.count : 0,
+          percentage: typeof r.percentage === 'number' ? r.percentage : 0,
+        }]
+      : []
+  })
+}
+
+function parseTopPages(tracking: unknown) {
+  const rows = asRecord(tracking).topLandingPages
+  if (!Array.isArray(rows)) return []
+
+  return rows.flatMap((row) => {
+    const r = asRecord(row)
+    return typeof r.page === 'string'
+      ? [{ page: r.page, count: typeof r.count === 'number' ? r.count : 0 }]
+      : []
+  })
+}
+
+function parseDevices(tracking: unknown): Record<string, number> {
+  const devices = asRecord(asRecord(tracking).devices)
+
+  return Object.entries(devices).reduce<Record<string, number>>((acc, [key, count]) => {
+    if (typeof count === 'number') acc[key] = count
+    return acc
+  }, {})
+}
+
+function parseTrend(value: unknown): LeadTrendPoint[] {
+  if (!Array.isArray(value)) return []
+
+  return value.flatMap((point) => {
+    const p = asRecord(point)
+    return typeof p.date === 'string' && typeof p.label === 'string'
+      ? [{
+          date:  p.date,
+          label: p.label,
+          count: typeof p.count === 'number' ? p.count : 0,
+        }]
+      : []
+  })
 }
 
 // =============================================================================

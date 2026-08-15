@@ -5,7 +5,11 @@ import { Target } from 'lucide-react';
 import { LeadStats } from '@/lib/admin-leads-data';
 
 export interface FunnelGraphProps {
-  stats: LeadStats;
+  /** Only the pipeline counts are needed, so callers can pass any stats shape carrying them. */
+  stats: Pick<
+    LeadStats,
+    'totalLeads' | 'inProgressLeads' | 'qualifiedLeads' | 'closedWonLeads' | 'conversionRate'
+  >;
 }
 
 export function FunnelGraph({ stats }: FunnelGraphProps) {

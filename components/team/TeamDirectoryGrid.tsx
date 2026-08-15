@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { TeamMember } from '@/lib/constants';
 import TeamMemberModal from './TeamMemberModal';
@@ -34,12 +33,10 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
           {/* Directory Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {members.map((member) => (
-              <motion.div
+              <div
                 key={member.id}
-                whileHover={{ y: -6 }}
-                transition={{ duration: 0.25, ease: 'easeOut' }}
                 onClick={() => setSelectedMember(member)}
-                className="bg-ean-white border border-ean-border-light rounded-xs overflow-hidden shadow-xs hover:shadow-xl hover:border-ean-gold/40 transition-all duration-300 flex flex-col justify-between cursor-pointer group"
+                className="bg-ean-white border border-ean-border-light rounded-xs overflow-hidden shadow-xs hover:shadow-xl hover:border-ean-gold/40 hover:-translate-y-1.5 transition-all duration-300 ease-out flex flex-col justify-between cursor-pointer group"
               >
                 <div>
                   {/* Card Image */}
@@ -50,7 +47,7 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover object-top transition-transform duration-750 group-hover:scale-105"
-                      quality={95}
+                      quality={80}
                     />
                     {/* Services-Style Gradient Blur Overlay */}
                     <div className="absolute inset-0 bg-linear-to-t from-ean-navy/90 via-ean-navy/30 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-300" />
@@ -103,7 +100,7 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
                   </span>
                   <ChevronRight className="w-4 h-4 text-ean-gold group-hover:translate-x-1 transition-transform" />
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

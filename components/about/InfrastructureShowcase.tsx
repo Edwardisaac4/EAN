@@ -38,7 +38,7 @@ const INFRASTRUCTURE_ITEMS = [
     title: 'NCAA Approved Maintenance (AMO)',
     category: 'MRO Hangar Facility',
     icon: Wrench,
-    image: '/images/hero/slide-3.png',
+    image: '/images/hero/slide-3.jpg',
     badge: 'NCAA AMO Certified',
     description: 'West Africa’s premier business aircraft maintenance hub. Over 20,000 sq. ft of hangar space equipped for line maintenance, avionics diagnostics, and scheduled airworthiness inspections.',
     specs: [
@@ -53,7 +53,7 @@ const INFRASTRUCTURE_ITEMS = [
     title: 'Aircraft Sales & Charter Advisory',
     category: 'Aircraft Brokerage & Acquisitions',
     icon: Plane,
-    image: '/images/hero/slide-1.png',
+    image: '/images/hero/slide-1.jpg',
     badge: 'Executive Jet Sales & Charter',
     description: 'Bespoke corporate aircraft sales brokerage, pre-purchase technical evaluations, fleet management, and charter flight arrangements across West Africa.',
     specs: [
@@ -68,7 +68,7 @@ const INFRASTRUCTURE_ITEMS = [
     title: 'Wings™ In-Flight Culinary Facility',
     category: 'Executive Gourmet Unit',
     icon: UtensilsCrossed,
-    image: '/images/hero/slide-4.png',
+    image: '/images/hero/slide-4.jpg',
     badge: 'On-Site Flight Kitchen',
     description: 'Our proprietary on-site culinary facility located adjacent to the FBO ramp. Master chefs prepare high-altitude gourmet menus, ensuring farm-to-cabin freshness delivered directly to private jet flights.',
     specs: [
@@ -205,7 +205,7 @@ export default function InfrastructureShowcase() {
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    quality={95}
+                    quality={80}
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-transparent to-transparent opacity-60" />
                   

@@ -172,7 +172,7 @@ export default function BlogPage() {
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   priority
                   className="object-cover transition-transform duration-1000 group-hover:scale-103"
-                  quality={90}
+                  quality={80}
                 />
                 {/* Visual Gold corner frame border */}
                 <div className="absolute inset-4 border border-white/10 group-hover:border-ean-gold/30 transition-colors duration-500 pointer-events-none" />
@@ -266,7 +266,7 @@ export default function BlogPage() {
                                 fill
                                 sizes="(max-width: 1024px) 100vw, 33vw"
                                 className="object-cover transition-transform duration-750 group-hover:scale-104"
-                                quality={85}
+                                quality={80}
                               />
                               {/* Floating category tag */}
                               <span className="absolute top-4 left-4 bg-ean-navy/95 border border-ean-gold/30 text-ean-gold text-[9px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-xs">

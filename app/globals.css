@@ -59,3 +59,236 @@
     @apply bg-ean-black text-ean-text-light font-ui antialiased;
   }
 }
+
+@layer components {
+  /*
+   * Hero entrance choreography.
+   *
+   * Runs in CSS rather than GSAP so the headline and CTAs paint on the very
+   * first frame instead of waiting for hydration. Keeping this off the JS
+   * critical path is what keeps FCP/LCP low — do not port it back to GSAP.
+   */
+  @keyframes ean-rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 1.25rem, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .ean-rise {
+    animation: ean-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .ean-rise-delay-1 {
+    animation-delay: 0.12s;
+  }
+
+  .ean-rise-delay-2 {
+    animation-delay: 0.24s;
+  }
+
+  .ean-rise-delay-3 {
+    animation-delay: 0.36s;
+  }
+
+  .ean-rise-delay-4 {
+    animation-delay: 0.9s;
+  }
+
+  /* Opening veil — see components/layout/Preloader.tsx */
+  @keyframes ean-veil-out {
+    0%,
+    28% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  .ean-preloader {
+    animation: ean-veil-out 0.35s ease-out forwards;
+  }
+
+  /*
+   * Enter/exit animations, paired with <Presence>. These replace what
+   * framer-motion's AnimatePresence used to do; keeping them in CSS means the
+   * animation system costs nothing at runtime.
+   */
+  @keyframes ean-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes ean-fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes ean-fade-up-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 15px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ean-fade-up-out {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+    to {
+      opacity: 0;
+      transform: translate3d(0, -15px, 0);
+    }
+  }
+
+  @keyframes ean-fade-down-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ean-fade-down-out {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+    to {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+    }
+  }
+
+  @keyframes ean-dropdown-in {
+    from {
+      opacity: 0;
+      transform: translate3d(-50%, 10px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @keyframes ean-dropdown-out {
+    from {
+      opacity: 1;
+      transform: translate3d(-50%, 0, 0);
+    }
+    to {
+      opacity: 0;
+      transform: translate3d(-50%, 10px, 0);
+    }
+  }
+
+  @keyframes ean-scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ean-scale-out {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+
+  .ean-enter-fade {
+    animation: ean-fade-in 0.2s ease-out both;
+  }
+  .ean-exit-fade {
+    animation: ean-fade-out 0.2s ease-in forwards;
+  }
+
+  .ean-enter-up {
+    animation: ean-fade-up-in 0.35s ease-out both;
+  }
+  .ean-exit-up {
+    animation: ean-fade-up-out 0.35s ease-in forwards;
+  }
+
+  .ean-enter-down {
+    animation: ean-fade-down-in 0.3s ease-out both;
+  }
+  .ean-exit-down {
+    animation: ean-fade-down-out 0.3s ease-in forwards;
+  }
+
+  .ean-enter-dropdown {
+    animation: ean-dropdown-in 0.2s ease-out both;
+  }
+  .ean-exit-dropdown {
+    animation: ean-dropdown-out 0.2s ease-in forwards;
+  }
+
+  .ean-enter-scale {
+    animation: ean-scale-in 0.25s ease-out both;
+  }
+  .ean-exit-scale {
+    animation: ean-scale-out 0.25s ease-in forwards;
+  }
+
+  /*
+   * Shared sliding indicator (the gold nav underline and the gold service-tab
+   * pill). Replaces framer-motion's layoutId morph: the element is positioned
+   * absolutely and moved with a transform, so it glides between targets.
+   */
+  .ean-indicator {
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.2s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ean-rise {
+      animation: none;
+    }
+
+    .ean-preloader {
+      animation-duration: 0.01s;
+    }
+
+    .ean-indicator {
+      transition: none;
+    }
+
+    [class*="ean-enter-"],
+    [class*="ean-exit-"] {
+      animation-duration: 0.01s;
+    }
+  }
+}

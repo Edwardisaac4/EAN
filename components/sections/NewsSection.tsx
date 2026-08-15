@@ -3,7 +3,6 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import OutlineButton from '@/components/shared/OutlineButton';
 import SectionReveal from '@/components/shared/SectionReveal';
@@ -59,16 +58,14 @@ export default function NewsSection() {
                   href={`/blog/${post.slug}`} 
                   className={`block focus:outline-none group ${gridClass}`}
                 >
-                  <motion.div
-                    whileHover={{ y: -6, boxShadow: '0 12px 30px rgba(196, 149, 42, 0.1)' }}
-                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                  <div
                     className={`bg-ean-surface dark:bg-ean-navy border border-ean-border-light dark:border-ean-border-dark overflow-hidden rounded-xs h-full flex flex-col ${
-                      isWide 
-                        ? isReversed 
-                          ? 'lg:flex-row-reverse' 
-                          : 'lg:flex-row' 
+                      isWide
+                        ? isReversed
+                          ? 'lg:flex-row-reverse'
+                          : 'lg:flex-row'
                         : ''
-                    } transition-colors duration-500 cursor-pointer shadow-xs`}
+                    } transition-[background-color,border-color,transform,box-shadow] duration-500 ease-out group-hover:-translate-y-1.5 group-hover:shadow-[0_12px_30px_rgba(196,149,42,0.1)] cursor-pointer shadow-xs`}
                   >
                     {/* Image wrapper */}
                     <div className={`relative w-full ${isWide ? 'h-52 lg:h-auto lg:w-1/2 min-h-60' : 'h-48 sm:h-52'} overflow-hidden bg-black/10 shrink-0`}>
@@ -78,7 +75,7 @@ export default function NewsSection() {
                         fill
                         sizes="(max-width: 1024px) 100vw, 33vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        quality={85}
+                        quality={80}
                       />
                     </div>
 
@@ -112,7 +109,7 @@ export default function NewsSection() {
                         <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 </Link>
               );
             })}

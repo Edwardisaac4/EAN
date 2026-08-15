@@ -24,8 +24,6 @@ import GoldButton from '@/components/shared/GoldButton';
 // Static Data Structures
 import { FAQ_ITEMS, LAGOS_HQ } from '@/lib/constants';
 import { getTrackingContext } from '@/lib/lead-tracking';
-import { addLeadToStore, getAllLeadsFromStore } from '@/lib/leads-store';
-import { ServiceCategory } from '@/lib/admin-leads-data';
 
 // Helper to map service slug to form select option value
 const getServiceFromSlug = (slug: string): string => {
@@ -162,13 +160,14 @@ export default function ContactPage() {
   // Form Submission Handler calling POST /api/leads
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // validateForm() replaces the whole error map, which also clears any
+    // `form`-level failure left over from a previous submission.
     if (!validateForm()) return;
 
     setIsSubmitting(true);
 
     try {
       const trackingContext = getTrackingContext('contact-page-form');
-      const existingClientLeads = getAllLeadsFromStore();
 
       const response = await fetch('/api/leads', {
         method: 'POST',
@@ -179,53 +178,33 @@ export default function ContactPage() {
           phone: formData.phone,
           company: formData.company,
           service: selectedServices[0] || 'general',
-          selectedServices,
-          message: formData.message,
+          message:
+            selectedServices.length > 1
+              ? `[Services required: ${selectedServices.join(', ')}]\n${formData.message}`
+              : formData.message,
           tracking: trackingContext,
-          clientLeads: existingClientLeads,
         }),
       });
 
-      const resData = await response.json();
+      const resData = await response.json().catch(() => null);
 
-      if (resData.success && resData.lead) {
-        addLeadToStore(resData.lead);
-        // Track Google Analytics conversion event ONLY when confirmed success
-        sendGAEvent('event', 'generate_lead', {
-          category: 'Inquiry',
-          service: selectedServices.join(', '),
-          value: 1,
+      // The lead is only captured if the database accepted it — never report
+      // success off the back of a failed request.
+      if (!response.ok || !resData?.success) {
+        setIsSubmitting(false);
+        setErrors({
+          form:
+            resData?.error ??
+            'We could not submit your inquiry. Please try again or call our 24/7 desk.',
         });
-      } else {
-        // Fallback local lead creation if API route offline
-        const primaryService = (selectedServices[0] || 'general') as ServiceCategory;
-        const fallbackLead = {
-          id: `EAN-LD-2026-${String(existingClientLeads.length + 90).padStart(3, '0')}`,
-          fullName: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          company: formData.company,
-          service: primaryService,
-          message: `[Services Required: ${selectedServices.join(', ')}]\n${formData.message}`,
-          status: 'new' as const,
-          priority: 'urgent' as const,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          source: trackingContext.utmSource || 'Contact Form',
-          notes: [],
-          activities: [
-            {
-              id: `act-${Date.now()}`,
-              timestamp: new Date().toISOString(),
-              author: 'System',
-              action: 'Lead captured via Contact Form',
-            },
-          ],
-          estimatedValue: 15000,
-          tracking: trackingContext,
-        };
-        addLeadToStore(fallbackLead);
+        return;
       }
+
+      sendGAEvent('event', 'generate_lead', {
+        category: 'Inquiry',
+        service: selectedServices.join(', '),
+        value: 1,
+      });
 
       setIsSubmitting(false);
       setSubmitSuccess(true);
@@ -360,6 +339,16 @@ export default function ContactPage() {
                             className="space-y-5 font-ui"
                             noValidate
                           >
+                            {/* Submission failure — API rejection or network error */}
+                            {errors.form && (
+                              <div
+                                role="alert"
+                                className="bg-red-500/10 border border-red-500/40 text-red-300 px-4 py-3 rounded-xs text-xs sm:text-sm"
+                              >
+                                {errors.form}
+                              </div>
+                            )}
+
                             {/* Row 1: Name */}
                             <div className="flex flex-col gap-1.5">
                               <label htmlFor="name" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
@@ -631,7 +620,7 @@ export default function ContactPage() {
             fill
             sizes="100vw"
             className="object-cover"
-            quality={90}
+            quality={80}
           />
           {/* Visual Dark Overlay to match page transition */}
           <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-ean-navy/40 to-transparent" />

@@ -55,6 +55,13 @@ export interface LeadSubmissionPayload {
   company?:  string
   service:   LeadServiceEnum | string
   message:   string
+  /**
+   * Deal value in USD when the form already knows it (e.g. the pricing portal
+   * calculator total). Falls back to a per-service estimate when omitted.
+   */
+  estimatedValue?: number
+  /** Explicit priority hint from the submitting form; otherwise derived. */
+  priority?: LeadPriorityEnum
   tracking?: {
     utmSource?:        string | null
     utmMedium?:        string | null

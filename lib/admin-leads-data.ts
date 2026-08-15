@@ -17,7 +17,10 @@ export interface LeadActivity {
 }
 
 export interface Lead {
+  /** Database uuid — every mutation keys off this. */
   id: string;
+  /** Human-readable sequential code, e.g. EAN-LD-2026-001. Display this, not `id`. */
+  leadCode?: string;
   fullName: string;
   email: string;
   phone: string;
@@ -43,7 +46,11 @@ export interface LeadStats {
   qualifiedLeads: number;
   closedWonLeads: number;
   dailyInquiryRate?: number;
-  avgResponseSlaMinutes: number;
+  /**
+   * Mean minutes from capture to the first human activity. `null` when no lead
+   * has been responded to yet — render that as "no data", never as 0.
+   */
+  avgResponseSlaMinutes: number | null;
   conversionRate: number;
   totalEstimatedPipeline: number;
   serviceDistribution: Record<ServiceCategory, number>;
@@ -53,6 +60,29 @@ export interface LeadStats {
     devices: Record<string, number>;
   };
 }
+
+/** One point on the seven-day inquiry trend. */
+export interface LeadTrendPoint {
+  /** ISO `YYYY-MM-DD`, Africa/Lagos day boundaries. */
+  date: string;
+  /** Pre-formatted axis label, e.g. `Aug 9`. */
+  label: string;
+  count: number;
+}
+
+/**
+ * Database-wide aggregates from the `lead_analytics()` RPC. Unlike `LeadStats`
+ * computed from a fetched page, these describe every lead in the table.
+ */
+export interface LeadAnalytics extends LeadStats {
+  /** Excluded from every other figure; surfaced so it is not silently dropped. */
+  spamLeads: number;
+  closedLostLeads: number;
+  dailyTrend: LeadTrendPoint[];
+}
+
+/** Activity authors written by automation, excluded from response-time stats. */
+const SYSTEM_AUTHOR_PATTERN = /^system/i;
 
 export const SERVICE_LABELS: Record<ServiceCategory, string> = {
   fbo: 'FBO & Ground Support',
@@ -80,288 +110,18 @@ export const PRIORITY_LABELS: Record<LeadPriority, string> = {
   low: 'Low',
 };
 
-export const INITIAL_LEADS: Lead[] = [
-  {
-    id: "EAN-LD-2026-089",
-    fullName: "Captain Alistair Vance",
-    email: "a.vance@globalaero.co.uk",
-    phone: "+44 7700 900821",
-    company: "Global Aviation Services UK",
-    service: "fbo",
-    message: "Requesting full VIP ground handling, customs clearance, and 12,000 Liters of JET A-1 for Bombardier Global 7500 arriving at MMIA Lagos (DNMM) on July 28th at 14:30 UTC.",
-    status: "new",
-    priority: "urgent",
-    createdAt: "2026-07-25T07:15:00Z",
-    updatedAt: "2026-07-25T07:15:00Z",
-    source: "Google Search (Paid Ads)",
-    assignedTo: "FBO Dispatch Desk",
-    notes: ["High-profile diplomatic passenger on board.", "Requires tarmac limousine transfer."],
-    activities: [
-      {
-        id: "act-1",
-        timestamp: "2026-07-25T07:15:00Z",
-        author: "System",
-        action: "Lead automatically captured via Contact Form",
-      },
-    ],
-    estimatedValue: 18500,
-    tracking: {
-      utmSource: "google",
-      utmMedium: "cpc",
-      utmCampaign: "fbo_lagos_ground_handling",
-      utmContent: "vip_handling_ad",
-      utmTerm: "fbo lagos airport",
-      referrerUrl: "https://www.google.com/search?q=fbo+lagos+ground+handling",
-      referrerDomain: "google.com",
-      landingPage: "/services/fbo-ground-support",
-      formPage: "/contact?service=fbo",
-      formId: "contact-page-form",
-      deviceType: "desktop",
-      browserName: "Google Chrome",
-      userLanguage: "en-GB",
-      screenResolution: "1920x1080",
-      capturedAt: "2026-07-25T07:14:22Z",
-    },
-  },
-  {
-    id: "EAN-LD-2026-088",
-    fullName: "Dr. Folake Adeleke",
-    email: "f.adeleke@primenergy.ng",
-    phone: "+234 803 555 0192",
-    company: "Prime Energy Ltd",
-    service: "charter",
-    message: "Looking for executive jet charter quote for 6 passengers from Lagos to Port Harcourt (round trip) on August 2nd. Prefer Hawker 900XP or similar mid-size cabin jet.",
-    status: "contacted",
-    priority: "urgent",
-    createdAt: "2026-07-24T16:40:00Z",
-    updatedAt: "2026-07-25T06:30:00Z",
-    source: "LinkedIn Campaign",
-    assignedTo: "Babajide S. (Sales)",
-    notes: ["Spoke via phone. Client requested inclusion of gourmet lunch."],
-    activities: [
-      {
-        id: "act-2",
-        timestamp: "2026-07-24T16:40:00Z",
-        author: "System",
-        action: "Lead automatically captured via Charter Page Form",
-      },
-      {
-        id: "act-3",
-        timestamp: "2026-07-25T06:30:00Z",
-        author: "Babajide S.",
-        action: "Status updated to In Contact",
-        note: "Initial phone call completed, drafting charter quote.",
-      },
-    ],
-    estimatedValue: 24000,
-    tracking: {
-      utmSource: "linkedin",
-      utmMedium: "social_paid",
-      utmCampaign: "executive_charter_q3",
-      utmContent: "oil_gas_charter_banner",
-      utmTerm: null,
-      referrerUrl: "https://www.linkedin.com/feed/",
-      referrerDomain: "linkedin.com",
-      landingPage: "/",
-      formPage: "/contact?service=charter",
-      formId: "contact-page-form",
-      deviceType: "mobile",
-      browserName: "Apple Safari",
-      userLanguage: "en-US",
-      screenResolution: "390x844",
-      capturedAt: "2026-07-24T16:38:10Z",
-    },
-  },
-  {
-    id: "EAN-LD-2026-087",
-    fullName: "Engr. Marcus Sterling",
-    email: "msterling@westafricajets.com",
-    phone: "+234 812 444 8810",
-    company: "West Africa Jet Fleet Maintenance",
-    service: "maintenance",
-    message: "Inquiring about scheduled 100-hour inspection and avionics diagnostic check for Challenger 604 at EAN NCAA-approved MRO facility in Hangar B.",
-    status: "qualified",
-    priority: "urgent",
-    createdAt: "2026-07-23T11:20:00Z",
-    updatedAt: "2026-07-24T14:10:00Z",
-    source: "Direct Referral",
-    assignedTo: "Engr. Kayode MRO",
-    notes: ["Aircraft logbooks reviewed.", "Slot available in Hangar B starting Aug 5."],
-    activities: [
-      {
-        id: "act-4",
-        timestamp: "2026-07-23T11:20:00Z",
-        author: "System",
-        action: "Lead captured via Maintenance Page Form",
-      },
-      {
-        id: "act-5",
-        timestamp: "2026-07-24T14:10:00Z",
-        author: "Engr. Kayode",
-        action: "Status updated to Qualified",
-        note: "Technical scope verified with fleet manager.",
-      },
-    ],
-    estimatedValue: 45000,
-    tracking: {
-      utmSource: "direct",
-      utmMedium: "none",
-      utmCampaign: null,
-      utmContent: null,
-      utmTerm: null,
-      referrerUrl: null,
-      referrerDomain: "Direct / None",
-      landingPage: "/services/aircraft-maintenance",
-      formPage: "/services/aircraft-maintenance",
-      formId: "services-mro-form",
-      deviceType: "desktop",
-      browserName: "Google Chrome",
-      userLanguage: "en-US",
-      screenResolution: "2560x1440",
-      capturedAt: "2026-07-23T11:18:45Z",
-    },
-  },
-  {
-    id: "EAN-LD-2026-086",
-    fullName: "Chief Mrs. Bisi Ogunlesi",
-    email: "bisi.ogunlesi@crestcapital.com",
-    phone: "+234 802 111 9900",
-    company: "Crest Capital Holdings",
-    service: "leasing",
-    message: "Interested in leasing a 250 sqm executive office suite overlooking the tarmac at EAN Executive Aviation Center for our private flight operations team.",
-    status: "proposal_sent",
-    priority: "urgent",
-    createdAt: "2026-07-21T09:00:00Z",
-    updatedAt: "2026-07-23T10:15:00Z",
-    source: "Google Organic",
-    assignedTo: "Facilities & Leasing Dept",
-    notes: ["Commercial terms sent for Suite 3B.", "Client requested 3-year lease term."],
-    activities: [
-      {
-        id: "act-6",
-        timestamp: "2026-07-21T09:00:00Z",
-        author: "System",
-        action: "Lead captured via Leasing Page",
-      },
-      {
-        id: "act-7",
-        timestamp: "2026-07-23T10:15:00Z",
-        author: "Facilities Team",
-        action: "Proposal Sent",
-        note: "Draft lease agreement delivered to client legal team.",
-      },
-    ],
-    estimatedValue: 68000,
-    tracking: {
-      utmSource: "google",
-      utmMedium: "organic",
-      utmCampaign: null,
-      utmContent: null,
-      utmTerm: "office space lease mmia hangar lagos",
-      referrerUrl: "https://www.google.com/",
-      referrerDomain: "google.com",
-      landingPage: "/services/leased-offices",
-      formPage: "/contact?service=leasing",
-      formId: "contact-page-form",
-      deviceType: "desktop",
-      browserName: "Microsoft Edge",
-      userLanguage: "en-NG",
-      screenResolution: "1536x864",
-      capturedAt: "2026-07-21T08:55:12Z",
-    },
-  },
-  {
-    id: "EAN-LD-2026-085",
-    fullName: "Jean-Luc Moreau",
-    email: "jmoreau@airfrance-charter.fr",
-    phone: "+33 1 42 68 55 00",
-    company: "Air France Executive Services",
-    service: "catering",
-    message: "Pre-order VIP gourmet catering for 14 passengers on outbound flight from Lagos to Paris CDG. Requires halal menu and champagne selection.",
-    status: "closed_won",
-    priority: "urgent",
-    createdAt: "2026-07-19T14:15:00Z",
-    updatedAt: "2026-07-20T11:00:00Z",
-    source: "Email Campaign",
-    assignedTo: "Wings™ Catering Manager",
-    notes: ["Payment confirmed.", "Menu prepared by Head Chef."],
-    activities: [
-      {
-        id: "act-8",
-        timestamp: "2026-07-19T14:15:00Z",
-        author: "System",
-        action: "Lead captured via Wings Catering Form",
-      },
-      {
-        id: "act-9",
-        timestamp: "2026-07-20T11:00:00Z",
-        author: "Catering Admin",
-        action: "Closed (Won)",
-        note: "Catering order dispatched to tarmac crew.",
-      },
-    ],
-    estimatedValue: 5200,
-    tracking: {
-      utmSource: "newsletter",
-      utmMedium: "email",
-      utmCampaign: "vip_wings_catering_july",
-      utmContent: "gourmet_menu_cta",
-      utmTerm: null,
-      referrerUrl: "https://mail.google.com/",
-      referrerDomain: "mail.google.com",
-      landingPage: "/services/wings-catering",
-      formPage: "/contact?service=catering",
-      formId: "contact-page-form",
-      deviceType: "tablet",
-      browserName: "Apple Safari",
-      userLanguage: "fr-FR",
-      screenResolution: "810x1080",
-      capturedAt: "2026-07-19T14:12:05Z",
-    },
-  },
-  {
-    id: "EAN-LD-2026-084",
-    fullName: "Tunde Bakare",
-    email: "tbakare@africacorp.org",
-    phone: "+234 809 333 4455",
-    company: "Africa Corp Ltd",
-    service: "general",
-    message: "Inquiry regarding partnership opportunities for corporate travel management.",
-    status: "new",
-    priority: "urgent",
-    createdAt: "2026-07-25T05:45:00Z",
-    updatedAt: "2026-07-25T05:45:00Z",
-    source: "Direct Visit",
-    assignedTo: "Business Dev Team",
-    notes: [],
-    activities: [
-      {
-        id: "act-10",
-        timestamp: "2026-07-25T05:45:00Z",
-        author: "System",
-        action: "Lead captured via Contact Us Page",
-      },
-    ],
-    estimatedValue: 0,
-    tracking: {
-      utmSource: "direct",
-      utmMedium: "none",
-      utmCampaign: null,
-      utmContent: null,
-      utmTerm: null,
-      referrerUrl: null,
-      referrerDomain: "Direct / None",
-      landingPage: "/about",
-      formPage: "/contact",
-      formId: "contact-page-form",
-      deviceType: "mobile",
-      browserName: "Google Chrome",
-      userLanguage: "en-NG",
-      screenResolution: "360x800",
-      capturedAt: "2026-07-25T05:43:00Z",
-    },
-  },
-];
+/**
+ * Builds a `mailto:` link for a lead. Both the address and the subject are
+ * percent-encoded — an address or lead code containing `&`, `?`, or a space
+ * would otherwise truncate the subject or corrupt the recipient.
+ */
+export function buildLeadMailtoHref(lead: Lead, options?: { reply?: boolean }): string {
+  const subject = `${options?.reply ? 'RE: ' : ''}EAN Aviation Inquiry (${lead.leadCode ?? lead.id})`;
+  // `@` stays literal: it is part of mailto's own syntax and some clients do not
+  // decode %40 in the recipient.
+  const address = encodeURIComponent(lead.email).replace(/%40/g, '@');
+  return `mailto:${address}?subject=${encodeURIComponent(subject)}`;
+}
 
 export function getLeadStats(leads: Lead[]): LeadStats {
   const totalLeads = leads.length;
@@ -369,11 +129,11 @@ export function getLeadStats(leads: Lead[]): LeadStats {
   const inProgressLeads = leads.filter((l) => l.status === 'contacted' || l.status === 'qualified' || l.status === 'proposal_sent').length;
   const qualifiedLeads = leads.filter((l) => l.status === 'qualified' || l.status === 'proposal_sent').length;
   const closedWonLeads = leads.filter((l) => l.status === 'closed_won').length;
-  
+
   const totalEstimatedPipeline = leads.reduce((acc, l) => acc + (l.estimatedValue || 0), 0);
-  
+
   const conversionRate = totalLeads > 0 ? Math.round((closedWonLeads / totalLeads) * 100) : 0;
-  
+
   const serviceDistribution: Record<ServiceCategory, number> = {
     fbo: 0,
     maintenance: 0,
@@ -390,7 +150,7 @@ export function getLeadStats(leads: Lead[]): LeadStats {
 
   leads.forEach((l) => {
     serviceDistribution[l.service] = (serviceDistribution[l.service] || 0) + 1;
-    
+
     // Tracking metrics
     const src = l.source || l.tracking?.utmSource || 'Direct';
     sourcesMap[src] = (sourcesMap[src] || 0) + 1;
@@ -416,6 +176,29 @@ export function getLeadStats(leads: Lead[]): LeadStats {
 
   const dailyInquiryRate = totalLeads > 0 ? Math.round((totalLeads / 7) * 10) / 10 : 0;
 
+  // Measured from the first non-automated activity on each lead. Leads nobody
+  // has touched yet are excluded rather than counted as instant responses.
+  const responseMinutes = leads.reduce<number[]>((acc, l) => {
+    const createdAt = new Date(l.createdAt).getTime();
+    if (!Number.isFinite(createdAt)) return acc;
+
+    const firstHumanReply = (l.activities ?? [])
+      .filter((a) => !SYSTEM_AUTHOR_PATTERN.test(a.author))
+      .map((a) => new Date(a.timestamp).getTime())
+      .filter((t) => Number.isFinite(t) && t >= createdAt)
+      .sort((a, b) => a - b)[0];
+
+    if (firstHumanReply === undefined) return acc;
+
+    acc.push((firstHumanReply - createdAt) / 60000);
+    return acc;
+  }, []);
+
+  const avgResponseSlaMinutes =
+    responseMinutes.length > 0
+      ? Math.round(responseMinutes.reduce((sum, m) => sum + m, 0) / responseMinutes.length)
+      : null;
+
   return {
     totalLeads,
     newLeads,
@@ -423,7 +206,7 @@ export function getLeadStats(leads: Lead[]): LeadStats {
     qualifiedLeads,
     closedWonLeads,
     dailyInquiryRate,
-    avgResponseSlaMinutes: 24,
+    avgResponseSlaMinutes,
     conversionRate,
     totalEstimatedPipeline,
     serviceDistribution,

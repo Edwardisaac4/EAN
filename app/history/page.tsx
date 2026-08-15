@@ -143,13 +143,13 @@ export default function HistoryPage() {
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%]">
             <Image
-              src="/images/hero/slide-1.png"
+              src="/images/hero/slide-1.jpg"
               alt="EAN Aviation premium private jet inside MMIA hangar at sunset"
               fill
               sizes="100vw"
               priority
               className="object-cover"
-              quality={95}
+              quality={80}
             />
             {/* Immersive overlay gradient (radial + linear dark wash) */}
             <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-ean-navy/60 to-ean-navy/40" />
@@ -271,7 +271,7 @@ export default function HistoryPage() {
               className="flex flex-row items-center gap-6 sm:gap-12 px-[6vw] sm:px-[10vw] lg:px-[15vw] h-[68vh] sm:h-[55vh]"
             >
               {TIMELINE_EVENTS.map((event, idx) => {
-                const img = event.image || '/images/about-jet.png';
+                const img = event.image || '/images/about-jet.jpg';
 
                 return (
                   <div
@@ -292,7 +292,7 @@ export default function HistoryPage() {
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 30vw, 25vw"
                         className="object-cover object-center transition-transform duration-750 group-hover:scale-105"
-                        quality={95}
+                        quality={80}
                       />
                       <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent sm:from-white/70" />
                       <div className="absolute bottom-2 right-2 px-2 py-1 bg-ean-navy/90 backdrop-blur-xs text-[9px] sm:text-[10px] font-mono text-ean-gold uppercase tracking-wider rounded-xs z-10">

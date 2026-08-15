@@ -1,16 +1,28 @@
-import { Lead, LeadStats, LeadStatus, LeadPriority, ServiceCategory } from './admin-leads-data';
+import { Lead } from './admin-leads-data';
 
 export interface GraphQLResponse<T> {
   data?: T;
   errors?: Array<{ message: string }>;
 }
 
+/** Shape returned by the `leads` query. */
+export interface LeadsQueryResult {
+  leads: Lead[];
+  leadsTotal?: number;
+  leadsTruncated?: boolean;
+}
+
 /**
- * Sends a GraphQL POST request to /api/graphql
+ * Sends a GraphQL POST request to /api/graphql.
+ *
+ * The endpoint requires an admin session; an expired session returns 401, which
+ * surfaces here as an error the caller can show rather than silently rendering
+ * an empty dashboard.
  */
 export async function graphqlQuery<T>(
   query: string,
-  variables?: Record<string, any>
+  variables?: Record<string, unknown>,
+  options?: { signal?: AbortSignal }
 ): Promise<T> {
   const response = await fetch('/api/graphql', {
     method: 'POST',
@@ -19,12 +31,34 @@ export async function graphqlQuery<T>(
       'Accept': 'application/json',
     },
     body: JSON.stringify({ query, variables }),
+    signal: options?.signal,
   });
 
-  const json: GraphQLResponse<T> = await response.json();
+  if (response.status === 401) {
+    throw new Error('Your admin session has expired. Please sign in again.');
+  }
 
-  if (json.errors && json.errors.length > 0) {
+  // The API returns its own `errors` array alongside 4xx/5xx statuses, and those
+  // messages are the useful ones — so the body is read first. Failures that carry
+  // no JSON body (proxy timeout, HTML error page) fall through to the status
+  // message instead of surfacing a JSON parser error.
+  let json: GraphQLResponse<T> | null = null;
+  try {
+    json = (await response.json()) as GraphQLResponse<T>;
+  } catch {
+    json = null;
+  }
+
+  if (json?.errors && json.errors.length > 0) {
     throw new Error(json.errors[0].message);
+  }
+
+  if (!response.ok) {
+    throw new Error(`The leads API request failed (HTTP ${response.status}).`);
+  }
+
+  if (!json) {
+    throw new Error('The leads API returned an unreadable response.');
   }
 
   if (!json.data) {
@@ -42,6 +76,7 @@ export const QUERY_GET_LEADS = `
   query GetLeads($search: String, $status: String, $service: String, $priority: String) {
     leads(search: $search, status: $status, service: $service, priority: $priority) {
       id
+      leadCode
       fullName
       email
       phone
@@ -85,13 +120,21 @@ export const QUERY_GET_LEAD_STATS = `
   query GetLeadStats {
     leadStats {
       totalLeads
+      spamLeads
       newLeads
       inProgressLeads
       qualifiedLeads
       closedWonLeads
+      closedLostLeads
       avgResponseSlaMinutes
       conversionRate
       totalEstimatedPipeline
+      dailyInquiryRate
+      dailyTrend {
+        date
+        label
+        count
+      }
       serviceDistribution {
         category
         label

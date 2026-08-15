@@ -4,7 +4,13 @@
 // =============================================================================
 
 import { NextResponse } from 'next/server'
-import { createLead, getLeads } from '@/lib/services/leads-service'
+import { createLead, getLeads, findRecentDuplicateLead } from '@/lib/services/leads-service'
+import {
+  optionalString,
+  parseLeadService,
+  parseTracking,
+  requiredString,
+} from '@/lib/services/lead-input'
 import { sendNewLeadAlert } from '@/lib/services/lead-notifications'
 import { dbError, badRequest } from '@/lib/supabase/helpers'
 import type { LeadSubmissionPayload, LeadServiceEnum, LeadStatusEnum, LeadPriorityEnum } from '@/types/database'
@@ -71,28 +77,69 @@ export async function POST(request: Request) {
       company,
       service,
       message,
+      estimatedValue,
       tracking,
     } = body as Record<string, unknown>
 
-    // Accept either fullName or name
-    const leadName = (fullName || name) as string | undefined
+    // This endpoint is public and unauthenticated, so every field is validated
+    // as a string here rather than cast — a number or object reaching the insert
+    // would either corrupt the row or fail with a raw Postgres error.
+    const leadName = requiredString(fullName) ?? requiredString(name)
+    const emailInput = requiredString(email)
+    const messageValue = requiredString(message)
 
-    if (!leadName || !email || !message) {
+    if (!leadName || !emailInput || !messageValue) {
       return badRequest('Missing required fields: name, email, and message are required')
+    }
+
+    const emailValue = emailInput.toLowerCase()
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailValue)) {
+      return badRequest('Please provide a valid email address')
+    }
+
+    const serviceValue = parseLeadService(service)
+
+    if (!serviceValue) {
+      return badRequest('Unknown service. Please select one of the listed services.')
     }
 
     // Extract client IP for tracking
     const forwardedFor = request.headers.get('x-forwarded-for')
     const clientIp = forwardedFor ? forwardedFor.split(',')[0].trim() : undefined
 
+    // Collapse accidental re-submissions (page refresh, double-click) instead of
+    // creating duplicate pipeline records.
+    const duplicate = await findRecentDuplicateLead(emailValue, serviceValue)
+
+    if (duplicate) {
+      return NextResponse.json(
+        {
+          success: true,
+          duplicate: true,
+          message: 'Your inquiry has already been received. Our team will contact you shortly.',
+          lead: {
+            id: duplicate.id,
+            lead_code: duplicate.lead_code,
+            status: duplicate.status,
+          },
+        },
+        { status: 200 }
+      )
+    }
+
     const payload: LeadSubmissionPayload = {
-      fullName: leadName as string,
-      email: email as string,
-      phone: (phone as string) || undefined,
-      company: (company as string) || undefined,
-      service: ((service as string) || 'general') as LeadServiceEnum,
-      message: message as string,
-      tracking: tracking as LeadSubmissionPayload['tracking'],
+      fullName: leadName,
+      email: emailValue,
+      phone: optionalString(phone),
+      company: optionalString(company),
+      service: serviceValue,
+      message: messageValue,
+      estimatedValue:
+        typeof estimatedValue === 'number' && Number.isFinite(estimatedValue)
+          ? estimatedValue
+          : undefined,
+      tracking: parseTracking(tracking),
     }
 
     const { lead, error } = await createLead(payload, clientIp)

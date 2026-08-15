@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import {
   MapPin,
   Phone,
@@ -42,7 +41,6 @@ const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export default function Footer() {
   const [lagosTime, setLagosTime] = useState('');
-  const [isArrowHovered, setIsArrowHovered] = useState(false);
 
   // Live Lagos Local Time (GMT+1) Clock
   useEffect(() => {
@@ -151,18 +149,16 @@ export default function Footer() {
               ].map((soc, idx) => {
                 const IconComponent = soc.icon;
                 return (
-                  <motion.a
+                  <a
                     key={idx}
                     href={soc.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ y: -3, color: '#C4952A' }}
-                    transition={{ duration: 0.2 }}
-                    className="w-10 h-10 rounded-xs bg-white/5 border border-white/10 flex items-center justify-center text-ean-muted-light hover:border-ean-gold/40 hover:text-ean-gold transition-colors cursor-pointer"
+                    className="w-10 h-10 rounded-xs bg-white/5 border border-white/10 flex items-center justify-center text-ean-muted-light hover:border-ean-gold/40 hover:text-ean-gold hover:-translate-y-[3px] transition-[color,border-color,transform] duration-200 cursor-pointer"
                     aria-label={soc.label}
                   >
                     <IconComponent className="w-4 h-4" />
-                  </motion.a>
+                  </a>
                 );
               })}
             </div>
@@ -277,26 +273,16 @@ export default function Footer() {
             {/* Touch-Friendly Back to Top Button */}
             <button
               onClick={scrollToTop}
-              onMouseEnter={() => setIsArrowHovered(true)}
-              onMouseLeave={() => setIsArrowHovered(false)}
-              className="w-10 h-10 rounded-xs border border-white/10 hover:border-ean-gold/40 flex items-center justify-center relative overflow-hidden transition-colors duration-300 text-ean-muted-light hover:text-ean-gold cursor-pointer bg-white/5 shrink-0"
+              className="group w-10 h-10 rounded-xs border border-white/10 hover:border-ean-gold/40 flex items-center justify-center relative overflow-hidden transition-colors duration-300 text-ean-muted-light hover:text-ean-gold cursor-pointer bg-white/5 shrink-0"
               aria-label="Scroll to top"
             >
-              <motion.div
-                animate={{ y: isArrowHovered ? -25 : 0 }}
-                transition={{ duration: 0.22, ease: 'easeInOut' }}
-                className="absolute"
-              >
+              {/* Two stacked arrows roll upward together on hover */}
+              <div className="absolute transition-transform duration-[220ms] ease-in-out group-hover:-translate-y-[25px]">
                 <ArrowUp className="w-4 h-4" />
-              </motion.div>
-              <motion.div
-                initial={{ y: 25 }}
-                animate={{ y: isArrowHovered ? 0 : 25 }}
-                transition={{ duration: 0.22, ease: 'easeInOut' }}
-                className="absolute"
-              >
+              </div>
+              <div className="absolute translate-y-[25px] transition-transform duration-[220ms] ease-in-out group-hover:translate-y-0">
                 <ArrowUp className="w-4 h-4" />
-              </motion.div>
+              </div>
             </button>
           </div>
         </div>

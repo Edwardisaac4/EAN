@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  Lead, 
-  LeadStatus, 
-  LeadPriority, 
-  SERVICE_LABELS, 
-  STATUS_LABELS 
+import {
+  buildLeadMailtoHref,
+  Lead,
+  LeadStatus,
+  LeadPriority,
+  SERVICE_LABELS,
+  STATUS_LABELS
 } from '@/lib/admin-leads-data';
 import { 
   X, 
@@ -104,7 +105,7 @@ export function LeadDetailDrawer({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           leadId: lead.id,
-          leadCode: lead.id,
+          leadCode: lead.leadCode ?? lead.id,
           clientName: lead.fullName,
           clientEmail: lead.email,
           clientPhone: lead.phone,
@@ -164,7 +165,7 @@ export function LeadDetailDrawer({
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-mono text-[10px] text-ean-gold font-bold uppercase tracking-wider block">
-                    {lead.id}
+                    {lead.leadCode ?? lead.id}
                   </span>
                   <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-ean-muted-light">
                     {lead.source}
@@ -197,7 +198,7 @@ export function LeadDetailDrawer({
             {/* Quick Actions Bar */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 p-2.5 rounded-xl bg-ean-black-accent border border-ean-border-dark">
               <a
-                href={`mailto:${lead.email}?subject=EAN Aviation Inquiry (${lead.id})`}
+                href={buildLeadMailtoHref(lead)}
                 className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg bg-ean-gold hover:bg-ean-gold-light text-ean-black font-semibold text-xs transition-all text-center"
               >
                 <Mail className="w-3.5 h-3.5 shrink-0" />
