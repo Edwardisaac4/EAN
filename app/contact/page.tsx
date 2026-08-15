@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { sendGAEvent } from '@next/third-parties/google';
 import { 
   MapPin, 
@@ -328,14 +327,11 @@ export default function ContactPage() {
                         </p>
                       </div>
 
-                      <AnimatePresence mode="wait">
-                        {!submitSuccess ? (
-                          <motion.form
+                      {!submitSuccess ? (
+                          <form
                             key="contact-form"
                             ref={formRef}
                             onSubmit={handleSubmit}
-                            initial={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
                             className="space-y-5 font-ui"
                             noValidate
                           >
@@ -516,14 +512,11 @@ export default function ContactPage() {
                                 )}
                               </GoldButton>
                             </div>
-                          </motion.form>
+                          </form>
                         ) : (
-                          <motion.div
+                          <div
                             key="success-message"
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.4 }}
-                            className="bg-ean-gold/10 border border-ean-gold/20 p-8 rounded-xs text-center flex flex-col items-center gap-4 py-16"
+                            className="ean-enter-scale bg-ean-gold/10 border border-ean-gold/20 p-8 rounded-xs text-center flex flex-col items-center gap-4 py-16"
                           >
                             <div className="w-16 h-16 rounded-full bg-ean-gold/20 flex items-center justify-center text-ean-gold mb-2 border border-ean-gold/30">
                               <CheckCircle className="w-8 h-8" />
@@ -540,9 +533,8 @@ export default function ContactPage() {
                             >
                               Send Another Inquiry
                             </button>
-                          </motion.div>
+                          </div>
                         )}
-                      </AnimatePresence>
                     </div>
                   </div>
                 </SectionReveal>
@@ -590,20 +582,18 @@ export default function ContactPage() {
                         />
                       </button>
 
-                      <AnimatePresence initial={false}>
-                        {isOpen && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.25, ease: 'easeInOut' }}
-                          >
-                            <div className="px-6 pb-6 pt-0 sm:px-8 sm:pb-6 text-sm sm:text-base text-ean-muted-dark border-t border-ean-border-light/25 leading-relaxed pl-14">
-                              {faq.answer}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                      {/* Grid-rows trick animates to intrinsic height without JS measurement */}
+                      <div
+                        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+                          isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                        }`}
+                      >
+                        <div className="overflow-hidden">
+                          <div className="px-6 pb-6 pt-0 sm:px-8 sm:pb-6 text-sm sm:text-base text-ean-muted-dark border-t border-ean-border-light/25 leading-relaxed pl-14">
+                            {faq.answer}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </SectionReveal>
                 );

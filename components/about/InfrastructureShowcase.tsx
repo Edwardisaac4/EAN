@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Building2, 
   Wrench, 
@@ -187,14 +186,10 @@ export default function InfrastructureShowcase() {
           </div>
 
           {/* Active Tab Spotlight Stage */}
-          <AnimatePresence mode="wait">
-            <motion.div
+          {/* Keying on the item id replays the CSS enter animation per tab */}
+          <div
               key={activeItem.id}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.4, ease: 'easeOut' }}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-ean-navy/70 border border-ean-gold/30 p-8 sm:p-10 rounded-xs shadow-2xl backdrop-blur-md"
+              className="ean-enter-up grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-ean-navy/70 border border-ean-gold/30 p-8 sm:p-10 rounded-xs shadow-2xl backdrop-blur-md"
             >
               {/* Image Display Column */}
               <div className="lg:col-span-6 relative">
@@ -246,8 +241,7 @@ export default function InfrastructureShowcase() {
                   ))}
                 </div>
               </div>
-            </motion.div>
-          </AnimatePresence>
+          </div>
         </div>
       </div>
     </section>
