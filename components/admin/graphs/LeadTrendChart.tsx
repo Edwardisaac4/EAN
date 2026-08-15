@@ -8,16 +8,6 @@ export interface TrendPoint {
   count: number;
 }
 
-const DEFAULT_TREND_DATA: TrendPoint[] = [
-  { label: 'Jul 19', count: 4 },
-  { label: 'Jul 20', count: 7 },
-  { label: 'Jul 21', count: 5 },
-  { label: 'Jul 22', count: 12 },
-  { label: 'Jul 23', count: 9 },
-  { label: 'Jul 24', count: 15 },
-  { label: 'Jul 25', count: 18 },
-];
-
 export interface LeadTrendChartProps {
   data?: TrendPoint[];
 }
@@ -25,15 +15,23 @@ export interface LeadTrendChartProps {
 export function LeadTrendChart({ data }: LeadTrendChartProps) {
   const [hoveredPoint, setHoveredPoint] = useState<TrendPoint | null>(null);
 
-  const trendData = data && data.length > 0 ? data : DEFAULT_TREND_DATA;
-  const maxCount = Math.max(...trendData.map((d) => d.count), 20);
+  // No sample-data fallback: a placeholder curve on an admin dashboard is
+  // indistinguishable from real volume. With nothing to plot, say so instead.
+  const trendData = data ?? [];
+  const maxCount = Math.max(...trendData.map((d) => d.count), 1);
   const chartHeight = 160;
   const chartWidth = 500;
+  // Guards the single-point case, where the divisor would otherwise be zero.
+  const lastIndex = Math.max(trendData.length - 1, 1);
+
+  const pointFor = (d: TrendPoint, index: number) => ({
+    x: (index / lastIndex) * chartWidth,
+    y: chartHeight - (d.count / maxCount) * chartHeight,
+  });
 
   // Calculate SVG curve points
   const points = trendData.map((d, index) => {
-    const x = (index / (trendData.length - 1)) * chartWidth;
-    const y = chartHeight - (d.count / maxCount) * chartHeight;
+    const { x, y } = pointFor(d, index);
     return `${x},${y}`;
   }).join(' ');
 
@@ -57,7 +55,13 @@ export function LeadTrendChart({ data }: LeadTrendChartProps) {
         </div>
       </div>
 
-      {/* SVG Trend Graph */}
+      {trendData.length === 0 ? (
+        <div className="h-44 flex flex-col items-center justify-center gap-2 text-center">
+          <TrendingUp className="w-8 h-8 text-ean-muted-light/30" />
+          <p className="text-xs text-ean-muted-light">No daily volume to plot yet.</p>
+        </div>
+      ) : (
+      /* SVG Trend Graph */
       <div className="relative pt-4">
         {/* Tooltip Hover Overlay */}
         {hoveredPoint && (
@@ -103,9 +107,8 @@ export function LeadTrendChart({ data }: LeadTrendChartProps) {
             />
 
             {/* Data Point Circles */}
-            {DEFAULT_TREND_DATA.map((d, index) => {
-              const x = (index / (DEFAULT_TREND_DATA.length - 1)) * chartWidth;
-              const y = chartHeight - (d.count / maxCount) * chartHeight;
+            {trendData.map((d, index) => {
+              const { x, y } = pointFor(d, index);
               return (
                 <g key={d.label} className="cursor-pointer group" onMouseEnter={() => setHoveredPoint(d)}>
                   <circle
@@ -125,11 +128,12 @@ export function LeadTrendChart({ data }: LeadTrendChartProps) {
 
         {/* X-Axis Labels */}
         <div className="flex justify-between font-mono text-[10px] text-ean-muted-light mt-2 pt-2 border-t border-ean-border-dark/40">
-          {DEFAULT_TREND_DATA.map((d) => (
+          {trendData.map((d) => (
             <span key={d.label}>{d.label}</span>
           ))}
         </div>
       </div>
+      )}
     </div>
   );
 }

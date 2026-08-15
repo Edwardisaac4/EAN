@@ -44,12 +44,12 @@ export default function CharterSection() {
       {/* Parallax Background Container */}
       <div ref={bgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
         <Image
-          src="/images/charter-cabin.png"
+          src="/images/charter-cabin.jpg"
           alt="EAN Aviation premium private jet cabin interior"
           fill
           sizes="100vw"
           priority={false}
-          quality={90}
+          quality={80}
           className="object-cover object-center"
         />
         {/* Luxury Overlay Gradients for Readability */}

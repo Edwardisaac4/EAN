@@ -1,43 +1,18 @@
-'use client';
-
-import React, { useRef, useState } from 'react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-
+/**
+ * Opening veil over the hero.
+ *
+ * Deliberately a Server Component with a pure CSS fade: the previous version
+ * held an opaque full-viewport overlay in the server HTML and only tore it
+ * down once GSAP had hydrated, which pushed first paint behind the entire
+ * client bundle. The fade now runs off the compositor on the first frame and
+ * the layer is `pointer-events-none` throughout, so it never gates content or
+ * input. Do not reintroduce a JS-controlled unmount here.
+ */
 export default function Preloader() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isDone, setIsDone] = useState(false);
-
-  useGSAP(
-    () => {
-      // Skip preloader on repeat visits or server renders
-      if (typeof window !== 'undefined' && sessionStorage.getItem('ean_visited')) {
-        requestAnimationFrame(() => setIsDone(true));
-        return;
-      }
-
-      try {
-        sessionStorage.setItem('ean_visited', 'true');
-      } catch {}
-
-      // Instant 200ms fade out to reveal site content immediately at 1.1s FCP/LCP
-      gsap.to(containerRef.current, {
-        opacity: 0,
-        duration: 0.25,
-        delay: 0.1,
-        ease: 'power2.out',
-        onComplete: () => setIsDone(true),
-      });
-    },
-    { scope: containerRef }
-  );
-
-  if (isDone) return null;
-
   return (
     <div
-      ref={containerRef}
-      className="fixed inset-0 z-9999 bg-ean-navy pointer-events-none transition-opacity"
+      aria-hidden="true"
+      className="ean-preloader fixed inset-0 z-9999 bg-ean-navy pointer-events-none"
     />
   );
 }

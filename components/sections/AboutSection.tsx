@@ -59,12 +59,12 @@ export default function AboutSection() {
             {/* Right Column: Visual Hangar / Jet Image */}
             <div className="lg:col-span-5 relative w-full h-80 sm:h-100 lg:h-125 rounded-xs overflow-hidden shadow-xl border border-ean-border-light dark:border-ean-border-dark group">
               <Image
-                src="/images/hero/slide-1.png"
+                src="/images/hero/slide-1.jpg"
                 alt="EAN Aviation premium private jet on tarmac at sunset"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
-                quality={90}
+                quality={80}
               />
               {/* Subtle luxury glow overlay */}
               <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

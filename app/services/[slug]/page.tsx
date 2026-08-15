@@ -91,7 +91,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               priority
               sizes="100vw"
               className="object-cover object-center filter brightness-90"
-              quality={95}
+              quality={80}
             />
             {/* Dark Gradient Overlay */}
             <div className="absolute inset-0 bg-linear-to-t from-ean-burgundy-dark via-ean-burgundy-deep/80 to-ean-burgundy-deep/50" />

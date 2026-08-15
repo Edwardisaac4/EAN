@@ -72,11 +72,14 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
     const locationLabel = LOCATION_LABELS[state?.location ?? 'LOS'] ?? 'Lagos MMIA'
     const operationLabel = OPERATION_LABELS[state?.operation ?? 'dom'] ?? 'Domestic'
     const stayLabel = state?.stay === 'over' ? `${state.nights} night(s)` : 'Same-day turnaround'
+    // Never invent a passenger count — sales would plan handling against a
+    // number the visitor never entered.
+    const paxLabel = typeof state?.pax === 'number' ? `${state.pax} pax` : 'Not specified'
 
     const inquiryMessage = `Pricing Portal Quote Request:
 - Aircraft: ${aircraftName}
 - Airport: ${locationLabel} | Operation: ${operationLabel}
-- Passengers: ${state?.pax ?? 4} pax | Stay: ${stayLabel}
+- Passengers: ${paxLabel} | Stay: ${stayLabel}
 - Estimated Total: ${quote?.totalDisplay ?? 'Not calculated'}`
 
     try {

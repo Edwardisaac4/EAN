@@ -28,6 +28,13 @@ export default function StatCounter({
     () => {
       if (!elementRef.current) return;
 
+      // The markup ships the final figure so crawlers and no-JS visitors read
+      // the real number rather than "0". Reset to the start state here instead
+      // — TrustBar sits below a full-viewport hero, so this always runs long
+      // before the element can be scrolled into view.
+      elementRef.current.textContent = `${prefix}0${suffix}`;
+      gsap.set(elementRef.current, { opacity: 0, scale: 0.8 });
+
       // 1. Numeric roll count up
       const obj = { val: 0 };
       gsap.to(obj, {
@@ -69,10 +76,10 @@ export default function StatCounter({
   return (
     <span
       ref={elementRef}
-      className={`inline-block opacity-0 ${className}`}
+      className={`inline-block ${className}`}
       style={{ transformOrigin: 'center' }}
     >
-      {prefix}0{suffix}
+      {prefix}{targetValue}{suffix}
     </span>
   );
 }

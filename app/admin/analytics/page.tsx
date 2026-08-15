@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 import { LeadStatCard } from '@/components/admin/LeadStatCard';
-import type { LeadStats, ServiceCategory } from '@/lib/admin-leads-data';
+import type { LeadAnalytics, ServiceCategory } from '@/lib/admin-leads-data';
 import { graphqlQuery, QUERY_GET_LEAD_STATS } from '@/lib/graphql-client';
 
 // Visual Graph Components
@@ -15,11 +15,11 @@ import { FunnelGraph } from '@/components/admin/graphs/FunnelGraph';
 import { BarChart3, TrendingUp, Clock, Globe, Target, Compass, Cpu, Monitor } from 'lucide-react';
 
 /**
- * Stats as returned by the API: identical to `LeadStats` except that
+ * Stats as returned by the API: identical to `LeadAnalytics` except that
  * `serviceDistribution` arrives as an array so each entry can carry its display
  * label and share alongside the count.
  */
-interface AnalyticsStats extends Omit<LeadStats, 'serviceDistribution'> {
+interface AnalyticsStats extends Omit<LeadAnalytics, 'serviceDistribution'> {
   serviceDistribution: Array<{
     category: string;
     label: string;
@@ -40,16 +40,20 @@ const EMPTY_SERVICE_DISTRIBUTION: Record<ServiceCategory, number> = {
 
 const EMPTY_STATS: AnalyticsStats = {
   totalLeads: 0,
+  spamLeads: 0,
   newLeads: 0,
   inProgressLeads: 0,
   qualifiedLeads: 0,
   closedWonLeads: 0,
+  closedLostLeads: 0,
   dailyInquiryRate: 0,
-  avgResponseSlaMinutes: 0,
+  // null, not 0 — nothing has been measured before the first load resolves.
+  avgResponseSlaMinutes: null,
   conversionRate: 0,
   totalEstimatedPipeline: 0,
   serviceDistribution: [],
   trackingDistribution: { topSources: [], topLandingPages: [], devices: {} },
+  dailyTrend: [],
 };
 
 export default function AnalyticsPage() {
@@ -146,9 +150,17 @@ export default function AnalyticsPage() {
           />
           <LeadStatCard
             title="First Contact SLA"
-            value="24 mins"
+            value={
+              stats.avgResponseSlaMinutes !== null
+                ? `${stats.avgResponseSlaMinutes} mins`
+                : 'No responses yet'
+            }
             change="Target: < 45m"
-            changeType="positive"
+            changeType={
+              stats.avgResponseSlaMinutes !== null && stats.avgResponseSlaMinutes > 45
+                ? 'negative'
+                : 'positive'
+            }
             icon={Clock}
             accentColor="text-sky-400"
           />
@@ -164,7 +176,7 @@ export default function AnalyticsPage() {
 
         {/* VISUAL GRAPHS SECTION 1: Lead Trend Area Curve & Pipeline Conversion Funnel Graph */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <LeadTrendChart />
+          <LeadTrendChart data={stats.dailyTrend} />
           <FunnelGraph stats={stats} />
         </div>
 

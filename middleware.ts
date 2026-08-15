@@ -86,8 +86,8 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // Match all routes except static files and images
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  // Only the guarded surfaces. Public marketing pages have no Supabase browser
+  // session and no admin cookie to check, so running this on every request just
+  // added an edge invocation in front of statically rendered HTML.
+  matcher: ['/admin/:path*', '/api/:path*'],
 };

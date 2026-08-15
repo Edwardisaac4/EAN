@@ -6,7 +6,6 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { motion } from 'framer-motion';
 import {
   Plane,
   Wrench,
@@ -160,11 +159,9 @@ export default function ServicesPage() {
                 return (
                   <SectionReveal key={srv.slug} id={srv.slug} className={`h-full scroll-mt-28 ${config.gridClass}`}>
                     {config.cardType === 'wide' && (
-                      <motion.div
-                        whileHover={{ y: -6 }}
-                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                      <div
                         className={`relative bg-linear-to-b from-ean-burgundy-mid via-ean-burgundy-deep to-ean-burgundy-dark border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col ${isImageRight ? 'lg:flex-row-reverse' : 'lg:flex-row'
-                          } h-full group transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden`}
+                          } h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden`}
                       >
                         {/* Image Section */}
                         <div className="relative h-52 sm:h-60 lg:h-auto lg:w-1/2 overflow-hidden shrink-0 min-h-55">
@@ -174,7 +171,7 @@ export default function ServicesPage() {
                             fill
                             sizes="(max-width: 1024px) 100vw, 50vw"
                             className="object-cover transition-transform duration-750 group-hover:scale-105"
-                            quality={90}
+                            quality={80}
                           />
                           <div
                             className={`absolute inset-0 bg-linear-to-t ${isImageRight
@@ -238,14 +235,12 @@ export default function ServicesPage() {
                             </Link>
                           </div>
                         </div>
-                      </motion.div>
+                      </div>
                     )}
 
                     {config.cardType === 'tall' && (
-                      <motion.div
-                        whileHover={{ y: -6 }}
-                        transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className="relative bg-linear-to-b from-ean-burgundy-mid via-ean-burgundy-deep to-ean-burgundy-dark border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col justify-between h-full group transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden min-h-125 lg:min-h-full"
+                      <div
+                        className="relative bg-linear-to-b from-ean-burgundy-mid via-ean-burgundy-deep to-ean-burgundy-dark border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden min-h-125 lg:min-h-full"
                       >
                         {/* Background Image */}
                         <div className="absolute inset-0 w-full h-full overflow-hidden">
@@ -255,7 +250,7 @@ export default function ServicesPage() {
                             fill
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             className="object-cover transition-transform duration-750 group-hover:scale-105"
-                            quality={90}
+                            quality={80}
                           />
                           <div className="absolute inset-0 bg-linear-to-b from-ean-burgundy-deep/75 via-ean-burgundy-deep/90 to-ean-burgundy-dark" />
                         </div>
@@ -312,14 +307,12 @@ export default function ServicesPage() {
                             </Link>
                           </div>
                         </div>
-                      </motion.div>
+                      </div>
                     )}
 
                     {config.cardType === 'square' && (
-                      <motion.div
-                        whileHover={{ y: -6 }}
-                        transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className="bg-linear-to-b from-ean-burgundy-mid via-ean-burgundy-deep to-ean-burgundy-dark border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col justify-between h-full group transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden"
+                      <div
+                        className="bg-linear-to-b from-ean-burgundy-mid via-ean-burgundy-deep to-ean-burgundy-dark border border-ean-gold/30 hover:border-ean-gold rounded-xs flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-ean-gold/10 overflow-hidden"
                       >
                         {/* Card Image */}
                         <div className="relative h-48 w-full overflow-hidden shrink-0">
@@ -329,7 +322,7 @@ export default function ServicesPage() {
                             fill
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             className="object-cover transition-transform duration-750 group-hover:scale-105"
-                            quality={90}
+                            quality={80}
                           />
                           <div className="absolute inset-0 bg-linear-to-t from-ean-burgundy-dark via-ean-burgundy-deep/40 to-transparent" />
                           <div className="absolute top-4 right-4 font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-burgundy-dark/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
@@ -380,7 +373,7 @@ export default function ServicesPage() {
                             </Link>
                           </div>
                         </div>
-                      </motion.div>
+                      </div>
                     )}
                   </SectionReveal>
                 );

@@ -11,12 +11,19 @@
 
 import { NextResponse } from 'next/server'
 import {
+  getLeadAnalytics,
   getLeads,
   updateLead,
   addLeadNote,
   createLead,
   LEAD_NOT_FOUND,
 } from '@/lib/services/leads-service'
+import {
+  optionalString,
+  parseLeadService,
+  parseTracking,
+  requiredString,
+} from '@/lib/services/lead-input'
 import { mapLeadRowToUiLead, mapLeadRowsToUiLeads } from '@/lib/mappers/lead-mapper'
 import { getLeadStats, SERVICE_LABELS } from '@/lib/admin-leads-data'
 import type { ServiceCategory } from '@/lib/admin-leads-data'
@@ -81,13 +88,13 @@ export async function POST(request: Request) {
     // QUERY: leadStats
     // ------------------------------------------------------------------------
     if (cleanQuery.includes('query') && cleanQuery.includes('leadStats')) {
-      const { leads, error } = await getLeads({ page: 1, limit: MAX_LEADS_PER_QUERY })
+      // Aggregated in Postgres, so these figures cover every lead rather than the
+      // first MAX_LEADS_PER_QUERY rows the table view happens to load.
+      const { analytics: stats, error } = await getLeadAnalytics()
 
-      if (error) {
+      if (error || !stats) {
         return graphqlError('Failed to fetch lead stats', 500)
       }
-
-      const stats = getLeadStats(mapLeadRowsToUiLeads(leads))
 
       const serviceDistribution = Object.entries(stats.serviceDistribution).map(
         ([category, count]) => ({
@@ -111,6 +118,9 @@ export async function POST(request: Request) {
             conversionRate:         stats.conversionRate,
             totalEstimatedPipeline: stats.totalEstimatedPipeline,
             dailyInquiryRate:       stats.dailyInquiryRate,
+            spamLeads:              stats.spamLeads,
+            closedLostLeads:        stats.closedLostLeads,
+            dailyTrend:             stats.dailyTrend,
             serviceDistribution,
             trackingDistribution:   stats.trackingDistribution,
           },
@@ -227,21 +237,27 @@ export async function POST(request: Request) {
     // ------------------------------------------------------------------------
     if (cleanQuery.includes('mutation') && cleanQuery.includes('createLead')) {
       const input = (vars.input ?? {}) as Record<string, unknown>
-      const fullName = (input.fullName ?? input.name) as string | undefined
-      const email = input.email as string | undefined
+      const fullName = requiredString(input.fullName) ?? requiredString(input.name)
+      const email = requiredString(input.email)
 
       if (!fullName || !email) {
         return graphqlError('createLead requires fullName and email')
       }
 
+      const service = parseLeadService(input.service)
+
+      if (!service) {
+        return graphqlError('createLead received an unknown service')
+      }
+
       const { lead, error } = await createLead({
         fullName,
         email,
-        phone:    (input.phone as string) || undefined,
-        company:  (input.company as string) || undefined,
-        service:  ((input.service as string) || 'general') as LeadServiceEnum,
-        message:  (input.message as string) || '',
-        tracking: input.tracking as never,
+        phone:    optionalString(input.phone),
+        company:  optionalString(input.company),
+        service,
+        message:  optionalString(input.message) ?? '',
+        tracking: parseTracking(input.tracking),
         estimatedValue:
           typeof input.estimatedValue === 'number' ? input.estimatedValue : undefined,
       })

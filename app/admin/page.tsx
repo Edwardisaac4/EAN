@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { 
-  getLeadStats, 
-  Lead, 
-  LeadStatus, 
-  LeadPriority 
+import {
+  getLeadStats,
+  Lead,
+  LeadStatus,
+  LeadPriority,
+  type LeadAnalytics
 } from '@/lib/admin-leads-data';
 import {
   graphqlQuery,
@@ -46,6 +47,15 @@ export default function AdminDashboardPage() {
   const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [loadError, setLoadError] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState(0);
+  // The API caps a single query, so the fetched rows are not necessarily the
+  // whole pipeline. Keeping the database total separate stops the headline KPI
+  // from silently reporting the page size as the total.
+  const [leadsTotal, setLeadsTotal] = useState<number | null>(null);
+  const [leadsTruncated, setLeadsTruncated] = useState(false);
+  // KPIs and charts read database-wide aggregates computed in Postgres, not the
+  // fetched page — see supabase/migrations/003_lead_analytics.sql.
+  const [analytics, setAnalytics] = useState<LeadAnalytics | null>(null);
+  const [analyticsError, setAnalyticsError] = useState<string | null>(null);
 
   // Leads are read live from the database — no local/mock fallback, so an
   // outage shows as an error rather than as a plausible-looking empty pipeline.
@@ -59,6 +69,8 @@ export default function AdminDashboardPage() {
 
         const fetched = data.leads ?? [];
         setLeads(fetched);
+        setLeadsTotal(data.leadsTotal ?? fetched.length);
+        setLeadsTruncated(Boolean(data.leadsTruncated));
         setLoadState('ready');
         setLoadError(null);
         setSelectedLead((current) =>
@@ -67,6 +79,8 @@ export default function AdminDashboardPage() {
       } catch (err) {
         if (cancelled) return;
         setLeads([]);
+        setLeadsTotal(null);
+        setLeadsTruncated(false);
         setLoadState('error');
         setLoadError(err instanceof Error ? err.message : 'Could not load leads.');
       }
@@ -76,6 +90,41 @@ export default function AdminDashboardPage() {
 
     return () => {
       cancelled = true;
+    };
+  }, [refreshToken]);
+
+  // Aggregates are refetched alongside the leads so a status change is reflected
+  // in the KPI cards, not just in the table row.
+  useEffect(() => {
+    let cancelled = false;
+    const controller = new AbortController();
+
+    async function loadAnalytics() {
+      try {
+        const res = await fetch('/api/analytics/leads', { signal: controller.signal });
+        const json = await res.json().catch(() => null);
+        if (cancelled) return;
+
+        if (!res.ok || !json?.success || !json.stats) {
+          throw new Error(json?.error ?? `Analytics request failed (HTTP ${res.status}).`);
+        }
+
+        setAnalytics(json.stats as LeadAnalytics);
+        setAnalyticsError(null);
+      } catch (err) {
+        if (cancelled) return;
+        setAnalytics(null);
+        setAnalyticsError(
+          err instanceof Error ? err.message : 'Could not load database-wide figures.'
+        );
+      }
+    }
+
+    loadAnalytics();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
     };
   }, [refreshToken]);
 
@@ -92,7 +141,12 @@ export default function AdminDashboardPage() {
     []
   );
 
-  const stats = getLeadStats(leads);
+  // Aggregates come from Postgres. The page-derived figures are only a fallback
+  // for when that request fails, and they describe the loaded rows alone — which
+  // the banner below states explicitly rather than passing them off as totals.
+  const pageStats = getLeadStats(leads);
+  const stats = analytics ?? pageStats;
+  const totalLeads = analytics?.totalLeads ?? leadsTotal ?? pageStats.totalLeads;
 
   const filteredLeads = leads.filter((l) => {
     if (!globalSearch.trim()) return true;
@@ -165,7 +219,7 @@ export default function AdminDashboardPage() {
               href="/admin/leads"
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-ean-gold hover:bg-ean-gold-light text-ean-black font-semibold text-xs transition-all shadow-[0_0_20px_rgba(196,149,42,0.25)]"
             >
-              <span>Manage All Leads ({stats.totalLeads})</span>
+              <span>Manage All Leads ({totalLeads})</span>
               <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
@@ -184,14 +238,43 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
+        {analyticsError && (
+          <div className="flex items-start gap-2 p-4 rounded-xl bg-amber-500/10 border border-amber-500/40 text-xs text-amber-200">
+            <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold">Database-wide figures unavailable</p>
+              <p className="text-amber-200/80 mt-0.5">
+                Cards and charts below are computed from the {leads.length} lead
+                {leads.length === 1 ? '' : 's'} loaded on this page only. {analyticsError}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!analyticsError && leadsTruncated && (
+          <div className="flex items-start gap-2 p-4 rounded-xl bg-sky-500/10 border border-sky-500/40 text-xs text-sky-200">
+            <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold">
+                Cards and charts cover all {totalLeads} leads; the table below lists the {leads.length} most recent
+              </p>
+              <p className="text-sky-200/80 mt-0.5">
+                Use the Master Lead Hub filters to reach older records.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Top Metric Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <LeadStatCard
             title="Total Inquiries Captured"
-            value={stats.totalLeads}
-            change="+22%"
-            changeType="positive"
-            subtitle="Auto & Manual"
+            value={totalLeads}
+            subtitle={
+              analytics
+                ? `${analytics.spamLeads} marked spam, excluded`
+                : 'Auto & Manual'
+            }
             icon={Users}
           />
           <LeadStatCard
@@ -205,18 +288,23 @@ export default function AdminDashboardPage() {
           />
           <LeadStatCard
             title="Avg SLA Response Time"
-            value={`${stats.avgResponseSlaMinutes} mins`}
-            change="-8 mins"
-            changeType="positive"
+            value={
+              stats.avgResponseSlaMinutes !== null
+                ? `${stats.avgResponseSlaMinutes} mins`
+                : 'No responses yet'
+            }
+            changeType={
+              stats.avgResponseSlaMinutes !== null && stats.avgResponseSlaMinutes > 45
+                ? 'negative'
+                : 'positive'
+            }
             subtitle="Target: < 45 mins"
             icon={Clock}
             accentColor="text-emerald-400"
           />
           <LeadStatCard
             title="Inquiries Per Day"
-            value="14 / day"
-            change="+18%"
-            changeType="positive"
+            value={`${stats.dailyInquiryRate ?? 0} / day`}
             subtitle="7-day avg daily influx"
             icon={TrendingUp}
             accentColor="text-amber-400"
@@ -226,10 +314,10 @@ export default function AdminDashboardPage() {
         {/* VISUAL GRAPHS SECTION 1: Lead Trend Curve Graph & Service Donut Chart */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Visual SVG Lead Volume Trend Curve */}
-          <LeadTrendChart />
+          <LeadTrendChart data={analytics?.dailyTrend} />
 
           {/* Visual Donut Chart for Service Category Breakdown */}
-          <ServiceDonutChart distribution={stats.serviceDistribution} total={stats.totalLeads} />
+          <ServiceDonutChart distribution={stats.serviceDistribution} total={totalLeads} />
         </div>
 
         {/* VISUAL GRAPHS SECTION 2: Acquisition Channels Bar Graph & Urgent Attention Board */}

@@ -177,7 +177,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     eyebrow: "The Most Comprehensive Aviation Services Company in West Africa",
     title: "Elevating Every\nJourney",
     subtitle: "FBO Services · Aircraft Charter · NCAA-Approved\nMaintenance · VIP Ground Handling",
-    image: "/images/hero/slider 1.png",
+    image: "/images/hero/slide-1.jpg",
     primaryCta: {
       text: "Make an Inquiry",
       href: "#contact-section",
@@ -192,7 +192,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     eyebrow: "Exclusive Private Flight Solutions",
     title: "Precision in Flight,\nLuxury in Detail",
     subtitle: "Experience bespoke jet and helicopter chartering tailored to\nyour schedule and designed for ultimate comfort.",
-    image: "/images/hero/slider 2.jpg",
+    image: "/images/hero/slide-2.jpg",
     primaryCta: {
       text: "Book a Charter",
       href: "/charter",
@@ -207,7 +207,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     eyebrow: "NCAA-Approved Maintenance Organisation",
     title: "Uncompromising\nSafety & Standards",
     subtitle: "West Africa's certified maintenance hub keeping business jets\nand commercial fleets flying safely.",
-    image: "/images/hero/slider 3.png",
+    image: "/images/hero/slide-3.jpg",
     primaryCta: {
       text: "Maintenance Services",
       href: "/services/aircraft-maintenance",
@@ -222,7 +222,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     eyebrow: "Nigeria's Premier FBO Hangar & VIP Lounge",
     title: "The EAN Way of\nDeparture",
     subtitle: "Enjoy the luxury of Lagos airport's dedicated VIP private terminal,\naccompanied by Wings™ freshly prepared in-flight catering.",
-    image: "/images/hero/slider 4.jpeg",
+    image: "/images/hero/slide-4.jpg",
     primaryCta: {
       text: "VIP Lounge Experience",
       href: "/services/vip-lounge",
@@ -424,7 +424,7 @@ export const ARTICLES_DATABASE: Article[] = [
     excerpt: 'Key trends shaping executive air travel corridors, aircraft distribution, and fleet expansions in West Africa in 2026.',
     publishedAt: 'July 18, 2026',
     readTime: '6 min read',
-    image: '/images/about-jet.png',
+    image: '/images/about-jet.jpg',
     isFeatured: true,
   },
   {
@@ -443,7 +443,7 @@ export const ARTICLES_DATABASE: Article[] = [
     excerpt: 'How our NCAA-approved Aircraft Maintenance Organisation (AMO) ensures flight operations safety and precision.',
     publishedAt: 'July 10, 2026',
     readTime: '4 min read',
-    image: '/images/charter-cabin.png',
+    image: '/images/charter-cabin.jpg',
   },
   {
     slug: 'bespoke-catering-in-flight-culinary',
@@ -452,7 +452,7 @@ export const ARTICLES_DATABASE: Article[] = [
     excerpt: 'A sneak peek behind EAN\'s Wings™ Kitchen operations, crafting customized gourmet private jet menus.',
     publishedAt: 'July 05, 2026',
     readTime: '3 min read',
-    image: '/images/charter-cabin.png',
+    image: '/images/charter-cabin.jpg',
   },
   {
     slug: 'vip-lounge-redefining-departure',
@@ -470,7 +470,7 @@ export const ARTICLES_DATABASE: Article[] = [
     excerpt: 'Key parameters to evaluate when selecting rotary aircraft, custom turbines, and regional ranges.',
     publishedAt: 'June 20, 2026',
     readTime: '7 min read',
-    image: '/images/about-jet.png',
+    image: '/images/about-jet.jpg',
   },
 ];
 
@@ -488,7 +488,7 @@ export const MOCK_POSTS: BlogPostMock[] = [
     category: 'Business Aviation',
     excerpt: 'Key trends shaping executive air travel corridors, aircraft distribution, and fleet expansions in 2026.',
     publishedAt: 'July 10, 2026',
-    image: '/images/about-jet.png',
+    image: '/images/about-jet.jpg',
     slug: 'future-of-business-aviation-2026',
   },
   {
@@ -496,7 +496,7 @@ export const MOCK_POSTS: BlogPostMock[] = [
     category: 'Industry News',
     excerpt: 'How our NCAA-approved Aircraft Maintenance Organisation (AMO) ensures flight operations safety.',
     publishedAt: 'June 28, 2026',
-    image: '/images/charter-cabin.png',
+    image: '/images/charter-cabin.jpg',
     slug: 'safety-standards-inside-maintenance-hub',
   },
 ];
@@ -543,7 +543,7 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     year: "2009",
     title: "Founding & First Integrated FBO Hangar",
     category: "INFRASTRUCTURE & PIONEERING",
-    image: "/images/hero/slide-1.png",
+    image: "/images/hero/slide-1.jpg",
     description:
       "EAN Aviation was established in Lagos, launching West Africa’s first fully integrated Fixed Base Operator (FBO) hangar at Murtala Muhammed International Airport.",
     story: [
@@ -615,7 +615,7 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     year: "2013",
     title: "First Exclusive Gulfstream Representative",
     category: "AIRCRAFT SALES & BROKERAGE",
-    image: "/images/about-jet.png",
+    image: "/images/about-jet.jpg",
     description:
       "Appointed as the first exclusive sales representative for Gulfstream Aerospace in West Africa, leading executive jet acquisitions and brokerage.",
     story: [
@@ -687,7 +687,7 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     year: "2019",
     title: "Achieved IS-BAO Certification Stage 2",
     category: "GLOBAL SAFETY REGISTRATION",
-    image: "/images/contact-cta.png",
+    image: "/images/contact-cta.jpg",
     description:
       "Achieved International Standard for Business Aircraft Operations (IS-BAO) Stage 2 registration, reinforcing international safety and operational compliance.",
     story: [
@@ -705,7 +705,7 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     year: "2021",
     title: "First Exclusive Airbus Helicopter Distributors in Africa",
     category: "ROTARY-WING DISTRIBUTORSHIP",
-    image: "/images/charter-cabin.png",
+    image: "/images/charter-cabin.jpg",
     description:
       "Appointed as exclusive distributors for Airbus Helicopters in the region, offering rotary-wing sales, MRO support, and fleet management.",
     story: [
@@ -759,7 +759,7 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     year: "2026",
     title: "On-Site Customs and Immigration (CIQ) Launch",
     category: "TERMINAL CIQ CLEARANCE",
-    image: "/images/hero/slide-4.png",
+    image: "/images/hero/slide-4.jpg",
     description:
       "Introduced dedicated on-site Customs, Immigration, and Quarantine (CIQ) facilities at the Lagos FBO for immediate, hassle-free international passenger clearance.",
     story: [
@@ -825,7 +825,7 @@ export const COMMITTEE_MEMBERS: CommitteeMember[] = [
   {
     name: 'Boyede Oyegbami',
     role: 'Aviation Commercial Leader',
-    image: '/images/about-jet.png',
+    image: '/images/about-jet.jpg',
     bio: [
       "Boyede Oyegbami is an accomplished aviation commercial leader with over a decade of experience driving business growth, customer acquisition, and operational excellence across leading energy and aviation fueling companies in Nigeria.",
       "Prior to joining EAN, Boyede served as Aviation Commercial Manager at Eternal Plc, leading aviation business start-up, regulatory compliance, and end-to-end jet fuel operations, achieving milestones such as first into-plane fueling within a year and onboarding five airline customers in five months.",
@@ -893,7 +893,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Head, Marketing",
     department: "Marketing",
     departmentLabel: "Marketing",
-    image: "/images/leadership/Josephine Kolawole Head, Marketing.jpg",
+    image: "/images/leadership/Josephine Kolawole Head Marketing.jpg",
     quote:
       "Every marketing strategy begins with brand clarity — articulating our commitment to safety, luxury, and unmatched service in business aviation.",
     bio: [
@@ -1054,7 +1054,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Head, Legal Services",
     department: "Legal",
     departmentLabel: "Legal Services",
-    image: "/images/leadership/Vivian Okoh-Olutunfese Head, Legal Services.png",
+    image: "/images/leadership/Vivian Okoh-Olutunfese Head Legal Services.jpg",
     quote:
       "Navigating the complexities of international aviation demands precision, proactive engagement, and absolute regulatory alignment.",
     bio: [
@@ -1124,7 +1124,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Head, Finance",
     department: "Finance",
     departmentLabel: "Finance & Governance",
-    image: "/images/leadership/Ahmed Kazeem Head, Finance.jpg",
+    image: "/images/leadership/Ahmed Kazeem Head Finance.jpg",
     quote:
       "Ensuring that EAN's financial engine runs with the same sophistication as our premium aviation services.",
     bio: [

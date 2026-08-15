@@ -1,12 +1,17 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown } from 'lucide-react';
+import Presence from '@/components/shared/Presence';
 import { NAV_ITEMS, NAV_CTA } from '@/lib/constants';
+
+interface IndicatorRect {
+  left: number;
+  width: number;
+}
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -15,16 +20,61 @@ export default function Navbar() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState<string | null>(null);
 
+  // Sliding gold underline. Replaces framer-motion's layoutId morph: one
+  // absolutely positioned bar inside the nav, translated onto whichever item
+  // matches the current route.
+  const navRef = useRef<HTMLElement>(null);
+  const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [indicator, setIndicator] = useState<IndicatorRect | null>(null);
+
+  const isItemActive = useCallback(
+    (item: (typeof NAV_ITEMS)[number]) =>
+      pathname === item.href || item.dropdownItems?.some((sub) => pathname === sub.href),
+    [pathname]
+  );
+
+  const measureIndicator = useCallback(() => {
+    const nav = navRef.current;
+    const activeItem = NAV_ITEMS.find(isItemActive);
+    const el = activeItem ? itemRefs.current[activeItem.name] : null;
+
+    if (!nav || !el) {
+      setIndicator(null);
+      return;
+    }
+
+    const navBox = nav.getBoundingClientRect();
+    const itemBox = el.getBoundingClientRect();
+    setIndicator({ left: itemBox.left - navBox.left, width: itemBox.width });
+  }, [isItemActive]);
+
+  useEffect(() => {
+    measureIndicator();
+
+    const nav = navRef.current;
+    if (!nav) return;
+
+    // The nav resizes while the header shrinks on scroll, so observing it keeps
+    // the underline attached to its item throughout that transition.
+    const observer = new ResizeObserver(measureIndicator);
+    observer.observe(nav);
+    window.addEventListener('resize', measureIndicator);
+
+    // Web fonts can change item widths after first measure.
+    document.fonts?.ready.then(measureIndicator).catch(() => {});
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', measureIndicator);
+    };
+  }, [measureIndicator]);
+
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -58,80 +108,83 @@ export default function Navbar() {
 
           {/* Desktop & Tablet Landscape Navigation + CTA */}
           <div className="hidden lg:flex items-center gap-5 xl:gap-8">
-            <nav className="flex items-center gap-4 xl:gap-7">
-              {NAV_ITEMS.map((item) => (
-                <div
-                  key={item.name}
-                  className="relative"
-                  onMouseEnter={() => item.dropdownItems && setActiveDropdown(item.name)}
-                  onMouseLeave={() => item.dropdownItems && setActiveDropdown(null)}
-                >
-                  {item.dropdownItems ? (
-                    <>
+            <nav ref={navRef} className="relative flex items-center gap-4 xl:gap-7">
+              {NAV_ITEMS.map((item) => {
+                const isActive = isItemActive(item);
+                // Bound outside the render prop below so the narrowing survives.
+                const dropdownItems = item.dropdownItems;
+
+                return (
+                  <div
+                    key={item.name}
+                    ref={(el) => {
+                      itemRefs.current[item.name] = el;
+                    }}
+                    className="relative"
+                    onMouseEnter={() => item.dropdownItems && setActiveDropdown(item.name)}
+                    onMouseLeave={() => item.dropdownItems && setActiveDropdown(null)}
+                  >
+                    {item.dropdownItems ? (
+                      <>
+                        <Link
+                          href={item.href}
+                          className={`font-ui text-xs xl:text-sm tracking-widest transition-colors duration-300 relative py-2 flex items-center gap-1 cursor-pointer ${isActive
+                              ? 'text-ean-gold font-medium'
+                              : 'text-ean-muted-light hover:text-white'
+                            }`}
+                        >
+                          <span>{item.name}</span>
+                          <ChevronDown
+                            size={14}
+                            className={`transition-transform duration-300 ${activeDropdown === item.name ? 'rotate-180 text-ean-gold' : ''
+                              }`}
+                          />
+                        </Link>
+
+                        <Presence show={activeDropdown === item.name} durationMs={200}>
+                          {(state) => (
+                            <div
+                              className={`absolute top-full left-1/2 mt-1 w-52 bg-ean-navy-mid border border-ean-border-dark py-2 rounded-xs shadow-[0_10px_30px_rgba(0,0,0,0.6)] z-50 flex flex-col ${state === 'open' ? 'ean-enter-dropdown' : 'ean-exit-dropdown'
+                                }`}
+                            >
+                              {item.dropdownItems.map((subItem) => (
+                                <Link
+                                  key={subItem.name}
+                                  href={subItem.href}
+                                  className="font-ui text-xs tracking-widest text-ean-muted-light hover:text-white hover:bg-white/5 px-4 py-2.5 transition-colors duration-200 text-left"
+                                >
+                                  {subItem.name}
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </Presence>
+                      </>
+                    ) : (
                       <Link
                         href={item.href}
-                        className={`font-ui text-xs xl:text-sm tracking-widest transition-colors duration-300 relative py-2 flex items-center gap-1 cursor-pointer ${pathname === item.href || item.dropdownItems.some((sub) => pathname === sub.href)
+                        className={`font-ui text-xs xl:text-sm tracking-widest transition-colors duration-300 relative py-2 block ${isActive
                             ? 'text-ean-gold font-medium'
                             : 'text-ean-muted-light hover:text-white'
                           }`}
                       >
                         <span>{item.name}</span>
-                        <ChevronDown
-                          size={14}
-                          className={`transition-transform duration-300 ${activeDropdown === item.name ? 'rotate-180 text-ean-gold' : ''
-                            }`}
-                        />
-                        {(pathname === item.href || item.dropdownItems.some((sub) => pathname === sub.href)) && (
-                          <motion.span
-                            layoutId="activeNavIndicator"
-                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-ean-gold rounded-full shadow-[0_0_8px_rgba(196,149,42,0.8)]"
-                            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                          />
-                        )}
                       </Link>
+                    )}
+                  </div>
+                );
+              })}
 
-                      <AnimatePresence>
-                        {activeDropdown === item.name && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                            transition={{ duration: 0.2 }}
-                            className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-52 bg-ean-navy-mid border border-ean-border-dark py-2 rounded-xs shadow-[0_10px_30px_rgba(0,0,0,0.6)] z-50 flex flex-col"
-                          >
-                            {item.dropdownItems.map((subItem) => (
-                              <Link
-                                key={subItem.name}
-                                href={subItem.href}
-                                className="font-ui text-xs tracking-widest text-ean-muted-light hover:text-white hover:bg-white/5 px-4 py-2.5 transition-colors duration-200 text-left"
-                              >
-                                {subItem.name}
-                              </Link>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      className={`font-ui text-xs xl:text-sm tracking-widest transition-colors duration-300 relative py-2 block ${pathname === item.href
-                          ? 'text-ean-gold font-medium'
-                          : 'text-ean-muted-light hover:text-white'
-                        }`}
-                    >
-                      <span>{item.name}</span>
-                      {pathname === item.href && (
-                        <motion.span
-                          layoutId="activeNavIndicator"
-                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-ean-gold rounded-full shadow-[0_0_8px_rgba(196,149,42,0.8)]"
-                          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                        />
-                      )}
-                    </Link>
-                  )}
-                </div>
-              ))}
+              {/* Single sliding underline shared by every nav item */}
+              <span
+                aria-hidden="true"
+                className="ean-indicator absolute bottom-0 left-0 h-0.5 bg-ean-gold rounded-full shadow-[0_0_8px_rgba(196,149,42,0.8)] pointer-events-none"
+                style={{
+                  width: indicator?.width ?? 0,
+                  transform: `translateX(${indicator?.left ?? 0}px)`,
+                  opacity: indicator ? 1 : 0,
+                }}
+              />
             </nav>
             <Link href={NAV_CTA.href}>
               <button className="bg-ean-gold hover:bg-ean-gold-light text-ean-navy text-xs font-ui font-bold uppercase tracking-widest px-5 xl:px-6 py-2 rounded-full transition-all duration-300 cursor-pointer shadow-[0_4px_12px_rgba(196,149,42,0.15)] hover:shadow-[0_4px_18px_rgba(196,149,42,0.3)]">
@@ -152,14 +205,11 @@ export default function Navbar() {
       </header>
 
       {/* Mobile & iPad Menu Drawer Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 bg-ean-navy pt-24 px-6 md:px-12 flex flex-col gap-6 lg:hidden overflow-y-auto"
+      <Presence show={isMobileMenuOpen} durationMs={300}>
+        {(state) => (
+          <div
+            className={`fixed inset-0 z-40 bg-ean-navy pt-24 px-6 md:px-12 flex flex-col gap-6 lg:hidden overflow-y-auto ${state === 'open' ? 'ean-enter-down' : 'ean-exit-down'
+              }`}
           >
             <nav className="flex flex-col gap-4">
               {NAV_ITEMS.map((item) => (
@@ -190,15 +240,15 @@ export default function Navbar() {
                         </button>
                       </div>
 
-                      <AnimatePresence>
-                        {mobileDropdownOpen === item.name && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.25 }}
-                            className="overflow-hidden pl-4 flex flex-col gap-3 py-2 bg-black/10 rounded-sm"
-                          >
+                      {/* Grid-rows trick animates to intrinsic height without JS measurement */}
+                      <div
+                        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${mobileDropdownOpen === item.name
+                            ? 'grid-rows-[1fr] opacity-100'
+                            : 'grid-rows-[0fr] opacity-0'
+                          }`}
+                      >
+                        <div className="overflow-hidden">
+                          <div className="pl-4 flex flex-col gap-3 py-2 bg-black/10 rounded-sm">
                             {item.dropdownItems.map((subItem) => (
                               <Link
                                 key={subItem.name}
@@ -212,9 +262,9 @@ export default function Navbar() {
                                 {subItem.name}
                               </Link>
                             ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                          </div>
+                        </div>
+                      </div>
                     </>
                   ) : (
                     <Link
@@ -237,10 +287,9 @@ export default function Navbar() {
                 </button>
               </Link>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
+      </Presence>
     </>
   );
 }
-

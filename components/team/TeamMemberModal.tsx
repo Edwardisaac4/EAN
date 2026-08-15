@@ -78,7 +78,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                       fill
                       sizes="(max-width: 768px) 100vw, 30vw"
                       className="object-cover object-top"
-                      quality={95}
+                      quality={80}
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-60" />
                   </div>

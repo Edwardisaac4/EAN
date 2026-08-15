@@ -24,6 +24,18 @@ import { LeadPipelineKanban } from '@/components/admin/LeadPipelineKanban';
 import { LeadDetailDrawer } from '@/components/admin/LeadDetailDrawer';
 import { Users, Cpu, ShieldAlert } from 'lucide-react';
 
+const SEARCH_DEBOUNCE_MS = 350;
+
+/**
+ * Serialises one CSV cell: quotes it, escapes embedded quotes, and neutralises
+ * values a spreadsheet would evaluate as a formula.
+ */
+const csvCell = (value: string | number | null | undefined): string => {
+  const text = value === null || value === undefined ? '' : String(value);
+  const safe = /^[=+\-@]/.test(text) ? `'${text}` : text;
+  return `"${safe.replace(/"/g, '""')}"`;
+};
+
 export default function MasterLeadHubPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
@@ -38,20 +50,34 @@ export default function MasterLeadHubPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState(0);
 
+  // Search runs server-side, so keystrokes are debounced into a single query
+  // rather than one request per character.
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   // Leads come from Supabase via the admin lead API. There is deliberately no
   // local fallback: showing stale or mock rows in a CRM is worse than showing the
   // error, because the team cannot tell the difference.
   useEffect(() => {
     let cancelled = false;
+    const controller = new AbortController();
 
     async function load() {
       try {
-        const data = await graphqlQuery<LeadsQueryResult>(QUERY_GET_LEADS, {
-          search: searchQuery,
-          status: selectedStatus,
-          service: selectedService,
-          priority: selectedPriority,
-        });
+        const data = await graphqlQuery<LeadsQueryResult>(
+          QUERY_GET_LEADS,
+          {
+            search: debouncedSearch,
+            status: selectedStatus,
+            service: selectedService,
+            priority: selectedPriority,
+          },
+          { signal: controller.signal }
+        );
         if (cancelled) return;
 
         const fetched = data.leads ?? [];
@@ -72,11 +98,13 @@ export default function MasterLeadHubPage() {
 
     load();
 
-    // Guards against out-of-order responses when filters change rapidly.
+    // Guards against out-of-order responses when filters change rapidly, and
+    // drops the in-flight request so a superseded query cannot land late.
     return () => {
       cancelled = true;
+      controller.abort();
     };
-  }, [searchQuery, selectedStatus, selectedService, selectedPriority, refreshToken]);
+  }, [debouncedSearch, selectedStatus, selectedService, selectedPriority, refreshToken]);
 
   /**
    * Runs a mutation against the database, then triggers a refetch so the table
@@ -115,28 +143,34 @@ export default function MasterLeadHubPage() {
 
   const handleExportCsv = () => {
     const headers = ['Lead Code', 'Full Name', 'Email', 'Phone', 'Company', 'Service', 'Referral Source', 'Priority', 'Status', 'Submitted At'];
-    const csvCell = (value: string) => `"${value.replace(/"/g, '""')}"`;
     const rows = leads.map((l) => [
       l.leadCode ?? l.id,
-      csvCell(l.fullName),
+      l.fullName,
       l.email,
       l.phone,
-      csvCell(l.company || ''),
+      l.company || '',
       SERVICE_LABELS[l.service],
-      csvCell(l.source || l.tracking?.utmSource || 'Direct'),
+      l.source || l.tracking?.utmSource || 'Direct',
       l.priority,
       l.status,
       l.createdAt,
     ]);
 
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
+    const csvContent = [headers, ...rows]
+      .map((row) => row.map(csvCell).join(','))
+      .join('\r\n');
+
+    // A Blob URL keeps commas, quotes, and non-ASCII names intact; encodeURI on
+    // a data: URI mangled them and broke on larger exports.
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `EAN_Aero_Leads_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.href = url;
+    link.download = `EAN_Aero_Leads_${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (

@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plane,
   Wrench,
@@ -33,6 +32,45 @@ const ICON_MAP = {
 export default function ServicesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState(0);
+
+  // Sliding gold pill behind the active tab — the CSS equivalent of the
+  // layoutId morph this used to get from framer-motion.
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const [pill, setPill] = useState<{
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  } | null>(null);
+
+  const measurePill = useCallback(() => {
+    const strip = tabsRef.current;
+    const el = tabRefs.current[activeTab];
+    if (!strip || !el) return;
+
+    // offsetLeft/offsetTop are relative to the scrolling strip, so the pill
+    // stays aligned even when the tab bar scrolls horizontally on mobile.
+    setPill({
+      left: el.offsetLeft,
+      top: el.offsetTop,
+      width: el.offsetWidth,
+      height: el.offsetHeight,
+    });
+  }, [activeTab]);
+
+  useEffect(() => {
+    measurePill();
+
+    const strip = tabsRef.current;
+    if (!strip) return;
+
+    const observer = new ResizeObserver(measurePill);
+    observer.observe(strip);
+    document.fonts?.ready.then(measurePill).catch(() => {});
+
+    return () => observer.disconnect();
+  }, [measurePill]);
 
   const activeService = SERVICES_DATA[activeTab] || SERVICES_DATA[0];
   const ActiveIcon = ICON_MAP[activeService.iconName as keyof typeof ICON_MAP] || Plane;
@@ -78,7 +116,22 @@ export default function ServicesSection() {
         {/* Interactive Services Explorer */}
         <div className="space-y-8">
           {/* Horizontal Service Tabs Bar */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-3 pt-1 scrollbar-none border-b border-white/10">
+          <div
+            ref={tabsRef}
+            className="relative flex items-center gap-2 overflow-x-auto pb-3 pt-1 scrollbar-none border-b border-white/10"
+          >
+            {/* Single gold pill that glides to whichever tab is active */}
+            <span
+              aria-hidden="true"
+              className="ean-indicator absolute left-0 top-0 bg-ean-gold rounded-xs shadow-lg pointer-events-none"
+              style={{
+                width: pill?.width ?? 0,
+                height: pill?.height ?? 0,
+                transform: `translate(${pill?.left ?? 0}px, ${pill?.top ?? 0}px)`,
+                opacity: pill ? 1 : 0,
+              }}
+            />
+
             {SERVICES_DATA.map((srv, idx) => {
               const IconComp = ICON_MAP[srv.iconName as keyof typeof ICON_MAP] || Plane;
               const isActive = activeTab === idx;
@@ -86,19 +139,15 @@ export default function ServicesSection() {
               return (
                 <button
                   key={srv.slug}
+                  ref={(el) => {
+                    tabRefs.current[idx] = el;
+                  }}
                   onClick={() => setActiveTab(idx)}
-                  className={`relative flex items-center gap-2.5 px-5 py-3 rounded-xs font-ui text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive
+                  className={`relative z-10 flex items-center gap-2.5 px-5 py-3 rounded-xs font-ui text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive
                       ? 'text-ean-navy font-semibold'
                       : 'text-ean-muted-light hover:text-white bg-ean-navy-mid/70 border border-white/10 hover:border-white/25'
                     }`}
                 >
-                  {isActive && (
-                    <motion.div
-                      layoutId="active-service-pill"
-                      className="absolute inset-0 bg-ean-gold rounded-xs shadow-lg"
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    />
-                  )}
                   <span className="relative z-10 flex items-center gap-2">
                     <IconComp size={16} className={isActive ? 'text-ean-navy' : 'text-ean-gold'} />
                     <span>{srv.name}</span>
@@ -110,14 +159,10 @@ export default function ServicesSection() {
 
           {/* Active Service Showcase Spotlight (White Container Box) */}
           <div className="bg-white border-t-4 border-t-ean-navy border-x border-b border-slate-200 rounded-xs overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-12 relative text-slate-900">
-            <AnimatePresence mode="wait">
-              <motion.div
+            {/* Keying on the slug replays the CSS enter animation per service */}
+            <div
                 key={activeService.slug}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.35, ease: 'easeOut' }}
-                className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+                className="ean-enter-up grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
               >
                 {/* Left Column: Details & Capabilities */}
                 <div className="lg:col-span-7 space-y-6">
@@ -182,8 +227,8 @@ export default function ServicesSection() {
                       fill
                       sizes="(max-width: 1024px) 100vw, 45vw"
                       className="object-cover transition-transform duration-750 group-hover:scale-105"
-                      quality={95}
-                      priority
+                      quality={80}
+                      loading="lazy"
                     />
                     {/* Soft Shadow Gradient Overlay */}
                     <div className="absolute inset-0 bg-linear-to-t from-ean-black/80 via-ean-black/20 to-transparent" />
@@ -203,8 +248,7 @@ export default function ServicesSection() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            </AnimatePresence>
+            </div>
           </div>
         </div>
       </div>

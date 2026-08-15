@@ -160,6 +160,8 @@ export default function ContactPage() {
   // Form Submission Handler calling POST /api/leads
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // validateForm() replaces the whole error map, which also clears any
+    // `form`-level failure left over from a previous submission.
     if (!validateForm()) return;
 
     setIsSubmitting(true);
@@ -337,6 +339,16 @@ export default function ContactPage() {
                             className="space-y-5 font-ui"
                             noValidate
                           >
+                            {/* Submission failure — API rejection or network error */}
+                            {errors.form && (
+                              <div
+                                role="alert"
+                                className="bg-red-500/10 border border-red-500/40 text-red-300 px-4 py-3 rounded-xs text-xs sm:text-sm"
+                              >
+                                {errors.form}
+                              </div>
+                            )}
+
                             {/* Row 1: Name */}
                             <div className="flex flex-col gap-1.5">
                               <label htmlFor="name" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
@@ -608,7 +620,7 @@ export default function ContactPage() {
             fill
             sizes="100vw"
             className="object-cover"
-            quality={90}
+            quality={80}
           />
           {/* Visual Dark Overlay to match page transition */}
           <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-ean-navy/40 to-transparent" />

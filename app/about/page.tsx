@@ -6,7 +6,6 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { motion } from 'framer-motion';
 import { 
   ShieldCheck, 
   Crown, 
@@ -125,13 +124,13 @@ export default function AboutPage() {
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%]">
             <Image
-              src="/images/hero/slide-1.png"
+              src="/images/hero/slide-1.jpg"
               alt="EAN Aviation premium private jet inside MMIA hangar at sunset"
               fill
               sizes="100vw"
               priority
               className="object-cover"
-              quality={95}
+              quality={80}
             />
             {/* Immersive overlay gradient (radial + linear dark wash) */}
             <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-ean-navy/60 to-ean-navy/40" />
@@ -262,10 +261,8 @@ export default function AboutPage() {
                 const IconComponent = iconMap[pillar.icon as keyof typeof iconMap];
                 return (
                   <SectionReveal key={idx}>
-                    <motion.div
-                      whileHover={{ y: -6, boxShadow: '0 10px 30px rgba(196, 149, 42, 0.1)' }}
-                      transition={{ duration: 0.25, ease: 'easeOut' }}
-                      className="h-full bg-ean-navy/40 border border-white/5 hover:border-ean-gold/30 p-8 rounded-xs backdrop-blur-xs flex flex-col justify-between transition-colors duration-300"
+                    <div
+                      className="h-full bg-ean-navy/40 border border-white/5 hover:border-ean-gold/30 hover:-translate-y-1.5 hover:shadow-[0_10px_30px_rgba(196,149,42,0.1)] p-8 rounded-xs backdrop-blur-xs flex flex-col justify-between transition-[border-color,transform,box-shadow] duration-300 ease-out"
                     >
                       <div className="space-y-6">
                         <div className="w-12 h-12 rounded-xs bg-ean-gold/10 flex items-center justify-center text-ean-gold border border-ean-gold/20">
@@ -278,7 +275,7 @@ export default function AboutPage() {
                           {pillar.description}
                         </p>
                       </div>
-                    </motion.div>
+                    </div>
                   </SectionReveal>
                 );
               })}

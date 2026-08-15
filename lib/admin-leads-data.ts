@@ -46,7 +46,11 @@ export interface LeadStats {
   qualifiedLeads: number;
   closedWonLeads: number;
   dailyInquiryRate?: number;
-  avgResponseSlaMinutes: number;
+  /**
+   * Mean minutes from capture to the first human activity. `null` when no lead
+   * has been responded to yet — render that as "no data", never as 0.
+   */
+  avgResponseSlaMinutes: number | null;
   conversionRate: number;
   totalEstimatedPipeline: number;
   serviceDistribution: Record<ServiceCategory, number>;
@@ -56,6 +60,29 @@ export interface LeadStats {
     devices: Record<string, number>;
   };
 }
+
+/** One point on the seven-day inquiry trend. */
+export interface LeadTrendPoint {
+  /** ISO `YYYY-MM-DD`, Africa/Lagos day boundaries. */
+  date: string;
+  /** Pre-formatted axis label, e.g. `Aug 9`. */
+  label: string;
+  count: number;
+}
+
+/**
+ * Database-wide aggregates from the `lead_analytics()` RPC. Unlike `LeadStats`
+ * computed from a fetched page, these describe every lead in the table.
+ */
+export interface LeadAnalytics extends LeadStats {
+  /** Excluded from every other figure; surfaced so it is not silently dropped. */
+  spamLeads: number;
+  closedLostLeads: number;
+  dailyTrend: LeadTrendPoint[];
+}
+
+/** Activity authors written by automation, excluded from response-time stats. */
+const SYSTEM_AUTHOR_PATTERN = /^system/i;
 
 export const SERVICE_LABELS: Record<ServiceCategory, string> = {
   fbo: 'FBO & Ground Support',
@@ -82,6 +109,19 @@ export const PRIORITY_LABELS: Record<LeadPriority, string> = {
   normal: 'Standard',
   low: 'Low',
 };
+
+/**
+ * Builds a `mailto:` link for a lead. Both the address and the subject are
+ * percent-encoded — an address or lead code containing `&`, `?`, or a space
+ * would otherwise truncate the subject or corrupt the recipient.
+ */
+export function buildLeadMailtoHref(lead: Lead, options?: { reply?: boolean }): string {
+  const subject = `${options?.reply ? 'RE: ' : ''}EAN Aviation Inquiry (${lead.leadCode ?? lead.id})`;
+  // `@` stays literal: it is part of mailto's own syntax and some clients do not
+  // decode %40 in the recipient.
+  const address = encodeURIComponent(lead.email).replace(/%40/g, '@');
+  return `mailto:${address}?subject=${encodeURIComponent(subject)}`;
+}
 
 export function getLeadStats(leads: Lead[]): LeadStats {
   const totalLeads = leads.length;
@@ -136,6 +176,29 @@ export function getLeadStats(leads: Lead[]): LeadStats {
 
   const dailyInquiryRate = totalLeads > 0 ? Math.round((totalLeads / 7) * 10) / 10 : 0;
 
+  // Measured from the first non-automated activity on each lead. Leads nobody
+  // has touched yet are excluded rather than counted as instant responses.
+  const responseMinutes = leads.reduce<number[]>((acc, l) => {
+    const createdAt = new Date(l.createdAt).getTime();
+    if (!Number.isFinite(createdAt)) return acc;
+
+    const firstHumanReply = (l.activities ?? [])
+      .filter((a) => !SYSTEM_AUTHOR_PATTERN.test(a.author))
+      .map((a) => new Date(a.timestamp).getTime())
+      .filter((t) => Number.isFinite(t) && t >= createdAt)
+      .sort((a, b) => a - b)[0];
+
+    if (firstHumanReply === undefined) return acc;
+
+    acc.push((firstHumanReply - createdAt) / 60000);
+    return acc;
+  }, []);
+
+  const avgResponseSlaMinutes =
+    responseMinutes.length > 0
+      ? Math.round(responseMinutes.reduce((sum, m) => sum + m, 0) / responseMinutes.length)
+      : null;
+
   return {
     totalLeads,
     newLeads,
@@ -143,7 +206,7 @@ export function getLeadStats(leads: Lead[]): LeadStats {
     qualifiedLeads,
     closedWonLeads,
     dailyInquiryRate,
-    avgResponseSlaMinutes: 24,
+    avgResponseSlaMinutes,
     conversionRate,
     totalEstimatedPipeline,
     serviceDistribution,

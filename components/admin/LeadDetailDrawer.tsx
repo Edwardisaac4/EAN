@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  Lead, 
-  LeadStatus, 
-  LeadPriority, 
-  SERVICE_LABELS, 
-  STATUS_LABELS 
+import {
+  buildLeadMailtoHref,
+  Lead,
+  LeadStatus,
+  LeadPriority,
+  SERVICE_LABELS,
+  STATUS_LABELS
 } from '@/lib/admin-leads-data';
 import { 
   X, 
@@ -197,7 +198,7 @@ export function LeadDetailDrawer({
             {/* Quick Actions Bar */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 p-2.5 rounded-xl bg-ean-black-accent border border-ean-border-dark">
               <a
-                href={`mailto:${lead.email}?subject=EAN Aviation Inquiry (${lead.leadCode ?? lead.id})`}
+                href={buildLeadMailtoHref(lead)}
                 className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg bg-ean-gold hover:bg-ean-gold-light text-ean-black font-semibold text-xs transition-all text-center"
               >
                 <Mail className="w-3.5 h-3.5 shrink-0" />

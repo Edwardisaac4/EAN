@@ -259,7 +259,16 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      /**
+       * Dashboard lead aggregates in one round trip — see
+       * supabase/migrations/003_lead_analytics.sql. The payload is validated at
+       * the service boundary (`getLeadAnalytics`) because Postgres returns it as
+       * an opaque jsonb value.
+       */
+      lead_analytics: {
+        Args: Record<string, never>
+        Returns: Json
+      }
     }
     Enums: {
       lead_service: LeadServiceEnum

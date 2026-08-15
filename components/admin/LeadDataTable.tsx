@@ -1,12 +1,13 @@
 'use client';
 
 import React from 'react';
-import { 
-  Lead, 
-  LeadStatus, 
-  LeadPriority, 
-  SERVICE_LABELS, 
-  STATUS_LABELS 
+import {
+  buildLeadMailtoHref,
+  Lead,
+  LeadStatus,
+  LeadPriority,
+  SERVICE_LABELS,
+  STATUS_LABELS
 } from '@/lib/admin-leads-data';
 import { 
   Eye, 
@@ -206,7 +207,7 @@ export function LeadDataTable({ leads, onSelectLead, onQuickStatusChange }: Lead
                       <Eye className="w-3.5 h-3.5" />
                     </button>
                     <a
-                      href={`mailto:${lead.email}?subject=RE: EAN Aviation Inquiry (${lead.leadCode ?? lead.id})`}
+                      href={buildLeadMailtoHref(lead, { reply: true })}
                       className="p-1.5 rounded-lg bg-white/5 hover:bg-ean-gold/20 text-ean-muted-light hover:text-ean-gold transition-colors"
                       title="Email Lead"
                     >

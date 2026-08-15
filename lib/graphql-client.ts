@@ -21,7 +21,8 @@ export interface LeadsQueryResult {
  */
 export async function graphqlQuery<T>(
   query: string,
-  variables?: Record<string, unknown>
+  variables?: Record<string, unknown>,
+  options?: { signal?: AbortSignal }
 ): Promise<T> {
   const response = await fetch('/api/graphql', {
     method: 'POST',
@@ -30,16 +31,34 @@ export async function graphqlQuery<T>(
       'Accept': 'application/json',
     },
     body: JSON.stringify({ query, variables }),
+    signal: options?.signal,
   });
 
   if (response.status === 401) {
     throw new Error('Your admin session has expired. Please sign in again.');
   }
 
-  const json: GraphQLResponse<T> = await response.json();
+  // The API returns its own `errors` array alongside 4xx/5xx statuses, and those
+  // messages are the useful ones — so the body is read first. Failures that carry
+  // no JSON body (proxy timeout, HTML error page) fall through to the status
+  // message instead of surfacing a JSON parser error.
+  let json: GraphQLResponse<T> | null = null;
+  try {
+    json = (await response.json()) as GraphQLResponse<T>;
+  } catch {
+    json = null;
+  }
 
-  if (json.errors && json.errors.length > 0) {
+  if (json?.errors && json.errors.length > 0) {
     throw new Error(json.errors[0].message);
+  }
+
+  if (!response.ok) {
+    throw new Error(`The leads API request failed (HTTP ${response.status}).`);
+  }
+
+  if (!json) {
+    throw new Error('The leads API returned an unreadable response.');
   }
 
   if (!json.data) {
@@ -101,13 +120,21 @@ export const QUERY_GET_LEAD_STATS = `
   query GetLeadStats {
     leadStats {
       totalLeads
+      spamLeads
       newLeads
       inProgressLeads
       qualifiedLeads
       closedWonLeads
+      closedLostLeads
       avgResponseSlaMinutes
       conversionRate
       totalEstimatedPipeline
+      dailyInquiryRate
+      dailyTrend {
+        date
+        label
+        count
+      }
       serviceDistribution {
         category
         label

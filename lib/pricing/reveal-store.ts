@@ -31,12 +31,32 @@ let state: RevealState | null = null
 
 const listeners = new Set<() => void>()
 
+/**
+ * Storage is writable by anything running on the origin, so the restored lead is
+ * shape-checked before it reaches the UI — a malformed value would otherwise
+ * render as `undefined` in the revealed quote summary.
+ */
+function isLeadDetails(value: unknown): value is LeadDetails {
+  if (!value || typeof value !== 'object') return false
+  const lead = value as Record<string, unknown>
+  return (
+    typeof lead.name === 'string' &&
+    typeof lead.email === 'string' &&
+    typeof lead.phone === 'string' &&
+    typeof lead.company === 'string'
+  )
+}
+
 function parseStored(raw: string | null): RevealState {
   if (!raw) return UNREVEALED
   try {
     const parsed = JSON.parse(raw) as Partial<RevealState> | null
     if (!parsed || typeof parsed.revealed !== 'boolean') return UNREVEALED
-    return { revealed: parsed.revealed, lead: parsed.lead ?? null }
+
+    const lead = parsed.lead
+    if (lead !== null && lead !== undefined && !isLeadDetails(lead)) return UNREVEALED
+
+    return { revealed: parsed.revealed, lead: lead ?? null }
   } catch {
     return UNREVEALED
   }

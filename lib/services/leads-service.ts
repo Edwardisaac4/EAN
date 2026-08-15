@@ -4,6 +4,8 @@
 // =============================================================================
 
 import { adminSupabase } from '@/utils/supabase/admin'
+import { LEAD_SERVICE_VALUES } from './lead-input'
+import type { LeadAnalytics, LeadTrendPoint } from '@/lib/admin-leads-data'
 import type {
   LeadRow,
   LeadWithDetails,
@@ -128,6 +130,16 @@ function deriveSource(tracking?: LeadSubmissionPayload['tracking']): string {
 const DUPLICATE_WINDOW_MINUTES = 10
 
 /**
+ * Single representation of an address used for both storage and duplicate
+ * lookups. Callers submit whatever the visitor typed, so without normalising
+ * here `Ada@Example.com ` and `ada@example.com` would be stored as two records
+ * and never match each other in the duplicate guard.
+ */
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase()
+}
+
+/**
  * Finds a lead this person already submitted for the same service moments ago.
  *
  * Refreshing a gated pricing page or double-clicking submit would otherwise
@@ -144,7 +156,7 @@ export async function findRecentDuplicateLead(
   const { data, error } = await adminSupabase
     .from('leads')
     .select('*')
-    .eq('email', email)
+    .eq('email', normalizeEmail(email))
     .eq('service', service)
     .gte('created_at', cutoff)
     .order('created_at', { ascending: false })
@@ -183,7 +195,7 @@ export async function createLead(
     .from('leads')
     .insert({
       full_name: payload.fullName,
-      email: payload.email,
+      email: normalizeEmail(payload.email),
       phone: payload.phone || '',
       company: payload.company || null,
       service,
@@ -474,30 +486,28 @@ export async function updateLead(
   const activities: NewLeadActivity[] = []
   const actorName = author || 'Lead Admin'
 
-  {
-    if (dbUpdates.status && dbUpdates.status !== currentLead.status) {
-      activities.push({
-        lead_id: id,
-        author: actorName,
-        action: `Status updated from ${currentLead.status} to ${dbUpdates.status}`,
-      })
-    }
-    if (dbUpdates.priority && dbUpdates.priority !== currentLead.priority) {
-      activities.push({
-        lead_id: id,
-        author: actorName,
-        action: `Priority updated from ${currentLead.priority} to ${dbUpdates.priority}`,
-      })
-    }
-    if (dbUpdates.assigned_to !== undefined && dbUpdates.assigned_to !== currentLead.assigned_to) {
-      activities.push({
-        lead_id: id,
-        author: actorName,
-        action: dbUpdates.assigned_to
-          ? `Lead assigned to ${dbUpdates.assigned_to}`
-          : 'Lead unassigned',
-      })
-    }
+  if (dbUpdates.status && dbUpdates.status !== currentLead.status) {
+    activities.push({
+      lead_id: id,
+      author: actorName,
+      action: `Status updated from ${currentLead.status} to ${dbUpdates.status}`,
+    })
+  }
+  if (dbUpdates.priority && dbUpdates.priority !== currentLead.priority) {
+    activities.push({
+      lead_id: id,
+      author: actorName,
+      action: `Priority updated from ${currentLead.priority} to ${dbUpdates.priority}`,
+    })
+  }
+  if (dbUpdates.assigned_to !== undefined && dbUpdates.assigned_to !== currentLead.assigned_to) {
+    activities.push({
+      lead_id: id,
+      author: actorName,
+      action: dbUpdates.assigned_to
+        ? `Lead assigned to ${dbUpdates.assigned_to}`
+        : 'Lead unassigned',
+    })
   }
 
   if (activities.length > 0) {
@@ -547,69 +557,144 @@ export async function addLeadNote(
 }
 
 // =============================================================================
-// LEAD STATS — dashboard aggregation
+// LEAD ANALYTICS — database-wide aggregates via the lead_analytics() RPC
 // =============================================================================
 
-export interface LeadStats {
-  totalLeads: number
-  newLeads: number
-  inProgressLeads: number
-  qualifiedLeads: number
-  closedWonLeads: number
-  conversionRate: number
-  totalEstimatedPipeline: number
+/**
+ * Every figure the admin dashboard shows, computed in Postgres in one round trip
+ * (see supabase/migrations/003_lead_analytics.sql). Spam is excluded throughout.
+ *
+ * This replaced reducing up to 500 fully-joined lead rows in Node: that capped
+ * each figure at the page size and shipped names, emails, messages and notes
+ * across the wire only to count them.
+ */
+export async function getLeadAnalytics(): Promise<{
+  analytics: LeadAnalytics | null
+  error: string | null
+}> {
+  const { data, error } = await adminSupabase.rpc('lead_analytics')
+
+  if (error) {
+    console.error('Failed to compute lead analytics:', error)
+    return { analytics: null, error: error.message }
+  }
+
+  const analytics = parseLeadAnalytics(data)
+
+  if (!analytics) {
+    console.error('lead_analytics() returned an unexpected payload:', data)
+    return { analytics: null, error: 'Unexpected analytics payload' }
+  }
+
+  return { analytics, error: null }
 }
 
-export async function getLeadStats(): Promise<LeadStats> {
-  const [totalRes, newRes, inProgressRes, qualifiedRes, closedWonRes] =
-    await Promise.all([
-      adminSupabase
-        .from('leads')
-        .select('*', { count: 'exact', head: true }),
-      adminSupabase
-        .from('leads')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'new'),
-      adminSupabase
-        .from('leads')
-        .select('*', { count: 'exact', head: true })
-        .in('status', ['contacted', 'qualified', 'proposal_sent']),
-      adminSupabase
-        .from('leads')
-        .select('*', { count: 'exact', head: true })
-        .in('status', ['qualified', 'proposal_sent']),
-      adminSupabase
-        .from('leads')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'closed_won'),
-    ])
+/**
+ * Postgres hands the aggregate back as opaque `jsonb`, so the shape is checked
+ * once here rather than cast — a migration drift would otherwise surface as
+ * `undefined` inside a chart.
+ */
+function parseLeadAnalytics(value: unknown): LeadAnalytics | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
 
-  const total = totalRes.count ?? 0
-  const newLeads = newRes.count ?? 0
-  const inProgress = inProgressRes.count ?? 0
-  const qualified = qualifiedRes.count ?? 0
-  const closedWon = closedWonRes.count ?? 0
+  const raw = value as Record<string, unknown>
+  const num = (key: string): number => (typeof raw[key] === 'number' ? (raw[key] as number) : 0)
 
-  // Pipeline value
-  const { data: pipelineData } = await adminSupabase
-    .from('leads')
-    .select('estimated_value')
-    .in('status', ['new', 'contacted', 'qualified', 'proposal_sent'])
+  if (typeof raw.totalLeads !== 'number') return null
 
-  const totalEstimatedPipeline = (pipelineData || []).reduce(
-    (sum, row) => sum + (Number(row.estimated_value) || 0),
-    0
+  const serviceDistribution = LEAD_SERVICE_VALUES.reduce(
+    (acc, service) => {
+      const dist = raw.serviceDistribution
+      const count =
+        dist && typeof dist === 'object' && !Array.isArray(dist)
+          ? (dist as Record<string, unknown>)[service]
+          : undefined
+      acc[service] = typeof count === 'number' ? count : 0
+      return acc
+    },
+    {} as Record<LeadServiceEnum, number>
   )
 
   return {
-    totalLeads: total,
-    newLeads,
-    inProgressLeads: inProgress,
-    qualifiedLeads: qualified,
-    closedWonLeads: closedWon,
-    conversionRate: total > 0 ? Math.round((closedWon / total) * 100) : 0,
-    totalEstimatedPipeline,
+    totalLeads:             num('totalLeads'),
+    spamLeads:              num('spamLeads'),
+    newLeads:               num('newLeads'),
+    inProgressLeads:        num('inProgressLeads'),
+    qualifiedLeads:         num('qualifiedLeads'),
+    closedWonLeads:         num('closedWonLeads'),
+    closedLostLeads:        num('closedLostLeads'),
+    conversionRate:         num('conversionRate'),
+    totalEstimatedPipeline: num('totalEstimatedPipeline'),
+    dailyInquiryRate:       num('dailyInquiryRate'),
+    // Deliberately nullable: null means "nothing answered yet", not "zero minutes".
+    avgResponseSlaMinutes:
+      typeof raw.avgResponseSlaMinutes === 'number' ? raw.avgResponseSlaMinutes : null,
+    serviceDistribution,
+    trackingDistribution: {
+      topSources:      parseTopSources(raw.trackingDistribution),
+      topLandingPages: parseTopPages(raw.trackingDistribution),
+      devices:         parseDevices(raw.trackingDistribution),
+    },
+    dailyTrend: parseTrend(raw.dailyTrend),
   }
+}
+
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {}
+}
+
+function parseTopSources(tracking: unknown) {
+  const rows = asRecord(tracking).topSources
+  if (!Array.isArray(rows)) return []
+
+  return rows.flatMap((row) => {
+    const r = asRecord(row)
+    return typeof r.source === 'string'
+      ? [{
+          source:     r.source,
+          count:      typeof r.count === 'number' ? r.count : 0,
+          percentage: typeof r.percentage === 'number' ? r.percentage : 0,
+        }]
+      : []
+  })
+}
+
+function parseTopPages(tracking: unknown) {
+  const rows = asRecord(tracking).topLandingPages
+  if (!Array.isArray(rows)) return []
+
+  return rows.flatMap((row) => {
+    const r = asRecord(row)
+    return typeof r.page === 'string'
+      ? [{ page: r.page, count: typeof r.count === 'number' ? r.count : 0 }]
+      : []
+  })
+}
+
+function parseDevices(tracking: unknown): Record<string, number> {
+  const devices = asRecord(asRecord(tracking).devices)
+
+  return Object.entries(devices).reduce<Record<string, number>>((acc, [key, count]) => {
+    if (typeof count === 'number') acc[key] = count
+    return acc
+  }, {})
+}
+
+function parseTrend(value: unknown): LeadTrendPoint[] {
+  if (!Array.isArray(value)) return []
+
+  return value.flatMap((point) => {
+    const p = asRecord(point)
+    return typeof p.date === 'string' && typeof p.label === 'string'
+      ? [{
+          date:  p.date,
+          label: p.label,
+          count: typeof p.count === 'number' ? p.count : 0,
+        }]
+      : []
+  })
 }
 
 // =============================================================================
