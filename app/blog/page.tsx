@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowUpRight, 
   Calendar, 
@@ -31,6 +30,51 @@ export default function BlogPage() {
 
   // Category Filtering State
   const [activeCategory, setActiveCategory] = useState('All');
+
+  // Sliding gold filter pill — CSS equivalent of the old layoutId morph.
+  const filterBarRef = useRef<HTMLDivElement>(null);
+  const filterRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const [filterPill, setFilterPill] = useState<{
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  } | null>(null);
+  // Held false for the first paint so the pill appears in place rather than
+  // gliding in from the left edge on load.
+  const [isFilterPillAnimated, setIsFilterPillAnimated] = useState(false);
+
+  const measureFilterPill = useCallback(() => {
+    const idx = CATEGORIES.indexOf(activeCategory);
+    const el = filterRefs.current[idx];
+    if (!filterBarRef.current || !el) return;
+
+    setFilterPill({
+      left: el.offsetLeft,
+      top: el.offsetTop,
+      width: el.offsetWidth,
+      height: el.offsetHeight,
+    });
+  }, [activeCategory]);
+
+  useEffect(() => {
+    measureFilterPill();
+    const enableFrame = requestAnimationFrame(() => setIsFilterPillAnimated(true));
+
+    const bar = filterBarRef.current;
+    if (!bar) {
+      return () => cancelAnimationFrame(enableFrame);
+    }
+
+    const observer = new ResizeObserver(measureFilterPill);
+    observer.observe(bar);
+    document.fonts?.ready.then(measureFilterPill).catch(() => {});
+
+    return () => {
+      cancelAnimationFrame(enableFrame);
+      observer.disconnect();
+    };
+  }, [measureFilterPill]);
 
   // Newsletter form states
   const [email, setEmail] = useState('');
@@ -187,25 +231,32 @@ export default function BlogPage() {
           <div className="max-w-7xl mx-auto px-6 md:px-8">
             <div className="flex items-center justify-between overflow-x-auto scrollbar-none py-1 gap-8">
               {/* Category Pill Buttons */}
-              <div className="flex gap-2">
-                {CATEGORIES.map((cat) => {
+              <div ref={filterBarRef} className="relative flex gap-2">
+                {/* Single gold pill that glides to the active filter */}
+                <span
+                  aria-hidden="true"
+                  className={`${isFilterPillAnimated ? 'ean-indicator' : ''} absolute left-0 top-0 bg-ean-gold rounded-full shadow-[0_4px_12px_rgba(196,149,42,0.25)] pointer-events-none`}
+                  style={{
+                    width: filterPill?.width ?? 0,
+                    height: filterPill?.height ?? 0,
+                    transform: `translate(${filterPill?.left ?? 0}px, ${filterPill?.top ?? 0}px)`,
+                    opacity: filterPill ? 1 : 0,
+                  }}
+                />
+
+                {CATEGORIES.map((cat, idx) => {
                   const isActive = activeCategory === cat;
                   return (
                     <button
                       key={cat}
+                      ref={(el) => {
+                        filterRefs.current[idx] = el;
+                      }}
                       onClick={() => setActiveCategory(cat)}
-                      className={`relative px-4 py-2 text-xs font-ui font-bold uppercase tracking-wider rounded-full transition-colors duration-300 cursor-pointer ${
+                      className={`relative z-10 px-4 py-2 text-xs font-ui font-bold uppercase tracking-wider rounded-full transition-colors duration-300 cursor-pointer ${
                         isActive ? 'text-ean-navy' : 'text-ean-muted-light hover:text-white hover:bg-white/5'
                       }`}
                     >
-                      {/* Highlighted slide pill background */}
-                      {isActive && (
-                        <motion.span
-                          layoutId="activeFilterHighlight"
-                          className="absolute inset-0 bg-ean-gold rounded-full shadow-[0_4px_12px_rgba(196,149,42,0.25)]"
-                          transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                        />
-                      )}
                       <span className="relative z-10">{cat}</span>
                     </button>
                   );
@@ -224,15 +275,10 @@ export default function BlogPage() {
         <section className="bg-ean-white text-ean-text-dark py-20 sm:py-24 transition-colors duration-500">
           <div className="max-w-7xl mx-auto px-6 md:px-8">
             
-            <AnimatePresence mode="wait">
-              {filteredArticles.length > 0 ? (
-                <motion.div
+            {filteredArticles.length > 0 ? (
+                <div
                   key={activeCategory}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  transition={{ duration: 0.35, ease: 'easeOut' }}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                  className="ean-enter-up grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                   {filteredArticles.map((art, idx) => {
                     // Alternate spans:
@@ -247,16 +293,14 @@ export default function BlogPage() {
                     return (
                       <SectionReveal key={art.slug} className={`h-full ${gridClass}`}>
                         <Link href={`/blog/${art.slug}`} className="block h-full group focus:outline-none">
-                          <motion.div
-                            whileHover={{ y: -6, border: '1px solid rgba(196,149,42,0.4)', boxShadow: '0 12px 35px rgba(196,149,42,0.1)' }}
-                            transition={{ duration: 0.25, ease: 'easeOut' }}
-                            className={`bg-ean-surface border border-ean-border-light/60 p-0 rounded-xs shadow-xs overflow-hidden flex flex-col ${
+                          <div
+                            className={`bg-ean-surface border border-ean-border-light/60 p-0 rounded-xs shadow-xs overflow-hidden flex flex-col group-hover:-translate-y-1.5 group-hover:border-ean-gold/40 group-hover:shadow-[0_12px_35px_rgba(196,149,42,0.1)] ${
                               isWide 
                                 ? isImageRight 
                                   ? 'lg:flex-row' 
                                   : 'lg:flex-row-reverse' 
                                 : ''
-                            } h-full transition-colors duration-500 hover:bg-ean-navy hover:text-white`}
+                            } h-full transition-[background-color,border-color,color,transform,box-shadow] duration-500 ease-out hover:bg-ean-navy hover:text-white`}
                           >
                             {/* Image Box */}
                             <div className={`relative w-full ${isWide ? 'h-52 lg:h-auto lg:w-1/2 min-h-60' : 'h-52'} overflow-hidden bg-black/10 shrink-0`}>
@@ -307,19 +351,16 @@ export default function BlogPage() {
                                 </div>
                               </div>
                             </div>
-                          </motion.div>
+                          </div>
                         </Link>
                       </SectionReveal>
                     );
                   })}
-                </motion.div>
+                </div>
               ) : (
-                <motion.div
+                <div
                   key="no-articles"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="py-20 text-center font-ui space-y-4"
+                  className="ean-enter-fade py-20 text-center font-ui space-y-4"
                 >
                   <p className="text-ean-muted-dark text-lg">
                     No articles found matching this category.
@@ -330,9 +371,8 @@ export default function BlogPage() {
                   >
                     View All Articles
                   </button>
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
 
           </div>
         </section>
@@ -354,13 +394,10 @@ export default function BlogPage() {
                 Receive our quarterly analysis of West African flight regulations, corporate aviation indices, and distributorship insights directly to your desk.
               </p>
 
-              <AnimatePresence mode="wait">
-                {!success ? (
-                  <motion.form
+              {!success ? (
+                  <form
                     key="newsletter-form"
                     onSubmit={handleSubscribe}
-                    initial={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
                     className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto items-stretch font-ui"
                     noValidate
                   >
@@ -395,21 +432,18 @@ export default function BlogPage() {
                         </>
                       )}
                     </GoldButton>
-                  </motion.form>
+                  </form>
                 ) : (
-                  <motion.div
+                  <div
                     key="newsletter-success"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="bg-ean-gold/10 border border-ean-gold/20 p-6 rounded-xs max-w-md mx-auto text-center flex items-center justify-center gap-3 py-6"
+                    className="ean-enter-scale bg-ean-gold/10 border border-ean-gold/20 p-6 rounded-xs max-w-md mx-auto text-center flex items-center justify-center gap-3 py-6"
                   >
                     <CheckCircle2 className="w-5 h-5 text-ean-gold shrink-0" />
                     <span className="font-ui text-sm text-white font-medium">
                       Subscription successful. Welcome to Executive Insights.
                     </span>
-                  </motion.div>
+                  </div>
                 )}
-              </AnimatePresence>
             </SectionReveal>
           </div>
         </section>

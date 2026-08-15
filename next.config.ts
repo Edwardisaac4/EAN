@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
-    optimizePackageImports: ["lucide-react", "framer-motion", "date-fns"],
+    optimizePackageImports: ["lucide-react", "date-fns"],
   },
 
   compiler: {

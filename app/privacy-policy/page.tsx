@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import Presence from '@/components/shared/Presence';
 import {
   ShieldCheck,
   Lock,
@@ -515,14 +515,13 @@ export default function PrivacyPolicyPage() {
         </section>
 
         {/* DSAR MODAL / DRAWER */}
-        <AnimatePresence>
-          {isDSAROpen && (
+        <Presence show={isDSAROpen} durationMs={250}>
+          {(state) => (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-ean-navy border border-white/10 text-white w-full max-w-xl p-8 rounded-xs shadow-2xl relative space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar"
+              <div
+                className={`bg-ean-navy border border-white/10 text-white w-full max-w-xl p-8 rounded-xs shadow-2xl relative space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar ${
+                  state === 'open' ? 'ean-enter-scale' : 'ean-exit-scale'
+                }`}
               >
                 <button
                   onClick={() => setIsDSAROpen(false)}
@@ -637,10 +636,10 @@ export default function PrivacyPolicyPage() {
                     </div>
                   </form>
                 )}
-              </motion.div>
+              </div>
             </div>
           )}
-        </AnimatePresence>
+        </Presence>
       </main>
     </>
   );

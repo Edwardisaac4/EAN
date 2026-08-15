@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import Presence from '@/components/shared/Presence';
 import { X, ShieldCheck, Quote, Mail, Award, CheckCircle2, ChevronRight } from 'lucide-react';
 import { TeamMember } from '@/lib/constants';
 
@@ -31,25 +31,20 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
   if (!member) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
+    <Presence show={isOpen} durationMs={350}>
+      {(state) => (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto">
           {/* Backdrop Blur Overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
             onClick={onClose}
-            className="fixed inset-0 bg-black/75 backdrop-blur-xl backdrop-saturate-150 cursor-pointer"
+            className={`fixed inset-0 bg-black/75 backdrop-blur-xl backdrop-saturate-150 cursor-pointer ${
+              state === 'open' ? 'ean-enter-fade' : 'ean-exit-fade'
+            }`}
           />
 
           {/* Modal Card Window */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-4xl bg-linear-to-b from-white via-ean-surface to-ean-surface border border-ean-gold/40 rounded-2xl md:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.5)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col"
+          <div
+            className={`${state === 'open' ? 'ean-enter-modal' : 'ean-exit-modal'} relative w-full max-w-4xl bg-linear-to-b from-white via-ean-surface to-ean-surface border border-ean-gold/40 rounded-2xl md:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.5)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col`}
           >
             {/* Executive Close Button Header */}
             <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4.5 bg-linear-to-r from-ean-burgundy via-ean-burgundy-accent to-ean-burgundy-rich border-b border-ean-gold/30 shadow-md">
@@ -175,9 +170,9 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                 </Link>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
-    </AnimatePresence>
+    </Presence>
   );
 }

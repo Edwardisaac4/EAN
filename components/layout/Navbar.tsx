@@ -26,6 +26,9 @@ export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [indicator, setIndicator] = useState<IndicatorRect | null>(null);
+  // Held false for the first paint so the underline appears in place rather
+  // than gliding in from the left edge on every page load.
+  const [isIndicatorAnimated, setIsIndicatorAnimated] = useState(false);
 
   const isItemActive = useCallback(
     (item: (typeof NAV_ITEMS)[number]) =>
@@ -50,9 +53,12 @@ export default function Navbar() {
 
   useEffect(() => {
     measureIndicator();
+    const enableFrame = requestAnimationFrame(() => setIsIndicatorAnimated(true));
 
     const nav = navRef.current;
-    if (!nav) return;
+    if (!nav) {
+      return () => cancelAnimationFrame(enableFrame);
+    }
 
     // The nav resizes while the header shrinks on scroll, so observing it keeps
     // the underline attached to its item throughout that transition.
@@ -64,6 +70,7 @@ export default function Navbar() {
     document.fonts?.ready.then(measureIndicator).catch(() => {});
 
     return () => {
+      cancelAnimationFrame(enableFrame);
       observer.disconnect();
       window.removeEventListener('resize', measureIndicator);
     };
@@ -121,10 +128,10 @@ export default function Navbar() {
                       itemRefs.current[item.name] = el;
                     }}
                     className="relative"
-                    onMouseEnter={() => item.dropdownItems && setActiveDropdown(item.name)}
-                    onMouseLeave={() => item.dropdownItems && setActiveDropdown(null)}
+                    onMouseEnter={() => dropdownItems && setActiveDropdown(item.name)}
+                    onMouseLeave={() => dropdownItems && setActiveDropdown(null)}
                   >
-                    {item.dropdownItems ? (
+                    {dropdownItems ? (
                       <>
                         <Link
                           href={item.href}
@@ -147,7 +154,7 @@ export default function Navbar() {
                               className={`absolute top-full left-1/2 mt-1 w-52 bg-ean-navy-mid border border-ean-border-dark py-2 rounded-xs shadow-[0_10px_30px_rgba(0,0,0,0.6)] z-50 flex flex-col ${state === 'open' ? 'ean-enter-dropdown' : 'ean-exit-dropdown'
                                 }`}
                             >
-                              {item.dropdownItems.map((subItem) => (
+                              {dropdownItems.map((subItem) => (
                                 <Link
                                   key={subItem.name}
                                   href={subItem.href}
@@ -178,7 +185,7 @@ export default function Navbar() {
               {/* Single sliding underline shared by every nav item */}
               <span
                 aria-hidden="true"
-                className="ean-indicator absolute bottom-0 left-0 h-0.5 bg-ean-gold rounded-full shadow-[0_0_8px_rgba(196,149,42,0.8)] pointer-events-none"
+                className={`${isIndicatorAnimated ? 'ean-indicator' : ''} absolute bottom-0 left-0 h-0.5 bg-ean-gold rounded-full shadow-[0_0_8px_rgba(196,149,42,0.8)] pointer-events-none`}
                 style={{
                   width: indicator?.width ?? 0,
                   transform: `translateX(${indicator?.left ?? 0}px)`,

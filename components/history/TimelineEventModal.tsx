@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import Presence from '@/components/shared/Presence';
 import { X, CheckCircle2, ChevronRight, Sparkles, BookOpen } from 'lucide-react';
 import { TimelineEvent } from '@/lib/constants';
 
@@ -31,25 +31,20 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
   if (!event) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
+    <Presence show={isOpen} durationMs={350}>
+      {(state) => (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto select-none">
           {/* Dark Backdrop Overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
             onClick={onClose}
-            className="fixed inset-0 bg-black/80 backdrop-blur-md cursor-pointer"
+            className={`fixed inset-0 bg-black/80 backdrop-blur-md cursor-pointer ${
+              state === 'open' ? 'ean-enter-fade' : 'ean-exit-fade'
+            }`}
           />
 
           {/* Modal Card Window */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-3xl bg-linear-to-b from-ean-burgundy-deep via-ean-burgundy-dark to-ean-black text-white border border-ean-gold/40 rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.7)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col"
+          <div
+            className={`${state === 'open' ? 'ean-enter-modal' : 'ean-exit-modal'} relative w-full max-w-3xl bg-linear-to-b from-ean-burgundy-deep via-ean-burgundy-dark to-ean-black text-white border border-ean-gold/40 rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.7)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col`}
           >
             {/* Header Strip */}
             <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4 bg-linear-to-r from-ean-burgundy-rich via-ean-burgundy-dusk to-ean-burgundy-deep border-b border-white/10 shadow-md">
@@ -160,9 +155,9 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
                 </Link>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
-    </AnimatePresence>
+    </Presence>
   );
 }

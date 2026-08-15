@@ -43,6 +43,9 @@ export default function ServicesSection() {
     width: number;
     height: number;
   } | null>(null);
+  // Held false for the first paint so the pill appears in place rather than
+  // gliding in from the left edge on load.
+  const [isPillAnimated, setIsPillAnimated] = useState(false);
 
   const measurePill = useCallback(() => {
     const strip = tabsRef.current;
@@ -61,15 +64,21 @@ export default function ServicesSection() {
 
   useEffect(() => {
     measurePill();
+    const enableFrame = requestAnimationFrame(() => setIsPillAnimated(true));
 
     const strip = tabsRef.current;
-    if (!strip) return;
+    if (!strip) {
+      return () => cancelAnimationFrame(enableFrame);
+    }
 
     const observer = new ResizeObserver(measurePill);
     observer.observe(strip);
     document.fonts?.ready.then(measurePill).catch(() => {});
 
-    return () => observer.disconnect();
+    return () => {
+      cancelAnimationFrame(enableFrame);
+      observer.disconnect();
+    };
   }, [measurePill]);
 
   const activeService = SERVICES_DATA[activeTab] || SERVICES_DATA[0];
@@ -123,7 +132,7 @@ export default function ServicesSection() {
             {/* Single gold pill that glides to whichever tab is active */}
             <span
               aria-hidden="true"
-              className="ean-indicator absolute left-0 top-0 bg-ean-gold rounded-xs shadow-lg pointer-events-none"
+              className={`${isPillAnimated ? 'ean-indicator' : ''} absolute left-0 top-0 bg-ean-gold rounded-xs shadow-lg pointer-events-none`}
               style={{
                 width: pill?.width ?? 0,
                 height: pill?.height ?? 0,
