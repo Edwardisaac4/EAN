@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState } from 'react'
 import { LeadDetails, QuoteResult, QuoteState } from '@/types/pricing'
 import { getTrackingContext } from '@/lib/lead-tracking'
 import { Loader2 } from 'lucide-react'
+import HoneypotField from '@/components/shared/HoneypotField'
 
 interface LeadGateProps {
   onSubmitLead: (lead: LeadDetails) => void
@@ -29,11 +30,13 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
   const [phone, setPhone] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const firstInputRef = useRef<HTMLInputElement>(null)
+  // Spam trap — see components/shared/HoneypotField.tsx.
+  const [honeypot, setHoneypot] = useState('')
 
-  useEffect(() => {
-    firstInputRef.current?.focus()
-  }, [])
+  // No focus-on-mount. This gate is rendered inline in the quote summary on
+  // first paint, not opened by a user action, so focusing the name field stole
+  // focus from the page and scrolled the visitor past the calculator they came
+  // to use — before they had entered anything to be gated on.
 
   // The calculator falls back to a Band A default weight when nothing is
   // selected, so a quote always has a total. Without this check we would capture
@@ -96,6 +99,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
           // this quote instead of a flat per-service estimate.
           estimatedValue: quote?.usdTotal,
           tracking: getTrackingContext('pricing_portal_reveal_gate'),
+          website: honeypot,
         }),
       })
 
@@ -116,16 +120,16 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
   }
 
   return (
-    <div className="bg-[#F8F3F1] border border-[#E5D7C5] rounded-2xl p-6 text-left shadow-xs space-y-4">
+    <div className="bg-ean-surface border border-ean-border-light rounded-2xl p-6 text-left shadow-xs space-y-4">
       {/* BADGE PILL */}
-      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-[#E5D7C5] rounded-full text-xs font-ui font-semibold text-[#581825] shadow-2xs">
-        <span className="w-2 h-2 rounded-full bg-[#581825]" />
+      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-ean-border-light rounded-full text-xs font-ui font-semibold text-ean-burgundy-rich shadow-2xs">
+        <span className="w-2 h-2 rounded-full bg-ean-burgundy-rich" />
         See your price
       </div>
 
       {/* CARD HEADINGS */}
       <div>
-        <h3 className="font-ui font-bold text-base md:text-lg text-[#581825]">
+        <h3 className="font-ui font-bold text-base md:text-lg text-ean-burgundy-rich">
           Enter your details to reveal pricing
         </h3>
         <p className="font-ui text-xs md:text-sm text-ean-muted-dark mt-0.5">
@@ -134,7 +138,8 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
       </div>
 
       {/* FORM */}
-      <form onSubmit={handleSubmit} className="space-y-3 pt-1">
+      <form onSubmit={handleSubmit} className="relative space-y-3 pt-1">
+        <HoneypotField value={honeypot} onChange={setHoneypot} />
         {error && (
           <div
             role="alert"
@@ -147,13 +152,12 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
         {/* INPUT 1: FULL NAME */}
         <div>
           <input
-            ref={firstInputRef}
             type="text"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Full name"
-            className="w-full px-4 py-3 bg-white border border-[#E5D7C5] rounded-xl font-ui text-sm text-[#1A2035] placeholder:text-gray-400 focus:outline-none focus:border-[#581825] focus:ring-1 focus:ring-[#581825] transition-colors"
+            className="w-full px-4 py-3 bg-white border border-ean-border-light rounded-xl font-ui text-sm text-ean-text-dark placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-burgundy-rich focus:ring-1 focus:ring-ean-burgundy-rich transition-colors"
           />
         </div>
 
@@ -165,7 +169,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full px-4 py-3 bg-white border border-[#E5D7C5] rounded-xl font-ui text-sm text-[#1A2035] placeholder:text-gray-400 focus:outline-none focus:border-[#581825] focus:ring-1 focus:ring-[#581825] transition-colors"
+            className="w-full px-4 py-3 bg-white border border-ean-border-light rounded-xl font-ui text-sm text-ean-text-dark placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-burgundy-rich focus:ring-1 focus:ring-ean-burgundy-rich transition-colors"
           />
           <input
             type="tel"
@@ -173,7 +177,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="Phone / WhatsApp"
-            className="w-full px-4 py-3 bg-white border border-[#E5D7C5] rounded-xl font-ui text-sm text-[#1A2035] placeholder:text-gray-400 focus:outline-none focus:border-[#581825] focus:ring-1 focus:ring-[#581825] transition-colors"
+            className="w-full px-4 py-3 bg-white border border-ean-border-light rounded-xl font-ui text-sm text-ean-text-dark placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-burgundy-rich focus:ring-1 focus:ring-ean-burgundy-rich transition-colors"
           />
         </div>
 
@@ -181,7 +185,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
         <button
           type="submit"
           disabled={isSubmitting || !hasAircraft}
-          className="w-full mt-2 py-3.5 px-6 bg-[#581825] hover:bg-[#4A121A] text-white font-ui font-bold text-sm rounded-xl transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full mt-2 py-3.5 px-6 bg-ean-burgundy-rich hover:bg-ean-burgundy text-white font-ui font-bold text-sm rounded-xl transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <>

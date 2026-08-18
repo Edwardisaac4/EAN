@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { withReducedMotion } from '@/lib/gsap-motion';
 import { 
   ArrowUpRight, 
   Calendar, 
@@ -83,29 +84,38 @@ export default function BlogPage() {
   const [success, setSuccess] = useState(false);
 
   useGSAP(
-    () => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    () =>
+      withReducedMotion(
+        () => {
+          const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      tl.fromTo(
-        featuredTitleRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8, delay: 0.2 }
-      );
+          tl.fromTo(
+            featuredTitleRef.current,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.8, delay: 0.2 }
+          );
 
-      tl.fromTo(
-        featuredExcerptRef.current,
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.6 },
-        '-=0.4'
-      );
+          tl.fromTo(
+            featuredExcerptRef.current,
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.6 },
+            '-=0.4'
+          );
 
-      tl.fromTo(
-        featuredImageRef.current,
-        { opacity: 0, scale: 0.96 },
-        { opacity: 1, scale: 1, duration: 1 },
-        '-=0.7'
-      );
-    },
+          tl.fromTo(
+            featuredImageRef.current,
+            { opacity: 0, scale: 0.96 },
+            { opacity: 1, scale: 1, duration: 1 },
+            '-=0.7'
+          );
+        },
+        () => {
+          gsap.set(
+            [featuredTitleRef.current, featuredExcerptRef.current, featuredImageRef.current],
+            { opacity: 1, y: 0, scale: 1, clearProps: 'transform' }
+          );
+        }
+      ),
     { scope: heroRef }
   );
 
@@ -146,7 +156,7 @@ export default function BlogPage() {
     <>
       <Navbar />
 
-      <main className="flex-1 flex flex-col bg-ean-navy text-white select-none">
+      <main className="flex-1 flex flex-col bg-ean-navy text-white">
         {/* SECTION 1: Featured Post Hero */}
         <section
           ref={heroRef}
@@ -166,7 +176,7 @@ export default function BlogPage() {
                   <Link href={`/blog/${featuredArticle.slug}`} className="group block">
                     <h1
                       ref={featuredTitleRef}
-                      className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-white leading-[1.1] group-hover:text-ean-gold transition-colors duration-300 opacity-0"
+                      className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-white leading-[1.1] group-hover:text-ean-gold transition-colors duration-300"
                     >
                       {featuredArticle.title}
                     </h1>
@@ -175,7 +185,7 @@ export default function BlogPage() {
 
                 <p
                   ref={featuredExcerptRef}
-                  className="font-ui text-sm sm:text-base text-ean-muted-light leading-relaxed max-w-2xl opacity-0"
+                  className="font-ui text-sm sm:text-base text-ean-muted-light leading-relaxed max-w-2xl"
                 >
                   {featuredArticle.excerpt}
                 </p>
@@ -207,7 +217,7 @@ export default function BlogPage() {
               {/* Right Column: Hero Cover Image */}
               <div 
                 ref={featuredImageRef} 
-                className="lg:col-span-6 relative w-full h-65 sm:h-87.5 lg:h-105 rounded-xs overflow-hidden border border-white/10 group opacity-0 shadow-2xl shadow-black/60"
+                className="lg:col-span-6 relative w-full h-65 sm:h-87.5 lg:h-105 rounded-xs overflow-hidden border border-white/10 group shadow-2xl shadow-black/60"
               >
                 <Image
                   src={featuredArticle.image}

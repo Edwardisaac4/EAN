@@ -22,11 +22,17 @@ interface PresenceProps {
 export default function Presence({ show, durationMs = 200, children }: PresenceProps) {
   const [isMounted, setIsMounted] = useState(show);
 
+  // Mounting on the way *in* has to be immediate, so it is adjusted during
+  // render rather than in an effect — React re-renders before committing, so the
+  // child never paints a frame in its closed state. Doing this in an effect
+  // instead would flash one unstyled frame and trip react-hooks/set-state-in-effect.
+  if (show && !isMounted) {
+    setIsMounted(true);
+  }
+
   useEffect(() => {
-    if (show) {
-      setIsMounted(true);
-      return;
-    }
+    // Only the way *out* needs to be deferred, to let the CSS exit animation run.
+    if (show) return;
 
     const timer = setTimeout(() => setIsMounted(false), durationMs);
     return () => clearTimeout(timer);

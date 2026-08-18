@@ -19,6 +19,8 @@ import {
 import Navbar from '@/components/layout/Navbar';
 import SectionReveal from '@/components/shared/SectionReveal';
 import GoldButton from '@/components/shared/GoldButton';
+import HoneypotField from '@/components/shared/HoneypotField';
+import { withReducedMotion } from '@/lib/gsap-motion';
 
 // Static Data Structures
 import { FAQ_ITEMS, LAGOS_HQ } from '@/lib/constants';
@@ -70,6 +72,9 @@ export default function ContactPage() {
     company: '',
     message: '',
   });
+  // Spam trap — see components/shared/HoneypotField.tsx. Never rendered visibly,
+  // so any value here came from a bot.
+  const [honeypot, setHoneypot] = useState('');
 
   const [selectedServices, setSelectedServices] = useState<string[]>(['charter']);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -105,23 +110,33 @@ export default function ContactPage() {
   const [openFAQIndex, setOpenFAQIndex] = useState<number | null>(null);
 
   useGSAP(
-    () => {
-      // Elegant Header fade-in
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    () =>
+      withReducedMotion(
+        () => {
+          // Elegant Header fade-in
+          const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      tl.fromTo(
-        heroTitleRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8, delay: 0.2 }
-      );
+          tl.fromTo(
+            heroTitleRef.current,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.8, delay: 0.2 }
+          );
 
-      tl.fromTo(
-        heroSubtitleRef.current,
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.6 },
-        '-=0.4'
-      );
-    },
+          tl.fromTo(
+            heroSubtitleRef.current,
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.6 },
+            '-=0.4'
+          );
+        },
+        () => {
+          gsap.set([heroTitleRef.current, heroSubtitleRef.current], {
+            opacity: 1,
+            y: 0,
+            clearProps: 'transform',
+          });
+        }
+      ),
     { scope: heroRef }
   );
 
@@ -182,6 +197,7 @@ export default function ContactPage() {
               ? `[Services required: ${selectedServices.join(', ')}]\n${formData.message}`
               : formData.message,
           tracking: trackingContext,
+          website: honeypot,
         }),
       });
 
@@ -245,13 +261,13 @@ export default function ContactPage() {
             </span>
             <h1
               ref={heroTitleRef}
-              className="font-display text-4xl sm:text-5xl md:text-6xl font-light text-white leading-tight opacity-0"
+              className="font-display text-4xl sm:text-5xl md:text-6xl font-light text-white leading-tight"
             >
               Connect with EAN
             </h1>
             <p
               ref={heroSubtitleRef}
-              className="font-ui text-base sm:text-lg text-ean-muted-light max-w-xl mx-auto leading-relaxed opacity-0"
+              className="font-ui text-base sm:text-lg text-ean-muted-light max-w-xl mx-auto leading-relaxed"
             >
               Whether arranging international flight support, booking private charters, or visiting our MMIA hangar, our crew is at your service.
             </p>
@@ -332,9 +348,11 @@ export default function ContactPage() {
                             key="contact-form"
                             ref={formRef}
                             onSubmit={handleSubmit}
-                            className="space-y-5 font-ui"
+                            className="relative space-y-5 font-ui"
                             noValidate
                           >
+                            <HoneypotField value={honeypot} onChange={setHoneypot} />
+
                             {/* Submission failure — API rejection or network error */}
                             {errors.form && (
                               <div
@@ -439,7 +457,10 @@ export default function ContactPage() {
                                       <label
                                         key={srv.id}
                                         htmlFor={`srv-${srv.id}`}
-                                        className={`flex items-center gap-3 p-3 rounded-xs border cursor-pointer transition-all duration-200 ${
+                                        // The checkbox itself is sr-only, so keyboard focus has
+                                        // nothing visible to land on. `has-focus-visible`
+                                        // moves the focus ring onto the label it belongs to.
+                                        className={`flex items-center gap-3 p-3 rounded-xs border cursor-pointer transition-all duration-200 has-focus-visible:ring-2 has-focus-visible:ring-ean-gold has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-ean-navy ${
                                           isChecked
                                             ? 'bg-ean-gold/15 border-ean-gold text-white shadow-[0_0_12px_rgba(196,149,42,0.2)]'
                                             : 'bg-white/5 border-white/10 text-ean-muted-light hover:border-white/25 hover:text-white'
@@ -566,6 +587,9 @@ export default function ContactPage() {
                   <SectionReveal key={idx}>
                     <div className="bg-ean-white border border-ean-border-light/60 rounded-xs overflow-hidden shadow-xs hover:border-ean-gold/30 transition-all duration-300">
                       <button
+                        id={`faq-trigger-${idx}`}
+                        aria-expanded={isOpen}
+                        aria-controls={`faq-panel-${idx}`}
                         onClick={() => toggleFAQ(idx)}
                         className="w-full px-6 py-5 sm:px-8 flex items-center justify-between text-left focus:outline-none cursor-pointer group"
                       >
@@ -582,8 +606,18 @@ export default function ContactPage() {
                         />
                       </button>
 
-                      {/* Grid-rows trick animates to intrinsic height without JS measurement */}
+                      {/*
+                        Grid-rows trick animates to intrinsic height without JS measurement.
+                        `inert` rather than `hidden` keeps the collapsed answer out of the
+                        accessibility tree and out of tab order without setting
+                        `display: none`, which would collapse the row instantly and destroy
+                        the closing transition.
+                      */}
                       <div
+                        id={`faq-panel-${idx}`}
+                        role="region"
+                        aria-labelledby={`faq-trigger-${idx}`}
+                        inert={!isOpen}
                         className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
                           isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                         }`}

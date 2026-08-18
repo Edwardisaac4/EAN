@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { withReducedMotion } from '@/lib/gsap-motion';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import GoldButton from '@/components/shared/GoldButton';
@@ -19,19 +20,25 @@ export default function CharterSection() {
   const bgRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
-    () => {
-      // Parallax effect on background image
-      gsap.to(bgRef.current, {
-        yPercent: 15,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
+    () =>
+      withReducedMotion(
+        () => {
+          // Parallax effect on background image
+          gsap.to(bgRef.current, {
+            yPercent: 15,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true,
+            },
+          });
         },
-      });
-    },
+        () => {
+          gsap.set(bgRef.current, { yPercent: 0, clearProps: 'transform' });
+        }
+      ),
     { scope: containerRef }
   );
 
@@ -66,18 +73,18 @@ export default function CharterSection() {
                 Bespoke Flight Solutions
               </span>
               <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-medium text-white leading-[1.15]">
-                Bespoke Charters Tailored to Your Schedule
+                Charters Tailored to Your Schedule
               </h2>
             </div>
 
             <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
-              Experience the pinnacle of private aviation. Whether for business or leisure, our
-              on-demand jet and helicopter charter services offer unmatched flexibility, privacy, and
+              Fly to your own schedule. Whether for business or leisure, our
+              on-demand jet and helicopter charter services offer flexibility, privacy, and
               uncompromising safety standards across regional and international routes.
             </p>
 
             <div className="pt-2">
-              <Link href="/charter">
+              <Link href="/contact?service=charter">
                 <GoldButton className="shadow-[0_4px_15px_rgba(196,149,42,0.3)] hover:shadow-[0_4px_25px_rgba(196,149,42,0.5)]">
                   Request a Private Charter
                 </GoldButton>

@@ -1,20 +1,8 @@
 'use client';
 
 import React from 'react';
-import { 
-  Lead, 
-  LeadStatus, 
-  SERVICE_LABELS, 
-  STATUS_LABELS 
-} from '@/lib/admin-leads-data';
-import { 
-  Building2, 
-  Clock, 
-  Eye, 
-  ChevronRight, 
-  CheckCircle2, 
-  DollarSign 
-} from 'lucide-react';
+import { Lead, LeadStatus, SERVICE_LABELS } from '@/lib/admin-leads-data';
+import { Building2, Eye } from 'lucide-react';
 
 export interface LeadPipelineKanbanProps {
   leads: Lead[];
@@ -25,7 +13,6 @@ export interface LeadPipelineKanbanProps {
 export function LeadPipelineKanban({
   leads,
   onSelectLead,
-  onQuickStatusChange,
 }: LeadPipelineKanbanProps) {
   const columns: { status: LeadStatus; title: string; color: string }[] = [
     { status: 'new', title: 'New Leads', color: 'border-sky-500 text-sky-400 bg-sky-500/10' },

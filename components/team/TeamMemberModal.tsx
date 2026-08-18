@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Presence from '@/components/shared/Presence';
-import { X, ShieldCheck, Quote, Mail, Award, CheckCircle2, ChevronRight } from 'lucide-react';
+import { X, ShieldCheck, Quote, Mail } from 'lucide-react';
 import { TeamMember } from '@/lib/constants';
 
 interface TeamMemberModalProps {
@@ -14,6 +14,22 @@ interface TeamMemberModalProps {
 }
 
 export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberModalProps) {
+  const titleId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+
+  // The parent clears `member` at the same moment it flips `isOpen` false. An
+  // early `return null` on a null member therefore unmounted the whole subtree
+  // before Presence could hold it for its 350ms exit, so the closing animation
+  // never played. Retaining the last non-null member lets the card animate out
+  // with its content intact. Adjusted during render rather than in an effect —
+  // see "You Might Not Need an Effect".
+  const [lastMember, setLastMember] = useState<TeamMember | null>(member);
+  if (member && member !== lastMember) {
+    setLastMember(member);
+  }
+  const activeMember = member ?? lastMember;
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -28,7 +44,22 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
     };
   }, [isOpen, onClose]);
 
-  if (!member) return null;
+  // Focus moves into the dialog on open and returns to the trigger on close, so
+  // a keyboard user is not left tabbing the page behind an open modal, or
+  // dumped at the top of the document once it closes.
+  useEffect(() => {
+    if (isOpen) {
+      previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+      // One frame later: Presence has mounted the card by then.
+      const frame = requestAnimationFrame(() => dialogRef.current?.focus());
+      return () => cancelAnimationFrame(frame);
+    }
+
+    previouslyFocusedRef.current?.focus();
+    previouslyFocusedRef.current = null;
+  }, [isOpen]);
+
+  if (!activeMember) return null;
 
   return (
     <Presence show={isOpen} durationMs={350}>
@@ -44,7 +75,12 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
 
           {/* Modal Card Window */}
           <div
-            className={`${state === 'open' ? 'ean-enter-modal' : 'ean-exit-modal'} relative w-full max-w-4xl bg-linear-to-b from-white via-ean-surface to-ean-surface border border-ean-gold/40 rounded-2xl md:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.5)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col`}
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
+            tabIndex={-1}
+            className={`${state === 'open' ? 'ean-enter-modal' : 'ean-exit-modal'} relative w-full max-w-4xl bg-linear-to-b from-white via-ean-surface to-ean-surface border border-ean-gold/40 rounded-2xl md:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.5)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col focus:outline-none`}
           >
             {/* Executive Close Button Header */}
             <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4.5 bg-linear-to-r from-ean-burgundy via-ean-burgundy-accent to-ean-burgundy-rich border-b border-ean-gold/30 shadow-md">
@@ -68,8 +104,8 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                 <div className="md:col-span-4 space-y-4">
                   <div className="relative aspect-4/5 rounded-xl overflow-hidden border border-ean-gold/30 shadow-lg bg-ean-navy">
                     <Image
-                      src={member.image}
-                      alt={member.name}
+                      src={activeMember.image}
+                      alt={activeMember.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 30vw"
                       className="object-cover object-top"
@@ -83,7 +119,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                       Department
                     </div>
                     <div className="text-sm font-bold text-ean-text-dark font-ui">
-                      {member.departmentLabel}
+                      {activeMember.departmentLabel}
                     </div>
                   </div>
                 </div>
@@ -92,27 +128,27 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                 <div className="md:col-span-8 space-y-6">
                   <div>
                     <span className="font-ui text-xs font-bold uppercase tracking-[0.25em] text-ean-gold">
-                      {member.departmentLabel}
+                      {activeMember.departmentLabel}
                     </span>
-                    <h2 className="font-display text-3xl sm:text-4xl font-light text-ean-text-dark mt-1">
-                      {member.name}
+                    <h2 id={titleId} className="font-display text-3xl sm:text-4xl font-light text-ean-text-dark mt-1">
+                      {activeMember.name}
                     </h2>
                     <p className="font-ui text-base text-ean-navy font-semibold mt-1">
-                      {member.role}
+                      {activeMember.role}
                     </p>
                   </div>
 
                   {/* Signature Quote */}
-                  {member.quote && (
+                  {activeMember.quote && (
                     <div className="p-5 bg-linear-to-r from-ean-gold/15 via-white to-white border-l-4 border-ean-gold rounded-r-xl shadow-xs font-display italic text-sm sm:text-base text-ean-text-dark relative overflow-hidden">
                       <Quote className="w-6 h-6 text-ean-gold/30 absolute top-3 right-3" />
-                      &ldquo;{member.quote}&rdquo;
+                      &ldquo;{activeMember.quote}&rdquo;
                     </div>
                   )}
 
                   {/* Bio Paragraphs */}
                   <div className="space-y-4 font-ui text-sm sm:text-base text-slate-700 leading-relaxed">
-                    {member.bio.map((paragraph, pIdx) => (
+                    {activeMember.bio.map((paragraph, pIdx) => (
                       <p key={pIdx}>{paragraph}</p>
                     ))}
                   </div>
@@ -123,7 +159,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                       Qualifications & Credentials
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {member.credentials.map((cred, cIdx) => (
+                      {activeMember.credentials.map((cred, cIdx) => (
                         <span
                           key={cIdx}
                           className="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-800 rounded-full font-ui text-xs font-medium shadow-xs hover:border-ean-gold/60 transition-colors"
@@ -135,9 +171,9 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                   </div>
 
                   {/* Metric Highlights Grid */}
-                  {member.highlights && member.highlights.length > 0 && (
+                  {activeMember.highlights && activeMember.highlights.length > 0 && (
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
-                      {member.highlights.map((h, hIdx) => (
+                      {activeMember.highlights.map((h, hIdx) => (
                         <div key={hIdx} className="bg-linear-to-br from-white to-ean-surface p-4 rounded-xl border border-ean-gold/30 shadow-xs">
                           <div className="font-display text-2xl font-bold text-ean-burgundy-accent">{h.value}</div>
                           <div className="font-ui text-[10px] uppercase tracking-wider text-slate-600 font-semibold">{h.label}</div>

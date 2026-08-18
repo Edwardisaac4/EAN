@@ -99,20 +99,249 @@
     animation-delay: 0.9s;
   }
 
-  /* Opening veil — see components/layout/Preloader.tsx */
-  @keyframes ean-veil-out {
+  /*
+   * Opening veil — see components/layout/Preloader.tsx.
+   *
+   * The main layers share one 2.6s timeline, which is why their stops are
+   * percentages rather than delays: 23.08% = 0.60s, 32.69% = 0.85s,
+   * 61.54% = 1.60s, 65.38% = 1.70s, 67.31% = 1.75s, 92.31% = 2.40s.
+   *
+   * The backdrop and the artwork clear on deliberately different schedules. An
+   * opaque full-viewport layer is the one thing Lighthouse's Speed Index
+   * penalises, since it scores a filmstrip of visual progress — so the veil
+   * goes transparent at 0.60s and the jet finishes its climb over the live hero
+   * instead. Lengthening the beat is therefore free; lengthening the *opaque*
+   * phase is not. LCP, CLS and TBT are untouched either way: LCP performs no
+   * occlusion test, the layer is out of flow, and there is no JS. If Speed
+   * Index ever needs buying back, pull 23.08% down — never shorten the 2.6s.
+   */
+  @keyframes ean-veil-dismiss {
     0%,
-    28% {
-      opacity: 1;
+    99.9% {
+      visibility: visible;
     }
     100% {
-      opacity: 0;
       visibility: hidden;
     }
   }
 
+  @keyframes ean-veil-out {
+    0%,
+    23.08% {
+      opacity: 1;
+    }
+    32.69%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes ean-veil-draw {
+    0% {
+      stroke-dashoffset: 1;
+    }
+    65.38%,
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /*
+   * The vapour trail. With pathLength="1", a dash of length T occupies path
+   * positions [d-T, d] when dashoffset is T-d — so running dashoffset from T to
+   * T-1 keeps a bright T-long segment locked to the jet for the whole climb,
+   * with no JS and no second motion path to keep in sync.
+   */
+  @keyframes ean-veil-trail {
+    0% {
+      stroke-dashoffset: 0.26;
+    }
+    65.38%,
+    100% {
+      stroke-dashoffset: -0.74;
+    }
+  }
+
+  @keyframes ean-veil-fly {
+    0% {
+      offset-distance: 0%;
+    }
+    65.38%,
+    100% {
+      offset-distance: 100%;
+    }
+  }
+
+  /* Roll into the climb and level off, on top of offset-rotate's tangent. */
+  @keyframes ean-veil-bank {
+    0% {
+      transform: rotate(-7deg);
+    }
+    38% {
+      transform: rotate(3deg);
+    }
+    65.38%,
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  /* Jet and trail dissolve as they leave frame. */
+  @keyframes ean-veil-jet-out {
+    0%,
+    61.54% {
+      opacity: 1;
+    }
+    67.31%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes ean-veil-letter {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 10px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ean-veil-rule {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes ean-veil-mark-out {
+    0%,
+    92.31% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
   .ean-preloader {
-    animation: ean-veil-out 0.35s ease-out forwards;
+    animation: ean-veil-dismiss 2.6s linear forwards;
+  }
+
+  .ean-preloader-veil {
+    animation: ean-veil-out 2.6s ease-out forwards;
+  }
+
+  .ean-preloader-mark {
+    animation: ean-veil-mark-out 2.6s ease-out forwards;
+  }
+
+  /*
+   * The guide arc, the trail and the jet must keep identical timing functions
+   * and identical keyframe stops, or the bright segment drifts off the jet it
+   * is supposed to be streaming from. `stroke-dasharray` pairs with
+   * pathLength="1", so the curve can be reshaped without recomputing lengths.
+   */
+  .ean-preloader-arc {
+    stroke-dasharray: 1;
+    animation: ean-veil-draw 2.6s cubic-bezier(0.4, 0, 0.4, 1) forwards;
+  }
+
+  .ean-preloader-trail {
+    stroke-dasharray: 0.26 1;
+    animation:
+      ean-veil-trail 2.6s cubic-bezier(0.4, 0, 0.4, 1) forwards,
+      ean-veil-jet-out 2.6s linear forwards;
+  }
+
+  /* Coloured here, not on the SVG element: var() is unreliable inside a
+     stop-color presentation attribute but fine as a CSS property. */
+  .ean-preloader-stop-tail {
+    stop-color: var(--color-ean-gold);
+    stop-opacity: 0;
+  }
+
+  .ean-preloader-stop-mid {
+    stop-color: var(--color-ean-gold);
+    stop-opacity: 0.4;
+  }
+
+  .ean-preloader-stop-head {
+    stop-color: var(--color-ean-gold-light);
+    stop-opacity: 1;
+  }
+
+  .ean-preloader-plane {
+    /* Must stay identical to ARC_PATH in components/layout/Preloader.tsx. */
+    offset-path: path("M 14 90 C 62 90 118 28 246 22");
+    offset-rotate: auto;
+    /*
+     * fill-box anchors the motion path to the jet's own centre. The SVG default
+     * resolves transform-origin against the 260×110 viewBox instead, which
+     * flings the jet a full half-viewBox off the curve.
+     */
+    transform-box: fill-box;
+    transform-origin: center;
+    animation:
+      ean-veil-fly 2.6s cubic-bezier(0.4, 0, 0.4, 1) forwards,
+      ean-veil-jet-out 2.6s linear forwards;
+  }
+
+  .ean-preloader-bank {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ean-veil-bank 2.6s cubic-bezier(0.4, 0, 0.4, 1) forwards;
+  }
+
+  @supports not (offset-path: path("M 0 0 L 1 1")) {
+    @keyframes ean-veil-fly-fallback {
+      0% {
+        transform: translate3d(14px, 90px, 0) rotate(-12deg);
+      }
+      65.38%,
+      100% {
+        transform: translate3d(246px, 22px, 0) rotate(-12deg);
+      }
+    }
+
+    /*
+     * Straight-line degradation between the same two endpoints: the jet stops
+     * tracking the curve, but it still reads as travel and the trail still
+     * streams along the arc beneath it.
+     */
+    .ean-preloader-plane {
+      animation-name: ean-veil-fly-fallback, ean-veil-jet-out;
+    }
+  }
+
+  /*
+   * Letters and rule carry real delays rather than sharing the 2.6s timeline,
+   * because a stagger cannot be expressed as percentages of one animation.
+   * Note the reduced-motion block must therefore zero animation-delay too.
+   */
+  .ean-preloader-letter {
+    animation: ean-veil-letter 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .ean-preloader-letter:nth-child(1) {
+    animation-delay: 1.6s;
+  }
+
+  .ean-preloader-letter:nth-child(2) {
+    animation-delay: 1.69s;
+  }
+
+  .ean-preloader-letter:nth-child(3) {
+    animation-delay: 1.78s;
+  }
+
+  .ean-preloader-rule {
+    transform-origin: center;
+    animation: ean-veil-rule 0.35s cubic-bezier(0.16, 1, 0.3, 1) 1.85s both;
   }
 
   /*
@@ -308,8 +537,27 @@
       animation: none;
     }
 
-    .ean-preloader {
+    /*
+     * Every preloader layer, not just the wrapper. All are `forwards`/`both`,
+     * so collapsing the duration lands each on its end state — veil
+     * transparent, artwork faded, wrapper `visibility: hidden`. Miss one and a
+     * full-opacity burgundy sheet is left sitting over the site.
+     *
+     * `animation-delay` must be zeroed alongside the duration: the letters and
+     * rule are delayed up to 1.85s, so duration alone would still blank them
+     * for nearly two seconds before they appeared.
+     */
+    .ean-preloader,
+    .ean-preloader-veil,
+    .ean-preloader-mark,
+    .ean-preloader-arc,
+    .ean-preloader-trail,
+    .ean-preloader-plane,
+    .ean-preloader-bank,
+    .ean-preloader-letter,
+    .ean-preloader-rule {
       animation-duration: 0.01s;
+      animation-delay: 0s;
     }
 
     .ean-indicator {

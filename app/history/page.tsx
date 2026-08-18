@@ -6,11 +6,12 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ChevronDown, ChevronRight, BookOpen } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
 import Navbar from '@/components/layout/Navbar';
 import StatCounter from '@/components/shared/StatCounter';
 import TimelineEventModal from '@/components/history/TimelineEventModal';
+import { withReducedMotion } from '@/lib/gsap-motion';
 
 // Register GSAP plugins at the file level
 if (typeof window !== 'undefined') {
@@ -18,7 +19,7 @@ if (typeof window !== 'undefined') {
 }
 
 import { TIMELINE_EVENTS, TimelineEvent } from '@/lib/constants';
-import OutlineButton from '@/components/shared/OutlineButton';
+
 import GoldButton from '@/components/shared/GoldButton';
 
 export default function HistoryPage() {
@@ -35,98 +36,132 @@ export default function HistoryPage() {
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
 
   useGSAP(
-    () => {
-      // 1. Text animations in Hero
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    () =>
+      withReducedMotion(
+        () => {
+          // 1. Text animations in Hero
+          const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      tl.fromTo(
-        eyebrowRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.7, delay: 0.2 }
-      );
+          tl.fromTo(
+            eyebrowRef.current,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.7, delay: 0.2 }
+          );
 
-      tl.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.9 },
-        '-=0.4'
-      );
+          tl.fromTo(
+            titleRef.current,
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.9 },
+            '-=0.4'
+          );
 
-      tl.fromTo(
-        subtitleRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.7 },
-        '-=0.5'
-      );
+          tl.fromTo(
+            subtitleRef.current,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.7 },
+            '-=0.5'
+          );
 
-      // 2. Parallax scroll effect on Hero background image
-      gsap.to(heroBgRef.current, {
-        yPercent: 25,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
+          // 2. Parallax scroll effect on Hero background image
+          gsap.to(heroBgRef.current, {
+            yPercent: 25,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true,
+            },
+          });
+
+          // 3. Scroll indicator arrow pulse
+          gsap.fromTo(
+            scrollIndicatorRef.current,
+            { opacity: 0, y: 10 },
+            { opacity: 1, y: 0, duration: 1, delay: 1, ease: 'power3.out' }
+          );
+
+          gsap.to(scrollIndicatorRef.current, {
+            y: 6,
+            repeat: -1,
+            yoyo: true,
+            duration: 1.2,
+            ease: 'power1.inOut',
+          });
         },
-      });
-
-      // 3. Scroll indicator arrow pulse
-      gsap.fromTo(
-        scrollIndicatorRef.current,
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 1, delay: 1, ease: 'power3.out' }
-      );
-
-      gsap.to(scrollIndicatorRef.current, {
-        y: 6,
-        repeat: -1,
-        yoyo: true,
-        duration: 1.2,
-        ease: 'power1.inOut',
-      });
-    },
+        () => {
+          gsap.set(
+            [eyebrowRef.current, titleRef.current, subtitleRef.current, scrollIndicatorRef.current],
+            { opacity: 1, y: 0, clearProps: 'transform' }
+          );
+          gsap.set(heroBgRef.current, { yPercent: 0, clearProps: 'transform' });
+        }
+      ),
     { scope: heroRef }
   );
 
   useGSAP(
-    () => {
-      const container = timelineContainerRef.current;
-      const track = horizontalScrollRef.current;
-      if (!container || !track) return;
+    () =>
+      withReducedMotion(
+        () => {
+          const container = timelineContainerRef.current;
+          const track = horizontalScrollRef.current;
+          if (!container || !track) return;
 
-      const getDistance = () =>
-        Math.max(0, track.scrollWidth - window.innerWidth);
+          const getDistance = () =>
+            Math.max(0, track.scrollWidth - window.innerWidth);
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: container,
-          start: 'top top',
-          end: () => `+=${getDistance()}`,
-          scrub: 1.2,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: container,
+              start: 'top top',
+              end: () => `+=${getDistance()}`,
+              scrub: 1.2,
+              pin: true,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+            },
+          });
+
+          tl.to(track, {
+            x: () => -getDistance(),
+            ease: 'none',
+          });
+
+          if (progressLineRef.current) {
+            tl.to(
+              progressLineRef.current,
+              { width: '100%', ease: 'none' },
+              0
+            );
+          }
+
+          // Refresh after mount so measurements settle
+          const t = setTimeout(() => ScrollTrigger.refresh(), 100);
+          return () => clearTimeout(t);
         },
-      });
+        () => {
+          // A pinned, scroll-hijacked horizontal track is the single most
+          // motion-sickness-inducing pattern on the site, so reduced motion drops
+          // the pin entirely. The track still overflows its container, so it needs
+          // a native horizontal scrollbar — otherwise every milestone past the
+          // first screen would be clipped and unreachable.
+          const container = timelineContainerRef.current;
+          const track = horizontalScrollRef.current;
+          if (!container || !track) return;
 
-      tl.to(track, {
-        x: () => -getDistance(),
-        ease: 'none',
-      });
-
-      if (progressLineRef.current) {
-        tl.to(
-          progressLineRef.current,
-          { width: '100%', ease: 'none' },
-          0
-        );
-      }
-
-      // Refresh after mount so measurements settle
-      const t = setTimeout(() => ScrollTrigger.refresh(), 100);
-      return () => clearTimeout(t);
-    },
+          gsap.set(track, { x: 0, clearProps: 'transform' });
+          if (progressLineRef.current) {
+            gsap.set(progressLineRef.current, { width: '100%' });
+          }
+          container.style.overflowX = 'auto';
+          // A scroll container that is not focusable cannot be panned with the
+          // arrow keys, so without this the milestones past the first screen are
+          // reachable by pointer only.
+          container.tabIndex = 0;
+          container.setAttribute('aria-label', 'Company milestones, scroll horizontally');
+        }
+      ),
     { scope: timelineContainerRef }
   );
 
@@ -134,7 +169,7 @@ export default function HistoryPage() {
     <>
       <Navbar />
 
-      <main className="flex-1 flex flex-col select-none">
+      <main className="flex-1 flex flex-col">
         {/* SECTION 1: Cinematic Hero */}
         <section
           ref={heroRef}
@@ -160,19 +195,19 @@ export default function HistoryPage() {
             <div className="max-w-3xl space-y-6">
               <p
                 ref={eyebrowRef}
-                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase opacity-0"
+                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase"
               >
                 Our Legacy
               </p>
               <h1
                 ref={titleRef}
-                className="font-display text-4xl sm:text-5xl md:text-6xl font-light text-white leading-[1.1] opacity-0"
+                className="font-display text-4xl sm:text-5xl md:text-6xl font-light text-white leading-[1.1]"
               >
                 The Evolution of Excellence
               </h1>
               <p
                 ref={subtitleRef}
-                className="font-ui text-base sm:text-lg text-ean-muted-light max-w-2xl leading-relaxed opacity-0"
+                className="font-ui text-base sm:text-lg text-ean-muted-light max-w-2xl leading-relaxed"
               >
                 A decade of pushing boundaries, elevating safety records, and creating a world-class business aviation hub in West Africa.
               </p>
@@ -182,7 +217,7 @@ export default function HistoryPage() {
           {/* Scroll Down Indicator */}
           <div
             ref={scrollIndicatorRef}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 cursor-pointer opacity-0"
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 cursor-pointer"
             onClick={() => {
               const timelineSection = document.getElementById('timeline-section');
               timelineSection?.scrollIntoView({ behavior: 'smooth' });
@@ -210,12 +245,15 @@ export default function HistoryPage() {
                 </p>
               </div>
               
+              {/* Was "100%" / "Safety Audit Record". A perfect-compliance figure
+                  cannot be cited and is falsified by a single finding, so the cell
+                  names the actual oversight regime instead of scoring it. */}
               <div className="flex flex-col items-center justify-center space-y-2 border-r last:border-r-0 border-ean-border-light">
                 <div className="font-display text-3xl sm:text-4xl md:text-5xl font-semibold text-ean-gold tracking-tight">
-                  <StatCounter targetValue={100} suffix="%" />
+                  <span>NCAA</span>
                 </div>
                 <p className="font-ui text-[10px] sm:text-xs uppercase tracking-widest text-ean-muted-dark">
-                  Safety Audit Record
+                  Licensed &amp; Audited — ICAO Standards
                 </p>
               </div>
 
@@ -240,7 +278,7 @@ export default function HistoryPage() {
           >
             
             {/* Top Header */}
-            <div className="max-w-7xl mx-auto px-6 md:px-8 w-full flex flex-col sm:flex-row items-baseline justify-between gap-4 select-none">
+            <div className="max-w-7xl mx-auto px-6 md:px-8 w-full flex flex-col sm:flex-row items-baseline justify-between gap-4">
               <div className="space-y-1">
                 <span className="font-ui text-xs font-semibold tracking-[0.25em] text-ean-gold uppercase">
                   Our History
@@ -273,11 +311,24 @@ export default function HistoryPage() {
               {TIMELINE_EVENTS.map((event, idx) => {
                 const img = event.image || '/images/about-jet.jpg';
 
+                // role/tabIndex rather than a real <button>: the card's content is
+                // flow content (heading, paragraph, image), which a <button> may not
+                // contain. This keeps the milestone operable by keyboard without
+                // emitting invalid markup.
                 return (
                   <div
                     key={idx}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${event.year}: ${event.title} — read full milestone story`}
                     onClick={() => setSelectedEvent(event)}
-                    className="history-slide w-[85vw] sm:w-[65vw] lg:w-[50vw] shrink-0 bg-white border border-ean-border-light p-4 sm:p-8 rounded-xs flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch shadow-xl h-[56vh] sm:h-[46vh] lg:h-[48vh] relative overflow-hidden group hover:border-ean-gold/60 transition-all duration-300 cursor-pointer"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedEvent(event);
+                      }
+                    }}
+                    className="history-slide w-[85vw] sm:w-[65vw] lg:w-[50vw] shrink-0 bg-white border border-ean-border-light p-4 sm:p-8 rounded-xs flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch shadow-xl h-[56vh] sm:h-[46vh] lg:h-[48vh] relative overflow-hidden group hover:border-ean-gold/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ean-gold transition-all duration-300 cursor-pointer"
                   >
                     {/* Background giant year number */}
                     <div className="absolute -bottom-6 -right-6 font-display text-[120px] sm:text-[150px] lg:text-[200px] font-bold text-ean-navy/5 pointer-events-none select-none group-hover:text-ean-gold/10 transition-colors duration-500">
@@ -333,7 +384,7 @@ export default function HistoryPage() {
             </div>
 
             {/* Bottom scroll hint */}
-            <div className="font-ui text-[10px] text-center uppercase tracking-widest text-ean-muted-dark select-none flex items-center justify-center gap-2">
+            <div className="font-ui text-[10px] text-center uppercase tracking-widest text-ean-muted-dark flex items-center justify-center gap-2">
               <span>Scroll down to slide through time</span>
               <span>•</span>
               <span className="text-ean-gold font-bold">Click any milestone to view full narrative</span>

@@ -31,7 +31,7 @@ import {
 import Navbar from '@/components/layout/Navbar';
 import SectionReveal from '@/components/shared/SectionReveal';
 import GoldButton from '@/components/shared/GoldButton';
-import { PRIVACY_POLICY_SECTIONS, LegalSection } from '@/lib/constants';
+import { PRIVACY_POLICY_SECTIONS } from '@/lib/constants';
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Scale,
@@ -50,6 +50,21 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   FileText
 };
 
+/**
+ * Human-readable label per DSAR type. The <select> stores machine values, and
+ * the DPO reads the resulting pipeline entry as prose, so it is expanded on
+ * submit rather than leaving `consent_withdrawal` in the message body.
+ */
+const DSAR_REQUEST_LABELS: Record<string, string> = {
+  access: 'Access / Copy of Personal Data',
+  rectification: 'Correction / Rectification of Inaccurate Data',
+  erasure: 'Erasure ("Right to be Forgotten")',
+  consent_withdrawal: 'Withdrawal of Processing Consent',
+  objection: 'Objection to Processing / Profiling',
+  portability: 'Data Portability Request',
+  general: 'General Privacy Inquiry',
+};
+
 export default function PrivacyPolicyPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSection, setActiveSection] = useState('lawful-basis');
@@ -62,6 +77,8 @@ export default function PrivacyPolicyPage() {
     details: ''
   });
   const [dsarSubmitted, setDsarSubmitted] = useState(false);
+  const [isDsarSubmitting, setIsDsarSubmitting] = useState(false);
+  const [dsarError, setDsarError] = useState<string | null>(null);
   const sidebarNavRef = useRef<HTMLDivElement>(null);
   const isManualScrollRef = useRef(false);
 
@@ -118,12 +135,81 @@ export default function PrivacyPolicyPage() {
     }
   }, [activeSection]);
 
-  const handleDSARSubmit = (e: React.FormEvent) => {
+  /**
+   * Submits the request for real.
+   *
+   * The previous implementation flipped `dsarSubmitted` on a timer and sent
+   * nothing, while the confirmation panel told the user their request had been
+   * "routed to our Data Protection Officer" and would be answered within 30
+   * days. Silently discarding a statutory request under the NDPA 2023 is a
+   * compliance exposure, so this now goes through the lead pipeline.
+   *
+   * The '[NDPA DATA SUBJECT REQUEST]' prefix below is load-bearing, not cosmetic:
+   * derivePriority in lib/services/leads-service.ts matches on it to raise the
+   * lead to 'high', which is what clears the email-alert threshold. Service
+   * 'general' alone derives to 'low', and low-priority leads are never emailed —
+   * so removing that prefix would silently return this form to being unnoticed.
+   */
+  const handleDSARSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setDsarSubmitted(true);
-    setTimeout(() => {
-      setDsarSubmitted(false);
-      setIsDSAROpen(false);
+    if (isDsarSubmitting) return;
+
+    setIsDsarSubmitting(true);
+    setDsarError(null);
+
+    const requestTypeLabel =
+      DSAR_REQUEST_LABELS[dsarForm.requestType] ?? dsarForm.requestType;
+
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: dsarForm.fullName,
+          email: dsarForm.email,
+          phone: dsarForm.phone,
+          service: 'general',
+          // Prefixed so a statutory request is unmistakable in the admin
+          // pipeline and never worked as a sales enquiry.
+          message: [
+            '[NDPA DATA SUBJECT REQUEST]',
+            `Right exercised: ${requestTypeLabel}`,
+            '',
+            dsarForm.details.trim() || '(no additional detail supplied)',
+          ].join('\n'),
+        }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || !data?.success) {
+        // The API message is appended to the DPO instruction rather than
+        // replacing it. A rate-limit response ("Too many submissions…") on its
+        // own leaves the data subject with no route to exercise the right.
+        setDsarError(
+          `${data?.error ?? 'We could not transmit your request.'} Please email dpo@ean.aero directly so your request is not lost.`
+        );
+        setIsDsarSubmitting(false);
+        return;
+      }
+
+      // POST /api/leads collapses a repeat submission within 10 minutes, and
+      // findRecentDuplicateLead keys only on email + service. Every DSAR posts
+      // service 'general', so a data subject exercising a second, different
+      // statutory right minutes later gets `duplicate: true` and nothing is
+      // written. Reporting that as "Request Received" would tell them a request
+      // is on record when it is not.
+      if (data.duplicate) {
+        setDsarError(
+          'A request from this email address was logged moments ago, so this one was not recorded separately. ' +
+            'If you are exercising a different right, please email dpo@ean.aero directly so both requests are on record.'
+        );
+        setIsDsarSubmitting(false);
+        return;
+      }
+
+      setIsDsarSubmitting(false);
+      setDsarSubmitted(true);
       setDsarForm({
         fullName: '',
         email: '',
@@ -131,7 +217,12 @@ export default function PrivacyPolicyPage() {
         requestType: 'access',
         details: ''
       });
-    }, 2500);
+    } catch {
+      setDsarError(
+        'Network error. Please email dpo@ean.aero directly so your request is not lost.'
+      );
+      setIsDsarSubmitting(false);
+    }
   };
 
   const scrollToSection = (id: string) => {
@@ -628,10 +719,25 @@ export default function PrivacyPolicyPage() {
                       />
                     </div>
 
+                    {dsarError && (
+                      <p
+                        role="alert"
+                        className="border border-red-400/40 bg-red-500/10 px-4 py-3 rounded-xs text-red-200 leading-relaxed"
+                      >
+                        {dsarError}
+                      </p>
+                    )}
+
                     <div className="pt-2">
-                      <GoldButton type="submit" className="w-full py-3.5 flex items-center justify-center gap-2">
+                      <GoldButton
+                        type="submit"
+                        disabled={isDsarSubmitting}
+                        className="w-full py-3.5 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
                         <Send className="w-4 h-4" />
-                        <span>Transmit Formal DSAR Notice</span>
+                        <span>
+                          {isDsarSubmitting ? 'Transmitting…' : 'Transmit Formal DSAR Notice'}
+                        </span>
                       </GoldButton>
                     </div>
                   </form>

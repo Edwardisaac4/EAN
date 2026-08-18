@@ -2,16 +2,23 @@ import type { Metadata } from 'next'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import PricingCalculator from '@/components/pricing/PricingCalculator'
+import JsonLd from '@/components/shared/JsonLd'
+import { buildMetadata, breadcrumbSchema, PAGE_SEO } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'FBO & Ground Handling Pricing Portal | EAN Aviation',
-  description:
-    'Calculate instant ground handling rates, landing tariffs, passenger service charges, and executive add-on fees for business aviation at Lagos MMIA & Abuja NAIA.',
-}
+// Routed through buildMetadata so this page gets a canonical URL and Open Graph
+// tags. Previously it declared only title + description, so it canonicalised to
+// the site root via metadataBase and shared as a bare link.
+export const metadata: Metadata = buildMetadata(PAGE_SEO.pricing)
 
 export default function PricingPage() {
   return (
     <>
+      <JsonLd
+        schema={breadcrumbSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Pricing', path: '/pricing' },
+        ])}
+      />
       <Navbar />
       <main className="flex-1">
         <PricingCalculator />

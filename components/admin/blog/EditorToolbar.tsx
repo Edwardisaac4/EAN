@@ -23,11 +23,8 @@ import {
   Unlink,
   X,
   Upload,
-  Loader2,
-  Check,
-} from 'lucide-react'
-
-interface EditorToolbarProps {
+  Loader2
+} from 'lucide-react';interface EditorToolbarProps {
   editor: Editor | null
 }
 

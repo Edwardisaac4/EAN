@@ -46,6 +46,25 @@ const URGENT_INTENT_KEYWORDS = [
   'emergency',
 ] as const
 
+/**
+ * Markers that identify a statutory submission rather than a sales enquiry — the
+ * DSAR form on /privacy-policy and the legal-notice form on /terms-of-use both
+ * prefix their message with one of these.
+ *
+ * Detected server-side rather than letting the form post its own priority: this
+ * endpoint is public, so a caller-supplied priority would just be a way for
+ * spam to flag itself urgent.
+ *
+ * These must outrank the 'general' baseline. Both forms submit as service
+ * 'general', which derives to 'low', and lead-notifications.ts only emails on
+ * 'high' or 'urgent' — so without this a request carrying a 30-day statutory
+ * deadline was saved to the database and silently never announced to anyone.
+ */
+const STATUTORY_REQUEST_MARKERS = [
+  '[ndpa data subject request]',
+  '[legal notice — terms of use]',
+] as const
+
 const SERVICE_BASELINE_PRIORITY: Record<string, LeadPriorityEnum> = {
   maintenance: 'high',   // AOG risk, high value
   leasing:     'high',   // largest contract value
@@ -61,6 +80,13 @@ function derivePriority(service: string, message: string): LeadPriorityEnum {
 
   if (URGENT_INTENT_KEYWORDS.some((keyword) => text.includes(keyword))) {
     return 'urgent'
+  }
+
+  // 'high', not 'urgent': these carry a real legal deadline, but it is measured
+  // in days, and 'urgent' means a sub-hour response SLA. 'high' is enough to
+  // clear the email threshold, which is the point.
+  if (STATUTORY_REQUEST_MARKERS.some((marker) => text.includes(marker))) {
+    return 'high'
   }
 
   const baseline = SERVICE_BASELINE_PRIORITY[service] ?? 'low'

@@ -23,16 +23,16 @@ export default function AboutSection() {
 
               <div className="space-y-4 font-ui text-base sm:text-lg text-ean-muted-dark dark:text-ean-muted-light leading-relaxed max-w-2xl">
                 <p>
-                  Established over a decade ago, EAN Aviation has grown to become {"West Africa's "} 
-                  premier comprehensive business aviation conglomerate. We operate the {"region's "}
+                  Established over a decade ago, EAN Aviation has grown to become {"West Africa's "}
+                  leading integrated business aviation company. We operate {"Nigeria's "}
                   first fully integrated Fixed Base Operator (FBO) hangar at Murtala Mohammed
                   International Airport in Lagos, Nigeria.
                 </p>
                 <p>
-                  With dedicated team of professionals, we are
-                  committed to safety, quality, and exclusivity. We cater to high-net-worth individuals,
-                  corporate executives, and international operators, delivering an unparalleled
-                  standard of service.
+                  With a dedicated team of professionals, we are
+                  committed to safety, quality, and discretion. We serve principals, flight
+                  departments and international operators, holding the same standard on every
+                  movement — the EAN Way.
                 </p>
               </div>
 

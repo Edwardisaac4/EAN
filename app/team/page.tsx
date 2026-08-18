@@ -5,8 +5,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { withReducedMotion } from '@/lib/gsap-motion';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ChevronDown, Shield, Users, Crown } from 'lucide-react';
+import { ChevronDown, Users } from 'lucide-react';
 
 import Navbar from '@/components/layout/Navbar';
 import SectionReveal from '@/components/shared/SectionReveal';
@@ -34,57 +35,67 @@ export default function TeamPage() {
   const ceoMember = TEAM_MEMBERS[0];
 
   useGSAP(
-    () => {
-      // 1. Text entrance animations in Hero using GSAP timeline
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    () =>
+      withReducedMotion(
+        () => {
+          // 1. Text entrance animations in Hero using GSAP timeline
+          const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      tl.fromTo(
-        eyebrowRef.current,
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.6, delay: 0.2 }
-      );
+          tl.fromTo(
+            eyebrowRef.current,
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.6, delay: 0.2 }
+          );
 
-      tl.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.8 },
-        '-=0.4'
-      );
+          tl.fromTo(
+            titleRef.current,
+            { opacity: 0, y: 25 },
+            { opacity: 1, y: 0, duration: 0.8 },
+            '-=0.4'
+          );
 
-      tl.fromTo(
-        subtitleRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.6 },
-        '-=0.5'
-      );
+          tl.fromTo(
+            subtitleRef.current,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.6 },
+            '-=0.5'
+          );
 
-      // 2. Parallax scroll effect on Hero background image
-      gsap.to(heroBgRef.current, {
-        yPercent: 15,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
+          // 2. Parallax scroll effect on Hero background image
+          gsap.to(heroBgRef.current, {
+            yPercent: 15,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true,
+            },
+          });
+
+          // 3. Scroll indicator pulse animation
+          gsap.fromTo(
+            scrollIndicatorRef.current,
+            { opacity: 0, y: 10 },
+            { opacity: 1, y: 0, duration: 1, delay: 1, ease: 'power3.out' }
+          );
+
+          gsap.to(scrollIndicatorRef.current, {
+            y: 6,
+            repeat: -1,
+            yoyo: true,
+            duration: 1.2,
+            ease: 'power1.inOut',
+          });
         },
-      });
-
-      // 3. Scroll indicator pulse animation
-      gsap.fromTo(
-        scrollIndicatorRef.current,
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 1, delay: 1, ease: 'power3.out' }
-      );
-
-      gsap.to(scrollIndicatorRef.current, {
-        y: 6,
-        repeat: -1,
-        yoyo: true,
-        duration: 1.2,
-        ease: 'power1.inOut',
-      });
-    },
+        () => {
+          gsap.set(
+            [eyebrowRef.current, titleRef.current, subtitleRef.current, scrollIndicatorRef.current],
+            { opacity: 1, y: 0, clearProps: 'transform' }
+          );
+          gsap.set(heroBgRef.current, { yPercent: 0, clearProps: 'transform' });
+        }
+      ),
     { scope: heroRef }
   );
 
@@ -118,20 +129,20 @@ export default function TeamPage() {
             <div className="max-w-3xl space-y-6">
               <p
                 ref={eyebrowRef}
-                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase opacity-0 flex items-center gap-2"
+                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase flex items-center gap-2"
               >
                 <Users className="w-4 h-4 text-ean-gold" />
                 Executive Leadership & Management
               </p>
               <h1
                 ref={titleRef}
-                className="font-display text-4xl sm:text-5xl md:text-6xl font-light text-white leading-[1.1] opacity-0"
+                className="font-display text-4xl sm:text-5xl md:text-6xl font-light text-white leading-[1.1]"
               >
-                Bespoke Leadership & Governance
+                Leadership & Governance
               </h1>
               <p
                 ref={subtitleRef}
-                className="font-ui text-base sm:text-lg text-ean-muted-light max-w-2xl leading-relaxed opacity-0"
+                className="font-ui text-base sm:text-lg text-ean-muted-light max-w-2xl leading-relaxed"
               >
                 Meet the Seasoned aviation executives, captains, and engineers steering EAN Aviation toward new frontiers of growth, safety, and operational precision in West Africa.
               </p>
@@ -141,7 +152,7 @@ export default function TeamPage() {
           {/* Scroll Down Indicator */}
           <div
             ref={scrollIndicatorRef}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 cursor-pointer opacity-0"
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 cursor-pointer"
             onClick={() => {
               const ceoSection = document.getElementById('ceo-spotlight');
               ceoSection?.scrollIntoView({ behavior: 'smooth' });
@@ -175,10 +186,10 @@ export default function TeamPage() {
                 Designed for Distinction
               </h2>
               <p className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-light max-w-2xl mx-auto leading-relaxed">
-                Connect directly with our department heads to coordinate bespoke jet charters, hangar space, MRO maintenance, or corporate travel logistics.
+                Connect directly with our department heads to coordinate jet charters, hangar space, MRO maintenance, or corporate travel logistics.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                <Link href="/charter">
+                <Link href="/contact?service=charter">
                   <GoldButton className="w-full sm:w-auto">
                     Request a Charter Quote
                   </GoldButton>

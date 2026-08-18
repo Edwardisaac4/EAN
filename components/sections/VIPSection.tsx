@@ -36,8 +36,8 @@ export default function VIPSection() {
 
               <p className="font-ui text-base sm:text-lg text-ean-muted-dark dark:text-ean-muted-light leading-relaxed">
                 Step away from the bustle of Lagos Murtala Mohammed International Airport. {"EAN's"} VIP Lounge
-                represents the pinnacle of private airport hospitality, offering seamless check-in, elite comfort,
-                and dedicated passenger assistance.
+                offers direct check-in, quiet comfort, and dedicated passenger assistance clear of the
+                commercial terminal.
               </p>
 
               {/* Highlights Bullet List */}
@@ -52,7 +52,7 @@ export default function VIPSection() {
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-ean-gold" />
-                  Seamless Customs & Customs Assistance
+                  Customs & Immigration Assistance
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-ean-gold" />

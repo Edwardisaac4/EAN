@@ -33,7 +33,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
   return (
     <Presence show={isOpen} durationMs={350}>
       {(state) => (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto select-none">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-y-auto">
           {/* Dark Backdrop Overlay */}
           <div
             onClick={onClose}

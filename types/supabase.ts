@@ -269,6 +269,36 @@ export interface Database {
         Args: Record<string, never>
         Returns: Json
       }
+      /**
+       * Rate limiting — see supabase/migrations/004_rate_limits.sql. Each of
+       * these returns a single-row table, which supabase-js surfaces as an
+       * array; lib/rate-limiter.ts normalises that.
+       */
+      rate_limit_status: {
+        Args: { p_key: string }
+        Returns: RateLimitRpcRow[]
+      }
+      rate_limit_record_failure: {
+        Args: {
+          p_key: string
+          p_max: number
+          p_window_seconds: number
+          p_lockout_seconds: number
+        }
+        Returns: RateLimitRpcRow[]
+      }
+      rate_limit_consume: {
+        Args: { p_key: string; p_max: number; p_window_seconds: number }
+        Returns: RateLimitRpcRow[]
+      }
+      rate_limit_clear: {
+        Args: { p_key: string }
+        Returns: undefined
+      }
+      rate_limit_prune: {
+        Args: { p_older_than_seconds?: number }
+        Returns: number
+      }
     }
     Enums: {
       lead_service: LeadServiceEnum
@@ -279,6 +309,15 @@ export interface Database {
       [_ in never]: never
     }
   }
+}
+
+/**
+ * Row shape returned by every rate_limit_* RPC that reports a verdict.
+ * `retry_after_seconds` is 0 whenever `is_allowed` is true.
+ */
+export interface RateLimitRpcRow {
+  is_allowed: boolean
+  retry_after_seconds: number
 }
 
 // Enum types matching PostgreSQL enums

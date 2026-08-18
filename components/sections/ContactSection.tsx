@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { withReducedMotion } from '@/lib/gsap-motion';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import GoldButton from '@/components/shared/GoldButton';
@@ -19,19 +20,25 @@ export default function ContactSection() {
   const bgRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
-    () => {
-      // Parallax effect on contact section background
-      gsap.to(bgRef.current, {
-        yPercent: 15,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
+    () =>
+      withReducedMotion(
+        () => {
+          // Parallax effect on contact section background
+          gsap.to(bgRef.current, {
+            yPercent: 15,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true,
+            },
+          });
         },
-      });
-    },
+        () => {
+          gsap.set(bgRef.current, { yPercent: 0, clearProps: 'transform' });
+        }
+      ),
     { scope: containerRef }
   );
 
@@ -39,7 +46,7 @@ export default function ContactSection() {
     <section
       ref={containerRef}
       id="contact-section"
-      className="relative w-full min-h-120 sm:min-h-137.5 flex items-center justify-center overflow-hidden bg-ean-navy select-none"
+      className="relative w-full min-h-120 sm:min-h-137.5 flex items-center justify-center overflow-hidden bg-ean-navy"
     >
       {/* Background with Parallax */}
       <div ref={bgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">

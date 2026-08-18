@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import { adminSupabase } from '@/utils/supabase/admin'
 import { verifySessionToken, SESSION_COOKIE_NAME } from '@/lib/auth'
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const cookieStore = await cookies()
     const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value
@@ -22,9 +22,12 @@ export async function GET(req: NextRequest) {
       .order('created_at', { ascending: false })
 
     if (error) {
-      console.warn('[Blog API GET] Supabase fetch error:', error.message)
+      // Full detail stays server-side. A Postgres error message can name
+      // columns, constraints and policies, none of which belong in a response
+      // body — even an authenticated one.
+      console.warn('[Blog API GET] Supabase fetch error:', error)
       return NextResponse.json(
-        { success: false, error: error.message || 'Failed to fetch blog posts' },
+        { success: false, error: 'Failed to fetch blog posts' },
         { status: 500 }
       )
     }
@@ -99,9 +102,23 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (error) {
-      console.warn('[Blog API POST] Supabase insert error:', error.message)
+      console.warn('[Blog API POST] Supabase insert error:', error)
+
+      // 23505 is the Postgres unique_violation code. The slug is the only
+      // unique column on blog_posts, so this is a title the author has already
+      // used — an actionable conflict, not a server fault.
+      if (error.code === '23505') {
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'A post with this slug already exists. Choose a different title.',
+          },
+          { status: 409 }
+        )
+      }
+
       return NextResponse.json(
-        { success: false, error: error.message || 'Failed to create blog post' },
+        { success: false, error: 'Failed to create blog post' },
         { status: 500 }
       )
     }

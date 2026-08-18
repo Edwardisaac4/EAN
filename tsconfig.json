@@ -13,6 +13,15 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    // Pinned deliberately. With `types` unset, TypeScript auto-includes every
+    // folder under node_modules/@types and fails with TS2688 on any that lacks
+    // an entry point — and 9 orphaned husk dirs survive there from the
+    // next-sanity/@sanity/client removal (OneDrive held the directories open
+    // while npm deleted their contents). Allowlisting the three packages that
+    // actually supply globals makes typecheck immune to that. Module
+    // resolution is unaffected, and next-env.d.ts reaches Next's types via
+    // triple-slash references, which bypass this list.
+    "types": ["node", "react", "react-dom"],
     "plugins": [
       {
         "name": "next"

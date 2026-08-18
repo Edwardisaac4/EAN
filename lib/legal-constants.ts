@@ -119,7 +119,7 @@ export const PRIVACY_POLICY_SECTIONS: LegalSection[] = [
     num: '05',
     title: 'How We Use Your Personal Data',
     iconName: 'FileCheck',
-    summary: 'We utilize your data strictly to deliver seamless flight operations, security compliance, and customized support.',
+    summary: 'We utilize your data strictly to deliver reliable flight operations, security compliance, and customized support.',
     content: [
       {
         subtitle: 'Operational & Service Delivery Purposes',
