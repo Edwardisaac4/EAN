@@ -288,7 +288,7 @@ export default function HistoryPage() {
                 </h2>
               </div>
               <div className="font-display text-2xl font-light text-ean-gold/60 flex items-center gap-3">
-                <span className="text-ean-navy text-4xl font-semibold">2009</span>
+                <span className="text-ean-navy text-4xl font-semibold">2011</span>
                 <span>/</span>
                 <span>2026</span>
               </div>

@@ -571,39 +571,25 @@ export const LAGOS_HQ: OfficeInfo = {
 
 export const TIMELINE_EVENTS: TimelineEvent[] = [
   {
-    year: "2009",
-    title: "Founding & First Integrated FBO Hangar",
-    category: "INFRASTRUCTURE & PIONEERING",
+    year: "2011",
+    // One card, because the founding and the Wings™ kitchen are both 2011 now
+    // that 2011 is the settled founding year. They were separate cards dated
+    // 2009 and 2010, which put the catering launch before the company existed.
+    title: "Founding, First Integrated FBO Hangar & Wings™",
+    category: "FOUNDING, FBO & HOSPITALITY",
     image: "/images/hero/slide-1.jpg",
     description:
-      "EAN Aviation was established in Lagos, launching Nigeria’s first fully integrated Fixed Base Operator (FBO) hangar at Murtala Muhammed International Airport.",
+      "EAN Aviation was established in Lagos, launching Nigeria’s first fully integrated Fixed Base Operator (FBO) hangar at Murtala Muhammed International Airport — and Wings™, its on-site flight kitchen.",
     story: [
-      "In 2009, EAN Aviation pioneered a new era for business aviation in West Africa by founding Nigeria’s first fully integrated Fixed Base Operator (FBO) and private jet hangar facility at Murtala Muhammed International Airport (MMIA), Lagos.",
-      "Prior to EAN's launch, business jet operators, corporate executives, and private flight crews experienced significant operational bottlenecks, delayed ground turnarounds, and lack of dedicated airside security. EAN solved this by constructing a world-class 10,000 m² private ramp and hangar enclave.",
-      "This milestone laid the foundational bedrock for modern business aviation in Nigeria, establishing a high-security, luxury gateway for international VIPs, diplomats, and corporate flight departments."
+      "In 2011, EAN Aviation pioneered a new era for business aviation in West Africa by founding Nigeria’s first fully integrated Fixed Base Operator (FBO) and private jet hangar facility at Murtala Muhammed International Airport (MMIA), Lagos. EAN Catering Limited — branded as Wings™ — launched the same year, directly on airport grounds.",
+      "Prior to EAN's launch, business jet operators, corporate executives, and private flight crews experienced significant operational bottlenecks, delayed ground turnarounds, and lack of dedicated airside security. EAN solved this by constructing a world-class 10,000 m² private ramp and hangar enclave, establishing a high-security, luxury gateway for international VIPs, diplomats, and corporate flight departments.",
+      "Wings™ became the first dedicated luxury flight kitchen in Nigeria engineered exclusively for executive aircraft cabin service. Equipped with state-of-the-art thermal packaging, strict HACCP food safety protocols, and a team of international chefs, it serves custom menus onto private jet galleys moments before taxiing."
     ],
     highlights: [
       "Established Nigeria's first integrated FBO & private hangar terminal.",
       "Created dedicated 10,000+ m² airside ramp parking for business aircraft.",
+      "Launched Wings™, Nigeria's first dedicated executive aviation kitchen on MMIA grounds.",
       "Set early industry benchmarks for private passenger privacy and swift turnarounds."
-    ]
-  },
-  {
-    year: "2010",
-    title: "Launched EAN Catering Limited",
-    category: "LUXURY HOSPITALITY & CULINARY",
-    image: "/images/services/wings-4.jpg",
-    description:
-      "Launched EAN Catering Limited (Wings™), establishing Nigeria's premier on-site executive aviation kitchen dedicated to gourmet in-flight dining.",
-    story: [
-      "Recognizing the vital importance of high-caliber culinary experiences for private jet travelers, EAN launched EAN Catering Limited (branded as Wings™) directly on airport grounds in 2010.",
-      "Wings™ became the first dedicated luxury flight kitchen in Nigeria engineered exclusively for executive aircraft cabin service. Equipped with state-of-the-art thermal packaging, strict HACCP food safety protocols, and a team of international chefs, the kitchen transformed in-flight dining.",
-      "From custom-designed five-course menus to bespoke dietary accommodations, Wings™ ensures every meal is served at peak freshness directly onto private jet galleys moments before taxiing."
-    ],
-    highlights: [
-      "Nigeria's first dedicated executive aviation kitchen located on MMIA grounds.",
-      "Custom gourmet dining menus tailored for international flight operations.",
-      "Strict thermal packaging & safety compliance for high-altitude luxury dining."
     ]
   },
   {
