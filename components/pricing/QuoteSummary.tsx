@@ -19,31 +19,36 @@ interface QuoteSummaryProps {
 export default function QuoteSummary({
   quote,
   state,
-  lead,
   onSubmitLead,
   onOpenRequestOrder,
 }: QuoteSummaryProps) {
   const isBlurred = !state.revealed
 
-  const aircraftName = state.aircraft?.name ?? (state.mtow_manual ? `Aircraft (${state.mtow_manual.toLocaleString()} kg)` : 'Embraer Legacy 650')
-  
-  // Format MTOW weight range subtext matching screenshot (e.g. 20,001 – 30,000 kg · Lagos · Domestic)
-  const bandInfo = BANDS[quote.band]
-  const bandRangeText = bandInfo ? bandInfo.label.replace(/^Band [A-E] — /, '') : '20,001 – 30,000 kg'
+  // The calculator falls back to a Band A default weight when nothing is
+  // chosen, so `quote.band` is always populated. Naming a specific aircraft and
+  // weight range off the back of that default told the visitor they were
+  // pricing an Embraer Legacy 650 they never selected.
+  const hasAircraft = Boolean(state.aircraft || state.mtow_manual)
+
+  const aircraftName = state.aircraft?.name
+    ?? (state.mtow_manual ? `Aircraft (${state.mtow_manual.toLocaleString()} kg)` : 'No aircraft selected')
+
+  // Weight range subtext, e.g. "15,001 – 30,000 kg · Lagos · Domestic".
+  const bandRangeText = hasAircraft ? (BANDS[quote.band]?.range ?? '') : ''
   const locationLabel = state.location === 'LOS' ? 'Lagos' : 'Abuja'
   const opLabel = state.operation === 'intl' ? 'International' : 'Domestic'
   const stayLabel = state.stay === 'over' ? `overnight (${state.nights}n)` : 'same-day turnaround'
 
   return (
     <div className="w-full lg:w-100 shrink-0 sticky top-24 space-y-4">
-      <div className="relative bg-white rounded-2xl shadow-sm border border-[#EBE5DF] overflow-hidden">
-        {/* HEADER (DARK BURGUNDY / MAROON BANNER #581825) */}
-        <div className="p-6 bg-[#581825] text-white space-y-1">
+      <div className="relative bg-white rounded-2xl shadow-sm border border-ean-border-light overflow-hidden">
+        {/* HEADER (DARK BURGUNDY BANNER) */}
+        <div className="p-6 bg-ean-burgundy-rich text-white space-y-1">
           <h2 className="font-display font-medium text-xl md:text-2xl text-white tracking-wide truncate">
             {aircraftName}
           </h2>
           <div className="text-xs font-ui text-white/80">
-            {bandRangeText} · {locationLabel} · {opLabel}
+            {[bandRangeText, locationLabel, opLabel].filter(Boolean).join(' · ')}
           </div>
           <div className="text-xs font-ui text-white/70">
             {stayLabel} · {state.pax} pax
@@ -80,8 +85,8 @@ export default function QuoteSummary({
           ) : (
             /* REVEALED PRICE DETAILS & ITEMIZED BREAKDOWN */
             <div className="space-y-5 animate-fadeIn">
-              <div className="flex items-center justify-between pb-2 border-b border-[#EBE5DF]">
-                <span className="text-xs font-ui uppercase tracking-widest font-semibold flex items-center gap-1.5 text-[#581825]">
+              <div className="flex items-center justify-between pb-2 border-b border-ean-border-light">
+                <span className="text-xs font-ui uppercase tracking-widest font-semibold flex items-center gap-1.5 text-ean-burgundy-rich">
                   <Calculator className="w-4 h-4 text-ean-gold" />
                   Itemized Charge Summary
                 </span>
@@ -92,7 +97,7 @@ export default function QuoteSummary({
                   Select an aircraft to view ground handling estimates.
                 </div>
               ) : (
-                <div className="divide-y divide-gray-100">
+                <div className="divide-y divide-ean-border-light">
                   {quote.items.map((item, idx) => (
                     <QuoteLineItem key={`${item.label}-${idx}`} item={item} />
                   ))}
@@ -100,11 +105,11 @@ export default function QuoteSummary({
               )}
 
               {/* TOTAL ESTIMATE ROW */}
-              <div className="pt-4 border-t border-[#EBE5DF]">
+              <div className="pt-4 border-t border-ean-border-light">
                 <div className="text-[11px] font-ui uppercase tracking-widest text-ean-muted-dark font-semibold">
                   Total Estimated Handling Fee
                 </div>
-                <div className="text-2xl font-mono font-bold text-[#581825] mt-1 tabular-nums">
+                <div className="text-2xl font-mono font-bold text-ean-burgundy-rich mt-1 tabular-nums">
                   {quote.totalDisplay}
                 </div>
               </div>

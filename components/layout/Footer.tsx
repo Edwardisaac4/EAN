@@ -76,8 +76,12 @@ export default function Footer() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Gradient uses tokens, not raw hex — #2D0710/#1E050B/#140307 were literal
+  // restatements of ean-navy / ean-navy-mid / ean-black (AGENTS.md §5).
+  // `select-none` was removed because this footer prints the phone number and
+  // email address, and blocking selection stopped visitors copying them.
   return (
-    <footer className="bg-gradient-to-b from-[#2D0710] via-[#1E050B] to-[#140307] border-t border-ean-gold/30 pt-12 sm:pt-16 pb-8 mt-auto relative overflow-hidden select-none">
+    <footer className="bg-linear-to-b from-ean-navy via-ean-navy-mid to-ean-black border-t border-ean-gold/30 pt-12 sm:pt-16 pb-8 mt-auto relative overflow-hidden">
       {/* Ambient background gold lighting */}
       <div className="absolute bottom-0 right-0 w-80 sm:w-120 h-80 sm:h-120 rounded-full bg-ean-gold/5 blur-[140px] pointer-events-none" />
       <div className="absolute top-0 left-10 w-72 h-72 rounded-full bg-blue-950/30 blur-[100px] pointer-events-none" />
@@ -137,7 +141,7 @@ export default function Footer() {
             </div>
 
             <p className="font-ui text-xs sm:text-sm text-ean-muted-light leading-relaxed max-w-md">
-              West Africa&apos;s premier business aviation conglomerate, operating Murtala Muhammed International Airport&apos;s first integrated FBO terminal, NCAA-approved maintenance organisation (AMO), and executive jet charters.
+              West Africa&apos;s leading integrated business aviation company, operating Nigeria&apos;s first integrated FBO terminal at Murtala Muhammed International Airport, NCAA-approved maintenance organisation (AMO), and executive jet charters.
             </p>
 
             {/* Social Icons */}

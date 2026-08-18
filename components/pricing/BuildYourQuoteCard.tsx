@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Aircraft, Location, Operation, StayType, HandingTier, DayType, MtowBand } from '@/types/pricing'
 import { BANDS } from '@/lib/pricing/bands'
-import { Search, ChevronDown, Check, Plane, PenLine, Plus, Minus } from 'lucide-react'
+import { Search, ChevronDown, Check, PenLine, Plus, Minus } from 'lucide-react'
 
 interface BuildYourQuoteCardProps {
   aircraft: Aircraft | null

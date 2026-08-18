@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useSyncExternalStore, useMemo } from 'react';
-import { Search, Bell, Plus, Clock, Globe, ShieldAlert, ChevronRight, Menu, CheckCheck } from 'lucide-react';
+import { Search, Bell, Clock, Globe, ShieldAlert, ChevronRight, Menu, CheckCheck } from 'lucide-react';
 import { Lead } from '@/lib/admin-leads-data';
 
 export interface AdminHeaderProps {

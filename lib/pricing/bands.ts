@@ -1,12 +1,19 @@
 import { MtowBand } from '@/types/pricing'
 
 // MTOW bands — matches Nigerian CAA FBO pricing tiers
-export const BANDS: Record<MtowBand, { label: string; min: number; max: number | null }> = {
-  A: { label: 'Band A — Up to 5,700 kg',        min: 0,     max: 5700  },
-  B: { label: 'Band B — 5,701 – 15,000 kg',     min: 5701,  max: 15000 },
-  C: { label: 'Band C — 15,001 – 30,000 kg',    min: 15001, max: 30000 },
-  D: { label: 'Band D — 30,001 – 80,000 kg',    min: 30001, max: 80000 },
-  E: { label: 'Band E — Above 80,000 kg',        min: 80001, max: null  },
+//
+// `range` carries the weight span on its own. The UI used to recover it by
+// regex-stripping the "Band X — " prefix off `label`, which silently produced a
+// wrong caption the moment a label was reworded.
+export const BANDS: Record<
+  MtowBand,
+  { label: string; range: string; min: number; max: number | null }
+> = {
+  A: { label: 'Band A — Up to 5,700 kg',     range: 'Up to 5,700 kg',      min: 0,     max: 5700  },
+  B: { label: 'Band B — 5,701 – 15,000 kg',  range: '5,701 – 15,000 kg',   min: 5701,  max: 15000 },
+  C: { label: 'Band C — 15,001 – 30,000 kg', range: '15,001 – 30,000 kg',  min: 15001, max: 30000 },
+  D: { label: 'Band D — 30,001 – 80,000 kg', range: '30,001 – 80,000 kg',  min: 30001, max: 80000 },
+  E: { label: 'Band E — Above 80,000 kg',    range: 'Above 80,000 kg',     min: 80001, max: null  },
 }
 
 export function getBand(mtow_kg: number): MtowBand {

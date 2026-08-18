@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Award, ShieldCheck, Crown, ChevronRight, Quote, Sparkles } from 'lucide-react';
+import { ShieldCheck, Crown, ChevronRight, Quote, Sparkles } from 'lucide-react';
 import { TeamMember } from '@/lib/constants';
 import TeamMemberModal from './TeamMemberModal';
 

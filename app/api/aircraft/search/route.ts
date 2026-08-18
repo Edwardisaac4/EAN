@@ -1,26 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type { Aircraft } from '@/types/pricing'
 import { AIRCRAFT_DATASET } from '@/lib/aircraftData'
-
-// Simple IP rate limiter: max 30 requests per minute per IP
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
-
-function isRateLimited(ip: string, limit = 30, windowMs = 60000): boolean {
-  const now = Date.now()
-  const record = rateLimitMap.get(ip)
-
-  if (!record || now > record.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + windowMs })
-    return false
-  }
-
-  if (record.count >= limit) {
-    return true
-  }
-
-  record.count += 1
-  return false
-}
+import {
+  consumeRateLimit,
+  clientIpFrom,
+  aircraftSearchKey,
+  AIRCRAFT_SEARCH_MAX,
+  AIRCRAFT_SEARCH_WINDOW_SECONDS,
+} from '@/lib/rate-limiter'
 
 interface ApiNinjasAircraft {
   manufacturer?: string
@@ -85,12 +72,23 @@ async function fetchApiNinjas(q: string): Promise<ApiNinjasAircraft[]> {
 }
 
 export async function GET(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1'
+  // This route is public and proxies a metered third-party API, so the limit is
+  // protecting spend, not just load. It previously used a module-level Map,
+  // which on Vercel meant one 30/min budget per warm lambda rather than one per
+  // caller — the shared Postgres counter makes the cap actually hold.
+  const rateCheck = await consumeRateLimit(
+    aircraftSearchKey(clientIpFrom(req)),
+    AIRCRAFT_SEARCH_MAX,
+    AIRCRAFT_SEARCH_WINDOW_SECONDS
+  )
 
-  if (isRateLimited(ip)) {
+  if (!rateCheck.isAllowed) {
     return NextResponse.json(
       { success: false, error: 'Too many search requests. Please wait a moment.' },
-      { status: 429 }
+      {
+        status: 429,
+        headers: { 'Retry-After': String(rateCheck.retryAfterSeconds ?? 60) },
+      }
     )
   }
 

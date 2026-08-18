@@ -12,6 +12,13 @@ import {
   requiredString,
 } from '@/lib/services/lead-input'
 import { sendNewLeadAlert } from '@/lib/services/lead-notifications'
+import {
+  consumeRateLimit,
+  clientIpFrom,
+  leadKey,
+  LEAD_MAX_SUBMISSIONS,
+  LEAD_WINDOW_SECONDS,
+} from '@/lib/rate-limiter'
 import { dbError, badRequest } from '@/lib/supabase/helpers'
 import type { LeadSubmissionPayload, LeadServiceEnum, LeadStatusEnum, LeadPriorityEnum } from '@/types/database'
 
@@ -62,6 +69,30 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    // This is the only unauthenticated write path on the site (middleware.ts
+    // exempts it deliberately) and every accepted submission sends an email, so
+    // it is throttled before any parsing or database work happens.
+    const clientIp = clientIpFrom(request)
+    const rateCheck = await consumeRateLimit(
+      leadKey(clientIp),
+      LEAD_MAX_SUBMISSIONS,
+      LEAD_WINDOW_SECONDS
+    )
+
+    if (!rateCheck.isAllowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'Too many enquiries submitted from this connection. Please try again shortly, or call our operations desk directly.',
+        },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(rateCheck.retryAfterSeconds ?? 3600) },
+        }
+      )
+    }
+
     let body: Record<string, unknown>
     try {
       body = await request.json()
@@ -79,7 +110,23 @@ export async function POST(request: Request) {
       message,
       estimatedValue,
       tracking,
+      website,
     } = body as Record<string, unknown>
+
+    // Honeypot. `website` is rendered as a visually hidden, aria-hidden,
+    // autocomplete-off input that no sighted or screen-reader user is offered.
+    // Bots that blindly fill every field in the DOM populate it; humans cannot.
+    // Answered with the normal success shape so the bot has no signal to adapt to.
+    if (typeof website === 'string' && website.trim() !== '') {
+      console.warn('[leads] honeypot triggered, discarding submission')
+      return NextResponse.json(
+        {
+          success: true,
+          message: 'Your inquiry has been received. Our team will contact you shortly.',
+        },
+        { status: 201 }
+      )
+    }
 
     // This endpoint is public and unauthenticated, so every field is validated
     // as a string here rather than cast — a number or object reaching the insert
@@ -103,10 +150,6 @@ export async function POST(request: Request) {
     if (!serviceValue) {
       return badRequest('Unknown service. Please select one of the listed services.')
     }
-
-    // Extract client IP for tracking
-    const forwardedFor = request.headers.get('x-forwarded-for')
-    const clientIp = forwardedFor ? forwardedFor.split(',')[0].trim() : undefined
 
     // Collapse accidental re-submissions (page refresh, double-click) instead of
     // creating duplicate pipeline records.
@@ -142,7 +185,13 @@ export async function POST(request: Request) {
       tracking: parseTracking(tracking),
     }
 
-    const { lead, error } = await createLead(payload, clientIp)
+    // clientIpFrom collapses unidentifiable callers to the string 'unknown' so
+    // they still share a rate-limit bucket, but that is not an address — store
+    // NULL rather than writing the sentinel into the tracking record.
+    const { lead, error } = await createLead(
+      payload,
+      clientIp === 'unknown' ? undefined : clientIp
+    )
 
     if (error) {
       console.error('Failed to create lead:', error)

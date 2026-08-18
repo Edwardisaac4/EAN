@@ -104,7 +104,7 @@ export default function ServicesSection() {
               <span className="inline-block w-8 h-px bg-ean-gold/40" />
             </div>
             <h2 className="font-display text-4xl sm:text-5xl font-light text-white leading-[1.15]">
-              World-Class Aviation Solutions
+              Six Service Lines from One Lagos Base
             </h2>
           </div>
 

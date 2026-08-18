@@ -32,52 +32,32 @@ interface MockArticle {
   content?: string;
 }
 
-const INITIAL_ARTICLES: MockArticle[] = [
-  {
-    id: "art-1",
-    title: "EAN Aviation Expands Executive Jet Maintenance Capabilities at Murtala Muhammed Airport",
-    slug: "ean-aviation-expands-jet-maintenance-lagos",
-    category: "Company News",
-    publishedAt: "2026-07-15",
-    views: 1420,
-    status: "published",
-    leadsGenerated: 12,
-  },
-  {
-    id: "art-2",
-    title: "Navigating NCAA Compliance & Aircraft Inspection Standards in West Africa",
-    slug: "navigating-ncaa-compliance-west-africa",
-    category: "Aviation Insights",
-    publishedAt: "2026-07-02",
-    views: 980,
-    status: "published",
-    leadsGenerated: 7,
-  },
-  {
-    id: "art-3",
-    title: "The Future of Private Jet Charter & VIP FBO Services in Lagos",
-    slug: "future-of-private-jet-charter-lagos",
-    category: "Industry Trends",
-    publishedAt: "2026-06-20",
-    views: 2150,
-    status: "published",
-    leadsGenerated: 19,
-  },
-  {
-    id: "art-4",
-    title: "Wings™ Gourmet In-Flight Catering Menu Launch for Diplomatic Flights",
-    slug: "wings-gourmet-catering-menu-launch",
-    category: "Services Update",
-    publishedAt: "2026-07-20",
-    views: 310,
-    status: "draft",
-    leadsGenerated: 2,
-  },
-];
+/**
+ * Shape of a row from GET /api/admin/blog. Declared locally rather than reusing
+ * the generated Supabase row type because this list only reads a projection of
+ * it, and `content` arrives as Tiptap JSON that the table stringifies for search.
+ */
+interface BlogPostRow {
+  id: string;
+  title: string;
+  slug: string;
+  category: string | null;
+  published_at: string | null;
+  created_at: string | null;
+  views: number | null;
+  status: 'published' | 'draft' | null;
+  content?: unknown;
+}
 
 export default function BlogCMSPage() {
   const router = useRouter();
-  const [articles, setArticles] = useState<MockArticle[]>(INITIAL_ARTICLES);
+  // Starts empty and stays empty on a failed or empty load. Seeding this with
+  // mock rows made an API outage look like a populated CMS, and every action on
+  // one of those rows hit a slug that does not exist.
+  const [articles, setArticles] = useState<MockArticle[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<BlogTemplate | null>(null);
@@ -92,23 +72,36 @@ export default function BlogCMSPage() {
     async function fetchPosts() {
       try {
         const res = await fetch('/api/admin/blog');
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          const mapped: MockArticle[] = json.data.map((item: any) => ({
-            id: item.id,
-            title: item.title,
-            slug: item.slug,
-            category: item.category || 'Company News',
-            publishedAt: item.published_at ? item.published_at.split('T')[0] : (item.created_at ? item.created_at.split('T')[0] : ''),
-            views: item.views || 0,
-            status: item.status || 'draft',
-            leadsGenerated: 0,
-            content: typeof item.content === 'string' ? item.content : JSON.stringify(item.content),
-          }));
-          setArticles(mapped);
+        const json = await res.json().catch(() => null);
+
+        if (!res.ok || !json?.success || !Array.isArray(json.data)) {
+          setLoadError(
+            'Could not load blog posts. The list below is empty because the request failed, not because there are no posts.'
+          );
+          return;
         }
+
+        // Mapped unconditionally: an empty array is a real answer, and rendering
+        // the empty state for it is more honest than leaving stale rows on screen.
+        const mapped: MockArticle[] = (json.data as BlogPostRow[]).map((item) => ({
+          id: item.id,
+          title: item.title,
+          slug: item.slug,
+          category: item.category || 'Company News',
+          publishedAt: item.published_at ? item.published_at.split('T')[0] : (item.created_at ? item.created_at.split('T')[0] : ''),
+          views: item.views || 0,
+          status: item.status || 'draft',
+          leadsGenerated: 0,
+          content: typeof item.content === 'string' ? item.content : JSON.stringify(item.content),
+        }));
+        setArticles(mapped);
       } catch (err) {
         console.error('Failed to fetch blog posts from API:', err);
+        setLoadError(
+          'Could not reach the blog API. The list below is empty because the request failed, not because there are no posts.'
+        );
+      } finally {
+        setIsLoaded(true);
       }
     }
     fetchPosts();
@@ -120,38 +113,68 @@ export default function BlogCMSPage() {
     const article = articles.find((a) => a.id === id);
     if (!article) return;
 
-    const nextStatus = article.status === 'published' ? 'draft' : 'published';
-    
+    const previousStatus = article.status;
+    const nextStatus = previousStatus === 'published' ? 'draft' : 'published';
+
+    setActionError(null);
+
     // Optimistic UI update
     setArticles((prev) =>
       prev.map((a) => (a.id === id ? { ...a, status: nextStatus } : a))
     );
 
     try {
-      if (nextStatus === 'published') {
-        await fetch(`/api/admin/blog/${encodeURIComponent(article.slug)}/publish`, { method: 'PATCH' });
-      } else {
-        await fetch(`/api/admin/blog/${encodeURIComponent(article.slug)}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'draft' }),
-        });
+      const res =
+        nextStatus === 'published'
+          ? await fetch(`/api/admin/blog/${encodeURIComponent(article.slug)}/publish`, { method: 'PATCH' })
+          : await fetch(`/api/admin/blog/${encodeURIComponent(article.slug)}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status: 'draft' }),
+            });
+
+      // A 4xx/5xx does not reject, so without this the optimistic row would keep
+      // showing a status the database never accepted.
+      if (!res.ok) {
+        throw new Error(`Status ${res.status}`);
       }
     } catch (err) {
       console.error('Failed to toggle post status:', err);
+      setArticles((prev) =>
+        prev.map((a) => (a.id === id ? { ...a, status: previousStatus } : a))
+      );
+      setActionError(`Could not change the status of “${article.title}”. It is still ${previousStatus}.`);
     }
   };
 
   const deleteArticle = async (id: string) => {
-    const article = articles.find((a) => a.id === id);
-    if (!article) return;
+    const index = articles.findIndex((a) => a.id === id);
+    if (index === -1) return;
 
+    const article = articles[index];
+
+    if (!window.confirm(`Delete “${article.title}”? This removes the post permanently.`)) {
+      return;
+    }
+
+    setActionError(null);
     setArticles((prev) => prev.filter((a) => a.id !== id));
 
     try {
-      await fetch(`/api/admin/blog/${encodeURIComponent(article.slug)}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/blog/${encodeURIComponent(article.slug)}`, { method: 'DELETE' });
+      if (!res.ok) {
+        throw new Error(`Status ${res.status}`);
+      }
     } catch (err) {
       console.error('Failed to delete post:', err);
+      // Restore at its original position so the table does not reorder itself
+      // after a failure the administrator did not cause.
+      setArticles((prev) => {
+        const restored = [...prev];
+        restored.splice(index, 0, article);
+        return restored;
+      });
+      setActionError(`Could not delete “${article.title}”. The post is still published in the CMS.`);
     }
   };
 
@@ -171,6 +194,8 @@ export default function BlogCMSPage() {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)+/g, '');
 
+    setActionError(null);
+
     try {
       const res = await fetch('/api/admin/blog', {
         method: 'POST',
@@ -184,7 +209,18 @@ export default function BlogCMSPage() {
         }),
       });
 
-      const json = await res.json();
+      const json = await res.json().catch(() => null);
+
+      // Nothing below this point may run on a rejected create: closing the modal
+      // and navigating to the editor would send the author to a slug the
+      // database never stored.
+      if (!res.ok || !json?.success) {
+        setActionError(
+          json?.error ?? 'Could not create the article. Please try again.'
+        );
+        return;
+      }
+
       const finalSlug = json.data?.slug || targetSlug;
 
       const newArt: MockArticle = {
@@ -193,7 +229,7 @@ export default function BlogCMSPage() {
         slug: finalSlug,
         category: newCategory,
         publishedAt: new Date().toISOString().split('T')[0],
-        views: 1,
+        views: 0,
         status: 'draft',
         leadsGenerated: 0,
         content: newContent,
@@ -208,6 +244,7 @@ export default function BlogCMSPage() {
       router.push(`/admin/blog/${encodeURIComponent(finalSlug)}/edit`);
     } catch (err) {
       console.error('Failed to create article via template:', err);
+      setActionError('Could not reach the blog API. The article was not created.');
     }
   };
 
@@ -258,6 +295,15 @@ export default function BlogCMSPage() {
           </div>
         </div>
 
+        {(loadError || actionError) && (
+          <div
+            role="alert"
+            className="rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-xs text-rose-200"
+          >
+            {loadError ?? actionError}
+          </div>
+        )}
+
         {/* Search */}
         <div className="relative max-w-md">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-ean-muted-light/60" />
@@ -284,6 +330,17 @@ export default function BlogCMSPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-ean-border-dark/60 text-ean-white font-ui">
+              {isLoaded && filtered.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="py-12 px-4 text-center text-ean-muted-light">
+                    {loadError
+                      ? 'No articles could be loaded.'
+                      : search
+                        ? `No articles match “${search}”.`
+                        : 'No articles yet. Create your first post to get started.'}
+                  </td>
+                </tr>
+              )}
               {filtered.map((art) => (
                 <tr key={art.id} className="hover:bg-white/3 transition-colors">
                   <td className="py-4 px-4 font-semibold text-ean-white">
@@ -446,7 +503,7 @@ export default function BlogCMSPage() {
                     type="submit"
                     className="px-5 py-2 rounded-lg bg-ean-gold hover:bg-ean-gold-light text-ean-black font-semibold text-xs shadow-md"
                   >
-                    Publish Article with Template
+                    Create Draft from Template
                   </button>
                 </div>
               </form>

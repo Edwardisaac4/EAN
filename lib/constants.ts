@@ -17,6 +17,13 @@ export interface HeroSlide {
   id: number;
   eyebrow: string;
   title: string;
+  /**
+   * Steps the headline type ladder down one stop. The default ladder is tuned
+   * for the two-or-three-word titles most slides carry; a longer one reaches the
+   * container edge at `xl` and wraps into a third line. Set this per slide
+   * rather than shrinking the ladder for all four.
+   */
+  titleScale?: 'compact';
   subtitle: string;
   image: string;
   primaryCta: {
@@ -30,11 +37,19 @@ export interface HeroSlide {
 }
 
 export interface TrustStat {
+  /**
+   * The headline figure, rendered as text rather than counted up: every one is a
+   * year, a ratio or a certification acronym, none of which is a quantity a
+   * counter could meaningfully climb to.
+   */
+  figure: string;
+  /** Short form, for the compact homepage band. */
   label: string;
-  isNumeric: boolean;
-  value: number;
-  suffix?: string;
-  staticText?: string;
+  /**
+   * Sentence form for the about-page metric cards, where the card has room for
+   * more than the band does. Falls back to `label` when the two would match.
+   */
+  description?: string;
 }
 
 export interface BlogPostMock {
@@ -128,27 +143,37 @@ export interface TeamMember {
 // Navigation Constants
 // ============================================================================
 
+/**
+ * Primary navigation. Order is deliberate and set by the business, not
+ * alphabetical or route-derived — Pricing sits ahead of Services.
+ *
+ * 'Insights' is a label change only: the route stays /blog, because the posts,
+ * sitemap entries and every published /blog/[slug] URL live there. Renaming the
+ * segment would break live links for no reader-facing gain.
+ *
+ * Privacy Policy and Terms of Use were dropped from the About Us dropdown and
+ * are reached from the footer bottom bar instead, where legal links belong.
+ */
 export const NAV_ITEMS: NavItem[] = [
   { name: 'Home', href: '/' },
-  { 
-    name: 'About Us', 
+  {
+    name: 'About Us',
     href: '/about',
     dropdownItems: [
+      { name: 'Our Team', href: '/team' },
       { name: 'History', href: '/history' },
-      { name: 'Privacy Policy', href: '/privacy-policy' },
-      { name: 'Terms of Use', href: '/terms-of-use' },
     ],
   },
-  { name: 'Our Team', href: '/team' },
-  { name: 'Services', href: '/services' },
+  { name: 'The Aeroplex', href: '/the-aeroplex' },
   { name: 'Pricing', href: '/pricing' },
+  { name: 'Insights', href: '/blog' },
+  { name: 'Services', href: '/services' },
   { name: 'Contact Us', href: '/contact' },
-  { name: 'Blog', href: '/blog' },
 ];
 
 export const NAV_CTA = {
-  name: 'Get a Quote',
-  href: '/pricing',
+  name: 'Make an Inquiry',
+  href: '/contact',
 };
 
 export const FOOTER_SERVICES_LINKS = [
@@ -174,7 +199,7 @@ export const FOOTER_COMPANY_LINKS = [
 export const HERO_SLIDES: HeroSlide[] = [
   {
     id: 1,
-    eyebrow: "The Most Comprehensive Aviation Services Company in West Africa",
+    eyebrow: "Nigeria's First Fully Integrated FBO",
     title: "Elevating Every\nJourney",
     subtitle: "FBO Services · Aircraft Charter · NCAA-Approved\nMaintenance · VIP Ground Handling",
     image: "/images/hero/slide-1.jpg",
@@ -192,10 +217,14 @@ export const HERO_SLIDES: HeroSlide[] = [
     eyebrow: "Exclusive Private Flight Solutions",
     title: "Precision in Flight,\nLuxury in Detail",
     subtitle: "Experience bespoke jet and helicopter chartering tailored to\nyour schedule and designed for ultimate comfort.",
-    image: "/images/hero/slide-2.jpg",
+    image: "/images/charter-cabin.jpg",
     primaryCta: {
-      text: "Book a Charter",
-      href: "/charter",
+      text: "Request a Charter",
+      // /charter has no page. The contact form reads ?service= and preselects
+      // the matching checkbox, so this lands on a charter-scoped inquiry.
+      // "Request" over "Book" because that destination is an inquiry form, not
+      // a booking engine — the label has to match what the click actually does.
+      href: "/contact?service=charter",
     },
     secondaryCta: {
       text: "Our Services",
@@ -205,15 +234,20 @@ export const HERO_SLIDES: HeroSlide[] = [
   {
     id: 3,
     eyebrow: "NCAA-Approved Maintenance Organisation",
-    title: "Uncompromising\nSafety & Standards",
+    // "Documented", not "Uncompromising". Same reasoning as TRUST_STATS below:
+    // an unqualified absolute has no citable basis, while the NCAA-AMO approval
+    // and its audit records are a fact a visitor can check. Do not restore it.
+    title: "Safety and Standards,\nDocumented",
+    // Longest first line of the four ("Safety and Standards," at 21 characters).
+    titleScale: 'compact',
     subtitle: "West Africa's certified maintenance hub keeping business jets\nand commercial fleets flying safely.",
-    image: "/images/hero/slide-3.jpg",
+    image: "/images/services/s1-banner-maintenance-c-2.jpg",
     primaryCta: {
       text: "Maintenance Services",
       href: "/services/aircraft-maintenance",
     },
     secondaryCta: {
-      text: "Hangar Facilities",
+      text: "Hangarage & Parking",
       href: "/services/leased-offices",
     },
   },
@@ -222,7 +256,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     eyebrow: "Nigeria's Premier FBO Hangar & VIP Lounge",
     title: "The EAN Way of\nDeparture",
     subtitle: "Enjoy the luxury of Lagos airport's dedicated VIP private terminal,\naccompanied by Wings™ freshly prepared in-flight catering.",
-    image: "/images/hero/slide-4.jpg",
+    image: "/images/vip-lounge.jpg",
     primaryCta: {
       text: "VIP Lounge Experience",
       href: "/services/vip-lounge",
@@ -234,24 +268,36 @@ export const HERO_SLIDES: HeroSlide[] = [
   },
 ];
 
+/**
+ * The four KPIs published on both the homepage band and the about-page metric
+ * cards. One array feeds both so the two surfaces cannot drift apart — the
+ * failure mode the August 2026 content sign-off found repeatedly, where the same
+ * claim was published in three different wordings.
+ *
+ * Each figure is a checkable fact rather than a score: a date, a certification,
+ * a coverage window, an on-site facility. "15+ Years of Excellence" and "100%
+ * Flight Safety Record" were dropped for the same reason — an unqualified
+ * absolute has no citable basis and becomes a published falsehood on the first
+ * exception.
+ */
 export const TRUST_STATS: TrustStat[] = [
   {
-    label: 'Years of Excellence',
-    isNumeric: true,
-    value: 15,
-    suffix: '+',
+    figure: '2011',
+    label: 'Founded in Lagos',
+    description: 'Founded in Lagos. Operating at MMIA since.',
   },
   {
-    label: 'NCAA Certification',
-    isNumeric: false,
-    value: 0,
-    staticText: 'NCAA-AMO',
+    figure: 'NCAA-AMO',
+    label: 'Approved Maintenance Organization',
   },
   {
-    label: 'Flight Safety Record',
-    isNumeric: true,
-    value: 100,
-    suffix: '%',
+    figure: '24/7',
+    label: 'Operations, Lagos and Abuja',
+  },
+  {
+    figure: 'CIQ',
+    label: 'Customs, Immigration and Quarantine',
+    description: 'Customs, Immigration and Quarantine, on-site',
   },
 ];
 
@@ -296,7 +342,7 @@ export const EAN_SERVICES = [
   {
     slug: 'aircraft-sales-charter',
     name: 'Aircraft Sales & Charter',
-    short: 'Personalized jet and helicopter charter and bespoke aircraft sales experience.',
+    short: 'Personalized jet and helicopter charter, plus aircraft sales advisory.',
     icon: 'BadgeCheck',
   },
   {
@@ -325,10 +371,10 @@ export const SERVICES_DATA: ServiceRichData[] = [
     name: 'FBO & Ground Support',
     short: 'Aircraft passenger handling, fueling, and ramp services to the highest standard.',
     iconName: 'Plane',
-    extendedDescription: 'Operating Nigeria’s first fully integrated Fixed Base Operator (FBO) at MMIA, Lagos. We provide a seamless transition from runway to terminal, delivering premier aircraft handling, fueling, and ramp dispatch 24/7/365.',
+    extendedDescription: 'Operating Nigeria’s first fully integrated Fixed Base Operator (FBO) at MMIA, Lagos. One operator takes the aircraft from runway to terminal, covering aircraft handling, fueling, and ramp dispatch 24/7/365.',
     stats: ['24/7 Dispatch Support', 'IS-BAO Stage II Aligned'],
     features: [
-      'Bespoke passenger & crew handling',
+      'Dedicated passenger & crew handling',
       'Direct airside terminal custom clearance',
       'Aircraft fueling and ground power (GPU)',
       'Secure hangar and ramp parking'
@@ -353,7 +399,7 @@ export const SERVICES_DATA: ServiceRichData[] = [
   {
     slug: 'aircraft-sales-charter',
     name: 'Aircraft Sales & Charter',
-    short: 'Personalized jet and helicopter charter and bespoke aircraft sales experience.',
+    short: 'Personalized jet and helicopter charter, plus aircraft sales advisory.',
     iconName: 'BadgeCheck',
     extendedDescription: 'Our private aircraft sales brokerage and charter desk coordinates executive jet acquisitions, pre-purchase technical inspections, and bespoke global charter itineraries on modern aircraft.',
     stats: ['Aircraft Sales Brokerage', 'Global Permit Desk'],
@@ -388,7 +434,7 @@ export const SERVICES_DATA: ServiceRichData[] = [
     extendedDescription: 'Depart and arrive in absolute peace. Our private executive terminal at MMIA, Lagos bypasses commercial congestion, housing quiet suites, premium bars, and direct airside escorts.',
     stats: ['MMIA Private Airside Entry', 'Fast-Track Escorts'],
     features: [
-      'Bespoke VIP lounge suites',
+      'Private VIP lounge suites',
       'Complimentary refreshments & drinks',
       'High-speed corporate Wi-Fi & quiet study',
       'Chauffeur-driven tarmac transfers'
@@ -416,92 +462,77 @@ export const SERVICES_DATA: ServiceRichData[] = [
 // Blog & Articles Constants
 // ============================================================================
 
+/**
+ * Published articles, newest first.
+ *
+ * These are the real posts migrated from the live WordPress site at ean.aero.
+ * They replaced six placeholder entries that described articles which were never
+ * written and, worse, asserted invented figures as fact — "a 24% increase in
+ * point-to-point business jet movements over the past 18 months" among them.
+ * Fabricated market data published under EAN's name is a liability, not filler.
+ *
+ * Body copy lives in lib/blog-content.ts, keyed by slug.
+ */
 export const ARTICLES_DATABASE: Article[] = [
   {
-    slug: 'future-of-business-aviation-2026',
-    title: 'The Future of Business Aviation: Private Jet Market Analysis',
+    slug: 'understanding-ciq-business-aviation-international-flights',
+    title: 'Understanding CIQ in Business Aviation: Why It Matters for International Private Flights',
     category: 'Business Aviation',
-    excerpt: 'Key trends shaping executive air travel corridors, aircraft distribution, and fleet expansions in West Africa in 2026.',
-    publishedAt: 'July 18, 2026',
-    readTime: '6 min read',
+    excerpt:
+      'CIQ — Customs, Immigration, and Quarantine — is the gateway to international business aviation. Understand what CIQ means, why it matters, and how EAN Aviation’s FBO services ensure your passengers clear borders efficiently and professionally.',
+    publishedAt: 'July 8, 2026',
+    readTime: '9 min read',
     image: '/images/about-jet.jpg',
     isFeatured: true,
   },
   {
-    slug: 'navigating-fbo-regulations-west-africa',
-    title: 'Navigating FBO Ground Handling Regulations in West Africa',
-    category: 'FBO Services',
-    excerpt: 'An in-depth review of current regulatory compliances and key handling upgrades at major airport terminals.',
-    publishedAt: 'July 15, 2026',
-    readTime: '5 min read',
-    image: '/images/vip-lounge.jpg',
-  },
-  {
-    slug: 'safety-standards-inside-maintenance-hub',
-    title: 'Uncompromising Safety Standards: Inside Our Maintenance Hub',
-    category: 'Industry News',
-    excerpt: 'How our NCAA-approved Aircraft Maintenance Organisation (AMO) ensures flight operations safety and precision.',
-    publishedAt: 'July 10, 2026',
-    readTime: '4 min read',
-    image: '/images/charter-cabin.jpg',
-  },
-  {
-    slug: 'bespoke-catering-in-flight-culinary',
-    title: 'Bespoke Catering: Elevating the In-Flight Culinary Experience',
+    slug: 'in-loving-memory-of-eyitayo-aiyetan',
+    title: 'In Loving Memory of Eyitayo Aiyetan',
     category: 'General',
-    excerpt: 'A sneak peek behind EAN\'s Wings™ Kitchen operations, crafting customized gourmet private jet menus.',
-    publishedAt: 'July 05, 2026',
-    readTime: '3 min read',
-    image: '/images/charter-cabin.jpg',
+    excerpt:
+      'Honouring Eyitayo Aiyetan — Head of FBO Operations at EAN Aviation, a consummate aviation professional, mentor and bridge-builder across West and Central Africa.',
+    publishedAt: 'July 7, 2026',
+    readTime: '4 min read',
+    image: '/images/runway.jpg',
   },
   {
-    slug: 'vip-lounge-redefining-departure',
-    title: 'MMIA VIP Lounge: Redefining Departure Congestion in Lagos',
-    category: 'FBO Services',
-    excerpt: 'A look inside the new fast-track executive terminal and lounge spaces designed for seamless travel.',
-    publishedAt: 'June 28, 2026',
-    readTime: '5 min read',
-    image: '/images/vip-lounge.jpg',
-  },
-  {
-    slug: 'choosing-right-corporate-helicopter',
-    title: 'Choosing the Right Corporate Helicopter: A Purchaser\'s Guide',
+    slug: 'why-top-ceos-are-choosing-fbo-services-over-first-class',
+    title: 'Why Top CEOs are choosing FBO services over first class',
     category: 'Business Aviation',
-    excerpt: 'Key parameters to evaluate when selecting rotary aircraft, custom turbines, and regional ranges.',
-    publishedAt: 'June 20, 2026',
-    readTime: '7 min read',
-    image: '/images/about-jet.jpg',
+    excerpt:
+      'Discover why top CEOs and executives are ditching first-class airline seats for FBO services. From time efficiency and privacy to productivity and prestige — here’s the business case for choosing FBO over commercial aviation.',
+    publishedAt: 'May 8, 2026',
+    readTime: '6 min read',
+    image: '/images/charter-cabin.jpg',
   },
 ];
 
-export const MOCK_POSTS: BlogPostMock[] = [
-  {
-    title: 'Navigating FBO Ground Handling Regulations in West Africa',
-    category: 'FBO Services',
-    excerpt: 'An in-depth review of current regulatory compliances and key handling upgrades at major airport terminals.',
-    publishedAt: 'July 18, 2026',
-    image: '/images/vip-lounge.jpg',
-    slug: 'navigating-fbo-regulations-west-africa',
-  },
-  {
-    title: 'The Future of Business Aviation: Private Jet Market Analysis',
-    category: 'Business Aviation',
-    excerpt: 'Key trends shaping executive air travel corridors, aircraft distribution, and fleet expansions in 2026.',
-    publishedAt: 'July 10, 2026',
-    image: '/images/about-jet.jpg',
-    slug: 'future-of-business-aviation-2026',
-  },
-  {
-    title: 'Uncompromising Safety Standards: Inside Our Maintenance Hub',
-    category: 'Industry News',
-    excerpt: 'How our NCAA-approved Aircraft Maintenance Organisation (AMO) ensures flight operations safety.',
-    publishedAt: 'June 28, 2026',
-    image: '/images/charter-cabin.jpg',
-    slug: 'safety-standards-inside-maintenance-hub',
-  },
-];
+/**
+ * Homepage news strip. Derived rather than hand-maintained: the previous literal
+ * duplicated three ARTICLES_DATABASE entries and had already drifted out of sync
+ * with them — the same slug carried a different publish date in each list.
+ */
+export const MOCK_POSTS: BlogPostMock[] = ARTICLES_DATABASE.slice(0, 3).map(
+  ({ title, category, excerpt, publishedAt, image, slug }) => ({
+    title,
+    category,
+    excerpt,
+    publishedAt,
+    image,
+    slug,
+  })
+);
 
-export const CATEGORIES: string[] = ['All', 'Business Aviation', 'FBO Services', 'Industry News', 'General'];
+/**
+ * Blog filter chips. Derived from the posts that actually exist, so the filter bar
+ * can never offer a category that returns an empty list — the previous hardcoded
+ * array listed 'FBO Services' and 'Industry News', both of which would now filter
+ * to nothing.
+ */
+export const CATEGORIES: string[] = [
+  'All',
+  ...Array.from(new Set(ARTICLES_DATABASE.map((article) => article.category))),
+];
 
 // ============================================================================
 // Contact & Office Constants
@@ -545,14 +576,14 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     category: "INFRASTRUCTURE & PIONEERING",
     image: "/images/hero/slide-1.jpg",
     description:
-      "EAN Aviation was established in Lagos, launching West Africa’s first fully integrated Fixed Base Operator (FBO) hangar at Murtala Muhammed International Airport.",
+      "EAN Aviation was established in Lagos, launching Nigeria’s first fully integrated Fixed Base Operator (FBO) hangar at Murtala Muhammed International Airport.",
     story: [
-      "In 2009, EAN Aviation pioneered a new era for business aviation in West Africa by founding the region’s first fully integrated Fixed Base Operator (FBO) and private jet hangar facility at Murtala Muhammed International Airport (MMIA), Lagos.",
+      "In 2009, EAN Aviation pioneered a new era for business aviation in West Africa by founding Nigeria’s first fully integrated Fixed Base Operator (FBO) and private jet hangar facility at Murtala Muhammed International Airport (MMIA), Lagos.",
       "Prior to EAN's launch, business jet operators, corporate executives, and private flight crews experienced significant operational bottlenecks, delayed ground turnarounds, and lack of dedicated airside security. EAN solved this by constructing a world-class 10,000 m² private ramp and hangar enclave.",
       "This milestone laid the foundational bedrock for modern business aviation in Nigeria, establishing a high-security, luxury gateway for international VIPs, diplomats, and corporate flight departments."
     ],
     highlights: [
-      "Established West Africa's first integrated FBO & private hangar terminal.",
+      "Established Nigeria's first integrated FBO & private hangar terminal.",
       "Created dedicated 10,000+ m² airside ramp parking for business aircraft.",
       "Set early industry benchmarks for private passenger privacy and swift turnarounds."
     ]
@@ -566,7 +597,7 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
       "Launched EAN Catering Limited (Wings™), establishing Nigeria's premier on-site executive aviation kitchen dedicated to gourmet in-flight dining.",
     story: [
       "Recognizing the vital importance of high-caliber culinary experiences for private jet travelers, EAN launched EAN Catering Limited (branded as Wings™) directly on airport grounds in 2010.",
-      "Wings™ became the first dedicated luxury flight kitchen in Nigeria engineered exclusively for executive aircraft cabin service. Equipped with state-of-the-art thermal packaging, strict HACCP food safety protocols, and a team of international chefs, the kitchen transformed inflight dining.",
+      "Wings™ became the first dedicated luxury flight kitchen in Nigeria engineered exclusively for executive aircraft cabin service. Equipped with state-of-the-art thermal packaging, strict HACCP food safety protocols, and a team of international chefs, the kitchen transformed in-flight dining.",
       "From custom-designed five-course menus to bespoke dietary accommodations, Wings™ ensures every meal is served at peak freshness directly onto private jet galleys moments before taxiing."
     ],
     highlights: [
@@ -765,7 +796,7 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     story: [
       "In 2026, EAN Aviation achieved a major milestone by establishing dedicated on-site Customs, Immigration, and Quarantine (CIQ) processing directly within the EAN Lagos FBO terminal.",
       "International passengers and flight crews no longer need to pass through commercial terminal channels. Full passport control, customs inspection, and security clearances are conducted inside EAN's private VIP lounge.",
-      "This achievement delivers the ultimate seamless transition from runway to luxury ground transport in under 5 minutes."
+      "This achievement takes passengers from runway to ground transport in under 5 minutes."
     ],
     highlights: [
       "Dedicated airside CIQ clearance facilities inside the EAN Lagos FBO lounge.",
@@ -783,18 +814,18 @@ export const VALUE_PILLARS: ValuePillar[] = [
   },
   {
     icon: 'Crown',
-    title: 'Bespoke Luxury',
+    title: 'Tailored Service',
     description: 'Every flight and terminal experience is tailored to the exact specifications, schedule, and lifestyle of our high-net-worth clients.',
   },
   {
     icon: 'Clock',
     title: 'Operational Precision',
-    description: 'We coordinate ground support, fueling, and maintenance with meticulous efficiency to guarantee on-time, seamless departures.',
+    description: 'We coordinate ground support, fueling, and maintenance with meticulous efficiency to guarantee on-time departures.',
   },
   {
     icon: 'Globe',
     title: 'Regional Leadership',
-    description: 'Deeply rooted in West Africa, we bridge regional aviation requirements with international flight support, MRO engineering, and luxury charter services.',
+    description: 'Deeply rooted in West Africa, we bridge regional aviation requirements with international flight support, MRO engineering, and charter services.',
   },
 ];
 
@@ -843,7 +874,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     departmentLabel: "CEO",
     image: "/images/leadership/sd-nbac.jpg",
     quote:
-      "In executive aviation, luxury is not merely an aesthetic — it is the seamless execution of uncompromising safety, total privacy, and absolute precision.",
+      "In executive aviation, luxury is not merely an aesthetic — it is the disciplined execution of uncompromising safety, total privacy, and absolute precision.",
     bio: [
       "Olusegun Demuren brings visionary leadership and strategic expertise to EAN Aviation, driving its evolution as a leading force in Africa’s private aviation sector.",
       "He holds a B.Sc. in Information Systems from Marist College, New York, and has completed executive programs at Lagos Business School and the International Air Transport Association (IATA) in Singapore.",
@@ -942,11 +973,11 @@ export const TEAM_MEMBERS: TeamMember[] = [
     departmentLabel: "Customer Relations",
     image: "/images/leadership/Ann Umeh Client Relations Manager.jpg",
     quote:
-      "Combining technical knowledge with a people-first approach to deliver seamless customer experiences that uphold elite standards.",
+      "Combining technical knowledge with a people-first approach to deliver consistent customer experiences that uphold elite standards.",
     bio: [
       "Ann Umeh is a dedicated Customer Relations professional known for building meaningful client connections and enhancing service excellence.",
-      "She earned a bachelor’s degree in Computer Science from Lagos State University (LASU) and began her aviation career with a leading support service operator in Nigeria. Through her tenure as a Customer Relations Officer, Ann developed a robust foundation in client engagement and service management. She has since sharpened her skills with specialized training in project management, PLST, and leadership development.",
-      "At EAN Aviation, Ann combines technical knowledge with a people-first approach to deliver seamless customer experiences that uphold the brand’s elite standards of service and responsiveness.",
+      "She earned a bachelor’s degree in Computer Science from Lagos State University (LASU) and began her aviation career with a leading support service operator in Nigeria. Through her tenure as a Customer Relations Officer, Ann developed a strong foundation in client engagement and service management. She has since sharpened her skills with specialized training in project management, PLST, and leadership development.",
+      "At EAN Aviation, Ann combines technical knowledge with a people-first approach to deliver consistent customer experiences that uphold the brand’s elite standards of service and responsiveness.",
     ],
     credentials: [
       "B.Sc. Computer Science (LASU)",
@@ -986,7 +1017,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     departmentLabel: "Quality & Safety",
     image: "/images/leadership/bukky-nbac.jpg",
     quote:
-      "World-class aviation facilities depend on seamless maintenance, security protocols, and operational readiness.",
+      "World-class aviation facilities depend on disciplined maintenance, security protocols, and operational readiness.",
     bio: [
       "Olubukunola Hundeyin is an accomplished Quality, Safety, and Compliance executive with nearly a decade of progressive leadership experience driving operational excellence, regulatory compliance, and continuous improvement within the aviation industry. As Head of Quality & Safety, she provides strategic leadership in quality assurance, safety management, compliance monitoring, and organizational performance, ensuring alignment with the Nigerian Civil Aviation Regulations (Nig. CARs), ICAO Standards and Recommended Practices (SARPs), and internationally recognized best practices.",
       "She holds a Bachelor's degree in Chemical Engineering from the University of Lagos and a Postgraduate Diploma in Quality Management from Robert Gordon University, Aberdeen, Scotland. A full member of the Nigerian Society of Engineers (NSE), Olubukunola combines technical expertise with strategic leadership to deliver sustainable business improvements and strengthen organizational resilience.",
@@ -1013,7 +1044,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     quote:
       "Data-driven insights and real-time revenue analytics empower strategic growth and operational efficiency.",
     bio: [
-      "Yuwa Abu is a technology and data leader with almost a decade of experience delivering data, analytics, and digital transformation initiatives across the telecommunications, e-commerce, FMCG, and aviation industries. He specializes in leveraging data and technology to improve decision-making, optimize business performance, and drive innovation through scalable enterprise solutions.",
+      "Yuwa Abu is a technology and data leader with almost a decade of experience delivering data, analytics, and digital transformation initiatives across the telecommunications, e-commerce, FMCG, and aviation industries. He specializes in using data and technology to improve decision-making, optimize business performance, and drive innovation through scalable enterprise solutions.",
       "He holds a Bachelor’s degree in Economics and Statistics from the University of Benin and is a Member of the Chartered Institute of Statisticians of Nigeria (CISON).",
     ],
     credentials: [
@@ -1031,9 +1062,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     departmentLabel: "Facilities",
     image: "/images/leadership/Ineh Osikhekha facilities manager (2) (1).jpg",
     quote:
-      "Operational infrastructure must be seamless, secure, and engineered to accelerate executive movement.",
+      "Operational infrastructure must be reliable, secure, and engineered to accelerate executive movement.",
     bio: [
-      "Ineh Osikhekha leads all lease, commercial strategy, aviation, and real estate infrastructure projects, facility management, and engineering functions at EAN Aviation, ensuring seamless facility management and infrastructure excellence.",
+      "Ineh Osikhekha leads all lease, commercial strategy, aviation, and real estate infrastructure projects, facility management, and engineering functions at EAN Aviation, ensuring reliable facility management and infrastructure excellence.",
       "With over 15 years of expertise spanning civil construction, office planning, infrastructure management, energy management, transport & logistics, service charge management, health, safety, and security, he plays a pivotal role in sustaining operational integrity both within and beyond company premises. Ineh holds a Bachelor’s degree in Electrical & Electronic Engineering from the University of Benin and a Master’s in Facility Management from the University of Lagos.",
       "He is a member of the Nigeria Society of Engineers (MNSE) and the Council for the Regulation of Engineering in Nigeria (COREN). Ineh is also certified from the International Project Management Institute (PMI). He also holds certification in Systems Thinking from the Massachusetts Institute of Technology (MIT) and Developing Project Infrastructure from Brickstone Africa. Ineh’s leadership is defined by his technical precision and commitment to operational excellence, ensuring every facility reflects the company’s elite standards.",
     ],
@@ -1061,7 +1092,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
       "Vivian is an experienced legal business partner with over 15 years of experience spanning private legal practice, in-house advisory, and corporate leadership within multinational organizations.",
       "Prior to joining EAN, Vivian served as Lead Corporate & Commercial Counsel at Baywood Holdings Limited, a pan-African conglomerate with interests across Oil & gas, financial services, and aviation. She has also held key legal roles at Hayat Kimya Nigeria Limited and CWAY Group, where she strengthened compliance frameworks and governance standards.",
       "Vivian holds a Master of Laws (LL.M.) from the University of Lagos, a Bachelor of Laws (LL.B.) from Olabisi Onabanjo University, and is a Barrister and Solicitor of the Supreme Court of Nigeria. She is also an Associate of the Chartered Institute of Secretaries and Administrators of Nigeria (ICSAN) and a member of the Nigerian Institute of Management (Chartered).",
-      "Vivian is passionate about driving ethical business practices and leveraging legal innovation to support strategic growth.",
+      "Vivian is passionate about driving ethical business practices and using legal innovation to support strategic growth.",
     ],
     credentials: [
       "LL.M. (Unilag), LL.B., BL",
@@ -1075,18 +1106,18 @@ export const TEAM_MEMBERS: TeamMember[] = [
     ],
   },
   {
-    id: "omoruyi-saliu-lawal",
-    name: "Omoruyi Saliu-Lawal",
+    id: "alexey-saliu-lawal",
+    name: "Alexey “Alyosha” Saliu-Lawal",
     role: "Hangar Manager",
     department: "Maintenance",
     departmentLabel: "Hangar & Maintenance",
-    image: "/images/leadership/Alexey Saliu-Lawal hangar Manager (1) (1).jpg",
+    image: "/images/leadership/alexey-saliu-lawal.jpg",
     quote:
       "Ensuring that EAN's hangar and ground support operations run with precision, safety, and efficiency.",
     bio: [
-      "Omoruyi Saliu-Lawal is an accomplished aviation engineer with over 21 years of combined experience spanning aircraft maintenance, facility management, and engineering project delivery across Nigeria's aviation and industrial sectors. Since joining EAN Aviation in 2011, first as Head, Facilities, and since 2014, as Hangar Manager, his technical leadership has ensured that EAN's hangar and ground support operations run with precision, safety, and efficiency.",
+      "Alexey Saliu-Lawal is an accomplished aviation engineer with over 21 years of combined experience spanning aircraft maintenance, facility management, and engineering project delivery across Nigeria's aviation and industrial sectors. Since joining EAN Aviation in 2011, first as Head, Facilities, and since 2014, as Hangar Manager, his technical leadership has ensured that EAN's hangar and ground support operations run with precision, safety, and efficiency.",
       "He holds a Nigerian Civil Aviation Authority (NCAA) Aircraft Maintenance Engineer's license with type ratings on the Challenger 601/604/605 series and GE CF-34-3B engines and completed EASA Part 66 (Category B1.1) approved training in Aircraft Maintenance Engineering at Air Service Training, Scotland. He is also a certified Level 2 Non-Destructive Testing (NDT) Inspector, trained in Penetrant, Magnetic Particle, and Eddy Current Inspection to EN4179/NAS410 standards, and holds a Wheels and Brakes qualification with Distinction from the Nigerian College of Aviation Technology, Zaria.",
-      "Omoruyi oversees all aircraft maintenance, hangar, and ground service equipment operations with meticulous attention to safety, quality, and international best practice, including ICAO, NCAA, and IS-BAH standards, delivering engineering excellence that supports EAN's reputation for reliability and uncompromising service.",
+      "Alexey oversees all aircraft maintenance, hangar, and ground service equipment operations with meticulous attention to safety, quality, and international best practice, including ICAO, NCAA, and IS-BAH standards, delivering engineering excellence that supports EAN's reputation for reliability and uncompromising service.",
     ],
     credentials: [
       "NCAA AME License (Challenger 601/604/605)",
@@ -1151,7 +1182,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
       "Maintaining the highest standards of safety, regulatory compliance, and service excellence across all operational touchpoints.",
     bio: [
       "Umeh Okechukwu serves as the operations support manager at EAN Aviation Limited, Nigeria's first fully integrated Fixed Base Operator (FBO) and maintenance organization, headquartered at Murtala Muhammed International Airport in Lagos.",
-      "With over twelve years of experience in aviation operations, Okechukwu oversees the full scope of EAN Aviation's ground and flight service delivery, ensuring seamless coordination across VIP terminal operations, business jet charter services, aircraft maintenance, and the company's role as the authorized Airbus Helicopters distributor for West Africa.",
+      "With over twelve years of experience in aviation operations, Okechukwu oversees the full scope of EAN Aviation's ground and flight service delivery, ensuring close coordination across VIP terminal operations, business jet charter services, aircraft maintenance, and the company's role as the authorized Airbus Helicopters distributor for West Africa.",
       "In this role, Okechukwu is responsible for maintaining the highest standards of safety, regulatory compliance, and service excellence across all operational touchpoints, from passenger and crew handling at the VIP terminal to charter flight logistics and maintenance turnaround. Okechukwu's leadership has been instrumental in positioning EAN Aviation as a benchmark for private and business aviation services in Nigeria and the broader West African region, supporting a growing base of corporate, government, and high-net-worth clients who rely on the company for discreet, efficient, and world-class aviation solutions.",
       "Drawing on a career built across various facets of aviation operations, Okechukwu combines technical expertise with a strong operational management background, driving continuous improvement in service delivery while ensuring EAN Aviation's operations align with international aviation safety and quality standards.",
     ],

@@ -14,8 +14,6 @@ import {
   ArrowLeft,
   ChevronRight,
   Phone,
-  Mail,
-  Clock,
   ShieldCheck,
   Sparkles,
   MapPin
@@ -25,7 +23,9 @@ import Navbar from '@/components/layout/Navbar';
 import GoldButton from '@/components/shared/GoldButton';
 import OutlineButton from '@/components/shared/OutlineButton';
 import SectionReveal from '@/components/shared/SectionReveal';
-import { SERVICES_DATA, ServiceRichData } from '@/lib/constants';
+import JsonLd from '@/components/shared/JsonLd';
+import { SERVICES_DATA } from '@/lib/constants';
+import { buildMetadata, breadcrumbSchema, serviceSchema } from '@/lib/seo';
 
 const iconMap = {
   Plane,
@@ -55,13 +55,16 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
   if (!service) {
     return {
       title: 'Service Not Found | EAN Aviation',
+      robots: { index: false, follow: true },
     };
   }
 
-  return {
+  return buildMetadata({
     title: `${service.name} | EAN Aviation Services`,
     description: service.extendedDescription || service.short,
-  };
+    path: `/services/${service.slug}`,
+    image: service.image,
+  });
 }
 
 export default async function ServiceDetailPage({ params }: ServicePageProps) {
@@ -77,9 +80,25 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
   return (
     <>
+      <JsonLd
+        schema={[
+          serviceSchema({
+            name: service.name,
+            description: service.extendedDescription || service.short,
+            slug: service.slug,
+            image: service.image,
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' },
+            { name: service.name, path: `/services/${service.slug}` },
+          ]),
+        ]}
+      />
+
       <Navbar />
 
-      <main className="flex-1 flex flex-col bg-ean-surface text-ean-text-dark select-none">
+      <main className="flex-1 flex flex-col bg-ean-surface text-ean-text-dark">
         {/* HERO BANNER SECTION */}
         <section className="relative w-full min-h-[60vh] lg:min-h-[65vh] overflow-hidden bg-ean-navy flex items-center text-white pt-24 pb-16">
           {/* Background Image */}

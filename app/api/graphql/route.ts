@@ -25,8 +25,7 @@ import {
   requiredString,
 } from '@/lib/services/lead-input'
 import { mapLeadRowToUiLead, mapLeadRowsToUiLeads } from '@/lib/mappers/lead-mapper'
-import { getLeadStats, SERVICE_LABELS } from '@/lib/admin-leads-data'
-import type { ServiceCategory } from '@/lib/admin-leads-data'
+import { SERVICE_LABELS } from '@/lib/admin-leads-data';import type { ServiceCategory } from '@/lib/admin-leads-data'
 import type {
   LeadPriorityEnum,
   LeadServiceEnum,

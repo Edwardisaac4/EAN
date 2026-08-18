@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { withReducedMotion } from '@/lib/gsap-motion';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   Plane,
@@ -77,23 +78,33 @@ export default function ServicesPage() {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
 
   useGSAP(
-    () => {
-      // Intro animations
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    () =>
+      withReducedMotion(
+        () => {
+          // Intro animations
+          const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      tl.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8, delay: 0.2 }
-      );
+          tl.fromTo(
+            titleRef.current,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.8, delay: 0.2 }
+          );
 
-      tl.fromTo(
-        subtitleRef.current,
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.6 },
-        '-=0.4'
-      );
-    },
+          tl.fromTo(
+            subtitleRef.current,
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.6 },
+            '-=0.4'
+          );
+        },
+        () => {
+          gsap.set([titleRef.current, subtitleRef.current], {
+            opacity: 1,
+            y: 0,
+            clearProps: 'transform',
+          });
+        }
+      ),
     { scope: heroRef }
   );
 
@@ -101,7 +112,7 @@ export default function ServicesPage() {
     <>
       <Navbar />
 
-      <main className="flex-1 flex flex-col select-none">
+      <main className="flex-1 flex flex-col">
         {/* SECTION 1: Cinematic Header */}
         <section
           ref={heroRef}
@@ -116,13 +127,13 @@ export default function ServicesPage() {
             </span>
             <h1
               ref={titleRef}
-              className="font-display text-4xl sm:text-5xl md:text-6xl font-light text-white leading-tight opacity-0"
+              className="font-display text-4xl sm:text-5xl md:text-6xl font-light text-white leading-tight"
             >
-              Services Crafted For Distinction
+              Six Aviation Service Lines at Lagos MMIA
             </h1>
             <p
               ref={subtitleRef}
-              className="font-ui text-base sm:text-lg text-ean-muted-light max-w-2xl mx-auto leading-relaxed opacity-0"
+              className="font-ui text-base sm:text-lg text-ean-muted-light max-w-2xl mx-auto leading-relaxed"
             >
               From direct airport tarmac handling and certified engineering to exclusive distributor operations, EAN Aviation delivers precision at every flight level.
             </p>
@@ -137,7 +148,7 @@ export default function ServicesPage() {
           <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
             <SectionReveal className="text-center max-w-3xl mx-auto mb-16 sm:mb-20 space-y-4">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
-                Bespoke Offerings
+                Service Lines
               </span>
               <h2 className="font-display text-4xl sm:text-5xl font-light text-ean-navy leading-tight">
                 Our Services at a Glance
@@ -385,7 +396,7 @@ export default function ServicesPage() {
         {/* Space offset for the grids footer */}
         <div className="h-16 lg:h-24 bg-ean-surface" />
 
-        {/* SECTION 4: Bespoke CTA Banner */}
+        {/* SECTION 4: Charter & Hangar CTA Banner */}
         <section className="bg-linear-to-r from-ean-navy to-ean-navy-mid py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
           {/* Golden glow */}
           <div className="absolute -bottom-48 -left-48 w-96 h-96 rounded-full bg-ean-gold/5 blur-[120px] pointer-events-none" />
@@ -393,7 +404,7 @@ export default function ServicesPage() {
           <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 text-center">
             <SectionReveal className="max-w-3xl mx-auto space-y-8">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
-                Bespoke Flight Solutions
+                Custom Flight Solutions
               </span>
               <h2 className="font-display text-4xl sm:text-6xl font-light text-white leading-tight">
                 Design Your Flight Parameters
@@ -402,7 +413,7 @@ export default function ServicesPage() {
                 Connect directly with our corporate operations team to draft custom flight schedules, secure airport ground clearances, or inspect MMIA hangar leases.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                <Link href="/charter">
+                <Link href="/contact?service=charter">
                   <GoldButton className="w-full sm:w-auto">
                     Submit Charter Brief
                   </GoldButton>

@@ -101,28 +101,24 @@ export default function NewBlogPostPage() {
     }
   }, [])
 
-  // Trigger Debounced Autosave (3s)
-  const triggerAutosave = useCallback(() => {
-    if (status === 'published') return
-    if (!title.trim()) return
+  // Debounced autosave (3s). This schedules only — the previous version wrote
+  // setSaveStatus('idle') synchronously here, which cascaded a render on every
+  // keystroke. saveDraft owns every status transition instead.
+  useEffect(() => {
+    if (status !== 'draft' || !title.trim()) return
 
-    setSaveStatus('idle')
-
-    if (autosaveTimer.current) {
-      clearTimeout(autosaveTimer.current)
-      autosaveTimer.current = null
-    }
-    autosaveTimer.current = setTimeout(() => {
+    const timer = setTimeout(() => {
       saveDraft()
     }, 3000)
-  }, [saveDraft, status, title])
+    autosaveTimer.current = timer
 
-  // Watch content state changes for autosave
-  useEffect(() => {
-    if (title.trim() && status === 'draft') {
-      triggerAutosave()
+    return () => {
+      clearTimeout(timer)
+      if (autosaveTimer.current === timer) {
+        autosaveTimer.current = null
+      }
     }
-  }, [title, content, excerpt, category, slug, featuredImg, seoTitle, seoDesc, ogImage, triggerAutosave, status])
+  }, [title, content, excerpt, category, slug, featuredImg, seoTitle, seoDesc, ogImage, saveDraft, status])
 
   // Handle Publish Post Action
   const handlePublishConfirm = async () => {

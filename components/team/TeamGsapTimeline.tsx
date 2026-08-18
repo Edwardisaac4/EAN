@@ -4,12 +4,12 @@ import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { withReducedMotion } from '@/lib/gsap-motion';
 import {
   ChevronLeft,
   ChevronRight,
   ShieldCheck,
-  Sparkles,
-  Users
+  Sparkles
 } from 'lucide-react';
 import { TeamMember } from '@/lib/constants';
 import TeamMemberModal from './TeamMemberModal';
@@ -36,74 +36,98 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
 
   // GSAP Timeline animation trigger on manager switch
   useGSAP(
-    () => {
-      if (!stageRef.current) return;
+    () =>
+      withReducedMotion(
+        () => {
+          if (!stageRef.current) return;
 
-      // Create a master GSAP Timeline using official GSAP Timeline standards
-      const tl = gsap.timeline({
-        defaults: { duration: 0.5, ease: 'power3.out' },
-      });
+          // Create a master GSAP Timeline using official GSAP Timeline standards
+          const tl = gsap.timeline({
+            defaults: { duration: 0.5, ease: 'power3.out' },
+          });
 
-      // 1. Progress Bar animation corresponding to position
-      const progressPercent = ((activeIdx + 1) / members.length) * 100;
-      gsap.to(progressBarRef.current, {
-        width: `${progressPercent}%`,
-        duration: 0.6,
-        ease: 'power2.out',
-      });
+          // 1. Progress Bar animation corresponding to position
+          const progressPercent = ((activeIdx + 1) / members.length) * 100;
+          gsap.to(progressBarRef.current, {
+            width: `${progressPercent}%`,
+            duration: 0.6,
+            ease: 'power2.out',
+          });
 
-      // 2. Add Label for timeline choreography
-      tl.addLabel('start', 0);
+          // 2. Add Label for timeline choreography
+          tl.addLabel('start', 0);
 
-      // 3. Stage content reveal sequence using position parameters
-      tl.fromTo(
-        imageRef.current,
-        { opacity: 0, scale: 1.06, filter: 'blur(8px)' },
-        { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.7 },
-        'start'
-      );
+          // 3. Stage content reveal sequence using position parameters
+          tl.fromTo(
+            imageRef.current,
+            { opacity: 0, scale: 1.06, filter: 'blur(8px)' },
+            { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.7 },
+            'start'
+          );
 
-      tl.fromTo(
-        nameRef.current,
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.5 },
-        '<0.1'
-      );
+          tl.fromTo(
+            nameRef.current,
+            { opacity: 0, y: 25 },
+            { opacity: 1, y: 0, duration: 0.5 },
+            '<0.1'
+          );
 
-      tl.fromTo(
-        roleRef.current,
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.4 },
-        '-=0.3'
-      );
+          tl.fromTo(
+            roleRef.current,
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.4 },
+            '-=0.3'
+          );
 
-      if (quoteRef.current) {
-        tl.fromTo(
-          quoteRef.current,
-          { opacity: 0, x: 20 },
-          { opacity: 1, x: 0, duration: 0.5 },
-          '-=0.2'
-        );
-      }
+          if (quoteRef.current) {
+            tl.fromTo(
+              quoteRef.current,
+              { opacity: 0, x: 20 },
+              { opacity: 1, x: 0, duration: 0.5 },
+              '-=0.2'
+            );
+          }
 
-      if (bioRef.current) {
-        tl.fromTo(
-          bioRef.current.children,
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.4, stagger: 0.08 },
-          '-=0.3'
-        );
-      }
+          if (bioRef.current) {
+            tl.fromTo(
+              bioRef.current.children,
+              { opacity: 0, y: 15 },
+              { opacity: 1, y: 0, duration: 0.4, stagger: 0.08 },
+              '-=0.3'
+            );
+          }
 
-      if (credsRef.current) {
-        tl.fromTo(
-          credsRef.current.children,
-          { opacity: 0, scale: 0.9 },
-          { opacity: 1, scale: 1, duration: 0.3, stagger: 0.05 },
-          '-=0.2'
-        );
-      }
-    },
+          if (credsRef.current) {
+            tl.fromTo(
+              credsRef.current.children,
+              { opacity: 0, scale: 0.9 },
+              { opacity: 1, scale: 1, duration: 0.3, stagger: 0.05 },
+              '-=0.2'
+            );
+          }
+        },
+        () => {
+          // Every element here is tweened *from* opacity 0, and this runs again on
+          // each activeIdx change, so skipping the animation without settling
+          // would blank the whole profile card on every navigation.
+          if (!stageRef.current) return;
+
+          const progressPercent = ((activeIdx + 1) / members.length) * 100;
+          gsap.set(progressBarRef.current, { width: `${progressPercent}%` });
+
+          gsap.set(
+            [imageRef.current, nameRef.current, roleRef.current, quoteRef.current].filter(Boolean),
+            { opacity: 1, x: 0, y: 0, scale: 1, filter: 'blur(0px)', clearProps: 'transform' }
+          );
+
+          if (bioRef.current) {
+            gsap.set(bioRef.current.children, { opacity: 1, y: 0, clearProps: 'transform' });
+          }
+          if (credsRef.current) {
+            gsap.set(credsRef.current.children, { opacity: 1, scale: 1, clearProps: 'transform' });
+          }
+        }
+      ),
     { dependencies: [activeIdx], scope: stageRef }
   );
 

@@ -20,8 +20,8 @@ import {
 
 import Navbar from '@/components/layout/Navbar';
 import SectionReveal from '@/components/shared/SectionReveal';
-import StatCounter from '@/components/shared/StatCounter';
-import GoldButton from '@/components/shared/GoldButton';
+import { withReducedMotion } from '@/lib/gsap-motion';
+
 import OutlineButton from '@/components/shared/OutlineButton';
 
 // Register GSAP plugins at the file level
@@ -29,9 +29,10 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-import { 
-  VALUE_PILLARS, 
-  CREDENTIAL_ITEMS 
+import {
+  VALUE_PILLARS,
+  CREDENTIAL_ITEMS,
+  TRUST_STATS
 } from '@/lib/constants';
 
 const iconMap = {
@@ -45,7 +46,6 @@ const iconMap = {
   Building2,
 };
 
-
 export default function AboutPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const heroBgRef = useRef<HTMLDivElement>(null);
@@ -55,67 +55,77 @@ export default function AboutPage() {
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
-    () => {
-      // 1. Text animations in Hero
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    () =>
+      withReducedMotion(
+        () => {
+          // 1. Text animations in Hero
+          const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      tl.fromTo(
-        eyebrowRef.current,
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.6, delay: 0.2 }
-      );
+          tl.fromTo(
+            eyebrowRef.current,
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.6, delay: 0.2 }
+          );
 
-      tl.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.8 },
-        '-=0.4'
-      );
+          tl.fromTo(
+            titleRef.current,
+            { opacity: 0, y: 25 },
+            { opacity: 1, y: 0, duration: 0.8 },
+            '-=0.4'
+          );
 
-      tl.fromTo(
-        subtitleRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.6 },
-        '-=0.5'
-      );
+          tl.fromTo(
+            subtitleRef.current,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.6 },
+            '-=0.5'
+          );
 
-      // 2. Parallax scroll effect on Hero background image
-      gsap.to(heroBgRef.current, {
-        yPercent: 15,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
+          // 2. Parallax scroll effect on Hero background image
+          gsap.to(heroBgRef.current, {
+            yPercent: 15,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true,
+            },
+          });
+
+          // 3. Scroll indicator arrow pulse
+          gsap.fromTo(
+            scrollIndicatorRef.current,
+            { opacity: 0, y: 10 },
+            { opacity: 1, y: 0, duration: 1, delay: 1, ease: 'power3.out' }
+          );
+
+          gsap.to(scrollIndicatorRef.current, {
+            y: 6,
+            repeat: -1,
+            yoyo: true,
+            duration: 1.2,
+            ease: 'power1.inOut',
+          });
         },
-      });
-
-      // 3. Scroll indicator arrow pulse
-      gsap.fromTo(
-        scrollIndicatorRef.current,
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 1, delay: 1, ease: 'power3.out' }
-      );
-
-      gsap.to(scrollIndicatorRef.current, {
-        y: 6,
-        repeat: -1,
-        yoyo: true,
-        duration: 1.2,
-        ease: 'power1.inOut',
-      });
-    },
+        () => {
+          // No parallax, no infinite pulse. The hero copy no longer carries
+          // opacity-0 in its markup, so this only has to neutralise transforms.
+          gsap.set(
+            [eyebrowRef.current, titleRef.current, subtitleRef.current, scrollIndicatorRef.current],
+            { opacity: 1, y: 0, clearProps: 'transform' }
+          );
+          gsap.set(heroBgRef.current, { yPercent: 0, clearProps: 'transform' });
+        }
+      ),
     { scope: heroRef }
   );
-
-
 
   return (
     <>
       <Navbar />
 
-      <main className="flex-1 flex flex-col select-none">
+      <main className="flex-1 flex flex-col">
         {/* SECTION 1: Cinematic Hero */}
         <section
           ref={heroRef}
@@ -141,22 +151,22 @@ export default function AboutPage() {
             <div className="max-w-3xl space-y-6">
               <p
                 ref={eyebrowRef}
-                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase opacity-0"
+                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase"
               >
                 Credentials & Legacy
               </p>
               <h1
                 ref={titleRef}
-                className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white leading-[1.1] opacity-0"
+                className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white leading-[1.1]"
               >
                 Pioneering Aviation Excellence
               </h1>
               <p
                 ref={subtitleRef}
-                className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-light max-w-2xl leading-relaxed opacity-0"
+                className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-light max-w-2xl leading-relaxed"
               >
                 For over a decade, EAN Aviation has defined business flight in West Africa, 
-                combining state-of-the-art infrastructure with an unyielding commitment to luxury and safety.
+                combining state-of-the-art infrastructure with an unyielding commitment to safety and precision.
               </p>
             </div>
           </div>
@@ -164,7 +174,7 @@ export default function AboutPage() {
           {/* Scroll Down Indicator */}
           <div
             ref={scrollIndicatorRef}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 cursor-pointer opacity-0"
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 cursor-pointer"
             onClick={() => {
               const statsSection = document.getElementById('stats-section');
               statsSection?.scrollIntoView({ behavior: 'smooth' });
@@ -177,69 +187,41 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* SECTION 2: Luxury Executive Metrics Cards */}
+        {/* SECTION 2: Executive Metrics Cards */}
         <section
           id="stats-section"
           className="bg-ean-surface text-ean-text-dark py-16 sm:py-20 relative z-20 border-y border-ean-border-light/60 shadow-xs"
         >
           <div className="max-w-7xl mx-auto px-6 md:px-8">
             <SectionReveal>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-                {/* Metric Card 1 */}
-                <div className="relative group overflow-hidden rounded-xs border border-ean-border-light bg-white p-8 hover:border-ean-gold transition-all duration-500 shadow-md hover:shadow-lg">
-                  <div className="absolute inset-0 bg-linear-to-br from-ean-gold/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative z-10 space-y-3 text-center md:text-left">
-                    <div className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-ean-gold tracking-tight">
-                      <StatCounter targetValue={15} suffix="+" />
+              {/* Same four KPIs as the homepage band, from the same TRUST_STATS
+                  array. Each card is the figure plus its sentence — the earlier
+                  uppercase label row would only restate the sentence now that the
+                  figures carry their own context. */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                {TRUST_STATS.map((stat) => (
+                  <div
+                    key={stat.figure}
+                    className="relative group overflow-hidden rounded-xs border border-ean-border-light bg-white p-6 lg:p-8 hover:border-ean-gold transition-all duration-500 shadow-md hover:shadow-lg"
+                  >
+                    <div className="absolute inset-0 bg-linear-to-br from-ean-gold/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative z-10 space-y-3 text-center sm:text-left">
+                      {/* Held below text-5xl until xl: four columns at lg leave
+                          ~192px inside the padding, which "NCAA-AMO" fills at that
+                          size. */}
+                      <div className="font-display text-3xl sm:text-4xl xl:text-5xl font-light text-ean-gold tracking-tight">
+                        {stat.figure}
+                      </div>
+                      <p className="font-ui text-sm text-ean-muted-dark leading-relaxed">
+                        {stat.description ?? stat.label}
+                      </p>
                     </div>
-                    <div className="font-ui text-sm font-semibold uppercase tracking-wider text-ean-navy">
-                      Years of Operation
-                    </div>
-                    <p className="font-ui text-xs text-ean-muted-dark leading-relaxed">
-                      Pioneering business aviation excellence at Murtala Muhammed International Airport since 2011.
-                    </p>
                   </div>
-                </div>
-
-                {/* Metric Card 2 */}
-                <div className="relative group overflow-hidden rounded-xs border border-ean-border-light bg-white p-8 hover:border-ean-gold transition-all duration-500 shadow-md hover:shadow-lg">
-                  <div className="absolute inset-0 bg-linear-to-br from-ean-gold/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative z-10 space-y-3 text-center md:text-left">
-                    <div className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-ean-gold tracking-tight">
-                      <StatCounter targetValue={100} suffix="%" />
-                    </div>
-                    <div className="font-ui text-sm font-semibold uppercase tracking-wider text-ean-navy">
-                      Safety Audit Record
-                    </div>
-                    <p className="font-ui text-xs text-ean-muted-dark leading-relaxed">
-                      Flawless operational compliance under NCAA, ICAO, and international flight safety standards.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Metric Card 3 */}
-                <div className="relative group overflow-hidden rounded-xs border border-ean-border-light bg-white p-8 hover:border-ean-gold transition-all duration-500 shadow-md hover:shadow-lg">
-                  <div className="absolute inset-0 bg-linear-to-br from-ean-gold/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative z-10 space-y-3 text-center md:text-left">
-                    <div className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-ean-gold tracking-tight">
-                      1st
-                    </div>
-                    <div className="font-ui text-sm font-semibold uppercase tracking-wider text-ean-navy">
-                      Integrated FBO Hangar
-                    </div>
-                    <p className="font-ui text-xs text-ean-muted-dark leading-relaxed">
-                      West Africa’s first fully integrated private terminal, VIP lounge, and maintenance hub.
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
             </SectionReveal>
           </div>
         </section>
-
-
-
-
 
         {/* SECTION 4: Core Pillars (Service, Safety, Precision, Leadership) */}
         <section className="bg-ean-navy-mid text-white py-20 sm:py-24">
@@ -294,7 +276,7 @@ export default function AboutPage() {
                 Our Regional Capabilities
               </h2>
               <p className="font-ui text-base sm:text-lg text-ean-muted-dark leading-relaxed">
-                We back our luxury service with physical infrastructure and certified authority, providing robust support right on the tarmac.
+                We back our service with physical infrastructure and certified authority, providing direct support right on the tarmac.
               </p>
             </SectionReveal>
 
@@ -323,8 +305,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-
-
         {/* SECTION 7: Premium Call to Action */}
         <section className="bg-ean-surface text-ean-text-dark py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-light/60">
           {/* Subtle ambient blur light source in corner */}
@@ -342,11 +322,6 @@ export default function AboutPage() {
                 Whether you require bespoke private jet charters, helicopter acquisition, or premium flight support at Murtala Muhammed Airport, our crew is ready to execute.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                <Link href="/charter">
-                  <GoldButton className="w-full sm:w-auto">
-                    Request a Charter Quote
-                  </GoldButton>
-                </Link>
                 <Link href="/contact">
                   <OutlineButton variant="light" className="w-full sm:w-auto">
                     Contact Our Office

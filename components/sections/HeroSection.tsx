@@ -2,8 +2,10 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { withReducedMotion } from '@/lib/gsap-motion';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import GoldButton from '@/components/shared/GoldButton';
@@ -16,6 +18,13 @@ if (typeof window !== 'undefined') {
 }
 
 const SLIDE_INTERVAL_MS = 6500;
+
+// Written out as whole class strings, not composed from fragments — Tailwind
+// scans source text, so a class it cannot read literally never reaches the CSS.
+const TITLE_SCALES = {
+  default: 'text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl',
+  compact: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl',
+} as const;
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -56,39 +65,41 @@ export default function HeroSection() {
   }, [currentSlide, carouselReady]);
 
   useGSAP(
-    () => {
-      const rafId = requestAnimationFrame(() => {
-        if (!containerRef.current) return;
-        // Parallax scroll across the whole background stack — one animated
-        // element rather than one per slide.
-        gsap.to(parallaxRef.current, {
-          yPercent: 18,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: true,
-          },
-        });
-      });
+    () =>
+      withReducedMotion(
+        () => {
+          const rafId = requestAnimationFrame(() => {
+            if (!containerRef.current) return;
+            // Parallax scroll across the whole background stack — one animated
+            // element rather than one per slide.
+            gsap.to(parallaxRef.current, {
+              yPercent: 18,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: 'top top',
+                end: 'bottom top',
+                scrub: true,
+              },
+            });
+          });
 
-      return () => cancelAnimationFrame(rafId);
-    },
+          return () => cancelAnimationFrame(rafId);
+        },
+        () => {
+          gsap.set(parallaxRef.current, { yPercent: 0, clearProps: 'transform' });
+        }
+      ),
     { scope: containerRef }
   );
 
-  const handleInquiryClick = () => {
-    const contactSection = document.getElementById('contact-section');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleServicesClick = () => {
-    const servicesSection = document.getElementById('services-section');
-    if (servicesSection) {
-      servicesSection.scrollIntoView({ behavior: 'smooth' });
+  // Slide CTAs carry their own destination. A hash stays on the homepage and
+  // scrolls; anything else is a real route and must render as a <Link>, or the
+  // destination is unreachable without JS and invisible to a crawler.
+  const scrollToHash = (hash: string) => {
+    const target = document.getElementById(hash.slice(1));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -106,7 +117,10 @@ export default function HeroSection() {
       >
         {HERO_SLIDES.map((s, idx) => {
           const isActive = idx === currentSlide;
-          if (idx > 0 && !carouselReady) return null;
+          // The dots are clickable before idle fires, so gating purely on
+          // `carouselReady` would unmount the very slide the visitor just
+          // selected and leave the hero blank. Only non-selected slides wait.
+          if (idx > 0 && !carouselReady && !isActive) return null;
 
           return (
             <div
@@ -149,7 +163,11 @@ export default function HeroSection() {
           </p>
 
           {/* Headline */}
-          <h1 className="ean-rise ean-rise-delay-1 font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-white font-medium leading-[1.1] mb-4 sm:mb-5">
+          <h1
+            className={`ean-rise ean-rise-delay-1 font-display ${
+              TITLE_SCALES[slide.titleScale ?? 'default']
+            } text-white font-medium leading-[1.1] mb-4 sm:mb-5`}
+          >
             {slide.title.split('\n').map((line, i) => (
               <React.Fragment key={i}>
                 {line}
@@ -170,12 +188,24 @@ export default function HeroSection() {
 
           {/* Action Buttons */}
           <div className="ean-rise ean-rise-delay-3 flex flex-wrap sm:flex-row items-center gap-3.5 sm:gap-4 w-full sm:w-auto">
-            <GoldButton onClick={handleInquiryClick}>
-              {slide.primaryCta.text}
-            </GoldButton>
-            <OutlineButton variant="dark" onClick={handleServicesClick}>
-              {slide.secondaryCta.text}
-            </OutlineButton>
+            {slide.primaryCta.href.startsWith('#') ? (
+              <GoldButton onClick={() => scrollToHash(slide.primaryCta.href)}>
+                {slide.primaryCta.text}
+              </GoldButton>
+            ) : (
+              <Link href={slide.primaryCta.href}>
+                <GoldButton>{slide.primaryCta.text}</GoldButton>
+              </Link>
+            )}
+            {slide.secondaryCta.href.startsWith('#') ? (
+              <OutlineButton variant="dark" onClick={() => scrollToHash(slide.secondaryCta.href)}>
+                {slide.secondaryCta.text}
+              </OutlineButton>
+            ) : (
+              <Link href={slide.secondaryCta.href}>
+                <OutlineButton variant="dark">{slide.secondaryCta.text}</OutlineButton>
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -199,7 +229,7 @@ export default function HeroSection() {
       {/* Scroll Down Indicator */}
       <div
         className="ean-rise ean-rise-delay-4 absolute bottom-10 right-6 md:right-8 z-20 flex flex-col items-center cursor-pointer"
-        onClick={handleServicesClick}
+        onClick={() => scrollToHash('#services-section')}
       >
         <div className="w-8 h-13 rounded-full border border-ean-gold/30 flex items-center justify-center backdrop-blur-sm bg-black/10 hover:border-ean-gold transition-colors duration-300 shadow-[0_0_15px_rgba(196,149,42,0.1)]">
           <svg

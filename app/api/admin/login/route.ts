@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server';
-import { createSessionToken, SESSION_COOKIE_NAME } from '@/lib/auth';
-import { checkRateLimit, recordFailedAttempt, clearRateLimit } from '@/lib/rate-limiter';
+import { createSessionToken, constantTimeEqual, SESSION_COOKIE_NAME } from '@/lib/auth';
+import {
+  checkRateLimit,
+  recordFailedAttempt,
+  clearRateLimit,
+  clientIpFrom,
+  loginKey,
+} from '@/lib/rate-limiter';
 
 export async function POST(request: Request) {
   try {
@@ -58,39 +64,65 @@ export async function POST(request: Request) {
       );
     }
 
-    // Extract client IP / identity for rate limiting
-    const forwardedFor = request.headers.get('x-forwarded-for');
-    const clientIp = forwardedFor ? forwardedFor.split(',')[0].trim() : '127.0.0.1';
+    // Bucket on ip + email so an attacker cannot lock the real admin out of
+    // their own account by exhausting the budget from a different address.
+    const rateKey = loginKey(clientIpFrom(request), inputEmail);
 
-    // Enforce rate limit before credential validation
-    const rateCheck = checkRateLimit(clientIp, inputEmail);
+    // Enforce the lockout before touching the credentials, so a throttled caller
+    // never reaches the comparison.
+    const rateCheck = await checkRateLimit(rateKey);
     if (!rateCheck.isAllowed) {
       return NextResponse.json(
         {
           success: false,
-          error: `Too many failed login attempts. Please try again after ${rateCheck.retryAfterSeconds || 900} seconds.`
+          error: `Too many failed login attempts. Please try again after ${rateCheck.retryAfterSeconds ?? 900} seconds.`,
         },
-        { status: 429 }
+        {
+          status: 429,
+          headers: { 'Retry-After': String(rateCheck.retryAfterSeconds ?? 900) },
+        }
       );
     }
 
     const normalizedEnvEmail = envEmail.trim().toLowerCase();
-    const normalizedEnvPassword = envPassword;
 
-    // Validate credentials
-    if (inputEmail !== normalizedEnvEmail || inputPassword !== normalizedEnvPassword) {
-      recordFailedAttempt(clientIp, inputEmail);
+    // Both comparisons run unconditionally and in constant time. Short-circuiting
+    // on the email (`a !== b || c !== d`) leaked which half failed via response
+    // latency, and `!==` on the password leaked how many leading bytes matched.
+    const [isEmailMatch, isPasswordMatch] = await Promise.all([
+      constantTimeEqual(inputEmail, normalizedEnvEmail),
+      constantTimeEqual(inputPassword, envPassword),
+    ]);
+
+    if (!isEmailMatch || !isPasswordMatch) {
+      const failure = await recordFailedAttempt(rateKey);
+
+      // Surface the lockout on the attempt that triggers it rather than making
+      // the caller submit once more to discover it.
+      if (!failure.isAllowed) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Too many failed login attempts. Please try again after ${failure.retryAfterSeconds ?? 900} seconds.`,
+          },
+          {
+            status: 429,
+            headers: { 'Retry-After': String(failure.retryAfterSeconds ?? 900) },
+          }
+        );
+      }
+
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Invalid admin credentials.' 
+        {
+          success: false,
+          error: 'Invalid admin credentials.',
         },
         { status: 401 }
       );
     }
 
     // Clear failed attempts on successful login
-    clearRateLimit(clientIp, inputEmail);
+    await clearRateLimit(rateKey);
 
     // Calculate expiration: 7 days if rememberMe is true, 24 hours if false
     const nowInSeconds = Math.floor(Date.now() / 1000);

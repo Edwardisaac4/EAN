@@ -35,7 +35,7 @@ import {
 
 import Navbar from '@/components/layout/Navbar';
 import SectionReveal from '@/components/shared/SectionReveal';
-import { TERMS_OF_USE_SECTIONS, LegalSection } from '@/lib/constants';
+import { TERMS_OF_USE_SECTIONS } from '@/lib/constants';
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Scale,
@@ -56,6 +56,17 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Mail
 };
 
+/**
+ * Human-readable label per notice type, expanded on submit so the legal desk
+ * reads prose rather than the raw <select> value.
+ */
+const REPORT_TOPIC_LABELS: Record<string, string> = {
+  violation: 'Report Terms / IP Violation',
+  licensing: 'Site Content & Trademark Licensing',
+  dispute: '30-Day Amicable Notice of Dispute',
+  other: 'General Legal Inquiry',
+};
+
 export default function TermsOfUsePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSection, setActiveSection] = useState('acceptance');
@@ -68,6 +79,8 @@ export default function TermsOfUsePage() {
     details: ''
   });
   const [reportSubmitted, setReportSubmitted] = useState(false);
+  const [isReportSubmitting, setIsReportSubmitting] = useState(false);
+  const [reportError, setReportError] = useState<string | null>(null);
   const sidebarNavRef = useRef<HTMLDivElement>(null);
   const isManualScrollRef = useRef(false);
 
@@ -124,12 +137,72 @@ export default function TermsOfUsePage() {
     }
   }, [activeSection]);
 
-  const handleReportSubmit = (e: React.FormEvent) => {
+  /**
+   * Submits the notice for real. As with the DSAR form on /privacy-policy, this
+   * previously flipped `reportSubmitted` on a timer and transmitted nothing —
+   * while the panel told the user their notice had reached the legal desk. A
+   * "30-Day Amicable Notice of Dispute" that is silently discarded is worse than
+   * no form at all, since the sender believes they have served notice.
+   *
+   * The '[LEGAL NOTICE — TERMS OF USE]' prefix below is load-bearing: derivePriority
+   * matches on it to raise the lead to 'high', which is what clears the email-alert
+   * threshold. Do not reword it without updating STATUTORY_REQUEST_MARKERS in
+   * lib/services/leads-service.ts.
+   */
+  const handleReportSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setReportSubmitted(true);
-    setTimeout(() => {
-      setReportSubmitted(false);
-      setIsReportOpen(false);
+    if (isReportSubmitting) return;
+
+    setIsReportSubmitting(true);
+    setReportError(null);
+
+    const topicLabel = REPORT_TOPIC_LABELS[reportForm.topic] ?? reportForm.topic;
+
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: reportForm.fullName,
+          email: reportForm.email,
+          phone: reportForm.phone,
+          service: 'general',
+          message: [
+            '[LEGAL NOTICE — TERMS OF USE]',
+            `Matter: ${topicLabel}`,
+            '',
+            reportForm.details.trim() || '(no additional detail supplied)',
+          ].join('\n'),
+        }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || !data?.success) {
+        setReportError(
+          `${data?.error ?? 'We could not submit your notice.'} Please email legal@ean.aero directly so it is formally on record.`
+        );
+        setIsReportSubmitting(false);
+        return;
+      }
+
+      // POST /api/leads collapses a repeat submission within 10 minutes, keyed
+      // on email + service alone — and every notice here posts service
+      // 'general'. A second notice on a different matter (or a legal notice
+      // following a DSAR from the same address) therefore returns
+      // `duplicate: true` with nothing written. Rendering "Submission Received"
+      // for that would tell a sender they have served notice when they have not.
+      if (data.duplicate) {
+        setReportError(
+          'A submission from this email address was logged moments ago, so this notice was not recorded separately. ' +
+            'If this is a different matter, please email legal@ean.aero directly so it is formally on record.'
+        );
+        setIsReportSubmitting(false);
+        return;
+      }
+
+      setIsReportSubmitting(false);
+      setReportSubmitted(true);
       setReportForm({
         fullName: '',
         email: '',
@@ -137,7 +210,12 @@ export default function TermsOfUsePage() {
         topic: 'violation',
         details: ''
       });
-    }, 2500);
+    } catch {
+      setReportError(
+        'Network error. Please email legal@ean.aero directly so your notice is formally on record.'
+      );
+      setIsReportSubmitting(false);
+    }
   };
 
   const scrollToSection = (id: string) => {
@@ -629,12 +707,22 @@ export default function TermsOfUsePage() {
                       </button>
                       <button
                         type="submit"
-                        className="px-6 py-2.5 bg-ean-gold hover:bg-ean-gold-light text-ean-navy font-bold rounded-xs transition-colors inline-flex items-center gap-2 cursor-pointer"
+                        disabled={isReportSubmitting}
+                        className="px-6 py-2.5 bg-ean-gold hover:bg-ean-gold-light text-ean-navy font-bold rounded-xs transition-colors inline-flex items-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                       >
                         <Send className="w-4 h-4 text-ean-navy" />
-                        <span>Submit to Legal Desk</span>
+                        <span>{isReportSubmitting ? 'Submitting…' : 'Submit to Legal Desk'}</span>
                       </button>
                     </div>
+
+                    {reportError && (
+                      <p
+                        role="alert"
+                        className="border border-red-400/40 bg-red-500/10 px-4 py-3 rounded-xs text-red-200 leading-relaxed"
+                      >
+                        {reportError}
+                      </p>
+                    )}
                   </form>
                 )}
               </div>

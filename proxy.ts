@@ -38,7 +38,7 @@ function requiresAdminSession(pathname: string, method: string): boolean {
   );
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Refresh Supabase auth session on every request
   const { supabaseResponse } = updateSession(request);
 
@@ -89,5 +89,9 @@ export const config = {
   // Only the guarded surfaces. Public marketing pages have no Supabase browser
   // session and no admin cookie to check, so running this on every request just
   // added an edge invocation in front of statically rendered HTML.
+  //
+  // Renamed from middleware.ts in Next 16 — the `middleware` file convention is
+  // deprecated in favour of `proxy`. The file name and the exported function name
+  // both had to change; `config`/`matcher` is unchanged.
   matcher: ['/admin/:path*', '/api/:path*'],
 };

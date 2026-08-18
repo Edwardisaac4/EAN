@@ -2,16 +2,14 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { 
-  Building2, 
-  Wrench, 
-  Plane, 
-  UtensilsCrossed, 
-  ShieldCheck, 
-  CheckCircle2, 
-  MapPin, 
-  Clock, 
-  ArrowUpRight,
+import {
+  Building2,
+  Wrench,
+  Plane,
+  UtensilsCrossed,
+  ShieldCheck,
+  MapPin,
+  Clock,
   Sparkles
 } from 'lucide-react';
 import SectionReveal from '@/components/shared/SectionReveal';
@@ -54,7 +52,7 @@ const INFRASTRUCTURE_ITEMS = [
     icon: Plane,
     image: '/images/hero/slide-1.jpg',
     badge: 'Executive Jet Sales & Charter',
-    description: 'Bespoke corporate aircraft sales brokerage, pre-purchase technical evaluations, fleet management, and charter flight arrangements across West Africa.',
+    description: 'Corporate aircraft sales brokerage, pre-purchase technical evaluations, fleet management, and charter flight arrangements across West Africa.',
     specs: [
       { label: 'Territory Coverage', value: 'West Africa & International' },
       { label: 'Brokerage Services', value: 'Jet Sales & Acquisitions' },

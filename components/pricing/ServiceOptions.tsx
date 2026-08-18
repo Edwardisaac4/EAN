@@ -29,16 +29,11 @@ export default function ServiceOptions({
   stay,
   nights,
   pax,
-  day,
-  handling,
-  band,
   onChangeLocation,
   onChangeOperation,
   onChangeStay,
   onChangeNights,
   onChangePax,
-  onChangeDay,
-  onChangeHandling,
   onAutoCheckCiq,
 }: ServiceOptionsProps) {
   const handleOperationSelect = (op: Operation) => {

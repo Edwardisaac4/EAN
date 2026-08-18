@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { AdminHeader } from '@/components/admin/AdminHeader';
-import { Settings, Mail, Bell, Shield, Clock, Check, Save } from 'lucide-react';
+import { Settings, Mail, Clock, Check, Save } from 'lucide-react';
 
 export default function AdminSettingsPage() {
   const [fboEmail, setFboEmail] = useState('fbo-dispatch@ean.aero');

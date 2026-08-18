@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Search, Filter, RefreshCw, Download, Layers } from 'lucide-react';
+import { Search, Filter, RefreshCw, Download } from 'lucide-react';
 import { LeadStatus, ServiceCategory, LeadPriority, SERVICE_LABELS, STATUS_LABELS } from '@/lib/admin-leads-data';
 
 export interface LeadFilterBarProps {

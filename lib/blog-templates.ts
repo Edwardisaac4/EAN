@@ -9,6 +9,24 @@ export interface BlogTemplate {
   defaultContent: string;
 }
 
+/**
+ * Escapes text destined for an HTML context.
+ *
+ * Every interpolation below is author-supplied Markdown, and without this a
+ * body containing `<img onerror=…>` or a stray `</p>` reached the output as
+ * live markup rather than as the characters the author typed. Escaping runs
+ * after the Markdown prefix is stripped, so `&` never double-encodes a prefix
+ * and offsets stay correct.
+ */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export function markdownToHtml(md: string): string {
   if (!md) return '';
   return md
@@ -17,32 +35,35 @@ export function markdownToHtml(md: string): string {
       const trimmed = block.trim();
       if (!trimmed) return '';
       if (trimmed.startsWith('## ')) {
-        return `<h2>${trimmed.substring(3)}</h2>`;
+        return `<h2>${escapeHtml(trimmed.substring(3))}</h2>`;
       }
       if (trimmed.startsWith('### ')) {
-        return `<h3>${trimmed.substring(4)}</h3>`;
+        return `<h3>${escapeHtml(trimmed.substring(4))}</h3>`;
       }
       if (trimmed.startsWith('> ')) {
-        return `<blockquote>${trimmed.substring(2)}</blockquote>`;
+        return `<blockquote>${escapeHtml(trimmed.substring(2))}</blockquote>`;
       }
       if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
         const items = trimmed
           .split('\n')
-          .map((line) => `<li>${line.replace(/^[*|-]\s+/, '')}</li>`)
+          .map((line) => `<li>${escapeHtml(line.replace(/^[*|-]\s+/, ''))}</li>`)
           .join('');
         return `<ul>${items}</ul>`;
       }
       if (/^\d+\.\s+/.test(trimmed)) {
         const items = trimmed
           .split('\n')
-          .map((line) => `<li>${line.replace(/^\d+\.\s+/, '')}</li>`)
+          .map((line) => `<li>${escapeHtml(line.replace(/^\d+\.\s+/, ''))}</li>`)
           .join('');
         return `<ol>${items}</ol>`;
       }
       if (trimmed === '---') {
         return '<hr />';
       }
-      let formatted = trimmed
+      // Escaped before the emphasis pass: escapeHtml introduces no `*`, so the
+      // two Markdown patterns still match exactly what the author wrote, and
+      // the <strong>/<em> tags produced here are the only markup that survives.
+      const formatted = escapeHtml(trimmed)
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.*?)\*/g, '<em>$1</em>');
       return `<p>${formatted}</p>`;
@@ -93,7 +114,7 @@ Operating the first fully integrated FBO hangar at Murtala Muhammed Internationa
 ---
 
 ### Executive Overview
-Operating private aircraft across West Africa requires seamless navigation of local regulatory frameworks and international safety benchmarks...
+Operating private aircraft across West Africa requires confident navigation of local regulatory frameworks and international safety benchmarks...
 
 ### Regulatory Best Practices
 * **Logbook Verification:** Maintaining accurate airframe and engine records.
@@ -120,7 +141,7 @@ Whether traveling for executive diplomacy or private leisure, departure through 
 ### Key Service Features
 * **Private Customs & Immigration Clearance:** Accelerated diplomatic processing.
 * **Wings™ In-Flight Catering:** Freshly prepared gourmet dining tailored to dietary preferences.
-* **Direct Tarmac Limousine Access:** Seamless transition from lounge to aircraft steps.
+* **Direct Tarmac Limousine Access:** Step from the lounge straight to the aircraft stairs.
 
 ### Service Specifications & Fleet Compatibility
 * **Aircraft Types:** Ultra-long-range jets, mid-size cabins, and executive helicopters.
