@@ -33,7 +33,7 @@ const INFRASTRUCTURE_ITEMS = [
   {
     id: 'amo-hangar',
     title: 'NCAA Approved Maintenance (AMO)',
-    category: 'MRO Hangar Facility',
+    category: 'AMO Hangar Facility',
     icon: Wrench,
     image: '/images/hero/slide-3.jpg',
     badge: 'NCAA AMO Certified',
@@ -50,7 +50,7 @@ const INFRASTRUCTURE_ITEMS = [
     title: 'Aircraft Sales & Charter Advisory',
     category: 'Aircraft Brokerage & Acquisitions',
     icon: Plane,
-    image: '/images/hero/slide-1.jpg',
+    image: '/images/charter-cabin.jpg',
     badge: 'Executive Jet Sales & Charter',
     description: 'Corporate aircraft sales brokerage, pre-purchase technical evaluations, fleet management, and charter flight arrangements across West Africa.',
     specs: [
@@ -65,7 +65,7 @@ const INFRASTRUCTURE_ITEMS = [
     title: 'Wings™ In-Flight Culinary Facility',
     category: 'Executive Gourmet Unit',
     icon: UtensilsCrossed,
-    image: '/images/hero/slide-4.jpg',
+    image: '/images/services/wings-4.jpg',
     badge: 'On-Site Flight Kitchen',
     description: 'Our proprietary on-site culinary facility located adjacent to the FBO ramp. Master chefs prepare high-altitude gourmet menus, ensuring farm-to-cabin freshness delivered directly to private jet flights.',
     specs: [
@@ -98,7 +98,7 @@ export default function InfrastructureShowcase() {
             West Africa’s Premier Aviation Infrastructure
           </h2>
           <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
-            We operate out of a fully integrated physical complex at Lagos airport — bringing tarmac access, MRO engineering, corporate dealership, and gourmet dining together under one roof.
+            We operate out of a fully integrated physical complex at Lagos airport — bringing tarmac access, AMO engineering, corporate dealership, and gourmet dining together under one roof.
           </p>
         </SectionReveal>
 

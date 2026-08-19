@@ -151,18 +151,24 @@ export default function Navbar() {
                         <Presence show={activeDropdown === item.name} durationMs={200}>
                           {(state) => (
                             <div
-                              className={`absolute top-full left-1/2 mt-1 w-52 bg-ean-navy-mid border border-ean-border-dark py-2 rounded-xs shadow-[0_10px_30px_rgba(0,0,0,0.6)] z-50 flex flex-col ${state === 'open' ? 'ean-enter-dropdown' : 'ean-exit-dropdown'
+                              className={`absolute top-full left-1/2 mt-1 min-w-[220px] w-max bg-ean-navy-mid border border-ean-border-dark py-2 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.6)] z-50 flex flex-col ${state === 'open' ? 'ean-enter-dropdown' : 'ean-exit-dropdown'
                                 }`}
                             >
-                              {dropdownItems.map((subItem) => (
-                                <Link
-                                  key={subItem.name}
-                                  href={subItem.href}
-                                  className="font-ui text-xs tracking-widest text-ean-muted-light hover:text-white hover:bg-white/5 px-4 py-2.5 transition-colors duration-200 text-left"
-                                >
-                                  {subItem.name}
-                                </Link>
-                              ))}
+                              {dropdownItems.map((subItem) => {
+                                const isSubActive = pathname === subItem.href;
+                                return (
+                                  <Link
+                                    key={subItem.name}
+                                    href={subItem.href}
+                                    className={`font-ui text-xs tracking-wider px-4 py-2.5 transition-colors duration-200 text-left whitespace-nowrap ${isSubActive
+                                        ? 'text-ean-gold font-medium bg-white/5'
+                                        : 'text-ean-muted-light hover:text-white hover:bg-white/5'
+                                      }`}
+                                  >
+                                    {subItem.name}
+                                  </Link>
+                                );
+                              })}
                             </div>
                           )}
                         </Presence>
@@ -256,19 +262,25 @@ export default function Navbar() {
                       >
                         <div className="overflow-hidden">
                           <div className="pl-4 flex flex-col gap-3 py-2 bg-black/10 rounded-sm">
-                            {item.dropdownItems.map((subItem) => (
-                              <Link
-                                key={subItem.name}
-                                href={subItem.href}
-                                onClick={() => {
-                                  setIsMobileMenuOpen(false);
-                                  setMobileDropdownOpen(null);
-                                }}
-                                className="font-ui text-base tracking-widest text-ean-muted-light hover:text-white transition-colors py-1.5"
-                              >
-                                {subItem.name}
-                              </Link>
-                            ))}
+                            {item.dropdownItems.map((subItem) => {
+                              const isSubActive = pathname === subItem.href;
+                              return (
+                                <Link
+                                  key={subItem.name}
+                                  href={subItem.href}
+                                  onClick={() => {
+                                    setIsMobileMenuOpen(false);
+                                    setMobileDropdownOpen(null);
+                                  }}
+                                  className={`font-ui text-base tracking-widest transition-colors py-1.5 ${isSubActive
+                                      ? 'text-ean-gold font-semibold'
+                                      : 'text-ean-muted-light hover:text-white'
+                                    }`}
+                                >
+                                  {subItem.name}
+                                </Link>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>

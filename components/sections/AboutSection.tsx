@@ -4,6 +4,18 @@ import Link from 'next/link';
 import OutlineButton from '@/components/shared/OutlineButton';
 import SectionReveal from '@/components/shared/SectionReveal';
 
+// One hover treatment for the whole row. The Credentials button used to fall
+// through to OutlineButton's navy fill while History overrode it to gold, so the
+// two buttons sitting side by side behaved differently on the same hover.
+const LINK_HOVER =
+  'hover:bg-ean-gold hover:border-ean-gold hover:text-ean-navy dark:border-white dark:text-white dark:hover:bg-ean-gold dark:hover:border-ean-gold dark:hover:text-ean-navy';
+
+const SECTION_LINKS = [
+  { label: 'Our Credentials', href: '/about' },
+  { label: 'Our History', href: '/history' },
+  { label: 'Our Team', href: '/team' },
+];
+
 export default function AboutSection() {
   return (
     <section className="bg-ean-white dark:bg-ean-navy-mid text-ean-text-dark dark:text-ean-text-light py-20 sm:py-24 relative overflow-hidden transition-colors duration-500">
@@ -23,44 +35,38 @@ export default function AboutSection() {
 
               <div className="space-y-4 font-ui text-base sm:text-lg text-ean-muted-dark dark:text-ean-muted-light leading-relaxed max-w-2xl">
                 <p>
-                  Established over a decade ago, EAN Aviation has grown to become {"West Africa's "}
-                  leading integrated business aviation company. We operate {"Nigeria's "}
-                  first fully integrated Fixed Base Operator (FBO) hangar at Murtala Mohammed
-                  International Airport in Lagos, Nigeria.
+                  Founded in Lagos in 2011, EAN Aviation is {"West Africa's "}
+                  leading integrated business aviation company. We operate the {"region's "}
+                  first fully integrated Fixed Base Operator hangar at Murtala Muhammed
+                  International Airport, Lagos.
                 </p>
                 <p>
-                  With a dedicated team of professionals, we are
-                  committed to safety, quality, and discretion. We serve principals, flight
-                  departments and international operators, holding the same standard on every
-                  movement — the EAN Way.
+                  With a dedicated team of professionals, we are committed to safety,
+                  quality and precision. We serve principals, flight departments and
+                  international operators, and we are known by the standard we keep: the
+                  EAN Way.
                 </p>
               </div>
 
               <div className="pt-2 flex flex-wrap items-center gap-4">
-                <Link href="/about">
-                  <OutlineButton
-                    variant="light"
-                    className="dark:border-white dark:text-white dark:hover:bg-ean-gold dark:hover:border-ean-gold dark:hover:text-ean-navy"
-                  >
-                    Our Credentials
-                  </OutlineButton>
-                </Link>
-                <Link href="/history">
-                  <OutlineButton
-                    variant="light"
-                    className="hover:bg-ean-gold hover:border-ean-gold hover:text-ean-navy dark:border-white dark:text-white dark:hover:bg-ean-gold dark:hover:border-ean-gold dark:hover:text-ean-navy"
-                  >
-                    Our History
-                  </OutlineButton>
-                </Link>
+                {SECTION_LINKS.map(({ label, href }) => (
+                  <Link key={href} href={href}>
+                    <OutlineButton variant="light" className={LINK_HOVER}>
+                      {label}
+                    </OutlineButton>
+                  </Link>
+                ))}
               </div>
             </div>
 
             {/* Right Column: Visual Hangar / Jet Image */}
             <div className="lg:col-span-5 relative w-full h-80 sm:h-100 lg:h-125 rounded-xs overflow-hidden shadow-xl border border-ean-border-light dark:border-ean-border-dark group">
+              {/* about-jet.jpg rather than hero/slide-1.jpg: the hero above already
+                  opens on slide-1, and it is also DEFAULT_OG_IMAGE, so reusing it
+                  here left one photograph carrying the entire homepage. */}
               <Image
-                src="/images/hero/slide-1.jpg"
-                alt="EAN Aviation premium private jet on tarmac at sunset"
+                src="/images/about-jet.jpg"
+                alt="Passengers boarding a Bombardier business jet on the EAN Aviation ramp at sunset"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"

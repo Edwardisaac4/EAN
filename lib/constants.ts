@@ -23,7 +23,7 @@ export interface HeroSlide {
    * container edge at `xl` and wraps into a third line. Set this per slide
    * rather than shrinking the ladder for all four.
    */
-  titleScale?: 'compact';
+  titleScale?: "compact";
   subtitle: string;
   image: string;
   primaryCta: {
@@ -65,7 +65,13 @@ export interface ServiceRichData {
   slug: string;
   name: string;
   short: string;
-  iconName: 'Plane' | 'Wrench' | 'BadgeCheck' | 'UtensilsCrossed' | 'Star' | 'Building2';
+  iconName:
+    | "Plane"
+    | "Wrench"
+    | "BadgeCheck"
+    | "UtensilsCrossed"
+    | "Star"
+    | "Building2";
   extendedDescription: string;
   stats: string[];
   features: string[];
@@ -129,7 +135,18 @@ export interface TeamMember {
   id: string;
   name: string;
   role: string;
-  department: 'Executive' | 'Operations' | 'Finance' | 'Marketing' | 'Maintenance' | 'Quality and safety' | 'Quality & Safety' | 'IT & Business Intelligence' | 'Facilities' | 'Legal' | 'Human Resources';
+  department:
+    | "Executive"
+    | "Operations"
+    | "Finance"
+    | "Marketing"
+    | "Maintenance"
+    | "Quality and safety"
+    | "Quality & Safety"
+    | "IT & Business Intelligence"
+    | "Facilities"
+    | "Legal"
+    | "Human Resources";
   departmentLabel: string;
   image: string;
   quote?: string;
@@ -138,14 +155,12 @@ export interface TeamMember {
   highlights?: { label: string; value: string }[];
 }
 
-
 // ============================================================================
 // Navigation Constants
 // ============================================================================
 
 /**
- * Primary navigation. Order is deliberate and set by the business, not
- * alphabetical or route-derived — Pricing sits ahead of Services.
+ * Primary navigation. Order is deliberate and set by the business.
  *
  * 'Insights' is a label change only: the route stays /blog, because the posts,
  * sitemap entries and every published /blog/[slug] URL live there. Renaming the
@@ -155,41 +170,57 @@ export interface TeamMember {
  * are reached from the footer bottom bar instead, where legal links belong.
  */
 export const NAV_ITEMS: NavItem[] = [
-  { name: 'Home', href: '/' },
+  { name: "Home", href: "/" },
   {
-    name: 'About Us',
-    href: '/about',
+    name: "About Us",
+    href: "/about",
     dropdownItems: [
-      { name: 'Our Team', href: '/team' },
-      { name: 'History', href: '/history' },
+      { name: "Our Team", href: "/team" },
+      { name: "History", href: "/history" },
     ],
   },
-  { name: 'The Aeroplex', href: '/the-aeroplex' },
-  { name: 'Pricing', href: '/pricing' },
-  { name: 'Insights', href: '/blog' },
-  { name: 'Services', href: '/services' },
-  { name: 'Contact Us', href: '/contact' },
+  { name: "The Aeroplex", href: "/the-aeroplex" },
+  {
+    name: "Services",
+    href: "/services",
+    dropdownItems: [
+      { name: "All Services", href: "/services" },
+      { name: "FBO & Ground Handling", href: "/services/fbo-ground-support" },
+      { name: "Aircraft Maintenance", href: "/services/aircraft-maintenance" },
+      { name: "Charter & Aircraft Sales", href: "/services/aircraft-sales-charter" },
+      { name: "Wings In-Flight Catering", href: "/services/wings-catering" },
+      { name: "VIP Lounges", href: "/services/vip-lounge" },
+      { name: "Hangarage & Offices", href: "/services/leased-offices" },
+    ],
+  },
+  { name: "Pricing", href: "/pricing" },
+  { name: "Insights", href: "/blog" },
+  { name: "Contact Us", href: "/contact" },
 ];
 
 export const NAV_CTA = {
-  name: 'Make an Inquiry',
-  href: '/contact',
+  name: "Make an Inquiry",
+  href: "/contact",
 };
 
 export const FOOTER_SERVICES_LINKS = [
-  { name: 'FBO & Ground Support', href: '/services/fbo-ground-support' },
-  { name: 'Aircraft Maintenance', href: '/services/aircraft-maintenance' },
-  { name: 'Sales & Charter', href: '/services/aircraft-sales-charter' },
-  { name: 'Wings™ Catering', href: '/services/wings-catering' },
-  { name: 'VIP Lounge', href: '/services/vip-lounge' },
-  { name: 'Leased Office Spaces', href: '/services/leased-offices' },
+  { name: "FBO & Ground Handling", href: "/services/fbo-ground-support" },
+  { name: "Aircraft Maintenance", href: "/services/aircraft-maintenance" },
+  { name: "Charter & Sales", href: "/services/aircraft-sales-charter" },
+  { name: "Wings Catering", href: "/services/wings-catering" },
+  { name: "VIP Lounges", href: "/services/vip-lounge" },
+  { name: "Hangarage & Offices", href: "/services/leased-offices" },
+  { name: "Pricing", href: "/pricing" },
 ];
 
 export const FOOTER_COMPANY_LINKS = [
-  { name: 'About Us', href: '/about' },
-  { name: 'Our Team', href: '/team' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'Contact Us', href: '/contact' },
+  { name: "About", href: "/about" },
+  { name: "History", href: "/history" },
+  { name: "Our Team", href: "/team" },
+  { name: "The Aeroplex", href: "/the-aeroplex" },
+  { name: "Insights", href: "/blog" },
+  { name: "Security & Data Protection", href: "/privacy-policy" },
+  { name: "Contact", href: "/contact" },
 ];
 
 // ============================================================================
@@ -201,7 +232,8 @@ export const HERO_SLIDES: HeroSlide[] = [
     id: 1,
     eyebrow: "Nigeria's First Fully Integrated FBO",
     title: "Elevating Every\nJourney",
-    subtitle: "FBO Services · Aircraft Charter · NCAA-Approved\nMaintenance · VIP Ground Handling",
+    subtitle:
+      "FBO Services · Aircraft Charter · NCAA-Approved\nMaintenance · VIP Ground Handling",
     image: "/images/hero/slide-1.jpg",
     primaryCta: {
       text: "Make an Inquiry",
@@ -216,7 +248,8 @@ export const HERO_SLIDES: HeroSlide[] = [
     id: 2,
     eyebrow: "Exclusive Private Flight Solutions",
     title: "Precision in Flight,\nLuxury in Detail",
-    subtitle: "Experience bespoke jet and helicopter chartering tailored to\nyour schedule and designed for ultimate comfort.",
+    subtitle:
+      "Experience bespoke jet and helicopter chartering tailored to\nyour schedule and designed for ultimate comfort.",
     image: "/images/charter-cabin.jpg",
     primaryCta: {
       text: "Request a Charter",
@@ -239,8 +272,9 @@ export const HERO_SLIDES: HeroSlide[] = [
     // and its audit records are a fact a visitor can check. Do not restore it.
     title: "Safety and Standards,\nDocumented",
     // Longest first line of the four ("Safety and Standards," at 21 characters).
-    titleScale: 'compact',
-    subtitle: "West Africa's certified maintenance hub keeping business jets\nand commercial fleets flying safely.",
+    titleScale: "compact",
+    subtitle:
+      "West Africa's certified maintenance hub keeping business jets\nand commercial fleets flying safely.",
     image: "/images/services/s1-banner-maintenance-c-2.jpg",
     primaryCta: {
       text: "Maintenance Services",
@@ -255,7 +289,8 @@ export const HERO_SLIDES: HeroSlide[] = [
     id: 4,
     eyebrow: "Nigeria's Premier FBO Hangar & VIP Lounge",
     title: "The EAN Way of\nDeparture",
-    subtitle: "Enjoy the luxury of Lagos airport's dedicated VIP private terminal,\naccompanied by Wings™ freshly prepared in-flight catering.",
+    subtitle:
+      "Enjoy the luxury of Lagos airport's dedicated VIP private terminal,\naccompanied by Wings™ freshly prepared in-flight catering.",
     image: "/images/vip-lounge.jpg",
     primaryCta: {
       text: "VIP Lounge Experience",
@@ -282,22 +317,22 @@ export const HERO_SLIDES: HeroSlide[] = [
  */
 export const TRUST_STATS: TrustStat[] = [
   {
-    figure: '2011',
-    label: 'Founded in Lagos',
-    description: 'Founded in Lagos. Operating at MMIA since.',
+    figure: "2011",
+    label: "Founded in Lagos",
+    description: "Founded in Lagos. Operating at MMIA since.",
   },
   {
-    figure: 'NCAA-AMO',
-    label: 'Approved Maintenance Organization',
+    figure: "NCAA-AMO",
+    label: "Approved Maintenance Organization",
   },
   {
-    figure: '24/7',
-    label: 'Operations, Lagos and Abuja',
+    figure: "24/7",
+    label: "Operations, Lagos and Abuja",
   },
   {
-    figure: 'CIQ',
-    label: 'Customs, Immigration and Quarantine',
-    description: 'Customs, Immigration and Quarantine, on-site',
+    figure: "CIQ",
+    label: "Customs, Immigration and Quarantine",
+    description: "Customs, Immigration and Quarantine, on-site",
   },
 ];
 
@@ -307,17 +342,17 @@ export interface PartnerLogo {
 }
 
 export const PARTNER_LOGOS: PartnerLogo[] = [
-  { name: 'NACC', logo: '/images/partners/nacc.jpg' },
-  { name: 'NCBA', logo: '/images/partners/ncba.jpg' },
-  { name: 'NGCC', logo: '/images/partners/ngcc.jpg' },
-  { name: 'CFN Aviation', logo: '/images/partners/cfn.jpg' },
-  { name: 'Corporate Partner 1', logo: '/images/partners/cc1.jpg' },
-  { name: 'Corporate Partner 2', logo: '/images/partners/cc2.jpg' },
-  { name: 'Corporate Partner 3', logo: '/images/partners/cc3.jpg' },
-  { name: 'Corporate Partner 4', logo: '/images/partners/cc4.jpg' },
-  { name: 'Corporate Partner 5', logo: '/images/partners/cc5.jpg' },
-  { name: 'Corporate Partner 6', logo: '/images/partners/cc6.jpg' },
-  { name: 'Corporate Partner 7', logo: '/images/partners/cc7.jpg' },
+  { name: "NACC", logo: "/images/partners/nacc.jpg" },
+  { name: "NCBA", logo: "/images/partners/ncba.jpg" },
+  { name: "NGCC", logo: "/images/partners/ngcc.jpg" },
+  { name: "CFN Aviation", logo: "/images/partners/cfn.jpg" },
+  { name: "Corporate Partner 1", logo: "/images/partners/cc1.jpg" },
+  { name: "Corporate Partner 2", logo: "/images/partners/cc2.jpg" },
+  { name: "Corporate Partner 3", logo: "/images/partners/cc3.jpg" },
+  { name: "Corporate Partner 4", logo: "/images/partners/cc4.jpg" },
+  { name: "Corporate Partner 5", logo: "/images/partners/cc5.jpg" },
+  { name: "Corporate Partner 6", logo: "/images/partners/cc6.jpg" },
+  { name: "Corporate Partner 7", logo: "/images/partners/cc7.jpg" },
 ];
 
 export const PARTNERS: string[] = PARTNER_LOGOS.map((p) => p.name);
@@ -328,133 +363,151 @@ export const PARTNERS: string[] = PARTNER_LOGOS.map((p) => p.name);
 
 export const EAN_SERVICES = [
   {
-    slug: 'fbo-ground-support',
-    name: 'FBO & Ground Support',
-    short: 'Aircraft passenger handling, fueling, and ramp services to the highest standard.',
-    icon: 'Plane',
+    slug: "fbo-ground-support",
+    name: "FBO & Ground Support",
+    short:
+      "Aircraft passenger handling, fueling, and ramp services to the highest standard.",
+    icon: "Plane",
   },
   {
-    slug: 'aircraft-maintenance',
-    name: 'Aircraft Maintenance',
-    short: 'NCAA-approved Maintenance Organisation (AMO) for business and commercial aircraft.',
-    icon: 'Wrench',
+    slug: "aircraft-maintenance",
+    name: "Aircraft Maintenance",
+    short:
+      "NCAA-approved Maintenance Organisation (AMO) for business and commercial aircraft.",
+    icon: "Wrench",
   },
   {
-    slug: 'aircraft-sales-charter',
-    name: 'Aircraft Sales & Charter',
-    short: 'Personalized jet and helicopter charter, plus aircraft sales advisory.',
-    icon: 'BadgeCheck',
+    slug: "aircraft-sales-charter",
+    name: "Aircraft Sales & Charter",
+    short:
+      "Personalized jet and helicopter charter, plus aircraft sales advisory.",
+    icon: "BadgeCheck",
   },
   {
-    slug: 'wings-catering',
-    name: 'Wings™ In-Flight Catering',
-    short: 'Premium onsite catering dedicated to private jets — freshly prepared, every time.',
-    icon: 'UtensilsCrossed',
+    slug: "wings-catering",
+    name: "Wings™ In-Flight Catering",
+    short:
+      "Premium onsite catering dedicated to private jets — freshly prepared, every time.",
+    icon: "UtensilsCrossed",
   },
   {
-    slug: 'vip-lounge',
-    name: 'VIP Lounge Experience',
-    short: "Lagos airport's premier dedicated VIP terminal — the EAN way of departure.",
-    icon: 'Star',
+    slug: "vip-lounge",
+    name: "VIP Lounge Experience",
+    short:
+      "Lagos airport's premier dedicated VIP terminal — the EAN way of departure.",
+    icon: "Star",
   },
   {
-    slug: 'leased-offices',
-    name: 'Leased Office Spaces',
-    short: 'Hangar bays and premium service-leased office spaces at MMIA, Lagos.',
-    icon: 'Building2',
+    slug: "leased-offices",
+    name: "Hangarage & Executive Offices",
+    short:
+      "Airside hangar bays and premium service-leased executive offices at MMIA, Lagos.",
+    icon: "Building2",
   },
 ] as const;
 
 export const SERVICES_DATA: ServiceRichData[] = [
   {
-    slug: 'fbo-ground-support',
-    name: 'FBO & Ground Support',
-    short: 'Aircraft passenger handling, fueling, and ramp services to the highest standard.',
-    iconName: 'Plane',
-    extendedDescription: 'Operating Nigeria’s first fully integrated Fixed Base Operator (FBO) at MMIA, Lagos. One operator takes the aircraft from runway to terminal, covering aircraft handling, fueling, and ramp dispatch 24/7/365.',
-    stats: ['24/7 Dispatch Support', 'IS-BAO Stage II Aligned'],
+    slug: "fbo-ground-support",
+    name: "FBO & Ground Support",
+    short:
+      "Aircraft passenger handling, fueling, and ramp services to the highest standard.",
+    iconName: "Plane",
+    extendedDescription:
+      "Operating Nigeria’s first fully integrated Fixed Base Operator (FBO) at MMIA, Lagos. One operator takes the aircraft from runway to terminal, covering aircraft handling, fueling, and ramp dispatch 24/7/365.",
+    stats: ["24/7 Dispatch Support", "IS-BAO Stage II Aligned"],
     features: [
-      'Dedicated passenger & crew handling',
-      'Direct airside terminal custom clearance',
-      'Aircraft fueling and ground power (GPU)',
-      'Secure hangar and ramp parking'
+      "Dedicated passenger & crew handling",
+      "Direct airside terminal custom clearance",
+      "Aircraft fueling and ground power (GPU)",
+      "Secure hangar and ramp parking",
     ],
-    image: '/images/services/ean-service-banners-fbo.jpg',
+    image: "/images/services/ean-service-banners-fbo.jpg",
   },
   {
-    slug: 'aircraft-maintenance',
-    name: 'Aircraft Maintenance',
-    short: 'NCAA-approved Maintenance Organisation (AMO) for business and commercial aircraft.',
-    iconName: 'Wrench',
-    extendedDescription: 'Fully certified by the Nigerian Civil Aviation Authority (NCAA) as an Approved Maintenance Organisation. Our type-rated engineers maintain regional executive fleets with absolute safety compliance.',
-    stats: ['NCAA AMO Certified', 'AOG Rapid Response'],
+    slug: "aircraft-maintenance",
+    name: "Aircraft Maintenance",
+    short:
+      "NCAA-approved Maintenance Organisation (AMO) for business and commercial aircraft.",
+    iconName: "Wrench",
+    extendedDescription:
+      "Fully certified by the Nigerian Civil Aviation Authority (NCAA) as an Approved Maintenance Organisation. Our type-rated engineers maintain regional executive fleets with absolute safety compliance.",
+    stats: ["NCAA AMO Certified", "AOG Rapid Response"],
     features: [
-      'Scheduled line maintenance & inspections',
-      '24/7 AOG logistics and field support',
-      'Avionics testing and minor repairs',
-      'OEM part sourcing and storage'
+      "Scheduled line maintenance & inspections",
+      "24/7 AOG logistics and field support",
+      "Avionics testing and minor repairs",
+      "OEM part sourcing and storage",
     ],
-    image: '/images/services/s1-banner-maintenance-c-2.jpg',
+    image: "/images/services/s1-banner-maintenance-c-2.jpg",
   },
   {
-    slug: 'aircraft-sales-charter',
-    name: 'Aircraft Sales & Charter',
-    short: 'Personalized jet and helicopter charter, plus aircraft sales advisory.',
-    iconName: 'BadgeCheck',
-    extendedDescription: 'Our private aircraft sales brokerage and charter desk coordinates executive jet acquisitions, pre-purchase technical inspections, and bespoke global charter itineraries on modern aircraft.',
-    stats: ['Aircraft Sales Brokerage', 'Global Permit Desk'],
+    slug: "aircraft-sales-charter",
+    name: "Aircraft Sales & Charter",
+    short:
+      "Personalized jet and helicopter charter, plus aircraft sales advisory.",
+    iconName: "BadgeCheck",
+    extendedDescription:
+      "Our private aircraft sales brokerage and charter desk coordinates executive jet acquisitions, pre-purchase technical inspections, and bespoke global charter itineraries on modern aircraft.",
+    stats: ["Aircraft Sales Brokerage", "Global Permit Desk"],
     features: [
-      'Executive aircraft sales & charter advisory',
-      'Private jet charter brokerage & schedules',
-      'Pre-purchase inspections & evaluations',
-      'Aircraft management & crew staffing'
+      "Executive aircraft sales & charter advisory",
+      "Private jet charter brokerage & schedules",
+      "Pre-purchase inspections & evaluations",
+      "Aircraft management & crew staffing",
     ],
-    image: '/images/services/aircraft-sles-and-charter.jpg',
+    image: "/images/services/aircraft-sles-and-charter.jpg",
   },
   {
-    slug: 'wings-catering',
-    name: 'Wings™ In-Flight Catering',
-    short: 'Premium onsite catering dedicated to private jets — freshly prepared, every time.',
-    iconName: 'UtensilsCrossed',
-    extendedDescription: 'Wings™ is EAN’s premier private kitchen dedicated entirely to executive aviation. We prepare gourmet menus right on airport grounds, delivering freshly plated cuisines straight to flight cabins.',
-    stats: ['Airport On-Site Kitchen', 'Gourmet Cabin Specialists'],
+    slug: "wings-catering",
+    name: "Wings™ In-Flight Catering",
+    short:
+      "Premium onsite catering dedicated to private jets — freshly prepared, every time.",
+    iconName: "UtensilsCrossed",
+    extendedDescription:
+      "Wings™ is EAN’s premier private kitchen dedicated entirely to executive aviation. We prepare gourmet menus right on airport grounds, delivering freshly plated cuisines straight to flight cabins.",
+    stats: ["Airport On-Site Kitchen", "Gourmet Cabin Specialists"],
     features: [
-      'Custom luxury cabin menus',
-      'Rigorous food safety & thermal packaging',
-      'Strict dietary & allergen accommodations',
-      'Direct ramp-to-aircraft delivery'
+      "Custom luxury cabin menus",
+      "Rigorous food safety & thermal packaging",
+      "Strict dietary & allergen accommodations",
+      "Direct ramp-to-aircraft delivery",
     ],
-    image: '/images/services/wings-4.jpg',
+    image: "/images/services/wings-4.jpg",
   },
   {
-    slug: 'vip-lounge',
-    name: 'VIP Lounge Experience',
-    short: "Lagos airport's premier dedicated VIP terminal — the EAN way of departure.",
-    iconName: 'Star',
-    extendedDescription: 'Depart and arrive in absolute peace. Our private executive terminal at MMIA, Lagos bypasses commercial congestion, housing quiet suites, premium bars, and direct airside escorts.',
-    stats: ['MMIA Private Airside Entry', 'Fast-Track Escorts'],
+    slug: "vip-lounge",
+    name: "VIP Lounge Experience",
+    short:
+      "Lagos airport's premier dedicated VIP terminal — the EAN way of departure.",
+    iconName: "Star",
+    extendedDescription:
+      "Depart and arrive in absolute peace. Our private executive terminal at MMIA, Lagos bypasses commercial congestion, housing quiet suites, premium bars, and direct airside escorts.",
+    stats: ["MMIA Private Airside Entry", "Fast-Track Escorts"],
     features: [
-      'Private VIP lounge suites',
-      'Complimentary refreshments & drinks',
-      'High-speed corporate Wi-Fi & quiet study',
-      'Chauffeur-driven tarmac transfers'
+      "Private VIP lounge suites",
+      "Complimentary refreshments & drinks",
+      "High-speed corporate Wi-Fi & quiet study",
+      "Chauffeur-driven tarmac transfers",
     ],
-    image: '/images/vip-lounge.jpg',
+    image: "/images/vip-lounge.jpg",
   },
   {
-    slug: 'leased-offices',
-    name: 'Leased Office Spaces',
-    short: 'Hangar bays and premium service-leased office spaces at MMIA, Lagos.',
-    iconName: 'Building2',
-    extendedDescription: 'Premium commercial office spaces and executive boardrooms located right airside at Murtala Muhammed Airport. Perfect for flight departments, international operators, and logistic teams.',
-    stats: ['MMIA Airside Access', 'Fully Serviced Suites'],
+    slug: "leased-offices",
+    name: "Hangarage & Executive Offices",
+    short:
+      "Airside hangar bays and premium service-leased executive offices at MMIA, Lagos.",
+    iconName: "Building2",
+    extendedDescription:
+      "Airside hangar bays, secured ramp parking, and fully serviced executive offices located directly at Murtala Muhammed Airport. Tailored for flight departments, international operators, and corporate aviation teams.",
+    stats: ["MMIA Airside Access", "Hangarage & Serviced Suites"],
     features: [
-      'Furnished executive offices',
-      'Hangar bay leases for light aircraft',
-      'Secure access-controlled building',
-      'Shared boardrooms and conference amenities'
+      "Dedicated hangar bays & ramp parking",
+      "Furnished airside executive offices",
+      "Secure access-controlled building",
+      "Shared boardrooms and conference amenities",
     ],
-    image: '/images/services/office-space.jpg',
+    image: "/images/services/office-space.jpg",
   },
 ];
 
@@ -475,35 +528,36 @@ export const SERVICES_DATA: ServiceRichData[] = [
  */
 export const ARTICLES_DATABASE: Article[] = [
   {
-    slug: 'understanding-ciq-business-aviation-international-flights',
-    title: 'Understanding CIQ in Business Aviation: Why It Matters for International Private Flights',
-    category: 'Business Aviation',
+    slug: "understanding-ciq-business-aviation-international-flights",
+    title:
+      "Understanding CIQ in Business Aviation: Why It Matters for International Private Flights",
+    category: "Business Aviation",
     excerpt:
-      'CIQ — Customs, Immigration, and Quarantine — is the gateway to international business aviation. Understand what CIQ means, why it matters, and how EAN Aviation’s FBO services ensure your passengers clear borders efficiently and professionally.',
-    publishedAt: 'July 8, 2026',
-    readTime: '9 min read',
-    image: '/images/about-jet.jpg',
+      "CIQ — Customs, Immigration, and Quarantine — is the gateway to international business aviation. Understand what CIQ means, why it matters, and how EAN Aviation’s FBO services ensure your passengers clear borders efficiently and professionally.",
+    publishedAt: "July 8, 2026",
+    readTime: "9 min read",
+    image: "/images/about-jet.jpg",
     isFeatured: true,
   },
   {
-    slug: 'in-loving-memory-of-eyitayo-aiyetan',
-    title: 'In Loving Memory of Eyitayo Aiyetan',
-    category: 'General',
+    slug: "in-loving-memory-of-eyitayo-aiyetan",
+    title: "In Loving Memory of Eyitayo Aiyetan",
+    category: "General",
     excerpt:
-      'Honouring Eyitayo Aiyetan — Head of FBO Operations at EAN Aviation, a consummate aviation professional, mentor and bridge-builder across West and Central Africa.',
-    publishedAt: 'July 7, 2026',
-    readTime: '4 min read',
-    image: '/images/runway.jpg',
+      "Honouring Eyitayo Aiyetan — Head of FBO Operations at EAN Aviation, a consummate aviation professional, mentor and bridge-builder across West and Central Africa.",
+    publishedAt: "July 7, 2026",
+    readTime: "4 min read",
+    image: "/images/runway.jpg",
   },
   {
-    slug: 'why-top-ceos-are-choosing-fbo-services-over-first-class',
-    title: 'Why Top CEOs are choosing FBO services over first class',
-    category: 'Business Aviation',
+    slug: "why-top-ceos-are-choosing-fbo-services-over-first-class",
+    title: "Why Top CEOs are choosing FBO services over first class",
+    category: "Business Aviation",
     excerpt:
-      'Discover why top CEOs and executives are ditching first-class airline seats for FBO services. From time efficiency and privacy to productivity and prestige — here’s the business case for choosing FBO over commercial aviation.',
-    publishedAt: 'May 8, 2026',
-    readTime: '6 min read',
-    image: '/images/charter-cabin.jpg',
+      "Discover why top CEOs and executives are ditching first-class airline seats for FBO services. From time efficiency and privacy to productivity and prestige — here’s the business case for choosing FBO over commercial aviation.",
+    publishedAt: "May 8, 2026",
+    readTime: "6 min read",
+    image: "/images/charter-cabin.jpg",
   },
 ];
 
@@ -520,7 +574,7 @@ export const MOCK_POSTS: BlogPostMock[] = ARTICLES_DATABASE.slice(0, 3).map(
     publishedAt,
     image,
     slug,
-  })
+  }),
 );
 
 /**
@@ -530,7 +584,7 @@ export const MOCK_POSTS: BlogPostMock[] = ARTICLES_DATABASE.slice(0, 3).map(
  * to nothing.
  */
 export const CATEGORIES: string[] = [
-  'All',
+  "All",
   ...Array.from(new Set(ARTICLES_DATABASE.map((article) => article.category))),
 ];
 
@@ -540,29 +594,34 @@ export const CATEGORIES: string[] = [
 
 export const FAQ_ITEMS: FAQItem[] = [
   {
-    question: 'How do I arrange overflight or landing permits with EAN?',
-    answer: 'Our dedicated flight support team manages permits and clearances across all West African airspace. You can coordinate directly with operations by emailing ops@ean.aero or selecting "Global Flight Support" in our contact form.',
+    question: "How do I arrange overflight or landing permits with EAN?",
+    answer:
+      'Our dedicated flight support team manages permits and clearances across all West African airspace. You can coordinate directly with operations by emailing ops@ean.aero or selecting "Global Flight Support" in our contact form.',
   },
   {
-    question: 'What are the hangar and FBO capabilities at MMIA, Lagos?',
-    answer: 'EAN operates a fully secure, 24/7 FBO hangar at Murtala Muhammed International Airport. We support secure ramp parking, fueling, baggage handling, custom clearances, and passenger concierge services.',
+    question: "What are the hangar and FBO capabilities at MMIA, Lagos?",
+    answer:
+      "EAN operates a fully secure, 24/7 FBO hangar at Murtala Muhammed International Airport. We support secure ramp parking, fueling, baggage handling, custom clearances, and passenger concierge services.",
   },
   {
-    question: 'How far in advance should I request a private charter flight?',
-    answer: 'For domestic flights within Nigeria, we can coordinate departures in 4 to 6 hours. For international routes, we recommend 24 to 48 hours to secure optimal slots, clearances, and custom approvals.',
+    question: "How far in advance should I request a private charter flight?",
+    answer:
+      "For domestic flights within Nigeria, we can coordinate departures in 4 to 6 hours. For international routes, we recommend 24 to 48 hours to secure optimal slots, clearances, and custom approvals.",
   },
   {
-    question: 'Is EAN certified to maintain foreign-registered aircraft?',
-    answer: 'Yes, EAN is certified as an Approved Maintenance Organisation (AMO) under NCAA regulations. We also partner with international MRO networks to provide compliant line maintenance for foreign-registered jets.',
+    question: "Is EAN certified to maintain foreign-registered aircraft?",
+    answer:
+      "Yes, EAN is certified as an Approved Maintenance Organisation (AMO) under NCAA regulations. We also partner with international MRO networks to provide compliant line maintenance for foreign-registered jets.",
   },
 ];
 
 export const LAGOS_HQ: OfficeInfo = {
-  title: 'Lagos Headquarters & Hangar',
-  address: 'EAN Aviation Hangar, Murtala Muhammed International Airport (MMIA), Ikeja, Lagos, Nigeria',
-  phone: '+234 (0) 1 460 7310',
-  email: 'info@ean.aero',
-  hours: '24/7 Flight Support Operations',
+  title: "Lagos Headquarters & Hangar",
+  address:
+    "EAN Aviation Hangar, Murtala Muhammed International Airport (MMIA), Ikeja, Lagos, Nigeria",
+  phone: "+234 (0) 805 033 3410",
+  email: "info@ean.aero",
+  hours: "24/7 Flight Support Operations",
 };
 
 // ============================================================================
@@ -571,40 +630,26 @@ export const LAGOS_HQ: OfficeInfo = {
 
 export const TIMELINE_EVENTS: TimelineEvent[] = [
   {
-    year: "2009",
-    title: "Founding & First Integrated FBO Hangar",
-    category: "INFRASTRUCTURE & PIONEERING",
-    image: "/images/hero/slide-1.jpg",
+    year: "2011",
+    // One card, because the founding and the Wings™ kitchen are both 2011 now
+    // that 2011 is the settled founding year. They were separate cards dated
+    // 2009 and 2010, which put the catering launch before the company existed.
+    title: "Founding, First Integrated FBO Hangar & Wings™",
+    category: "FOUNDING, FBO & HOSPITALITY",
+    image: "/images/services/ean-service-banners-fbo.jpg",
     description:
-      "EAN Aviation was established in Lagos, launching Nigeria’s first fully integrated Fixed Base Operator (FBO) hangar at Murtala Muhammed International Airport.",
+      "EAN Aviation was established in Lagos, launching Nigeria’s first fully integrated Fixed Base Operator (FBO) hangar at Murtala Muhammed International Airport — and Wings™, its on-site flight kitchen.",
     story: [
-      "In 2009, EAN Aviation pioneered a new era for business aviation in West Africa by founding Nigeria’s first fully integrated Fixed Base Operator (FBO) and private jet hangar facility at Murtala Muhammed International Airport (MMIA), Lagos.",
-      "Prior to EAN's launch, business jet operators, corporate executives, and private flight crews experienced significant operational bottlenecks, delayed ground turnarounds, and lack of dedicated airside security. EAN solved this by constructing a world-class 10,000 m² private ramp and hangar enclave.",
-      "This milestone laid the foundational bedrock for modern business aviation in Nigeria, establishing a high-security, luxury gateway for international VIPs, diplomats, and corporate flight departments."
+      "In 2011, EAN Aviation pioneered a new era for business aviation in West Africa by founding Nigeria’s first fully integrated Fixed Base Operator (FBO) and private jet hangar facility at Murtala Muhammed International Airport (MMIA), Lagos. EAN Catering Limited — branded as Wings™ — launched the same year, directly on airport grounds.",
+      "Prior to EAN's launch, business jet operators, corporate executives, and private flight crews experienced significant operational bottlenecks, delayed ground turnarounds, and lack of dedicated airside security. EAN solved this by constructing a world-class 10,000 m² private ramp and hangar enclave, establishing a high-security, luxury gateway for international VIPs, diplomats, and corporate flight departments.",
+      "Wings™ became the first dedicated luxury flight kitchen in Nigeria engineered exclusively for executive aircraft cabin service. Equipped with state-of-the-art thermal packaging, strict HACCP food safety protocols, and a team of international chefs, it serves custom menus onto private jet galleys moments before taxiing.",
     ],
     highlights: [
       "Established Nigeria's first integrated FBO & private hangar terminal.",
       "Created dedicated 10,000+ m² airside ramp parking for business aircraft.",
-      "Set early industry benchmarks for private passenger privacy and swift turnarounds."
-    ]
-  },
-  {
-    year: "2010",
-    title: "Launched EAN Catering Limited",
-    category: "LUXURY HOSPITALITY & CULINARY",
-    image: "/images/services/wings-4.jpg",
-    description:
-      "Launched EAN Catering Limited (Wings™), establishing Nigeria's premier on-site executive aviation kitchen dedicated to gourmet in-flight dining.",
-    story: [
-      "Recognizing the vital importance of high-caliber culinary experiences for private jet travelers, EAN launched EAN Catering Limited (branded as Wings™) directly on airport grounds in 2010.",
-      "Wings™ became the first dedicated luxury flight kitchen in Nigeria engineered exclusively for executive aircraft cabin service. Equipped with state-of-the-art thermal packaging, strict HACCP food safety protocols, and a team of international chefs, the kitchen transformed in-flight dining.",
-      "From custom-designed five-course menus to bespoke dietary accommodations, Wings™ ensures every meal is served at peak freshness directly onto private jet galleys moments before taxiing."
+      "Launched Wings™, Nigeria's first dedicated executive aviation kitchen on MMIA grounds.",
+      "Set early industry benchmarks for private passenger privacy and swift turnarounds.",
     ],
-    highlights: [
-      "Nigeria's first dedicated executive aviation kitchen located on MMIA grounds.",
-      "Custom gourmet dining menus tailored for international flight operations.",
-      "Strict thermal packaging & safety compliance for high-altitude luxury dining."
-    ]
   },
   {
     year: "2011",
@@ -616,13 +661,13 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     story: [
       "In 2011, EAN achieved a major regulatory victory by securing official Approved Maintenance Organisation (AMO) status from the Nigerian Civil Aviation Authority (NCAA).",
       "This certification authorized EAN's team of certified licensed engineers to perform structured line maintenance, airworthiness inspections, and technical ground support for executive fleets operating across West Africa.",
-      "By establishing local engineering expertise, EAN drastically reduced Aircraft-On-Ground (AOG) downtime for corporate operators who previously had to ferry aircraft overseas for routine maintenance."
+      "By establishing local engineering expertise, EAN drastically reduced Aircraft-On-Ground (AOG) downtime for corporate operators who previously had to ferry aircraft overseas for routine maintenance.",
     ],
     highlights: [
       "Official NCAA AMO certification for business and commercial aircraft types.",
       "Full line maintenance, AOG emergency response, and airworthiness support.",
-      "Significantly reduced operational maintenance downtime across West Africa."
-    ]
+      "Significantly reduced operational maintenance downtime across West Africa.",
+    ],
   },
   {
     year: "2012",
@@ -634,13 +679,13 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     story: [
       "In 2012, EAN Aviation co-founded the African Business Aviation Association (AfBAA), uniting leaders across the continent to promote business aviation as a catalyst for economic growth.",
       "Through AfBAA, EAN actively engaged civil aviation authorities, regional governments, and international safety bodies to advocate for harmonized airspace rules, infrastructure development, and reduced bureaucratic friction for business aircraft.",
-      "EAN's leadership helped elevate African business aviation onto the global stage, attracting foreign direct investment and fostering inter-African trade."
+      "EAN's leadership helped elevate African business aviation onto the global stage, attracting foreign direct investment and fostering inter-African trade.",
     ],
     highlights: [
       "Co-founder of AfBAA, shaping regional business aviation policy and safety standards.",
       "Advocated for harmonized cross-border flight clearances and airport access.",
-      "Strengthened connections between African flight departments and global OEMs."
-    ]
+      "Strengthened connections between African flight departments and global OEMs.",
+    ],
   },
   {
     year: "2013",
@@ -652,13 +697,13 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     story: [
       "EAN Aviation marked a significant milestone in 2013 by being appointed as the first exclusive sales representative for Gulfstream Aerospace in West Africa.",
       "This partnership solidified EAN’s reputation as the premier aircraft sales brokerage in the region, connecting ultra-high-net-worth individuals and corporate entities with Gulfstream's fleet of long-range executive jets.",
-      "EAN provided comprehensive acquisition advisory, pre-purchase technical inspections, cabin customisation guidance, and delivery logistics for buyers across the subcontinent."
+      "EAN provided comprehensive acquisition advisory, pre-purchase technical inspections, cabin customisation guidance, and delivery logistics for buyers across the subcontinent.",
     ],
     highlights: [
       "Appointed exclusive Gulfstream Aerospace sales representative in West Africa.",
       "Advised on multi-million dollar executive jet acquisitions and fleet strategies.",
-      "Delivered end-to-end pre-purchase technical inspections and delivery management."
-    ]
+      "Delivered end-to-end pre-purchase technical inspections and delivery management.",
+    ],
   },
   {
     year: "2014",
@@ -670,13 +715,13 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     story: [
       "In 2014, EAN Aviation conceptualized and convened the inaugural Nigerian Business Aviation Conference (NBAC) in Lagos.",
       "NBAC rapidly became the most prestigious annual gathering of aviation stakeholders in West Africa, bringing together aircraft manufacturers, regulatory heads, financiers, operators, and charter clients under one roof.",
-      "The conference provided a vital, transparent forum to address industry regulatory frameworks, tax policies, infrastructure investments, and safety protocols required to scale business aviation."
+      "The conference provided a vital, transparent forum to address industry regulatory frameworks, tax policies, infrastructure investments, and safety protocols required to scale business aviation.",
     ],
     highlights: [
       "Inaugurated NBAC as West Africa's leading annual business aviation summit.",
       "Brought together global OEMs, Nigerian CAA leaders, and executive fleet owners.",
-      "Drove key industry policy reforms, safety dialogues, and investment initiatives."
-    ]
+      "Drove key industry policy reforms, safety dialogues, and investment initiatives.",
+    ],
   },
   {
     year: "2016",
@@ -688,13 +733,13 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     story: [
       "In 2016, EAN Aviation earned global safety distinction by becoming the first Fixed Base Operator (FBO) in Africa to be featured on the National Air Transportation Association (NATA) Safety 1st Map.",
       "This international recognition validated EAN's rigorous ramp handling standards, continuous line training, fuel quality control, and zero-accident safety culture.",
-      "Being listed on NATA Safety 1st gave international flight dispatchers and Fortune 500 corporate flight departments ultimate confidence when scheduling flight stops at Lagos MMIA."
+      "Being listed on NATA Safety 1st gave international flight dispatchers and Fortune 500 corporate flight departments ultimate confidence when scheduling flight stops at Lagos MMIA.",
     ],
     highlights: [
       "First FBO in Africa recognized on the prestigious NATA Safety 1st Map.",
       "Validated international ground handling, towing, and fuel quality standards.",
-      "Enhanced global confidence for international flight departments operating to Nigeria."
-    ]
+      "Enhanced global confidence for international flight departments operating to Nigeria.",
+    ],
   },
   {
     year: "2018",
@@ -706,13 +751,13 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     story: [
       "To deepen its Maintenance, Repair, and Overhaul (MRO) capabilities, EAN established a dedicated, NCAA-approved Wheels and Brakes Workshop at its MMIA facility in 2018.",
       "Equipped with specialized testing machinery, non-destructive testing (NDT) apparatus, and OEM spare parts inventory, the workshop enabled rapid turnaround times for tire changes, brake overhauls, and hub inspections.",
-      "This specialized facility eliminated the high cost and week-long shipping delays previously associated with sending aircraft brake assemblies abroad."
+      "This specialized facility eliminated the high cost and week-long shipping delays previously associated with sending aircraft brake assemblies abroad.",
     ],
     highlights: [
       "NCAA-approved specialized workshop for aircraft wheel and brake assembly servicing.",
       "In-house Non-Destructive Testing (NDT) and precision pressure testing capabilities.",
-      "Drastically reduced turnaround times from weeks to hours for corporate flight departments."
-    ]
+      "Drastically reduced turnaround times from weeks to hours for corporate flight departments.",
+    ],
   },
   {
     year: "2019",
@@ -724,13 +769,13 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     story: [
       "Demonstrating an unyielding commitment to operational excellence, EAN Aviation achieved IS-BAO (International Standard for Business Aircraft Operations) Stage 2 certification in 2019.",
       "IS-BAO Stage 2 requires rigorous independent safety audits verifying that an operator's Safety Management System (SMS) is actively functioning and embedded across all operational levels.",
-      "This accreditation positioned EAN among an elite tier of global business aviation operators, adhering to the same safety standard required by top international corporations."
+      "This accreditation positioned EAN among an elite tier of global business aviation operators, adhering to the same safety standard required by top international corporations.",
     ],
     highlights: [
       "Achieved IS-BAO Stage 2 registration following comprehensive independent audits.",
       "Embedded advanced Safety Management System (SMS) across all flight and ground operations.",
-      "Re-affirmed EAN's status as a top-tier global business aviation organization."
-    ]
+      "Re-affirmed EAN's status as a top-tier global business aviation organization.",
+    ],
   },
   {
     year: "2021",
@@ -742,13 +787,13 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     story: [
       "In 2021, EAN Aviation expanded its rotary-wing portfolio by being appointed as the exclusive distributor for Airbus Helicopters in West Africa.",
       "This strategic milestone broadened EAN's offerings beyond fixed-wing jets to encompass corporate, VIP, and offshore utility helicopters across the region.",
-      "EAN provides comprehensive helicopter sales support, customized cabin outfit advisories, factory warranties, and specialized MRO maintenance for Airbus helicopter owners."
+      "EAN provides comprehensive helicopter sales support, customized cabin outfit advisories, factory warranties, and specialized MRO maintenance for Airbus helicopter owners.",
     ],
     highlights: [
       "Exclusive Airbus Helicopters dealership for West Africa.",
       "Expanded capabilities into executive, offshore, and emergency medical rotary transport.",
-      "Full-lifecycle support including sales, factory warranties, and specialized servicing."
-    ]
+      "Full-lifecycle support including sales, factory warranties, and specialized servicing.",
+    ],
   },
   {
     year: "2023",
@@ -760,13 +805,13 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     story: [
       "In 2023, EAN Aviation executed a twin expansion strategy: forming a high-impact joint venture with Heliconia and launching EAN JETS.",
       "The Heliconia-EAN joint venture expanded offshore helicopter transport and logistics for West Africa’s energy and infrastructure sectors. Concurrently, EAN JETS introduced high-capacity private jet charter management.",
-      "This landmark year solidified EAN’s multi-platform capabilities across executive charter, offshore rotary transport, and fleet management."
+      "This landmark year solidified EAN’s multi-platform capabilities across executive charter, offshore rotary transport, and fleet management.",
     ],
     highlights: [
       "Formed Heliconia-EAN JV for offshore helicopter support in West Africa.",
       "Launched EAN JETS to streamline executive charter booking and aircraft management.",
-      "Broadened operational reach across energy, corporate, and VIP luxury transport."
-    ]
+      "Broadened operational reach across energy, corporate, and VIP luxury transport.",
+    ],
   },
   {
     year: "2024",
@@ -777,92 +822,100 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
       "Entered strategic maintenance alliances with Banyan Air Services and partnered with Archer Aviation to introduce eVTOL electric air mobility in West Africa.",
     story: [
       "Positioning West Africa for the future of flight, EAN Aviation established strategic partnerships with Banyan Air Services and Archer Aviation in 2024.",
-      "The alliance with Banyan Air Services expanded MRO engineering cross-training and parts sharing. Meanwhile, the partnership with Archer Aviation laid groundwork for introducing eVTOL (electric Vertical Takeoff and Landing) aircraft into Lagos' urban mobility network.",
-      "These partnerships represent EAN’s commitment to sustainable aviation, cutting-edge urban air mobility, and global engineering synergy."
+      "The alliance with Banyan Air Services expanded AMO engineering cross-training and parts sharing. Meanwhile, the partnership with Archer Aviation laid groundwork for introducing eVTOL (electric Vertical Takeoff and Landing) aircraft into Lagos' urban mobility network.",
+      "These partnerships represent EAN’s commitment to sustainable aviation, cutting-edge urban air mobility, and global engineering synergy.",
     ],
     highlights: [
-      "MRO engineering alliance with renowned US operator Banyan Air Services.",
+      "AMO engineering alliance with renowned US operator Banyan Air Services.",
       "Pioneered Urban Air Mobility partnership with Archer Aviation for eVTOL deployment.",
-      "Committed to sustainable aviation and next-generation electric flight infrastructure."
-    ]
+      "Committed to sustainable aviation and next-generation electric flight infrastructure.",
+    ],
   },
   {
     year: "2026",
     title: "On-Site Customs and Immigration (CIQ) Launch",
     category: "TERMINAL CIQ CLEARANCE",
-    image: "/images/hero/slide-4.jpg",
+    image: "/images/vip-lounge.jpg",
     description:
       "Introduced dedicated on-site Customs, Immigration, and Quarantine (CIQ) facilities at the Lagos FBO for immediate, hassle-free international passenger clearance.",
     story: [
       "In 2026, EAN Aviation achieved a major milestone by establishing dedicated on-site Customs, Immigration, and Quarantine (CIQ) processing directly within the EAN Lagos FBO terminal.",
       "International passengers and flight crews no longer need to pass through commercial terminal channels. Full passport control, customs inspection, and security clearances are conducted inside EAN's private VIP lounge.",
-      "This achievement takes passengers from runway to ground transport in under 5 minutes."
+      "This achievement takes passengers from runway to ground transport in under 5 minutes.",
     ],
     highlights: [
       "Dedicated airside CIQ clearance facilities inside the EAN Lagos FBO lounge.",
       "Direct runway-to-limousine international arrival and departure clearance.",
-      "Eliminated commercial terminal transfer delays for HNWIs, diplomats, and flight crews."
-    ]
+      "Eliminated commercial terminal transfer delays for HNWIs, diplomats, and flight crews.",
+    ],
   },
 ];
 
 export const VALUE_PILLARS: ValuePillar[] = [
   {
-    icon: 'ShieldCheck',
-    title: 'Safety & Compliance',
-    description: 'We operate to the highest international safety standards, backed by regular audits and NCAA approvals to provide absolute peace of mind.',
+    icon: "ShieldCheck",
+    title: "Safety & Compliance",
+    description:
+      "We operate to the highest international safety standards, backed by regular audits and NCAA approvals to provide absolute peace of mind.",
   },
   {
-    icon: 'Crown',
-    title: 'Tailored Service',
-    description: 'Every flight and terminal experience is tailored to the exact specifications, schedule, and lifestyle of our high-net-worth clients.',
+    icon: "Crown",
+    title: "Tailored Service",
+    description:
+      "Every flight and terminal experience is tailored to the exact specifications, schedule, and lifestyle of our high-net-worth clients.",
   },
   {
-    icon: 'Clock',
-    title: 'Operational Precision',
-    description: 'We coordinate ground support, fueling, and maintenance with meticulous efficiency to guarantee on-time departures.',
+    icon: "Clock",
+    title: "Operational Precision",
+    description:
+      "We coordinate ground support, fueling, and maintenance with meticulous efficiency to guarantee on-time departures.",
   },
   {
-    icon: 'Globe',
-    title: 'Regional Leadership',
-    description: 'Deeply rooted in West Africa, we bridge regional aviation requirements with international flight support, MRO engineering, and charter services.',
+    icon: "Globe",
+    title: "Regional Leadership",
+    description:
+      "Deeply rooted in West Africa, we bridge regional aviation requirements with international flight support, AMO engineering, and charter services.",
   },
 ];
 
 export const CREDENTIAL_ITEMS: CredentialItem[] = [
   {
-    icon: 'Building2',
-    title: 'MMIA Lagos FBO Hangar',
-    description: 'Secure, modern hangar facilities at Lagos airport providing private ramp access, terminal handling, and line support.',
+    icon: "Building2",
+    title: "MMIA Lagos FBO Hangar",
+    description:
+      "Secure, modern hangar facilities at Lagos airport providing private ramp access, terminal handling, and line support.",
   },
   {
-    icon: 'Award',
-    title: 'NCAA AMO Approval',
-    description: 'Officially certified Approved Maintenance Organisation under NCAA standards, staffed by certified aviation engineers.',
+    icon: "Award",
+    title: "NCAA AMO Approval",
+    description:
+      "Officially certified Approved Maintenance Organisation under NCAA standards, staffed by certified aviation engineers.",
   },
   {
-    icon: 'CheckCircle2',
-    title: 'Aircraft Sales & Charter Advisory',
-    description: 'Tailored jet sales brokerage, acquisitions, and executive helicopter charter management across West Africa.',
+    icon: "CheckCircle2",
+    title: "Aircraft Sales & Charter Advisory",
+    description:
+      "Tailored jet sales brokerage, acquisitions, and executive helicopter charter management across West Africa.",
   },
   {
-    icon: 'MapPin',
-    title: 'Global Flight Support',
-    description: 'Comprehensive trip support, overflight permits, landing clearances, and local ground logistics across West Africa.',
+    icon: "MapPin",
+    title: "Global Flight Support",
+    description:
+      "Comprehensive trip support, overflight permits, landing clearances, and local ground logistics across West Africa.",
   },
 ];
 
 export const COMMITTEE_MEMBERS: CommitteeMember[] = [
   {
-    name: 'Boyede Oyegbami',
-    role: 'Aviation Commercial Leader',
-    image: '/images/about-jet.jpg',
+    name: "Boyede Oyegbami",
+    role: "Aviation Commercial Leader",
+    image: "/images/about-jet.jpg",
     bio: [
       "Boyede Oyegbami is an accomplished aviation commercial leader with over a decade of experience driving business growth, customer acquisition, and operational excellence across leading energy and aviation fueling companies in Nigeria.",
       "Prior to joining EAN, Boyede served as Aviation Commercial Manager at Eternal Plc, leading aviation business start-up, regulatory compliance, and end-to-end jet fuel operations, achieving milestones such as first into-plane fueling within a year and onboarding five airline customers in five months.",
       "He holds an MSc in Environmental Consultancy from Newcastle University (UK) and a BSc in Microbiology from Bowen University, complemented by certifications from IATA, the British Safety Council, and IEMA. Skilled in contract negotiations, customer relationship management, and strategic sales growth.",
-    ]
-  }
+    ],
+  },
 ];
 
 export const TEAM_MEMBERS: TeamMember[] = [
@@ -1217,4 +1270,4 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
 ];
 
-export * from './legal-constants';
+export * from "./legal-constants";

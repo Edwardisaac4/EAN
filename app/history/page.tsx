@@ -178,8 +178,8 @@ export default function HistoryPage() {
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%]">
             <Image
-              src="/images/hero/slide-1.jpg"
-              alt="EAN Aviation premium private jet inside MMIA hangar at sunset"
+              src="/images/hero/slide-4.jpg"
+              alt="EAN Aviation terminal and hangar facilities at Murtala Muhammed Airport"
               fill
               sizes="100vw"
               priority
@@ -288,7 +288,7 @@ export default function HistoryPage() {
                 </h2>
               </div>
               <div className="font-display text-2xl font-light text-ean-gold/60 flex items-center gap-3">
-                <span className="text-ean-navy text-4xl font-semibold">2009</span>
+                <span className="text-ean-navy text-4xl font-semibold">2011</span>
                 <span>/</span>
                 <span>2026</span>
               </div>
@@ -405,7 +405,7 @@ export default function HistoryPage() {
                 Pioneering the Skies of West Africa
               </h2>
               <p className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-light max-w-2xl mx-auto leading-relaxed">
-                Connect with our legacy. Secure direct airport handling, schedule executive jet charters, or inspect our MRO hangars at Lagos.
+                Connect with our legacy. Secure direct airport handling, schedule executive jet charters, or inspect our AMO hangars at Lagos.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                 <Link href="/contact">

@@ -93,10 +93,10 @@ export const BLOG_TEMPLATES: BlogTemplate[] = [
 > — **Executive Director, EAN Aviation Limited**
 
 ### About EAN Aviation
-Operating the first fully integrated FBO hangar at Murtala Muhammed International Airport (DNMM) in Lagos, Nigeria, EAN Aviation provides comprehensive business aviation solutions including FBO handling, aircraft maintenance (AMO), jet/helicopter charter, and leased office spaces.
+Operating the first fully integrated FBO hangar at Murtala Muhammed International Airport (DNMM) in Lagos, Nigeria, EAN Aviation provides comprehensive business aviation solutions including FBO handling, aircraft maintenance (AMO), jet/helicopter charter, and hangarage & executive offices.
 
 ---
-*For press inquiries, contact media@ean.aero or call +234 (0) 1 234 5678.*`,
+*For press inquiries, contact media@ean.aero or call +234 (0) 805 033 3410.*`,
   },
   {
     id: 'industry-insights',

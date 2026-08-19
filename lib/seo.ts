@@ -138,7 +138,7 @@ export const PAGE_SEO = {
     title:
       "Aviation Services | FBO, Maintenance, Charter & Catering — EAN Aviation",
     description:
-      "Six integrated service lines from one Lagos base: FBO ground support, NCAA-approved aircraft maintenance, sales and charter, Wings™ catering, VIP lounge, and leased offices.",
+      "Six integrated service lines from one Lagos base: FBO ground support, NCAA-approved aircraft maintenance, sales and charter, Wings™ catering, VIP lounge, and hangarage & executive offices.",
     path: "/services",
     image: "/images/vip-lounge.jpg",
   },
@@ -183,12 +183,11 @@ export const PAGE_SEO = {
 // what lets a search engine render an address, phone number and opening hours
 // directly in results.
 //
+// `foundingDate` is asserted as 2011, which every surface now agrees on:
+// TRUST_STATS, the homepage About section and the opening TIMELINE_EVENTS card.
+// It was withheld while the timeline still dated the founding to 2009.
+//
 // Deliberately omitted:
-//   - `foundingDate`. TIMELINE_EVENTS dates the founding to 2009 — and gives
-//     2011 to the NCAA AMO approval — while TRUST_STATS publishes "2011 ·
-//     Founded in Lagos" on both the homepage and /about. Asserting either in
-//     machine-readable form would publish a claim the site itself contradicts.
-//     Resolve the copy first, then add it here.
 //   - `sameAs`. No social profile URLs exist anywhere in the codebase, and
 //     guessing handles would point crawlers at accounts EAN may not control.
 //   - `aggregateRating`. There is no review corpus; fabricating one is a
@@ -210,6 +209,11 @@ export function organizationSchema(): JsonLd {
       url: `${SITE_URL}/images/EAN-Logo.png`,
     },
     description: SITE_TAGLINE,
+    foundingDate: "2011",
+    foundingLocation: {
+      "@type": "Place",
+      name: "Lagos, Nigeria",
+    },
     email: LAGOS_HQ.email,
     telephone: LAGOS_HQ.phone,
     address: {

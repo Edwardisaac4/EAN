@@ -349,20 +349,33 @@ Do not assume these exist; say so if a task depends on one.
   www→apex redirect is still unconfigured.
 - shadcn/ui — no `components/ui/` directory
 
-### Known content inconsistency
+### The founding year is 2011 — C44, settled 18 August 2026
 
-`TIMELINE_EVENTS` dates the founding to **2009** and gives **2011** to the NCAA
-AMO approval; `TRUST_STATS` publishes "**2011** · Founded in Lagos" on both the
-homepage and `/about`; the CIQ blog post says "fifteen years". `foundingDate` is
-therefore deliberately omitted from the JSON-LD in `lib/seo.ts` — resolve the
-copy before asserting one in machine-readable form. This is **C44** in
-`docs/reviews/2026-08-18-content-signoff-brief.md`, still open.
+Every surface says **2011**, and new copy must not reintroduce another year.
+`TRUST_STATS` publishes "2011 · Founded in Lagos", the homepage About section
+reads "Founded in Lagos in 2011", and `TIMELINE_EVENTS` opens on a single 2011
+card. `foundingDate: "2011"` is now asserted in the `organizationSchema` JSON-LD
+in `lib/seo.ts`, which had withheld it while the timeline disagreed.
+
+The timeline's first card **merges the founding, the first integrated FBO hangar
+and the Wings™ flight kitchen** into one 2011 entry. Those were separate cards
+dated 2009 and 2010; re-dating the founding to 2011 would otherwise have left the
+catering launch happening before the company existed. Do not split them back out.
+`/history` therefore holds two 2011 cards — the merged founding entry and the
+NCAA AMO approval — and its header range reads "2011 / 2026".
+
+Note that `docs/reviews/2026-08-18-content-signoff-brief.md` still records C44 as
+open, and argues against 2011 on the grounds above; that objection is answered by
+the merge. The brief is a point-in-time record and was left unedited.
+
+`/history` keeps its own separate metrics strip, reading "15+ Years of
+Operation" — consistent with 2011 as of 2026.
+
+### TRUST_STATS is shared
 
 `TRUST_STATS` (`lib/constants.ts`) is the single source for the four KPIs on both
 the homepage band (`components/sections/TrustBar.tsx`) and the `/about` metric
 cards — `label` is the short band form, optional `description` the card sentence.
-`/history` keeps its own separate metrics strip, which still reads "15+ Years of
-Operation".
 
 ---
 

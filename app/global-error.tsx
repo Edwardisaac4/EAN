@@ -73,8 +73,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           >
             We hit an unexpected fault while loading the site. Our 24/7 operations desk
             is still reachable on{' '}
-            <a href="tel:+23414607310" style={{ color: '#c4952a' }}>
-              +234 (0) 1 460 7310
+            <a href="tel:+2348050333410" style={{ color: '#c4952a' }}>
+              +234 (0) 805 033 3410
             </a>
             .
           </p>

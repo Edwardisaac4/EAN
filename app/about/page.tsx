@@ -134,8 +134,8 @@ export default function AboutPage() {
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%]">
             <Image
-              src="/images/hero/slide-1.jpg"
-              alt="EAN Aviation premium private jet inside MMIA hangar at sunset"
+              src="/images/hero/slide-2.jpg"
+              alt="EAN Aviation executive private aircraft on the ramp at Lagos"
               fill
               sizes="100vw"
               priority
