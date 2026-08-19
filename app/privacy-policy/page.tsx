@@ -582,7 +582,7 @@ export default function PrivacyPolicyPage() {
                                 </div>
 
                                 <div className="space-y-1">
-                                  <span className="text-ean-muted-light text-[10px] uppercase font-bold tracking-wider block">Telephone</span>
+                                  <span className="text-ean-muted-light text-[10px] uppercase font-bold tracking-wider block">Legal & DPO Line</span>
                                   <div className="flex gap-2 items-center text-white">
                                     <Phone className="w-4 h-4 text-ean-gold shrink-0" />
                                     <a href="tel:+23412950960" className="hover:text-ean-gold transition-colors font-semibold">

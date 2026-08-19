@@ -575,7 +575,7 @@ export const TERMS_OF_USE_SECTIONS: LegalSection[] = [
       },
       {
         subtitle: 'Official Contact Channels',
-        text: 'Phone: +234 (0) 1295 0960 / +234 (0) 805 033 3410 | Email: info@ean.aero. Any notices to you may be made via either e-mail or postal mail to the address in EAN Group’s records or via posting on the Site.'
+        text: 'Legal & DPO Line: +234 (0) 1295 0960 | Operations: +234 (0) 805 033 3410 | Email: info@ean.aero. Any notices to you may be made via either e-mail or postal mail to the address in EAN Group’s records or via posting on the Site.'
       },
       {
         subtitle: 'Reporting Violations',

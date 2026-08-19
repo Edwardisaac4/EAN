@@ -186,7 +186,7 @@ export default function TeamPage() {
                 Designed for Distinction
               </h2>
               <p className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-light max-w-2xl mx-auto leading-relaxed">
-                Connect directly with our department heads to coordinate jet charters, hangar space, MRO maintenance, or corporate travel logistics.
+                Connect directly with our department heads to coordinate jet charters, hangar space, aircraft maintenance, or corporate travel logistics.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                 <Link href="/contact?service=charter">

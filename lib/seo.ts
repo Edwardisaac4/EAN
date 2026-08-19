@@ -138,7 +138,7 @@ export const PAGE_SEO = {
     title:
       "Aviation Services | FBO, Maintenance, Charter & Catering — EAN Aviation",
     description:
-      "Six integrated service lines from one Lagos base: FBO ground support, NCAA-approved aircraft maintenance, sales and charter, Wings™ catering, VIP lounge, and leased offices.",
+      "Six integrated service lines from one Lagos base: FBO ground support, NCAA-approved aircraft maintenance, sales and charter, Wings™ catering, VIP lounge, and hangarage & executive offices.",
     path: "/services",
     image: "/images/vip-lounge.jpg",
   },

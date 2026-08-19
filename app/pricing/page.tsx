@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Navbar from '@/components/layout/Navbar'
-import Footer from '@/components/layout/Footer'
 import PricingCalculator from '@/components/pricing/PricingCalculator'
 import JsonLd from '@/components/shared/JsonLd'
 import { buildMetadata, breadcrumbSchema, PAGE_SEO } from '@/lib/seo'
@@ -23,7 +22,6 @@ export default function PricingPage() {
       <main className="flex-1">
         <PricingCalculator />
       </main>
-      <Footer />
     </>
   )
 }

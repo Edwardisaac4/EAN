@@ -10,8 +10,6 @@ import {
   ArrowUpRight,
   ArrowUp,
   Clock,
-  ShieldCheck,
-  Plane,
   Compass
 } from 'lucide-react';
 
@@ -99,7 +97,7 @@ export default function Footer() {
                 Pioneering Business Aviation in West Africa
               </div>
               <p className="font-ui text-xs text-ean-muted-light">
-                Direct FBO Terminal Handling • NCAA Approved MRO Hangar • Executive Jet Charters
+                Direct FBO Terminal Handling • AMO Hangar • Executive Jet Charters
               </p>
             </div>
           </div>
@@ -122,11 +120,11 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Main Grid: Mobile, iPad & Desktop Optimized */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 pb-10 sm:pb-12 border-b border-ean-border-dark">
+        {/* Main Grid: 4 Columns (Brand, Services, Company, Inquiries & Access) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 pb-10 sm:pb-12 border-b border-white/10">
 
           {/* Brand & Overview (Mobile: Full width, iPad: md:col-span-2, Desktop: lg:col-span-4) */}
-          <div className="md:col-span-2 lg:col-span-4 space-y-5">
+          <div className="md:col-span-2 lg:col-span-4 space-y-4">
             <div className="space-y-2">
               <Link href="/" className="inline-flex items-center group">
                 <Image
@@ -137,11 +135,15 @@ export default function Footer() {
                   className="h-10 sm:h-11 w-auto object-contain filter brightness-0 invert opacity-95 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105"
                 />
               </Link>
-              <div className="h-0.5 w-12 bg-ean-gold rounded-full" />
             </div>
 
-            <p className="font-ui text-xs sm:text-sm text-ean-muted-light leading-relaxed max-w-md">
-              West Africa&apos;s leading integrated business aviation company, operating Nigeria&apos;s first integrated FBO terminal at Murtala Muhammed International Airport, NCAA-approved maintenance organisation (AMO), and executive jet charters.
+            <p className="font-ui text-xs sm:text-sm text-ean-muted-light leading-relaxed max-w-sm">
+              Nigeria&apos;s first fully integrated Fixed Base Operator, operating an NCAA-approved Aircraft Maintenance Organization (AMO) and executive charter at Murtala Muhammed International Airport, Lagos.
+            </p>
+
+            <p className="font-ui text-xs sm:text-sm text-ean-muted-light/80 leading-relaxed pt-1">
+              EAN Jet Center, FAAN Transit Camp Road<br />
+              MMIA, Ikeja, Lagos, Nigeria
             </p>
 
             {/* Social Icons */}
@@ -158,7 +160,7 @@ export default function Footer() {
                     href={soc.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-xs bg-white/5 border border-white/10 flex items-center justify-center text-ean-muted-light hover:border-ean-gold/40 hover:text-ean-gold hover:-translate-y-[3px] transition-[color,border-color,transform] duration-200 cursor-pointer"
+                    className="w-9 h-9 rounded-xs bg-white/5 border border-white/10 flex items-center justify-center text-ean-muted-light hover:border-ean-gold/40 hover:text-ean-gold hover:-translate-y-[2px] transition-[color,border-color,transform] duration-200 cursor-pointer"
                     aria-label={soc.label}
                   >
                     <IconComponent className="w-4 h-4" />
@@ -168,54 +170,49 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Navigation Grid on Mobile/Tablet */}
-          <div className="md:col-span-2 lg:col-span-5 grid grid-cols-2 gap-6">
-            {/* Services Links Column */}
-            <div className="space-y-4">
-              <h4 className="font-ui text-xs font-bold uppercase tracking-widest text-ean-gold flex items-center gap-2">
-                <Plane className="w-3.5 h-3.5 text-ean-gold" />
-                Services
-              </h4>
-              <ul className="space-y-3 font-ui text-xs sm:text-sm text-ean-muted-light">
-                {FOOTER_SERVICES_LINKS.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="hover:text-white transition-colors flex items-center gap-1.5 group py-0.5"
-                    >
-                      <span>{link.name}</span>
-                      <ArrowUpRight className="w-3.5 h-3.5 opacity-60 md:opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-ean-gold" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Corporate Links Column */}
-            <div className="space-y-4">
-              <h4 className="font-ui text-xs font-bold uppercase tracking-widest text-ean-gold flex items-center gap-2">
-                <ShieldCheck className="w-3.5 h-3.5 text-ean-gold" />
-                Company
-              </h4>
-              <ul className="space-y-3 font-ui text-xs sm:text-sm text-ean-muted-light">
-                {FOOTER_COMPANY_LINKS.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="hover:text-white transition-colors flex items-center gap-1.5 group py-0.5"
-                    >
-                      <span>{link.name}</span>
-                      <ArrowUpRight className="w-3.5 h-3.5 opacity-60 md:opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-ean-gold" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Services Links Column */}
+          <div className="space-y-4 lg:col-span-3">
+            <h4 className="font-ui text-xs font-bold uppercase tracking-[0.2em] text-ean-gold">
+              Services
+            </h4>
+            <ul className="space-y-2.5 font-ui text-xs sm:text-sm text-ean-muted-light">
+              {FOOTER_SERVICES_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="hover:text-white transition-colors flex items-center gap-1.5 group py-0.5"
+                  >
+                    <span>{link.name}</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-ean-gold" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Operations & Location Card (Mobile: Full width, iPad: md:col-span-2, Desktop: lg:col-span-3) */}
+          {/* Company Links Column */}
+          <div className="space-y-4 lg:col-span-2">
+            <h4 className="font-ui text-xs font-bold uppercase tracking-[0.2em] text-ean-gold">
+              Company
+            </h4>
+            <ul className="space-y-2.5 font-ui text-xs sm:text-sm text-ean-muted-light">
+              {FOOTER_COMPANY_LINKS.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="hover:text-white transition-colors flex items-center gap-1.5 group py-0.5"
+                  >
+                    <span>{link.name}</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-ean-gold" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Inquiries & Access Card (Operations) */}
           <div className="md:col-span-2 lg:col-span-3 space-y-4">
-            <h4 className="font-ui text-xs font-bold uppercase tracking-widest text-ean-gold flex items-center gap-2">
+            <h4 className="font-ui text-xs font-bold uppercase tracking-[0.2em] text-ean-gold flex items-center gap-2">
               <MapPin className="w-3.5 h-3.5 text-ean-gold" />
               Inquiries & Access
             </h4>
@@ -223,7 +220,9 @@ export default function Footer() {
             <div className="p-4 bg-ean-navy-mid/60 border border-white/10 rounded-xs space-y-3.5 backdrop-blur-xs font-ui text-xs sm:text-sm text-ean-muted-light">
               <div className="flex gap-3 items-start">
                 <MapPin className="w-4 h-4 text-ean-gold shrink-0 mt-0.5" />
-                <span className="leading-relaxed text-white/90">MMIA Airport Hangar, Ikeja, Lagos, Nigeria</span>
+                <span className="leading-relaxed text-white/90">
+                  EAN Jet Center, FAAN Transit Camp Road, MMIA, Ikeja, Lagos, Nigeria
+                </span>
               </div>
 
               <div className="flex gap-3 items-center pt-1 border-t border-white/5">
@@ -233,11 +232,16 @@ export default function Footer() {
                 </a>
               </div>
 
-              <div className="flex gap-3 items-center">
-                <Mail className="w-4 h-4 text-ean-gold shrink-0" />
-                <a href="mailto:info@ean.aero" className="hover:text-white transition-colors text-white/90">
-                  info@ean.aero
-                </a>
+              <div className="flex gap-3 items-start pt-1 border-t border-white/5">
+                <Mail className="w-4 h-4 text-ean-gold shrink-0 mt-0.5" />
+                <div className="flex flex-col gap-1">
+                  <a href="mailto:dispatch@ean.aero" className="hover:text-white transition-colors text-white/90">
+                    dispatch@ean.aero
+                  </a>
+                  <a href="mailto:info@ean.aero" className="hover:text-white transition-colors text-ean-muted-light text-xs">
+                    info@ean.aero
+                  </a>
+                </div>
               </div>
 
               {/* Badges Row */}
@@ -245,6 +249,10 @@ export default function Footer() {
                 <span className="inline-flex items-center gap-1.5 border border-ean-gold/30 bg-ean-gold/10 text-ean-gold text-[10px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-ean-gold animate-pulse" />
                   24/7 Ops Desk
+                </span>
+
+                <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/5 text-white/80 font-mono text-[10px] tracking-wider px-2.5 py-1 rounded-xs">
+                  LOS · DNMM · UTC+1
                 </span>
 
                 {lagosTime && (
@@ -259,33 +267,36 @@ export default function Footer() {
 
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-2 sm:pt-4 flex flex-col-reverse sm:flex-row items-center justify-between gap-6 sm:gap-4 text-xs tracking-wider text-ean-muted-light font-ui text-center sm:text-left">
-          <div className="space-y-1">
+        {/* Bottom Bar: 3 Columns (Copyright, NCAA AMO Center, Legal/BackToTop Right) */}
+        <div className="pt-4 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-ean-muted-light font-ui text-center md:text-left">
+          <div>
             <p>© {new Date().getFullYear()} EAN Aviation Limited. All rights reserved.</p>
-            <p className="text-[10px] text-ean-muted-light/60">NCAA Approved Maintenance Organisation (AMO) • Murtala Muhammed Airport, Lagos</p>
           </div>
 
-          <div className="flex items-center gap-5 sm:gap-6">
-            <Link href="/privacy-policy" className="hover:text-white transition-colors text-xs">
+          <div>
+            <p className="text-ean-muted-light/70">NCAA Approved Maintenance Organization (AMO) · MMIA, Lagos</p>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <Link href="/privacy-policy" className="hover:text-white transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms-of-use" className="hover:text-white transition-colors text-xs">
+            <span>·</span>
+            <Link href="/terms-of-use" className="hover:text-white transition-colors">
               Terms of Use
             </Link>
 
             {/* Touch-Friendly Back to Top Button */}
             <button
               onClick={scrollToTop}
-              className="group w-10 h-10 rounded-xs border border-white/10 hover:border-ean-gold/40 flex items-center justify-center relative overflow-hidden transition-colors duration-300 text-ean-muted-light hover:text-ean-gold cursor-pointer bg-white/5 shrink-0"
+              className="group w-8 h-8 rounded-xs border border-white/10 hover:border-ean-gold/40 flex items-center justify-center relative overflow-hidden transition-colors duration-300 text-ean-muted-light hover:text-ean-gold cursor-pointer bg-white/5 shrink-0 ml-2"
               aria-label="Scroll to top"
             >
-              {/* Two stacked arrows roll upward together on hover */}
-              <div className="absolute transition-transform duration-[220ms] ease-in-out group-hover:-translate-y-[25px]">
-                <ArrowUp className="w-4 h-4" />
+              <div className="absolute transition-transform duration-[220ms] ease-in-out group-hover:-translate-y-[22px]">
+                <ArrowUp className="w-3.5 h-3.5" />
               </div>
-              <div className="absolute translate-y-[25px] transition-transform duration-[220ms] ease-in-out group-hover:translate-y-0">
-                <ArrowUp className="w-4 h-4" />
+              <div className="absolute translate-y-[22px] transition-transform duration-[220ms] ease-in-out group-hover:translate-y-0">
+                <ArrowUp className="w-3.5 h-3.5" />
               </div>
             </button>
           </div>

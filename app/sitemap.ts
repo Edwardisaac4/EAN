@@ -26,6 +26,8 @@ const STATIC_ROUTES: Array<{
   { path: '/pricing', changeFrequency: 'monthly', priority: 0.9 },
   { path: '/contact', changeFrequency: 'yearly', priority: 0.8 },
   { path: '/about', changeFrequency: 'monthly', priority: 0.8 },
+  // Monthly because the programme section is updated as milestones complete.
+  { path: '/the-aeroplex', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/blog', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/team', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/history', changeFrequency: 'yearly', priority: 0.5 },

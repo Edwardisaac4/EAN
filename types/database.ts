@@ -106,7 +106,7 @@ export const SERVICE_LABELS: Record<LeadServiceEnum, string> = {
   charter:     'Aircraft Sales & Charter',
   catering:    'Wings™ VIP Catering',
   vip:         'VIP Lounge & Protocol',
-  leasing:     'Leased Office Spaces',
+  leasing:     'Hangarage & Executive Offices',
   general:     'General Inquiry',
 }
 
