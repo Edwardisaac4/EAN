@@ -64,6 +64,8 @@ export interface BlogPostMock {
 export interface ServiceRichData {
   slug: string;
   name: string;
+  tabLabel?: string;
+  eyebrow?: string;
   short: string;
   iconName:
     | "Plane"
@@ -73,9 +75,13 @@ export interface ServiceRichData {
     | "Star"
     | "Building2";
   extendedDescription: string;
-  stats: string[];
+  stats?: string[];
   features: string[];
   image: string;
+  primaryButtonText?: string;
+  primaryButtonHref?: string;
+  secondaryButtonText?: string;
+  secondaryButtonHref?: string;
 }
 
 export interface FAQItem {
@@ -364,44 +370,44 @@ export const PARTNERS: string[] = PARTNER_LOGOS.map((p) => p.name);
 export const EAN_SERVICES = [
   {
     slug: "fbo-ground-support",
-    name: "FBO & Ground Support",
+    name: "FBO & Ground Handling",
     short:
-      "Aircraft passenger handling, fueling, and ramp services to the highest standard.",
+      "Operating Nigeria's first fully integrated Fixed Base Operator at MMIA, Lagos.",
     icon: "Plane",
   },
   {
     slug: "aircraft-maintenance",
     name: "Aircraft Maintenance",
     short:
-      "NCAA-approved Maintenance Organisation (AMO) for business and commercial aircraft.",
+      "An NCAA-approved Aircraft Maintenance Organization for business and commercial aircraft.",
     icon: "Wrench",
   },
   {
     slug: "aircraft-sales-charter",
-    name: "Aircraft Sales & Charter",
+    name: "Charter & Aircraft Sales",
     short:
-      "Personalized jet and helicopter charter, plus aircraft sales advisory.",
+      "On-demand jet and helicopter charter, with brokerage, pre-purchase inspection and acquisition advisory.",
     icon: "BadgeCheck",
   },
   {
     slug: "wings-catering",
-    name: "Wings™ In-Flight Catering",
+    name: "Wings In-Flight Catering",
     short:
-      "Premium onsite catering dedicated to private jets — freshly prepared, every time.",
+      "Our own kitchen and restaurant at the Jet Center, preparing bespoke in-flight catering.",
     icon: "UtensilsCrossed",
   },
   {
     slug: "vip-lounge",
-    name: "VIP Lounge Experience",
+    name: "VIP Lounges",
     short:
-      "Lagos airport's premier dedicated VIP terminal — the EAN way of departure.",
+      "Private lounges at our Lagos terminal and Abuja location, away from the commercial concourse.",
     icon: "Star",
   },
   {
     slug: "leased-offices",
-    name: "Hangarage & Executive Offices",
+    name: "Hangarage & Offices",
     short:
-      "Airside hangar bays and premium service-leased executive offices at MMIA, Lagos.",
+      "Airside hangar bays, secured ramp parking, and fully serviced executive offices at MMIA, Lagos.",
     icon: "Building2",
   },
 ] as const;
@@ -409,105 +415,130 @@ export const EAN_SERVICES = [
 export const SERVICES_DATA: ServiceRichData[] = [
   {
     slug: "fbo-ground-support",
-    name: "FBO & Ground Support",
+    name: "FBO & Ground Handling",
+    tabLabel: "FBO & Ground Handling",
+    eyebrow: "01 / 06 · 24/7 DISPATCH",
     short:
-      "Aircraft passenger handling, fueling, and ramp services to the highest standard.",
+      "Operating Nigeria's first fully integrated Fixed Base Operator at MMIA, Lagos.",
     iconName: "Plane",
     extendedDescription:
-      "Operating Nigeria’s first fully integrated Fixed Base Operator (FBO) at MMIA, Lagos. One operator takes the aircraft from runway to terminal, covering aircraft handling, fueling, and ramp dispatch 24/7/365.",
+      "Operating Nigeria's first fully integrated Fixed Base Operator at MMIA, Lagos. We provide direct passage from runway to terminal, delivering aircraft handling, fueling and ramp dispatch 24 hours a day.",
     stats: ["24/7 Dispatch Support", "IS-BAO Stage II Aligned"],
     features: [
-      "Dedicated passenger & crew handling",
-      "Direct airside terminal custom clearance",
+      "Passenger and crew handling",
+      "Direct airside terminal customs clearance",
       "Aircraft fueling and ground power (GPU)",
       "Secure hangar and ramp parking",
     ],
     image: "/images/services/ean-service-banners-fbo.jpg",
+    primaryButtonText: "MAKE AN INQUIRY",
+    primaryButtonHref: "/contact?service=fbo-ground-support",
+    secondaryButtonText: "BUILD YOUR QUOTE",
+    secondaryButtonHref: "/contact?service=fbo-ground-support&action=quote",
   },
   {
     slug: "aircraft-maintenance",
     name: "Aircraft Maintenance",
+    tabLabel: "Aircraft Maintenance",
+    eyebrow: "02 / 06 · NCAA APPROVED",
     short:
-      "NCAA-approved Maintenance Organisation (AMO) for business and commercial aircraft.",
+      "An NCAA-approved Aircraft Maintenance Organization for business and commercial aircraft.",
     iconName: "Wrench",
     extendedDescription:
-      "Fully certified by the Nigerian Civil Aviation Authority (NCAA) as an Approved Maintenance Organisation. Our type-rated engineers maintain regional executive fleets with absolute safety compliance.",
+      "An NCAA-approved Aircraft Maintenance Organization for business and commercial aircraft, operating from our integrated hangar at MMIA.",
     stats: ["NCAA AMO Certified", "AOG Rapid Response"],
     features: [
-      "Scheduled line maintenance & inspections",
+      "Scheduled line maintenance and inspections",
       "24/7 AOG logistics and field support",
       "Avionics testing and minor repairs",
-      "OEM part sourcing and storage",
+      "Approved wheels and brakes workshop",
     ],
     image: "/images/services/s1-banner-maintenance-c-2.jpg",
+    primaryButtonText: "MAKE AN INQUIRY",
+    primaryButtonHref: "/contact?service=aircraft-maintenance",
   },
   {
     slug: "aircraft-sales-charter",
-    name: "Aircraft Sales & Charter",
+    name: "Charter & Aircraft Sales",
+    tabLabel: "Charter & Sales",
+    eyebrow: "03 / 06",
     short:
-      "Personalized jet and helicopter charter, plus aircraft sales advisory.",
+      "On-demand jet and helicopter charter, with brokerage, pre-purchase inspection and acquisition advisory.",
     iconName: "BadgeCheck",
     extendedDescription:
-      "Our private aircraft sales brokerage and charter desk coordinates executive jet acquisitions, pre-purchase technical inspections, and bespoke global charter itineraries on modern aircraft.",
+      "On-demand jet and helicopter charter, with brokerage, pre-purchase inspection and acquisition advisory for owners entering or growing in the region.",
     stats: ["Aircraft Sales Brokerage", "Global Permit Desk"],
     features: [
-      "Executive aircraft sales & charter advisory",
-      "Private jet charter brokerage & schedules",
-      "Pre-purchase inspections & evaluations",
-      "Aircraft management & crew staffing",
+      "Bespoke charter itineraries, regional and international",
+      "Aircraft sales brokerage and acquisition advisory",
+      "Pre-purchase inspections and evaluations",
+      "Aircraft management and crew staffing",
     ],
     image: "/images/services/aircraft-sles-and-charter.jpg",
+    primaryButtonText: "REQUEST A CHARTER",
+    primaryButtonHref: "/contact?service=aircraft-sales-charter",
   },
   {
     slug: "wings-catering",
-    name: "Wings™ In-Flight Catering",
+    name: "Wings In-Flight Catering",
+    tabLabel: "Wings Catering",
+    eyebrow: "04 / 06",
     short:
-      "Premium onsite catering dedicated to private jets — freshly prepared, every time.",
+      "Our own kitchen and restaurant at the Jet Center, preparing bespoke in-flight catering.",
     iconName: "UtensilsCrossed",
     extendedDescription:
-      "Wings™ is EAN’s premier private kitchen dedicated entirely to executive aviation. We prepare gourmet menus right on airport grounds, delivering freshly plated cuisines straight to flight cabins.",
+      "Our own kitchen and restaurant at the Jet Center, preparing bespoke in-flight catering for private aircraft and their crews.",
     stats: ["Airport On-Site Kitchen", "Gourmet Cabin Specialists"],
     features: [
-      "Custom luxury cabin menus",
-      "Rigorous food safety & thermal packaging",
-      "Strict dietary & allergen accommodations",
-      "Direct ramp-to-aircraft delivery",
+      "Custom cabin menus",
+      "Food safety controls and thermal packaging",
+      "Dietary and allergen accommodation",
     ],
     image: "/images/services/wings-4.jpg",
+    primaryButtonText: "MAKE AN INQUIRY",
+    primaryButtonHref: "/contact?service=wings-catering",
   },
   {
     slug: "vip-lounge",
-    name: "VIP Lounge Experience",
+    name: "VIP Lounges",
+    tabLabel: "VIP Lounges",
+    eyebrow: "05 / 06",
     short:
-      "Lagos airport's premier dedicated VIP terminal — the EAN way of departure.",
+      "Private lounges at our Lagos terminal and Abuja location, away from the commercial concourse.",
     iconName: "Star",
     extendedDescription:
-      "Depart and arrive in absolute peace. Our private executive terminal at MMIA, Lagos bypasses commercial congestion, housing quiet suites, premium bars, and direct airside escorts.",
+      "Private lounges at our Lagos terminal and Abuja location, away from the commercial concourse, with ground transport arranged door to door.",
     stats: ["MMIA Private Airside Entry", "Fast-Track Escorts"],
     features: [
-      "Private VIP lounge suites",
-      "Complimentary refreshments & drinks",
-      "High-speed corporate Wi-Fi & quiet study",
+      "Private VIP terminal access",
+      "Customs and Immigration assistance, on-site",
+      "High-speed connectivity and quiet suites",
       "Chauffeur-driven tarmac transfers",
     ],
     image: "/images/vip-lounge.jpg",
+    primaryButtonText: "MAKE AN INQUIRY",
+    primaryButtonHref: "/contact?service=vip-lounge",
   },
   {
     slug: "leased-offices",
-    name: "Hangarage & Executive Offices",
+    name: "Hangarage & Offices",
+    tabLabel: "Hangarage & Offices",
+    eyebrow: "06 / 06",
     short:
-      "Airside hangar bays and premium service-leased executive offices at MMIA, Lagos.",
+      "Airside hangar bays, secured ramp parking, and fully serviced executive offices at MMIA, Lagos.",
     iconName: "Building2",
     extendedDescription:
       "Airside hangar bays, secured ramp parking, and fully serviced executive offices located directly at Murtala Muhammed Airport. Tailored for flight departments, international operators, and corporate aviation teams.",
     stats: ["MMIA Airside Access", "Hangarage & Serviced Suites"],
     features: [
-      "Dedicated hangar bays & ramp parking",
+      "Dedicated hangar bays and ramp parking",
       "Furnished airside executive offices",
       "Secure access-controlled building",
       "Shared boardrooms and conference amenities",
     ],
     image: "/images/services/office-space.jpg",
+    primaryButtonText: "MAKE AN INQUIRY",
+    primaryButtonHref: "/contact?service=leased-offices",
   },
 ];
 

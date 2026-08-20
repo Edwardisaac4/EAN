@@ -57,7 +57,7 @@ export default function ServiceOptions({
 
       {/* SECTION 1 — Location */}
       <fieldset className="border-0 p-0 m-0">
-        <legend className="block text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-2 flex items-center gap-1.5">
+        <legend className="text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-2 flex items-center gap-1.5">
           <MapPin className="w-3.5 h-3.5 text-ean-gold" />
           Airport Location
         </legend>
@@ -91,7 +91,7 @@ export default function ServiceOptions({
 
       {/* SECTION 2 — Operation Type */}
       <fieldset className="border-0 p-0 m-0">
-        <legend className="block text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-2 flex items-center gap-1.5">
+        <legend className="text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-2 flex items-center gap-1.5">
           <Globe className="w-3.5 h-3.5 text-ean-gold" />
           Operation Type
         </legend>
@@ -125,7 +125,7 @@ export default function ServiceOptions({
 
       {/* SECTION 3 — Stay Type & Nights */}
       <fieldset className="border-0 p-0 m-0">
-        <legend className="block text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-2 flex items-center gap-1.5">
+        <legend className="text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-2 flex items-center gap-1.5">
           <Clock className="w-3.5 h-3.5 text-ean-gold" />
           Stay Duration & Movement
         </legend>
@@ -186,7 +186,7 @@ export default function ServiceOptions({
 
       {/* SECTION 4 — Passengers */}
       <div>
-        <label htmlFor="pax-count-input" className="block text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-1 flex items-center gap-1.5">
+        <label htmlFor="pax-count-input" className="text-xs font-ui uppercase tracking-wider text-ean-muted-dark font-medium mb-1 flex items-center gap-1.5">
           <Users className="w-3.5 h-3.5 text-ean-gold" />
           Passenger Count
         </label>

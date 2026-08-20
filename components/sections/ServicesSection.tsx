@@ -152,14 +152,15 @@ export default function ServicesSection() {
                     tabRefs.current[idx] = el;
                   }}
                   onClick={() => setActiveTab(idx)}
-                  className={`relative z-10 flex items-center gap-2.5 px-5 py-3 rounded-xs font-ui text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap transition-all duration-300 cursor-pointer ${isActive
+                  className={`relative z-10 flex items-center gap-2.5 px-5 py-3 rounded-xs font-ui text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap transition-all duration-300 cursor-pointer ${
+                    isActive
                       ? 'text-ean-navy font-semibold'
                       : 'text-ean-muted-light hover:text-white bg-ean-navy-mid/70 border border-white/10 hover:border-white/25'
-                    }`}
+                  }`}
                 >
                   <span className="relative z-10 flex items-center gap-2">
                     <IconComp size={16} className={isActive ? 'text-ean-navy' : 'text-ean-gold'} />
-                    <span>{srv.name}</span>
+                    <span>{srv.tabLabel || srv.name}</span>
                   </span>
                 </button>
               );
@@ -170,93 +171,101 @@ export default function ServicesSection() {
           <div className="bg-white border-t-4 border-t-ean-navy border-x border-b border-slate-200 rounded-xs overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-12 relative text-slate-900">
             {/* Keying on the slug replays the CSS enter animation per service */}
             <div
-                key={activeService.slug}
-                className="ean-enter-up grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
-              >
-                {/* Left Column: Details & Capabilities */}
-                <div className="lg:col-span-7 space-y-6">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <span className="font-mono text-xs font-bold tracking-widest text-ean-navy bg-ean-navy/10 border border-ean-navy/20 px-3 py-1 rounded-xs uppercase">
-                      0{activeTab + 1} / 0{SERVICES_DATA.length}
+              key={activeService.slug}
+              className="ean-enter-up grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+            >
+              {/* Left Column: Details & Capabilities */}
+              <div className="lg:col-span-7 space-y-6">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="font-mono text-xs font-bold tracking-widest text-ean-navy bg-ean-navy/10 border border-ean-navy/20 px-3 py-1 rounded-xs uppercase">
+                    {activeService.eyebrow || `0${activeTab + 1} / 0${SERVICES_DATA.length}`}
+                  </span>
+                  {activeService.stats?.[0] && (
+                    <span className="font-ui text-xs font-medium text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-xs flex items-center gap-1.5">
+                      <Sparkles size={12} className="text-ean-navy" />
+                      <span>{activeService.stats[0]}</span>
                     </span>
-                    {activeService.stats?.[0] && (
-                      <span className="font-ui text-xs font-medium text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-xs flex items-center gap-1.5">
-                        <Sparkles size={12} className="text-ean-navy" />
-                        <span>{activeService.stats[0]}</span>
-                      </span>
-                    )}
-                  </div>
+                  )}
+                </div>
 
-                  <div className="space-y-3">
-                    <h3 className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-ean-text-dark leading-tight">
-                      {activeService.name}
-                    </h3>
-                    <p className="font-ui text-base sm:text-lg text-slate-600 leading-relaxed">
-                      {activeService.extendedDescription || activeService.short}
-                    </p>
-                  </div>
+                <div className="space-y-3">
+                  <h3 className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-ean-text-dark leading-tight">
+                    {activeService.name}
+                  </h3>
+                  <p className="font-ui text-base sm:text-lg text-slate-600 leading-relaxed">
+                    {activeService.extendedDescription || activeService.short}
+                  </p>
+                </div>
 
-                  {/* Features Grid */}
-                  <div className="border-t border-slate-200 pt-6 space-y-3">
-                    <span className="font-ui text-xs font-bold tracking-wider text-ean-navy uppercase block">
-                      Operational Highlights
-                    </span>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-ui text-sm text-slate-800">
-                      {activeService.features.map((feat, fIdx) => (
-                        <li key={fIdx} className="flex items-start gap-2.5">
-                          <CheckCircle2 className="w-4 h-4 text-ean-navy shrink-0 mt-0.5" />
-                          <span className="leading-snug">{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                {/* Features Grid */}
+                <div className="border-t border-slate-200 pt-6 space-y-3">
+                  <span className="font-ui text-xs font-bold tracking-wider text-ean-navy uppercase block">
+                    Operational Highlights
+                  </span>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-ui text-sm text-slate-800">
+                    {activeService.features.map((feat, fIdx) => (
+                      <li key={fIdx} className="flex items-start gap-2.5">
+                        <CheckCircle2 className="w-4 h-4 text-ean-navy shrink-0 mt-0.5" />
+                        <span className="leading-snug">{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-                  {/* Action Bar */}
-                  <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                    <Link href={`/contact?service=${activeService.slug}`}>
-                      <GoldButton className="w-full sm:w-auto">
-                        Inquire With Operations
-                        <ChevronRight size={16} />
-                      </GoldButton>
+                {/* Action Bar */}
+                <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                  <Link href={activeService.primaryButtonHref || `/contact?service=${activeService.slug}`}>
+                    <GoldButton className="w-full sm:w-auto">
+                      <span>{activeService.primaryButtonText || 'Inquire With Operations'}</span>
+                      <ChevronRight size={16} />
+                    </GoldButton>
+                  </Link>
+                  {activeService.secondaryButtonText ? (
+                    <Link href={activeService.secondaryButtonHref || `/contact?service=${activeService.slug}&action=quote`}>
+                      <OutlineButton variant="light" className="w-full sm:w-auto">
+                        {activeService.secondaryButtonText}
+                      </OutlineButton>
                     </Link>
+                  ) : (
                     <Link href={`/services#${activeService.slug}`}>
                       <OutlineButton variant="light" className="w-full sm:w-auto">
                         Full Specifications
                       </OutlineButton>
                     </Link>
+                  )}
+                </div>
+              </div>
+
+              {/* Right Column: Visual Showcase */}
+              <div className="lg:col-span-5 relative">
+                <div className="relative h-72 sm:h-96 lg:h-112 w-full rounded-xs overflow-hidden border border-slate-200 shadow-xl group">
+                  <Image
+                    src={activeService.image}
+                    alt={`${activeService.name} visual`}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 45vw"
+                    className="object-cover transition-transform duration-750 group-hover:scale-105"
+                    quality={80}
+                    loading="lazy"
+                  />
+                  {/* Soft Shadow Gradient Overlay */}
+                  <div className="absolute inset-0 bg-linear-to-t from-ean-black/80 via-ean-black/20 to-transparent" />
+
+                  {/* Top Icon Badge - Crisp White Glass */}
+                  <div className="absolute top-4 left-4 p-3.5 bg-white/95 border border-slate-200 text-ean-navy rounded-xs shadow-md backdrop-blur-xs">
+                    <ActiveIcon size={24} />
+                  </div>
+
+                  {/* Bottom Status Pill - Crisp White Glass */}
+                  <div className="absolute bottom-4 left-4 right-4 bg-white/95 border border-slate-200 backdrop-blur-xs p-3 rounded-xs flex items-center justify-between text-xs font-ui shadow-lg">
+                    <span className="text-slate-900 font-semibold truncate">{activeService.name}</span>
+                    <span className="flex items-center gap-1.5 text-ean-navy shrink-0 font-mono text-[10px] uppercase font-bold tracking-wider">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      24/7 Active
+                    </span>
                   </div>
                 </div>
-
-                {/* Right Column: Visual Showcase */}
-                <div className="lg:col-span-5 relative">
-                  <div className="relative h-72 sm:h-96 lg:h-112 w-full rounded-xs overflow-hidden border border-slate-200 shadow-xl group">
-                    <Image
-                      src={activeService.image}
-                      alt={`${activeService.name} visual`}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 45vw"
-                      className="object-cover transition-transform duration-750 group-hover:scale-105"
-                      quality={80}
-                      loading="lazy"
-                    />
-                    {/* Soft Shadow Gradient Overlay */}
-                    <div className="absolute inset-0 bg-linear-to-t from-ean-black/80 via-ean-black/20 to-transparent" />
-
-                    {/* Top Icon Badge - Crisp White Glass */}
-                    <div className="absolute top-4 left-4 p-3.5 bg-white/95 border border-slate-200 text-ean-navy rounded-xs shadow-md backdrop-blur-xs">
-                      <ActiveIcon size={24} />
-                    </div>
-
-                    {/* Bottom Status Pill - Crisp White Glass */}
-                    <div className="absolute bottom-4 left-4 right-4 bg-white/95 border border-slate-200 backdrop-blur-xs p-3 rounded-xs flex items-center justify-between text-xs font-ui shadow-lg">
-                      <span className="text-slate-900 font-semibold truncate">{activeService.name}</span>
-                      <span className="flex items-center gap-1.5 text-ean-navy shrink-0 font-mono text-[10px] uppercase font-bold tracking-wider">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        24/7 Active
-                      </span>
-                    </div>
-                  </div>
-                </div>
+              </div>
             </div>
           </div>
         </div>

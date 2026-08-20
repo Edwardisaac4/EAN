@@ -238,10 +238,10 @@ export default function ServicesPage() {
                               <span>View Details</span>
                             </Link>
                             <Link
-                              href={`/contact?service=${srv.slug}`}
+                              href={srv.primaryButtonHref || `/contact?service=${srv.slug}`}
                               className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ean-gold hover:text-ean-gold-light group/link"
                             >
-                              <span>Inquire</span>
+                              <span>{srv.primaryButtonText || 'Inquire'}</span>
                               <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover/link:translate-x-1" />
                             </Link>
                           </div>
@@ -310,10 +310,10 @@ export default function ServicesPage() {
                               <span>View Details</span>
                             </Link>
                             <Link
-                              href={`/contact?service=${srv.slug}`}
+                              href={srv.primaryButtonHref || `/contact?service=${srv.slug}`}
                               className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ean-gold hover:text-ean-gold-light group/link"
                             >
-                              <span>Inquire</span>
+                              <span>{srv.primaryButtonText || 'Inquire'}</span>
                               <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover/link:translate-x-1" />
                             </Link>
                           </div>
@@ -355,11 +355,11 @@ export default function ServicesPage() {
                               </h3>
                             </Link>
                             <p className="font-ui text-sm text-ean-muted-light leading-relaxed">
-                              {srv.short}
+                              {srv.extendedDescription || srv.short}
                             </p>
 
                             <ul className="space-y-2 border-t border-white/10 pt-4 font-ui text-xs text-ean-muted-light">
-                              {srv.features.slice(0, 3).map((feat, fIdx) => (
+                              {srv.features.map((feat, fIdx) => (
                                 <li key={fIdx} className="flex gap-2 items-center">
                                   <CheckCircle2 className="w-3.5 h-3.5 text-ean-gold shrink-0" />
                                   <span className="truncate">{feat}</span>
@@ -376,10 +376,10 @@ export default function ServicesPage() {
                               <span>View Details</span>
                             </Link>
                             <Link
-                              href={`/contact?service=${srv.slug}`}
+                              href={srv.primaryButtonHref || `/contact?service=${srv.slug}`}
                               className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ean-gold hover:text-ean-gold-light group/link"
                             >
-                              <span>Inquire</span>
+                              <span>{srv.primaryButtonText || 'Inquire'}</span>
                               <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover/link:translate-x-1" />
                             </Link>
                           </div>

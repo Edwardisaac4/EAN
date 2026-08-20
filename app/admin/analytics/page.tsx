@@ -35,6 +35,9 @@ const EMPTY_SERVICE_DISTRIBUTION: Record<ServiceCategory, number> = {
   catering: 0,
   vip: 0,
   leasing: 0,
+  flight_support: 0,
+  aeroplex: 0,
+  press: 0,
   general: 0,
 };
 
@@ -103,7 +106,7 @@ export default function AnalyticsPage() {
       <AdminHeader />
 
       <main className="flex-1 p-6 md:p-8 space-y-8 max-w-7xl w-full mx-auto">
-        
+
         {/* Banner */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -166,8 +169,12 @@ export default function AnalyticsPage() {
           />
           <LeadStatCard
             title="Inquiries Rate (Daily)"
-            value={stats.dailyInquiryRate ? `${stats.dailyInquiryRate} / day` : `${(stats.totalLeads / 7).toFixed(1)} / day`}
-            change={stats.dailyInquiryRate ? "Live Rate" : "Target: 7-day Avg"}
+            value={
+              stats.dailyInquiryRate !== undefined
+                ? `${stats.dailyInquiryRate} / day`
+                : `${(stats.totalLeads / 7).toFixed(1)} / day`
+            }
+            change={stats.dailyInquiryRate !== undefined ? 'Live Rate' : 'Target: 7-day Avg'}
             changeType="positive"
             icon={Globe}
             accentColor="text-amber-400"
@@ -192,7 +199,7 @@ export default function AnalyticsPage() {
 
         {/* VISUAL GRAPHS SECTION 3: Landing Pages & Device Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
+
           {/* Landing Pages Performance */}
           <div className="p-6 rounded-2xl bg-ean-black-accent/90 border border-ean-border-dark space-y-5 shadow-2xl">
             <div className="flex items-center justify-between pb-3 border-b border-ean-border-dark">

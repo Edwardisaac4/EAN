@@ -87,7 +87,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-5 sm:px-6 md:px-8 relative z-10 space-y-10 sm:space-y-12">
 
         {/* Pre-Footer Action Banner */}
-        <div className="p-4 sm:p-6 bg-gradient-to-r from-[#3B0913]/90 via-[#22060D]/80 to-[#3B0913]/90 border border-white/15 rounded-xs backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
+        <div className="p-4 sm:p-6 bg-linear-to-r from-ean-navy via-ean-navy-mid to-ean-navy border border-white/15 rounded-xs backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
           <div className="flex items-center gap-3 text-center md:text-left">
             <div className="p-2.5 bg-ean-gold/10 text-ean-gold rounded-xs border border-ean-gold/20 shrink-0 hidden sm:block">
               <Compass className="w-5 h-5" />
@@ -160,7 +160,7 @@ export default function Footer() {
                     href={soc.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-xs bg-white/5 border border-white/10 flex items-center justify-center text-ean-muted-light hover:border-ean-gold/40 hover:text-ean-gold hover:-translate-y-[2px] transition-[color,border-color,transform] duration-200 cursor-pointer"
+                    className="w-9 h-9 rounded-xs bg-white/5 border border-white/10 flex items-center justify-center text-ean-muted-light hover:border-ean-gold/40 hover:text-ean-gold hover:-translate-y-0.5 transition-[color,border-color,transform] duration-200 cursor-pointer"
                     aria-label={soc.label}
                   >
                     <IconComponent className="w-4 h-4" />
@@ -270,7 +270,7 @@ export default function Footer() {
         {/* Bottom Bar: 3 Columns (Copyright, NCAA AMO Center, Legal/BackToTop Right) */}
         <div className="pt-4 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-ean-muted-light font-ui text-center md:text-left">
           <div>
-            <p>© {new Date().getFullYear()} EAN Aviation Limited. All rights reserved.</p>
+            <p suppressHydrationWarning>© {new Date().getFullYear()} EAN Aviation Limited. All rights reserved.</p>
           </div>
 
           <div>
@@ -292,10 +292,10 @@ export default function Footer() {
               className="group w-8 h-8 rounded-xs border border-white/10 hover:border-ean-gold/40 flex items-center justify-center relative overflow-hidden transition-colors duration-300 text-ean-muted-light hover:text-ean-gold cursor-pointer bg-white/5 shrink-0 ml-2"
               aria-label="Scroll to top"
             >
-              <div className="absolute transition-transform duration-[220ms] ease-in-out group-hover:-translate-y-[22px]">
+              <div className="absolute transition-transform duration-220 ease-in-out group-hover:-translate-y-5.5">
                 <ArrowUp className="w-3.5 h-3.5" />
               </div>
-              <div className="absolute translate-y-[22px] transition-transform duration-[220ms] ease-in-out group-hover:translate-y-0">
+              <div className="absolute translate-y-5.5 transition-transform duration-220 ease-in-out group-hover:translate-y-0">
                 <ArrowUp className="w-3.5 h-3.5" />
               </div>
             </button>

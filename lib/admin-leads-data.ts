@@ -6,7 +6,17 @@ export type LeadStatus = 'new' | 'contacted' | 'qualified' | 'proposal_sent' | '
 
 export type LeadPriority = 'urgent' | 'high' | 'normal' | 'low';
 
-export type ServiceCategory = 'fbo' | 'maintenance' | 'charter' | 'catering' | 'vip' | 'leasing' | 'general';
+export type ServiceCategory =
+  | 'fbo'
+  | 'maintenance'
+  | 'charter'
+  | 'catering'
+  | 'vip'
+  | 'leasing'
+  | 'flight_support'
+  | 'aeroplex'
+  | 'press'
+  | 'general';
 
 export interface LeadActivity {
   id: string;
@@ -85,13 +95,16 @@ export interface LeadAnalytics extends LeadStats {
 const SYSTEM_AUTHOR_PATTERN = /^system/i;
 
 export const SERVICE_LABELS: Record<ServiceCategory, string> = {
-  fbo: 'FBO & Ground Support',
-  maintenance: 'Aircraft Maintenance (MRO)',
-  charter: 'Aircraft Sales & Charter',
-  catering: 'Wings™ VIP Catering',
-  vip: 'VIP Lounge & Protocol',
-  leasing: 'Hangarage & Executive Offices',
-  general: 'General Inquiry',
+  fbo:            'FBO & Ground Support',
+  maintenance:    'Aircraft Maintenance (MRO)',
+  charter:        'Aircraft Sales & Charter',
+  catering:       'Wings™ VIP Catering',
+  vip:            'VIP Lounge & Protocol',
+  leasing:        'Hangarage & Executive Offices',
+  flight_support: 'Global Flight Support',
+  aeroplex:       'Aeroplex / Investor',
+  press:          'Press & Media',
+  general:        'General Inquiry',
 };
 
 export const STATUS_LABELS: Record<LeadStatus, string> = {
@@ -141,6 +154,9 @@ export function getLeadStats(leads: Lead[]): LeadStats {
     catering: 0,
     vip: 0,
     leasing: 0,
+    flight_support: 0,
+    aeroplex: 0,
+    press: 0,
     general: 0,
   };
 
@@ -174,7 +190,23 @@ export function getLeadStats(leads: Lead[]): LeadStats {
     .map(([page, count]) => ({ page, count }))
     .sort((a, b) => b.count - a.count);
 
-  const dailyInquiryRate = totalLeads > 0 ? Math.round((totalLeads / 7) * 10) / 10 : 0;
+  let minCreatedAt = Infinity;
+  let maxCreatedAt = -Infinity;
+  for (const l of leads) {
+    const t = new Date(l.createdAt).getTime();
+    if (Number.isFinite(t)) {
+      if (t < minCreatedAt) minCreatedAt = t;
+      if (t > maxCreatedAt) maxCreatedAt = t;
+    }
+  }
+  const spanDays =
+    Number.isFinite(minCreatedAt) && Number.isFinite(maxCreatedAt) && maxCreatedAt > minCreatedAt
+      ? (maxCreatedAt - minCreatedAt) / (1000 * 60 * 60 * 24)
+      : 0;
+  const dailyInquiryRate =
+    totalLeads > 0 && spanDays > 0
+      ? Math.round((totalLeads / spanDays) * 10) / 10
+      : 0;
 
   // Measured from the first non-automated activity on each lead. Leads nobody
   // has touched yet are excluded rather than counted as instant responses.
