@@ -101,13 +101,16 @@ export interface LeadDetailResponse {
 // ---------------------------------------------------------------------------
 
 export const SERVICE_LABELS: Record<LeadServiceEnum, string> = {
-  fbo:         'FBO & Ground Support',
-  maintenance: 'Aircraft Maintenance (MRO)',
-  charter:     'Aircraft Sales & Charter',
-  catering:    'Wings™ VIP Catering',
-  vip:         'VIP Lounge & Protocol',
-  leasing:     'Hangarage & Executive Offices',
-  general:     'General Inquiry',
+  fbo:            'FBO & Ground Support',
+  maintenance:    'Aircraft Maintenance (MRO)',
+  charter:        'Aircraft Sales & Charter',
+  catering:       'Wings™ VIP Catering',
+  vip:            'VIP Lounge & Protocol',
+  leasing:        'Hangarage & Executive Offices',
+  flight_support: 'Global Flight Support',
+  aeroplex:       'Aeroplex / Investor',
+  press:          'Press & Media',
+  general:        'General Inquiry',
 }
 
 export const STATUS_LABELS: Record<LeadStatusEnum, string> = {

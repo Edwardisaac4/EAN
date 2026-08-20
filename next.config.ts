@@ -34,8 +34,10 @@ const supabaseOrigin = supabaseHostname.startsWith("*")
  * are sanitised and rendered as data), the trade favours keeping the pages
  * static. Revisit if a page ever starts echoing untrusted input into HTML.
  *
- * 'unsafe-eval' is intentionally absent, so the policy still blocks the most
- * common injection payloads.
+ * 'unsafe-eval' is conditionally included in development mode only — React 19+
+ * requires eval() for cross-environment callstack reconstruction. In production
+ * the directive is absent, so the policy still blocks the most common injection
+ * payloads.
  */
 const contentSecurityPolicy = [
   "default-src 'self'",
@@ -46,7 +48,7 @@ const contentSecurityPolicy = [
   // is still sent below for older ones.
   "frame-ancestors 'none'",
   "object-src 'none'",
-  `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com`,
+  `script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === "development" ? "'unsafe-eval' " : ""}https://www.googletagmanager.com https://www.google-analytics.com`,
   "style-src 'self' 'unsafe-inline'",
   // next/font self-hosts its files, so no external font origin is required.
   "font-src 'self' data:",

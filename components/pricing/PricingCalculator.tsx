@@ -117,7 +117,7 @@ export default function PricingCalculator() {
   return (
     <div className="min-h-screen bg-ean-surface text-ean-text-dark pb-20">
       {/* ELEGANT & COMPACT HERO SECTION WITH NAVBAR CLEARANCE */}
-      <section className="bg-gradient-to-b from-ean-navy-mid via-ean-navy to-ean-navy text-white pt-28 pb-8 md:pt-32 md:pb-10 px-6 relative overflow-hidden border-b border-ean-gold/30 shadow-md">
+      <section className="bg-linear-to-b from-ean-navy-mid via-ean-navy to-ean-navy text-white pt-28 pb-8 md:pt-32 md:pb-10 px-6 relative overflow-hidden border-b border-ean-gold/30 shadow-md">
         {/* Subtle Ambient Gold Blur */}
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-ean-gold/10 rounded-full blur-3xl pointer-events-none" />
 

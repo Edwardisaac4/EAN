@@ -328,6 +328,9 @@ export type LeadServiceEnum =
   | 'catering'
   | 'vip'
   | 'leasing'
+  | 'flight_support'
+  | 'aeroplex'
+  | 'press'
   | 'general'
 
 export type LeadStatusEnum =

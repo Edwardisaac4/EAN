@@ -97,7 +97,7 @@ export default function AeroplexHero() {
             fill
             sizes="100vw"
             priority
-            quality={85}
+            quality={70}
             className="object-cover object-center"
           />
           {/* Obsidian black overlays matching reference */}

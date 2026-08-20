@@ -109,7 +109,7 @@ export default function Navbar() {
               width={180}
               height={48}
               className="h-8 sm:h-9 md:h-10 w-auto object-contain filter brightness-0 invert opacity-95 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105"
-              loading="eager"
+              priority
             />
           </Link>
 
@@ -151,7 +151,7 @@ export default function Navbar() {
                         <Presence show={activeDropdown === item.name} durationMs={200}>
                           {(state) => (
                             <div
-                              className={`absolute top-full left-1/2 mt-1 min-w-[220px] w-max bg-ean-navy-mid border border-ean-border-dark py-2 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.6)] z-50 flex flex-col ${state === 'open' ? 'ean-enter-dropdown' : 'ean-exit-dropdown'
+                              className={`absolute top-full left-1/2 mt-1 min-w-55 w-max bg-ean-navy-mid border border-ean-border-dark py-2 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.6)] z-50 flex flex-col ${state === 'open' ? 'ean-enter-dropdown' : 'ean-exit-dropdown'
                                 }`}
                             >
                               {dropdownItems.map((subItem) => {

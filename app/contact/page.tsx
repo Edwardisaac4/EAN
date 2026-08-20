@@ -4,13 +4,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { sendGAEvent } from '@next/third-parties/google';
-import { 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Clock, 
-  ChevronDown, 
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Clock,
+  ChevronDown,
   HelpCircle,
   Send,
   CheckCircle
@@ -21,6 +22,11 @@ import SectionReveal from '@/components/shared/SectionReveal';
 import GoldButton from '@/components/shared/GoldButton';
 import HoneypotField from '@/components/shared/HoneypotField';
 import { withReducedMotion } from '@/lib/gsap-motion';
+
+// Register GSAP plugins at the file level
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 // Static Data Structures
 import { FAQ_ITEMS, LAGOS_HQ } from '@/lib/constants';
@@ -44,22 +50,36 @@ const getServiceFromSlug = (slug: string): string => {
     'leased-offices': 'leasing',
     'offices': 'leasing',
     'leasing': 'leasing',
+    'hangarage': 'leasing',
+    'flight-support': 'flight_support',
+    'global-flight-support': 'flight_support',
+    'flight_support': 'flight_support',
+    'aeroplex': 'aeroplex',
+    'investor': 'aeroplex',
+    'press': 'press',
+    'media': 'press',
+    'press-media': 'press',
   };
   return mapping[val] || 'general';
 };
 
 const AVAILABLE_SERVICES = [
-  { id: 'charter', label: 'Private Jet & Helicopter Charter' },
-  { id: 'fbo', label: 'FBO & Ground Support' },
-  { id: 'maintenance', label: 'Aircraft Maintenance (AMO)' },
-  { id: 'catering', label: 'Wings™ Catering' },
-  { id: 'vip', label: 'VIP Lounge Experience' },
-  { id: 'leasing', label: 'Hangar & Office Leases' },
-  { id: 'general', label: 'General Business Inquiry' },
+  { id: 'charter', label: 'Charter' },
+  { id: 'fbo', label: 'FBO & Ground Handling' },
+  { id: 'maintenance', label: 'Aircraft Maintenance' },
+  { id: 'catering', label: 'Wings Catering' },
+  { id: 'vip', label: 'VIP Lounge' },
+  { id: 'leasing', label: 'Hangarage & Offices' },
+  { id: 'flight_support', label: 'Global Flight Support' },
+  { id: 'aeroplex', label: 'Aeroplex / Investor' },
+  { id: 'press', label: 'Press & Media' },
+  { id: 'general', label: 'General' },
 ];
 
 export default function ContactPage() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const heroBgRef = useRef<HTMLDivElement>(null);
+  const heroEyebrowRef = useRef<HTMLSpanElement>(null);
   const heroTitleRef = useRef<HTMLHeadingElement>(null);
   const heroSubtitleRef = useRef<HTMLParagraphElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -113,28 +133,51 @@ export default function ContactPage() {
     () =>
       withReducedMotion(
         () => {
-          // Elegant Header fade-in
+          // Elegant Header entrance animation
           const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+          tl.fromTo(
+            heroEyebrowRef.current,
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.6, delay: 0.2 }
+          );
 
           tl.fromTo(
             heroTitleRef.current,
             { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 0.8, delay: 0.2 }
+            { opacity: 1, y: 0, duration: 0.8 },
+            '-=0.4'
           );
 
           tl.fromTo(
             heroSubtitleRef.current,
             { opacity: 0, y: 15 },
             { opacity: 1, y: 0, duration: 0.6 },
-            '-=0.4'
+            '-=0.5'
           );
+
+          // Parallax effect on hero background image
+          if (heroBgRef.current && heroRef.current) {
+            gsap.to(heroBgRef.current, {
+              yPercent: 15,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: heroRef.current,
+                start: 'top top',
+                end: 'bottom top',
+                scrub: true,
+              },
+            });
+          }
         },
         () => {
-          gsap.set([heroTitleRef.current, heroSubtitleRef.current], {
-            opacity: 1,
-            y: 0,
-            clearProps: 'transform',
-          });
+          gsap.set(
+            [heroEyebrowRef.current, heroTitleRef.current, heroSubtitleRef.current],
+            { opacity: 1, y: 0, clearProps: 'transform' }
+          );
+          if (heroBgRef.current) {
+            gsap.set(heroBgRef.current, { yPercent: 0, clearProps: 'transform' });
+          }
         }
       ),
     { scope: heroRef }
@@ -194,7 +237,9 @@ export default function ContactPage() {
           service: selectedServices[0] || 'general',
           message:
             selectedServices.length > 1
-              ? `[Services required: ${selectedServices.join(', ')}]\n${formData.message}`
+              ? `[Services required: ${selectedServices
+                  .map((id) => AVAILABLE_SERVICES.find((s) => s.id === id)?.label || id)
+                  .join(', ')}]\n${formData.message}`
               : formData.message,
           tracking: trackingContext,
           website: honeypot,
@@ -250,27 +295,46 @@ export default function ContactPage() {
         {/* SECTION 1: Contact Hero */}
         <section
           ref={heroRef}
-          className="relative pt-32 pb-20 bg-linear-to-b from-ean-navy to-ean-navy-mid border-b border-ean-border-dark overflow-hidden"
+          className="relative min-h-105 sm:min-h-120 lg:min-h-130 flex items-center pt-36 pb-20 sm:pt-44 sm:pb-28 overflow-hidden bg-[#08080a] border-b border-white/10"
         >
-          {/* Subtle Ambient Radial Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 rounded-full bg-ean-gold/5 blur-[120px] pointer-events-none" />
+          {/* Parallax Background with Runway Jet */}
+          <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
+            <Image
+              src="/images/runway.jpg"
+              alt="Private jet on runway approaching city skyline"
+              fill
+              sizes="100vw"
+              priority
+              quality={80}
+              className="object-cover object-center"
+            />
+            {/* Cinematic Obsidian Black luxury overlays — evenly balanced across the image */}
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-linear-to-b from-[#08080a]/80 via-transparent to-[#08080a]/90" />
+            <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
+          </div>
 
-          <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 text-center space-y-4">
-            <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
-              Concierge Desk
-            </span>
-            <h1
-              ref={heroTitleRef}
-              className="font-display text-4xl sm:text-5xl md:text-6xl font-light text-white leading-tight"
-            >
-              Connect with EAN
-            </h1>
-            <p
-              ref={heroSubtitleRef}
-              className="font-ui text-base sm:text-lg text-ean-muted-light max-w-xl mx-auto leading-relaxed"
-            >
-              Whether arranging international flight support, booking private charters, or visiting our MMIA hangar, our crew is at your service.
-            </p>
+          <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 w-full">
+            <div className="max-w-3xl space-y-4 sm:space-y-5 text-left">
+              <span
+                ref={heroEyebrowRef}
+                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block"
+              >
+                Contact
+              </span>
+              <h1
+                ref={heroTitleRef}
+                className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white leading-[1.1] tracking-tight"
+              >
+                Every inquiry answered by a person.
+              </h1>
+              <p
+                ref={heroSubtitleRef}
+                className="font-ui text-base sm:text-lg md:text-xl text-white/80 max-w-xl leading-relaxed"
+              >
+                Our operations desk runs 24 hours a day. For anything time-critical, call or email dispatch directly.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -298,13 +362,13 @@ export default function ContactPage() {
                     <h3 className="font-ui text-lg font-bold text-ean-navy border-b border-ean-border-light/60 pb-3">
                       {LAGOS_HQ.title}
                     </h3>
-                    
+
                     <div className="space-y-4 font-ui text-sm sm:text-base text-ean-muted-dark">
                       <div className="flex gap-4 items-start">
                         <MapPin className="w-5 h-5 text-ean-gold shrink-0 mt-0.5" />
                         <span>{LAGOS_HQ.address}</span>
                       </div>
-                      
+
                       <div className="flex gap-4 items-start">
                         <Phone className="w-5 h-5 text-ean-gold shrink-0 mt-0.5" />
                         <span>{LAGOS_HQ.phone}</span>
@@ -344,218 +408,212 @@ export default function ContactPage() {
                       </div>
 
                       {!submitSuccess ? (
-                          <form
-                            key="contact-form"
-                            ref={formRef}
-                            onSubmit={handleSubmit}
-                            className="relative space-y-5 font-ui"
-                            noValidate
-                          >
-                            <HoneypotField value={honeypot} onChange={setHoneypot} />
+                        <form
+                          key="contact-form"
+                          ref={formRef}
+                          onSubmit={handleSubmit}
+                          className="relative space-y-5 font-ui"
+                          noValidate
+                        >
+                          <HoneypotField value={honeypot} onChange={setHoneypot} />
 
-                            {/* Submission failure — API rejection or network error */}
-                            {errors.form && (
-                              <div
-                                role="alert"
-                                className="bg-red-500/10 border border-red-500/40 text-red-300 px-4 py-3 rounded-xs text-xs sm:text-sm"
-                              >
-                                {errors.form}
-                              </div>
+                          {/* Submission failure — API rejection or network error */}
+                          {errors.form && (
+                            <div
+                              role="alert"
+                              className="bg-red-500/10 border border-red-500/40 text-red-300 px-4 py-3 rounded-xs text-xs sm:text-sm"
+                            >
+                              {errors.form}
+                            </div>
+                          )}
+
+                          {/* Row 1: Name */}
+                          <div className="flex flex-col gap-1.5">
+                            <label htmlFor="name" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
+                              Full Name <span className="text-ean-gold">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              id="name"
+                              name="name"
+                              value={formData.name}
+                              onChange={handleChange}
+                              placeholder="Segun Demuren"
+                              className={`bg-white/5 border px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 ${errors.name ? 'border-red-500' : 'border-white/10'
+                                }`}
+                            />
+                            {errors.name && (
+                              <span className="text-xs text-red-400 mt-1">{errors.name}</span>
                             )}
+                          </div>
 
-                            {/* Row 1: Name */}
+                          {/* Row 2: Email & Phone */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div className="flex flex-col gap-1.5">
-                              <label htmlFor="name" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
-                                Full Name <span className="text-ean-gold">*</span>
+                              <label htmlFor="email" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
+                                Email Address <span className="text-ean-gold">*</span>
+                              </label>
+                              <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="client@company.com"
+                                className={`bg-white/5 border px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 ${errors.email ? 'border-red-500' : 'border-white/10'
+                                  }`}
+                              />
+                              {errors.email && (
+                                <span className="text-xs text-red-400 mt-1">{errors.email}</span>
+                              )}
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                              <label htmlFor="phone" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
+                                Phone Number <span className="text-ean-gold">*</span>
+                              </label>
+                              <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                value={formData.phone}
+                                onChange={handleChange}
+                                placeholder="+234 (0) 800..."
+                                className={`bg-white/5 border px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 ${errors.phone ? 'border-red-500' : 'border-white/10'
+                                  }`}
+                              />
+                              {errors.phone && (
+                                <span className="text-xs text-red-400 mt-1">{errors.phone}</span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Row 3: Company & Services Required */}
+                          <div className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-1.5">
+                              <label htmlFor="company" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
+                                Company Name
                               </label>
                               <input
                                 type="text"
-                                id="name"
-                                name="name"
-                                value={formData.name}
+                                id="company"
+                                name="company"
+                                value={formData.company}
                                 onChange={handleChange}
-                                placeholder="Segun Demuren"
-                                className={`bg-white/5 border px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 ${
-                                  errors.name ? 'border-red-500' : 'border-white/10'
-                                }`}
+                                placeholder="Corporate Aviation Ltd"
+                                className="bg-white/5 border border-white/10 px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300"
                               />
-                              {errors.name && (
-                                <span className="text-xs text-red-400 mt-1">{errors.name}</span>
-                              )}
                             </div>
 
-                            {/* Row 2: Email & Phone */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                              <div className="flex flex-col gap-1.5">
-                                <label htmlFor="email" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
-                                  Email Address <span className="text-ean-gold">*</span>
-                                </label>
-                                <input
-                                  type="email"
-                                  id="email"
-                                  name="email"
-                                  value={formData.email}
-                                  onChange={handleChange}
-                                  placeholder="client@company.com"
-                                  className={`bg-white/5 border px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 ${
-                                    errors.email ? 'border-red-500' : 'border-white/10'
-                                  }`}
-                                />
-                                {errors.email && (
-                                  <span className="text-xs text-red-400 mt-1">{errors.email}</span>
-                                )}
-                              </div>
-
-                              <div className="flex flex-col gap-1.5">
-                                <label htmlFor="phone" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
-                                  Phone Number <span className="text-ean-gold">*</span>
-                                </label>
-                                <input
-                                  type="tel"
-                                  id="phone"
-                                  name="phone"
-                                  value={formData.phone}
-                                  onChange={handleChange}
-                                  placeholder="+234 (0) 800..."
-                                  className={`bg-white/5 border px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 ${
-                                    errors.phone ? 'border-red-500' : 'border-white/10'
-                                  }`}
-                                />
-                                {errors.phone && (
-                                  <span className="text-xs text-red-400 mt-1">{errors.phone}</span>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Row 3: Company & Services Required */}
-                            <div className="flex flex-col gap-4">
-                              <div className="flex flex-col gap-1.5">
-                                <label htmlFor="company" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
-                                  Company Name
-                                </label>
-                                <input
-                                  type="text"
-                                  id="company"
-                                  name="company"
-                                  value={formData.company}
-                                  onChange={handleChange}
-                                  placeholder="Corporate Aviation Ltd"
-                                  className="bg-white/5 border border-white/10 px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300"
-                                />
-                              </div>
-
-                              <div className="flex flex-col gap-2 pt-2">
-                                <label className="text-xs uppercase tracking-wider text-ean-muted-light font-medium flex items-center justify-between">
-                                  <span>Services Required (Select all that apply)</span>
-                                  <span className="text-[10px] text-ean-gold font-normal">Tick boxes</span>
-                                </label>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                                  {AVAILABLE_SERVICES.map((srv) => {
-                                    const isChecked = selectedServices.includes(srv.id);
-                                    return (
-                                      <label
-                                        key={srv.id}
-                                        htmlFor={`srv-${srv.id}`}
-                                        // The checkbox itself is sr-only, so keyboard focus has
-                                        // nothing visible to land on. `has-focus-visible`
-                                        // moves the focus ring onto the label it belongs to.
-                                        className={`flex items-center gap-3 p-3 rounded-xs border cursor-pointer transition-all duration-200 has-focus-visible:ring-2 has-focus-visible:ring-ean-gold has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-ean-navy ${
-                                          isChecked
-                                            ? 'bg-ean-gold/15 border-ean-gold text-white shadow-[0_0_12px_rgba(196,149,42,0.2)]'
-                                            : 'bg-white/5 border-white/10 text-ean-muted-light hover:border-white/25 hover:text-white'
-                                        }`}
-                                      >
-                                        <input
-                                          type="checkbox"
-                                          id={`srv-${srv.id}`}
-                                          name="selectedServices"
-                                          value={srv.id}
-                                          checked={isChecked}
-                                          onChange={() => handleServiceToggle(srv.id)}
-                                          className="sr-only"
-                                        />
-                                        <div
-                                          className={`w-4 h-4 rounded-xs border flex items-center justify-center transition-all ${
-                                            isChecked
-                                              ? 'bg-ean-gold border-ean-gold text-ean-black'
-                                              : 'border-white/30 bg-black/20'
-                                          }`}
-                                        >
-                                          {isChecked && <CheckCircle className="w-3.5 h-3.5 stroke-3" />}
-                                        </div>
-                                        <span className="text-xs font-medium">{srv.label}</span>
-                                      </label>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Row 4: Message */}
-                            <div className="flex flex-col gap-1.5">
-                              <label htmlFor="message" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
-                                Your Message <span className="text-ean-gold">*</span>
+                            <div className="flex flex-col gap-2 pt-2">
+                              <label className="text-xs uppercase tracking-wider text-ean-muted-light font-medium flex items-center justify-between">
+                                <span>Services Required (Select all that apply)</span>
+                                <span className="text-[10px] text-ean-gold font-normal">Tick boxes</span>
                               </label>
-                              <textarea
-                                id="message"
-                                name="message"
-                                rows={4}
-                                value={formData.message}
-                                onChange={handleChange}
-                                placeholder="Describe your flight routing, date, passenger size, or hangar support requirements..."
-                                className={`bg-white/5 border px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 resize-none ${
-                                  errors.message ? 'border-red-500' : 'border-white/10'
-                                }`}
-                              />
-                              {errors.message && (
-                                <span className="text-xs text-red-400 mt-1">{errors.message}</span>
-                              )}
-                            </div>
 
-                            {/* Submit Button */}
-                            <div className="pt-4">
-                              <GoldButton
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="w-full flex items-center justify-center gap-2 py-4"
-                              >
-                                {isSubmitting ? (
-                                  <>
-                                    <span className="w-4 h-4 border-2 border-ean-navy border-t-transparent rounded-full animate-spin" />
-                                    <span>Processing Inquiry...</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Send className="w-4 h-4" />
-                                    <span>Send Message</span>
-                                  </>
-                                )}
-                              </GoldButton>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                                {AVAILABLE_SERVICES.map((srv) => {
+                                  const isChecked = selectedServices.includes(srv.id);
+                                  return (
+                                    <label
+                                      key={srv.id}
+                                      htmlFor={`srv-${srv.id}`}
+                                      // The checkbox itself is sr-only, so keyboard focus has
+                                      // nothing visible to land on. `has-focus-visible`
+                                      // moves the focus ring onto the label it belongs to.
+                                      className={`flex items-center gap-3 p-3 rounded-xs border cursor-pointer transition-all duration-200 has-focus-visible:ring-2 has-focus-visible:ring-ean-gold has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-ean-navy ${isChecked
+                                        ? 'bg-ean-gold/15 border-ean-gold text-white shadow-[0_0_12px_rgba(196,149,42,0.2)]'
+                                        : 'bg-white/5 border-white/10 text-ean-muted-light hover:border-white/25 hover:text-white'
+                                        }`}
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        id={`srv-${srv.id}`}
+                                        name="selectedServices"
+                                        value={srv.id}
+                                        checked={isChecked}
+                                        onChange={() => handleServiceToggle(srv.id)}
+                                        className="sr-only"
+                                      />
+                                      <div
+                                        className={`w-4 h-4 rounded-xs border flex items-center justify-center transition-all ${isChecked
+                                          ? 'bg-ean-gold border-ean-gold text-ean-black'
+                                          : 'border-white/30 bg-black/20'
+                                          }`}
+                                      >
+                                        {isChecked && <CheckCircle className="w-3.5 h-3.5 stroke-3" />}
+                                      </div>
+                                      <span className="text-xs font-medium">{srv.label}</span>
+                                    </label>
+                                  );
+                                })}
+                              </div>
                             </div>
-                          </form>
-                        ) : (
-                          <div
-                            key="success-message"
-                            className="ean-enter-scale bg-ean-gold/10 border border-ean-gold/20 p-8 rounded-xs text-center flex flex-col items-center gap-4 py-16"
-                          >
-                            <div className="w-16 h-16 rounded-full bg-ean-gold/20 flex items-center justify-center text-ean-gold mb-2 border border-ean-gold/30">
-                              <CheckCircle className="w-8 h-8" />
-                            </div>
-                            <h4 className="font-display text-2xl font-light text-white">
-                              Thank You
-                            </h4>
-                            <p className="font-ui text-sm text-ean-muted-light leading-relaxed max-w-sm">
-                              Your inquiry has been successfully sent. A flight operations coordinator or corporate concierge will review your parameters and follow up within 2 hours.
-                            </p>
-                            <button
-                              onClick={() => setSubmitSuccess(false)}
-                              className="mt-4 font-ui text-xs font-semibold uppercase tracking-wider text-ean-gold hover:text-ean-gold-light underline focus:outline-none cursor-pointer"
-                            >
-                              Send Another Inquiry
-                            </button>
                           </div>
-                        )}
+
+                          {/* Row 4: Message */}
+                          <div className="flex flex-col gap-1.5">
+                            <label htmlFor="message" className="text-xs uppercase tracking-wider text-ean-muted-light font-medium">
+                              Your Message <span className="text-ean-gold">*</span>
+                            </label>
+                            <textarea
+                              id="message"
+                              name="message"
+                              rows={4}
+                              value={formData.message}
+                              onChange={handleChange}
+                              placeholder="Describe your flight routing, date, passenger size, or hangar support requirements..."
+                              className={`bg-white/5 border px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 resize-none ${errors.message ? 'border-red-500' : 'border-white/10'
+                                }`}
+                            />
+                            {errors.message && (
+                              <span className="text-xs text-red-400 mt-1">{errors.message}</span>
+                            )}
+                          </div>
+
+                          {/* Submit Button */}
+                          <div className="pt-4">
+                            <GoldButton
+                              type="submit"
+                              disabled={isSubmitting}
+                              className="w-full flex items-center justify-center gap-2 py-4"
+                            >
+                              {isSubmitting ? (
+                                <>
+                                  <span className="w-4 h-4 border-2 border-ean-navy border-t-transparent rounded-full animate-spin" />
+                                  <span>Processing Inquiry...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Send className="w-4 h-4" />
+                                  <span>Send Message</span>
+                                </>
+                              )}
+                            </GoldButton>
+                          </div>
+                        </form>
+                      ) : (
+                        <div
+                          key="success-message"
+                          className="ean-enter-scale bg-ean-gold/10 border border-ean-gold/20 p-8 rounded-xs text-center flex flex-col items-center gap-4 py-16"
+                        >
+                          <div className="w-16 h-16 rounded-full bg-ean-gold/20 flex items-center justify-center text-ean-gold mb-2 border border-ean-gold/30">
+                            <CheckCircle className="w-8 h-8" />
+                          </div>
+                          <h4 className="font-display text-2xl font-light text-white">
+                            Thank You
+                          </h4>
+                          <p className="font-ui text-sm text-ean-muted-light leading-relaxed max-w-sm">
+                            Your inquiry has been successfully sent. A flight operations coordinator or corporate concierge will review your parameters and follow up within 2 hours.
+                          </p>
+                          <button
+                            onClick={() => setSubmitSuccess(false)}
+                            className="mt-4 font-ui text-xs font-semibold uppercase tracking-wider text-ean-gold hover:text-ean-gold-light underline focus:outline-none cursor-pointer"
+                          >
+                            Send Another Inquiry
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </SectionReveal>
@@ -600,9 +658,8 @@ export default function ContactPage() {
                           </span>
                         </div>
                         <ChevronDown
-                          className={`w-5 h-5 text-ean-gold shrink-0 transition-transform duration-300 ${
-                            isOpen ? 'rotate-180' : ''
-                          }`}
+                          className={`w-5 h-5 text-ean-gold shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''
+                            }`}
                         />
                       </button>
 
@@ -618,9 +675,8 @@ export default function ContactPage() {
                         role="region"
                         aria-labelledby={`faq-trigger-${idx}`}
                         inert={!isOpen}
-                        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
-                          isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-                        }`}
+                        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                          }`}
                       >
                         <div className="overflow-hidden">
                           <div className="px-6 pb-6 pt-0 sm:px-8 sm:pb-6 text-sm sm:text-base text-ean-muted-dark border-t border-ean-border-light/25 leading-relaxed pl-14">
@@ -648,7 +704,7 @@ export default function ContactPage() {
           />
           {/* Visual Dark Overlay to match page transition */}
           <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-ean-navy/40 to-transparent" />
-          
+
           {/* Subtle location card */}
           <div className="relative z-10 max-w-md bg-ean-navy/90 backdrop-blur-md border border-white/10 p-8 rounded-xs text-center space-y-4 shadow-2xl mx-4 sm:mx-auto">
             <span className="font-ui text-[10px] uppercase tracking-widest text-ean-gold font-bold">

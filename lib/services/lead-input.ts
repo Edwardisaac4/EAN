@@ -19,6 +19,9 @@ export const LEAD_SERVICE_VALUES = [
   'catering',
   'vip',
   'leasing',
+  'flight_support',
+  'aeroplex',
+  'press',
   'general',
 ] as const
 

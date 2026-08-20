@@ -3,9 +3,9 @@
 // SERVER ONLY — this module uses the admin client (service_role)
 // =============================================================================
 
-import { adminSupabase } from '@/utils/supabase/admin'
-import { LEAD_SERVICE_VALUES } from './lead-input'
-import type { LeadAnalytics, LeadTrendPoint } from '@/lib/admin-leads-data'
+import { adminSupabase } from "@/utils/supabase/admin";
+import { LEAD_SERVICE_VALUES } from "./lead-input";
+import type { LeadAnalytics, LeadTrendPoint } from "@/lib/admin-leads-data";
 import type {
   LeadRow,
   LeadWithDetails,
@@ -20,10 +20,10 @@ import type {
   LeadServiceEnum,
   LeadPriorityEnum,
   LeadStatusEnum,
-} from '@/types/database'
+} from "@/types/database";
 
 /** Sentinel error message callers can map to a 404. */
-export const LEAD_NOT_FOUND = 'Lead not found'
+export const LEAD_NOT_FOUND = "Lead not found";
 
 // ---------------------------------------------------------------------------
 // Helper: auto-assign priority based on service + message keywords
@@ -36,15 +36,15 @@ export const LEAD_NOT_FOUND = 'Lead not found'
  * baseline, and time-critical language escalates it.
  */
 const URGENT_INTENT_KEYWORDS = [
-  'urgent',
-  'aog',
-  'asap',
-  'today',
-  'tonight',
-  'tomorrow',
-  'immediately',
-  'emergency',
-] as const
+  "urgent",
+  "aog",
+  "asap",
+  "today",
+  "tonight",
+  "tomorrow",
+  "immediately",
+  "emergency",
+] as const;
 
 /**
  * Markers that identify a statutory submission rather than a sales enquiry — the
@@ -61,42 +61,48 @@ const URGENT_INTENT_KEYWORDS = [
  * deadline was saved to the database and silently never announced to anyone.
  */
 const STATUTORY_REQUEST_MARKERS = [
-  '[ndpa data subject request]',
-  '[legal notice — terms of use]',
-] as const
+  "[ndpa data subject request]",
+  "[legal notice — terms of use]",
+] as const;
 
 const SERVICE_BASELINE_PRIORITY: Record<string, LeadPriorityEnum> = {
-  maintenance: 'high',   // AOG risk, high value
-  leasing:     'high',   // largest contract value
-  charter:     'high',
-  fbo:         'normal',
-  vip:         'normal',
-  catering:    'normal',
-  general:     'low',
-}
+  maintenance: "high", // AOG risk, high value
+  leasing: "high", // largest contract value
+  charter: "high",
+  aeroplex: "high", // investor inquiries, high value
+  flight_support: "normal",
+  fbo: "normal",
+  vip: "normal",
+  catering: "normal",
+  press: "normal",
+  general: "low",
+};
 
 function derivePriority(service: string, message: string): LeadPriorityEnum {
-  const text = (message || '').toLowerCase()
+  const text = (message || "").toLowerCase();
 
   if (URGENT_INTENT_KEYWORDS.some((keyword) => text.includes(keyword))) {
-    return 'urgent'
+    return "urgent";
   }
 
   // 'high', not 'urgent': these carry a real legal deadline, but it is measured
   // in days, and 'urgent' means a sub-hour response SLA. 'high' is enough to
   // clear the email threshold, which is the point.
   if (STATUTORY_REQUEST_MARKERS.some((marker) => text.includes(marker))) {
-    return 'high'
+    return "high";
   }
 
-  const baseline = SERVICE_BASELINE_PRIORITY[service] ?? 'low'
+  const baseline = SERVICE_BASELINE_PRIORITY[service] ?? "low";
 
   // A concrete quote/booking request nudges the baseline up one step.
-  if (baseline === 'normal' && (text.includes('quote') || text.includes('booking'))) {
-    return 'high'
+  if (
+    baseline === "normal" &&
+    (text.includes("quote") || text.includes("booking"))
+  ) {
+    return "high";
   }
 
-  return baseline
+  return baseline;
 }
 
 // ---------------------------------------------------------------------------
@@ -111,41 +117,44 @@ function estimateValue(service: string): number {
     catering: 5000,
     vip: 8000,
     leasing: 50000,
+    flight_support: 12000,
+    aeroplex: 75000,
+    press: 1000,
     general: 3000,
-  }
-  return estimates[service] ?? 3000
+  };
+  return estimates[service] ?? 3000;
 }
 
 // ---------------------------------------------------------------------------
 // Helper: derive human-readable source from tracking context
 // ---------------------------------------------------------------------------
 
-function deriveSource(tracking?: LeadSubmissionPayload['tracking']): string {
-  if (!tracking) return 'Website Form'
+function deriveSource(tracking?: LeadSubmissionPayload["tracking"]): string {
+  if (!tracking) return "Website Form";
 
   if (tracking.utmSource) {
-    const src = tracking.utmSource.toLowerCase()
-    if (src.includes('google'))
-      return tracking.utmMedium === 'cpc' ? 'Google Ads' : 'Google Organic'
-    if (src.includes('linkedin')) return 'LinkedIn Campaign'
-    if (src.includes('facebook') || src.includes('instagram'))
-      return 'Social Media'
-    if (src.includes('newsletter') || src.includes('email'))
-      return 'Email Marketing'
-    if (src.includes('tiktok')) return 'TikTok'
-    if (src.includes('whatsapp')) return 'WhatsApp'
-    return `${tracking.utmSource} (${tracking.utmMedium || 'campaign'})`
+    const src = tracking.utmSource.toLowerCase();
+    if (src.includes("google"))
+      return tracking.utmMedium === "cpc" ? "Google Ads" : "Google Organic";
+    if (src.includes("linkedin")) return "LinkedIn Campaign";
+    if (src.includes("facebook") || src.includes("instagram"))
+      return "Social Media";
+    if (src.includes("newsletter") || src.includes("email"))
+      return "Email Marketing";
+    if (src.includes("tiktok")) return "TikTok";
+    if (src.includes("whatsapp")) return "WhatsApp";
+    return `${tracking.utmSource} (${tracking.utmMedium || "campaign"})`;
   }
 
   if (
     tracking.referrerDomain &&
-    tracking.referrerDomain !== 'Direct / None' &&
-    tracking.referrerDomain !== 'Direct / Internal'
+    tracking.referrerDomain !== "Direct / None" &&
+    tracking.referrerDomain !== "Direct / Internal"
   ) {
-    return `Referral (${tracking.referrerDomain})`
+    return `Referral (${tracking.referrerDomain})`;
   }
 
-  return 'Direct Visit'
+  return "Direct Visit";
 }
 
 // =============================================================================
@@ -153,7 +162,7 @@ function deriveSource(tracking?: LeadSubmissionPayload['tracking']): string {
 // =============================================================================
 
 /** Window in which an identical email+service submission is treated as a repeat. */
-const DUPLICATE_WINDOW_MINUTES = 10
+const DUPLICATE_WINDOW_MINUTES = 10;
 
 /**
  * Single representation of an address used for both storage and duplicate
@@ -162,7 +171,7 @@ const DUPLICATE_WINDOW_MINUTES = 10
  * and never match each other in the duplicate guard.
  */
 function normalizeEmail(email: string): string {
-  return email.trim().toLowerCase()
+  return email.trim().toLowerCase();
 }
 
 /**
@@ -173,28 +182,27 @@ function normalizeEmail(email: string): string {
  */
 export async function findRecentDuplicateLead(
   email: string,
-  service: LeadServiceEnum
+  service: LeadServiceEnum,
 ): Promise<LeadRow | null> {
   const cutoff = new Date(
-    Date.now() - DUPLICATE_WINDOW_MINUTES * 60 * 1000
-  ).toISOString()
+    Date.now() - DUPLICATE_WINDOW_MINUTES * 60 * 1000,
+  ).toISOString();
 
   const { data, error } = await adminSupabase
-    .from('leads')
-    .select('*')
-    .eq('email', normalizeEmail(email))
-    .eq('service', service)
-    .gte('created_at', cutoff)
-    .order('created_at', { ascending: false })
-    .limit(1)
-
+    .from("leads")
+    .select("*")
+    .eq("email", normalizeEmail(email))
+    .eq("service", service)
+    .gte("created_at", cutoff)
+    .order("created_at", { ascending: false })
+    .limit(1);
   if (error) {
     // Non-fatal: fall through to creating the lead rather than losing it.
-    console.error('Duplicate lead lookup failed:', error)
-    return null
+    console.error("Duplicate lead lookup failed:", error);
+    return null;
   }
 
-  return data && data.length > 0 ? data[0] : null
+  return data && data.length > 0 ? data[0] : null;
 }
 
 // =============================================================================
@@ -203,47 +211,64 @@ export async function findRecentDuplicateLead(
 
 export async function createLead(
   payload: LeadSubmissionPayload,
-  ipAddress?: string
+  ipAddress?: string,
 ): Promise<{ lead: LeadRow; error: string | null }> {
-  const service = (payload.service || 'general') as LeadServiceEnum
-  const priority = payload.priority ?? derivePriority(service, payload.message)
-  const source = deriveSource(payload.tracking)
+  const service = (payload.service || "general") as LeadServiceEnum;
+  const priority = payload.priority ?? derivePriority(service, payload.message);
+  const source = deriveSource(payload.tracking);
 
   // Prefer a real figure computed by the submitting form (e.g. the pricing
   // portal quote total) over the coarse per-service estimate.
   const estimatedValue =
-    typeof payload.estimatedValue === 'number' && payload.estimatedValue > 0
+    typeof payload.estimatedValue === "number" && payload.estimatedValue > 0
       ? Math.round(payload.estimatedValue)
-      : estimateValue(service)
+      : estimateValue(service);
 
   // 1. Insert the lead
   const { data: lead, error: leadError } = await adminSupabase
-    .from('leads')
+    .from("leads")
     .insert({
       full_name: payload.fullName,
       email: normalizeEmail(payload.email),
-      phone: payload.phone || '',
+      phone: payload.phone || "",
       company: payload.company || null,
       service,
       message: payload.message,
-      status: 'new',
+      status: "new",
       priority,
       estimated_value: estimatedValue,
       source,
     } satisfies NewLead)
-    .select('*')
-    .single()
+    .select("*")
+    .single();
 
   if (leadError || !lead) {
-    console.error('Failed to insert lead:', leadError)
-    return { lead: null as unknown as LeadRow, error: leadError?.message || 'Failed to insert lead' }
+    // If a concurrent insert occurred or a unique constraint violation was raised,
+    // look up the existing lead within the recent window and return it.
+    const isUniqueViolation =
+      leadError?.code === "23505" ||
+      leadError?.message?.toLowerCase().includes("unique") ||
+      leadError?.message?.toLowerCase().includes("duplicate");
+
+    if (isUniqueViolation) {
+      const existing = await findRecentDuplicateLead(payload.email, service);
+      if (existing) {
+        return { lead: existing, error: null };
+      }
+    }
+
+    console.error("Failed to insert lead:", leadError);
+    return {
+      lead: null as unknown as LeadRow,
+      error: leadError?.message || "Failed to insert lead",
+    };
   }
 
   // 2. Insert tracking attribution (if provided)
   if (payload.tracking) {
-    const t = payload.tracking
+    const t = payload.tracking;
     const { error: trackingError } = await adminSupabase
-      .from('lead_tracking')
+      .from("lead_tracking")
       .insert({
         lead_id: lead.id,
         utm_source: t.utmSource || null,
@@ -256,34 +281,34 @@ export async function createLead(
         landing_page: t.landingPage || null,
         form_page: t.formPage || null,
         form_id: t.formId || null,
-        device_type: t.deviceType || 'desktop',
+        device_type: t.deviceType || "desktop",
         browser_name: t.browserName || null,
         user_language: t.userLanguage || null,
         screen_resolution: t.screenResolution || null,
         ip_address: ipAddress || null,
         captured_at: t.capturedAt || new Date().toISOString(),
-      } satisfies NewLeadTracking)
+      } satisfies NewLeadTracking);
 
     if (trackingError) {
-      console.error('Failed to insert tracking:', trackingError)
+      console.error("Failed to insert tracking:", trackingError);
       // Non-fatal — lead was already created
     }
   }
 
   // 3. Insert initial activity log
   const { error: activityError } = await adminSupabase
-    .from('lead_activities')
+    .from("lead_activities")
     .insert({
       lead_id: lead.id,
-      author: 'System (Form Engine)',
-      action: `Lead captured via ${payload.tracking?.formPage || 'Website Form'}`,
-    } satisfies NewLeadActivity)
+      author: "System (Form Engine)",
+      action: `Lead captured via ${payload.tracking?.formPage || "Website Form"}`,
+    } satisfies NewLeadActivity);
 
   if (activityError) {
-    console.error('Failed to insert activity:', activityError)
+    console.error("Failed to insert activity:", activityError);
   }
 
-  return { lead, error: null }
+  return { lead, error: null };
 }
 
 // =============================================================================
@@ -291,29 +316,29 @@ export async function createLead(
 // =============================================================================
 
 export interface GetLeadsOptions {
-  status?:   LeadStatusEnum | 'all'
-  service?:  LeadServiceEnum | 'all'
-  priority?: LeadPriorityEnum | 'all'
-  search?:   string
+  status?: LeadStatusEnum | "all";
+  service?: LeadServiceEnum | "all";
+  priority?: LeadPriorityEnum | "all";
+  search?: string;
   /** Restrict to a single lead by uuid — used to re-read a record after a mutation. */
-  id?:       string
-  page?:     number
-  limit?:    number
+  id?: string;
+  page?: number;
+  limit?: number;
 }
 
 export async function getLeads(options: GetLeadsOptions = {}) {
   const {
-    status = 'all',
-    service = 'all',
-    priority = 'all',
+    status = "all",
+    service = "all",
+    priority = "all",
     search,
     id,
     page = 1,
     limit = 20,
-  } = options
+  } = options;
 
   let query = adminSupabase
-    .from('leads')
+    .from("leads")
     .select(
       `
       *,
@@ -321,39 +346,42 @@ export async function getLeads(options: GetLeadsOptions = {}) {
       lead_activities (*, id, lead_id, author, action, note, created_at),
       lead_notes (*, id, lead_id, author, content, created_at)
     `,
-      { count: 'exact' }
+      { count: "exact" },
     )
-    .order('created_at', { ascending: false })
-    .range((page - 1) * limit, page * limit - 1)
+    .order("created_at", { ascending: false })
+    .range((page - 1) * limit, page * limit - 1);
 
   if (id) {
-    query = query.eq('id', id)
+    query = query.eq("id", id);
   }
-  if (status && status !== 'all') {
-    query = query.eq('status', status)
+  if (status && status !== "all") {
+    query = query.eq("status", status);
   }
-  if (service && service !== 'all') {
-    query = query.eq('service', service)
+  if (service && service !== "all") {
+    query = query.eq("service", service);
   }
-  if (priority && priority !== 'all') {
-    query = query.eq('priority', priority)
+  if (priority && priority !== "all") {
+    query = query.eq("priority", priority);
   }
   if (search) {
     // Escape PostgREST `or()` metacharacters so a search term containing a comma
     // or parenthesis cannot break out of the filter expression.
-    const safeSearch = search.replace(/[,()\\]/g, ' ').trim()
+    const safeSearch = search
+      .replace(/[,()\\]/g, " ")
+      .trim()
+      .replace(/[%_]/g, (char) => `\\${char}`);
     if (safeSearch) {
       query = query.or(
-        `full_name.ilike.%${safeSearch}%,email.ilike.%${safeSearch}%,company.ilike.%${safeSearch}%,lead_code.ilike.%${safeSearch}%`
-      )
+        `full_name.ilike.%${safeSearch}%,email.ilike.%${safeSearch}%,company.ilike.%${safeSearch}%,lead_code.ilike.%${safeSearch}%`,
+      );
     }
   }
 
-  const { data, error, count } = await query
+  const { data, error, count } = await query;
 
   if (error) {
-    console.error('Failed to fetch leads:', error)
-    return { leads: [], total: 0, error: error.message }
+    console.error("Failed to fetch leads:", error);
+    return { leads: [], total: 0, error: error.message };
   }
 
   // Normalize the join shape
@@ -365,18 +393,18 @@ export async function getLeads(options: GetLeadsOptions = {}) {
     lead_activities: Array.isArray(row.lead_activities)
       ? row.lead_activities.sort(
           (a: LeadActivityRow, b: LeadActivityRow) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         )
       : [],
     lead_notes: Array.isArray(row.lead_notes)
       ? row.lead_notes.sort(
           (a: LeadNoteRow, b: LeadNoteRow) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         )
       : [],
-  }))
+  }));
 
-  return { leads, total: count ?? 0, error: null }
+  return { leads, total: count ?? 0, error: null };
 }
 
 // =============================================================================
@@ -384,24 +412,24 @@ export async function getLeads(options: GetLeadsOptions = {}) {
 // =============================================================================
 
 export async function getLeadById(id: string): Promise<{
-  lead: LeadWithDetails | null
-  error: string | null
+  lead: LeadWithDetails | null;
+  error: string | null;
 }> {
   const { data, error } = await adminSupabase
-    .from('leads')
+    .from("leads")
     .select(
       `
       *,
       lead_tracking (*),
       lead_activities (*, id, lead_id, author, action, note, created_at),
       lead_notes (*, id, lead_id, author, content, created_at)
-    `
+    `,
     )
-    .eq('id', id)
-    .single()
+    .eq("id", id)
+    .single();
 
   if (error || !data) {
-    return { lead: null, error: error?.message || 'Lead not found' }
+    return { lead: null, error: error?.message || "Lead not found" };
   }
 
   const lead: LeadWithDetails = {
@@ -412,18 +440,18 @@ export async function getLeadById(id: string): Promise<{
     lead_activities: Array.isArray(data.lead_activities)
       ? data.lead_activities.sort(
           (a: LeadActivityRow, b: LeadActivityRow) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         )
       : [],
     lead_notes: Array.isArray(data.lead_notes)
       ? data.lead_notes.sort(
           (a: LeadNoteRow, b: LeadNoteRow) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         )
       : [],
-  }
+  };
 
-  return { lead, error: null }
+  return { lead, error: null };
 }
 
 // =============================================================================
@@ -431,24 +459,24 @@ export async function getLeadById(id: string): Promise<{
 // =============================================================================
 
 export async function getLeadByCode(leadCode: string): Promise<{
-  lead: LeadWithDetails | null
-  error: string | null
+  lead: LeadWithDetails | null;
+  error: string | null;
 }> {
   const { data, error } = await adminSupabase
-    .from('leads')
+    .from("leads")
     .select(
       `
       *,
       lead_tracking (*),
       lead_activities (*),
       lead_notes (*)
-    `
+    `,
     )
-    .eq('lead_code', leadCode)
-    .single()
+    .eq("lead_code", leadCode)
+    .single();
 
   if (error || !data) {
-    return { lead: null, error: error?.message || 'Lead not found' }
+    return { lead: null, error: error?.message || "Lead not found" };
   }
 
   const lead: LeadWithDetails = {
@@ -459,18 +487,18 @@ export async function getLeadByCode(leadCode: string): Promise<{
     lead_activities: Array.isArray(data.lead_activities)
       ? data.lead_activities.sort(
           (a: LeadActivityRow, b: LeadActivityRow) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         )
       : [],
     lead_notes: Array.isArray(data.lead_notes)
       ? data.lead_notes.sort(
           (a: LeadNoteRow, b: LeadNoteRow) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         )
       : [],
-  }
+  };
 
-  return { lead, error: null }
+  return { lead, error: null };
 }
 
 // =============================================================================
@@ -479,72 +507,75 @@ export async function getLeadByCode(leadCode: string): Promise<{
 
 export async function updateLead(
   id: string,
-  updates: LeadUpdate & { author?: string }
+  updates: LeadUpdate & { author?: string },
 ): Promise<{ lead: LeadRow | null; error: string | null }> {
-  const { author, ...dbUpdates } = updates
+  const { author, ...dbUpdates } = updates;
 
   // Fetch current lead to compute delta for activity log
   const { data: currentLead } = await adminSupabase
-    .from('leads')
-    .select('status, priority, assigned_to')
-    .eq('id', id)
-    .maybeSingle()
+    .from("leads")
+    .select("status, priority, assigned_to")
+    .eq("id", id)
+    .maybeSingle();
 
   // Bail out with a clear message rather than letting the update below fail with
   // a raw Postgres coercion error that would surface in the admin UI.
   if (!currentLead) {
-    return { lead: null, error: LEAD_NOT_FOUND }
+    return { lead: null, error: LEAD_NOT_FOUND };
   }
 
   // Apply the update
   const { data: updatedLead, error } = await adminSupabase
-    .from('leads')
+    .from("leads")
     .update(dbUpdates)
-    .eq('id', id)
-    .select('*')
-    .single()
+    .eq("id", id)
+    .select("*")
+    .single();
 
   if (error || !updatedLead) {
-    return { lead: null, error: error?.message || 'Failed to update lead' }
+    return { lead: null, error: error?.message || "Failed to update lead" };
   }
 
   // Log activity entries for each changed field
-  const activities: NewLeadActivity[] = []
-  const actorName = author || 'Lead Admin'
+  const activities: NewLeadActivity[] = [];
+  const actorName = author || "Lead Admin";
 
   if (dbUpdates.status && dbUpdates.status !== currentLead.status) {
     activities.push({
       lead_id: id,
       author: actorName,
       action: `Status updated from ${currentLead.status} to ${dbUpdates.status}`,
-    })
+    });
   }
   if (dbUpdates.priority && dbUpdates.priority !== currentLead.priority) {
     activities.push({
       lead_id: id,
       author: actorName,
       action: `Priority updated from ${currentLead.priority} to ${dbUpdates.priority}`,
-    })
+    });
   }
-  if (dbUpdates.assigned_to !== undefined && dbUpdates.assigned_to !== currentLead.assigned_to) {
+  if (
+    dbUpdates.assigned_to !== undefined &&
+    dbUpdates.assigned_to !== currentLead.assigned_to
+  ) {
     activities.push({
       lead_id: id,
       author: actorName,
       action: dbUpdates.assigned_to
         ? `Lead assigned to ${dbUpdates.assigned_to}`
-        : 'Lead unassigned',
-    })
+        : "Lead unassigned",
+    });
   }
 
   if (activities.length > 0) {
     const { error: actErr } = await adminSupabase
-      .from('lead_activities')
-      .insert(activities)
+      .from("lead_activities")
+      .insert(activities);
 
-    if (actErr) console.error('Failed to log activities:', actErr)
+    if (actErr) console.error("Failed to log activities:", actErr);
   }
 
-  return { lead: updatedLead, error: null }
+  return { lead: updatedLead, error: null };
 }
 
 // =============================================================================
@@ -554,32 +585,32 @@ export async function updateLead(
 export async function addLeadNote(
   leadId: string,
   content: string,
-  author = 'Admin'
+  author = "Admin",
 ): Promise<{ note: LeadNoteRow | null; error: string | null }> {
   const { data: note, error } = await adminSupabase
-    .from('lead_notes')
+    .from("lead_notes")
     .insert({ lead_id: leadId, author, content } satisfies NewLeadNote)
-    .select('*')
-    .single()
+    .select("*")
+    .single();
 
   if (error || !note) {
     // A foreign-key violation here means the lead id does not exist; report that
     // rather than the raw constraint message.
-    if (error?.code === '23503') {
-      return { note: null, error: LEAD_NOT_FOUND }
+    if (error?.code === "23503") {
+      return { note: null, error: LEAD_NOT_FOUND };
     }
-    return { note: null, error: error?.message || 'Failed to add note' }
+    return { note: null, error: error?.message || "Failed to add note" };
   }
 
   // Also log the activity
-  await adminSupabase.from('lead_activities').insert({
+  await adminSupabase.from("lead_activities").insert({
     lead_id: leadId,
     author,
-    action: 'Added internal note',
+    action: "Added internal note",
     note: content,
-  } satisfies NewLeadActivity)
+  } satisfies NewLeadActivity);
 
-  return { note, error: null }
+  return { note, error: null };
 }
 
 // =============================================================================
@@ -595,24 +626,24 @@ export async function addLeadNote(
  * across the wire only to count them.
  */
 export async function getLeadAnalytics(): Promise<{
-  analytics: LeadAnalytics | null
-  error: string | null
+  analytics: LeadAnalytics | null;
+  error: string | null;
 }> {
-  const { data, error } = await adminSupabase.rpc('lead_analytics')
+  const { data, error } = await adminSupabase.rpc("lead_analytics");
 
   if (error) {
-    console.error('Failed to compute lead analytics:', error)
-    return { analytics: null, error: error.message }
+    console.error("Failed to compute lead analytics:", error);
+    return { analytics: null, error: error.message };
   }
 
-  const analytics = parseLeadAnalytics(data)
+  const analytics = parseLeadAnalytics(data);
 
   if (!analytics) {
-    console.error('lead_analytics() returned an unexpected payload:', data)
-    return { analytics: null, error: 'Unexpected analytics payload' }
+    console.error("lead_analytics() returned an unexpected payload:", data);
+    return { analytics: null, error: "Unexpected analytics payload" };
   }
 
-  return { analytics, error: null }
+  return { analytics, error: null };
 }
 
 /**
@@ -621,149 +652,161 @@ export async function getLeadAnalytics(): Promise<{
  * `undefined` inside a chart.
  */
 function parseLeadAnalytics(value: unknown): LeadAnalytics | null {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
 
-  const raw = value as Record<string, unknown>
-  const num = (key: string): number => (typeof raw[key] === 'number' ? (raw[key] as number) : 0)
+  const raw = value as Record<string, unknown>;
+  const num = (key: string): number =>
+    typeof raw[key] === "number" ? (raw[key] as number) : 0;
 
-  if (typeof raw.totalLeads !== 'number') return null
+  if (typeof raw.totalLeads !== "number") return null;
 
   const serviceDistribution = LEAD_SERVICE_VALUES.reduce(
     (acc, service) => {
-      const dist = raw.serviceDistribution
+      const dist = raw.serviceDistribution;
       const count =
-        dist && typeof dist === 'object' && !Array.isArray(dist)
+        dist && typeof dist === "object" && !Array.isArray(dist)
           ? (dist as Record<string, unknown>)[service]
-          : undefined
-      acc[service] = typeof count === 'number' ? count : 0
-      return acc
+          : undefined;
+      acc[service] = typeof count === "number" ? count : 0;
+      return acc;
     },
-    {} as Record<LeadServiceEnum, number>
-  )
+    {} as Record<LeadServiceEnum, number>,
+  );
 
   return {
-    totalLeads:             num('totalLeads'),
-    spamLeads:              num('spamLeads'),
-    newLeads:               num('newLeads'),
-    inProgressLeads:        num('inProgressLeads'),
-    qualifiedLeads:         num('qualifiedLeads'),
-    closedWonLeads:         num('closedWonLeads'),
-    closedLostLeads:        num('closedLostLeads'),
-    conversionRate:         num('conversionRate'),
-    totalEstimatedPipeline: num('totalEstimatedPipeline'),
-    dailyInquiryRate:       num('dailyInquiryRate'),
+    totalLeads: num("totalLeads"),
+    spamLeads: num("spamLeads"),
+    newLeads: num("newLeads"),
+    inProgressLeads: num("inProgressLeads"),
+    qualifiedLeads: num("qualifiedLeads"),
+    closedWonLeads: num("closedWonLeads"),
+    closedLostLeads: num("closedLostLeads"),
+    conversionRate: num("conversionRate"),
+    totalEstimatedPipeline: num("totalEstimatedPipeline"),
+    dailyInquiryRate: num("dailyInquiryRate"),
     // Deliberately nullable: null means "nothing answered yet", not "zero minutes".
     avgResponseSlaMinutes:
-      typeof raw.avgResponseSlaMinutes === 'number' ? raw.avgResponseSlaMinutes : null,
+      typeof raw.avgResponseSlaMinutes === "number"
+        ? raw.avgResponseSlaMinutes
+        : null,
     serviceDistribution,
     trackingDistribution: {
-      topSources:      parseTopSources(raw.trackingDistribution),
+      topSources: parseTopSources(raw.trackingDistribution),
       topLandingPages: parseTopPages(raw.trackingDistribution),
-      devices:         parseDevices(raw.trackingDistribution),
+      devices: parseDevices(raw.trackingDistribution),
     },
     dailyTrend: parseTrend(raw.dailyTrend),
-  }
+  };
 }
 
 function asRecord(value: unknown): Record<string, unknown> {
-  return value && typeof value === 'object' && !Array.isArray(value)
+  return value && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
-    : {}
+    : {};
 }
 
 function parseTopSources(tracking: unknown) {
-  const rows = asRecord(tracking).topSources
-  if (!Array.isArray(rows)) return []
+  const rows = asRecord(tracking).topSources;
+  if (!Array.isArray(rows)) return [];
 
   return rows.flatMap((row) => {
-    const r = asRecord(row)
-    return typeof r.source === 'string'
-      ? [{
-          source:     r.source,
-          count:      typeof r.count === 'number' ? r.count : 0,
-          percentage: typeof r.percentage === 'number' ? r.percentage : 0,
-        }]
-      : []
-  })
+    const r = asRecord(row);
+    return typeof r.source === "string"
+      ? [
+          {
+            source: r.source,
+            count: typeof r.count === "number" ? r.count : 0,
+            percentage: typeof r.percentage === "number" ? r.percentage : 0,
+          },
+        ]
+      : [];
+  });
 }
 
 function parseTopPages(tracking: unknown) {
-  const rows = asRecord(tracking).topLandingPages
-  if (!Array.isArray(rows)) return []
+  const rows = asRecord(tracking).topLandingPages;
+  if (!Array.isArray(rows)) return [];
 
   return rows.flatMap((row) => {
-    const r = asRecord(row)
-    return typeof r.page === 'string'
-      ? [{ page: r.page, count: typeof r.count === 'number' ? r.count : 0 }]
-      : []
-  })
+    const r = asRecord(row);
+    return typeof r.page === "string"
+      ? [{ page: r.page, count: typeof r.count === "number" ? r.count : 0 }]
+      : [];
+  });
 }
 
 function parseDevices(tracking: unknown): Record<string, number> {
-  const devices = asRecord(asRecord(tracking).devices)
+  const devices = asRecord(asRecord(tracking).devices);
 
-  return Object.entries(devices).reduce<Record<string, number>>((acc, [key, count]) => {
-    if (typeof count === 'number') acc[key] = count
-    return acc
-  }, {})
+  return Object.entries(devices).reduce<Record<string, number>>(
+    (acc, [key, count]) => {
+      if (typeof count === "number") acc[key] = count;
+      return acc;
+    },
+    {},
+  );
 }
 
 function parseTrend(value: unknown): LeadTrendPoint[] {
-  if (!Array.isArray(value)) return []
+  if (!Array.isArray(value)) return [];
 
   return value.flatMap((point) => {
-    const p = asRecord(point)
-    return typeof p.date === 'string' && typeof p.label === 'string'
-      ? [{
-          date:  p.date,
-          label: p.label,
-          count: typeof p.count === 'number' ? p.count : 0,
-        }]
-      : []
-  })
+    const p = asRecord(point);
+    return typeof p.date === "string" && typeof p.label === "string"
+      ? [
+          {
+            date: p.date,
+            label: p.label,
+            count: typeof p.count === "number" ? p.count : 0,
+          },
+        ]
+      : [];
+  });
 }
 
 // =============================================================================
 // CSV EXPORT — returns leads as CSV string
 // =============================================================================
 
-export async function exportLeadsCSV(options: GetLeadsOptions = {}): Promise<string> {
+export async function exportLeadsCSV(
+  options: GetLeadsOptions = {},
+): Promise<string> {
   // Fetch all matching leads (no pagination)
-  const { leads } = await getLeads({ ...options, page: 1, limit: 10000 })
+  const { leads } = await getLeads({ ...options, page: 1, limit: 10000 });
 
   const headers = [
-    'Lead Code',
-    'Full Name',
-    'Email',
-    'Phone',
-    'Company',
-    'Service',
-    'Status',
-    'Priority',
-    'Estimated Value',
-    'Source',
-    'Assigned To',
-    'Landing Page',
-    'Device',
-    'Created At',
-  ]
+    "Lead Code",
+    "Full Name",
+    "Email",
+    "Phone",
+    "Company",
+    "Service",
+    "Status",
+    "Priority",
+    "Estimated Value",
+    "Source",
+    "Assigned To",
+    "Landing Page",
+    "Device",
+    "Created At",
+  ];
 
   const rows = leads.map((l) => [
     l.lead_code,
-    `"${(l.full_name || '').replace(/"/g, '""')}"`,
+    `"${(l.full_name || "").replace(/"/g, '""')}"`,
     l.email,
-    l.phone || '',
-    `"${(l.company || '').replace(/"/g, '""')}"`,
+    l.phone || "",
+    `"${(l.company || "").replace(/"/g, '""')}"`,
     l.service,
     l.status,
     l.priority,
-    l.estimated_value?.toString() || '0',
-    `"${(l.source || '').replace(/"/g, '""')}"`,
-    `"${(l.assigned_to || '').replace(/"/g, '""')}"`,
-    l.lead_tracking?.landing_page || '',
-    l.lead_tracking?.device_type || '',
+    l.estimated_value?.toString() || "0",
+    `"${(l.source || "").replace(/"/g, '""')}"`,
+    `"${(l.assigned_to || "").replace(/"/g, '""')}"`,
+    l.lead_tracking?.landing_page || "",
+    l.lead_tracking?.device_type || "",
     l.created_at,
-  ])
+  ]);
 
-  return [headers.join(','), ...rows.map((r) => r.join(','))].join('\n')
+  return [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
 }

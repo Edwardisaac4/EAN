@@ -16,6 +16,9 @@ const COLOR_PALETTE: Record<ServiceCategory, string> = {
   leasing: '#f59e0b', // Amber
   catering: '#10b981', // Emerald
   vip: '#ec4899', // Pink
+  flight_support: '#06b6d4', // Cyan
+  aeroplex: '#eab308', // Yellow
+  press: '#8b5cf6', // Violet
   general: '#64748b', // Slate
 };
 
