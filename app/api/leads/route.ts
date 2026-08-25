@@ -4,6 +4,7 @@
 // =============================================================================
 
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/auth-guard'
 import { createLead, getLeads, findRecentDuplicateLead } from '@/lib/services/leads-service'
 import {
   optionalString,
@@ -25,8 +26,16 @@ import type { LeadSubmissionPayload, LeadServiceEnum, LeadStatusEnum, LeadPriori
 // ---------------------------------------------------------------------------
 // GET /api/leads — fetch leads (admin, paginated, filterable)
 // ---------------------------------------------------------------------------
+//
+// Admin-only, unlike the POST below it. This is the one file on the API where
+// the two verbs have opposite audiences: GET returns the lead table, POST is the
+// public contact form. Guarding the module rather than the handler would take
+// the website's enquiry form offline.
 
 export async function GET(request: Request) {
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response
+
   try {
     const { searchParams } = new URL(request.url)
 

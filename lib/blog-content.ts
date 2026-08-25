@@ -32,6 +32,16 @@ export type ArticleBlock =
   | { type: 'table'; caption?: string; headers: string[]; rows: string[][] }
   /** Figure row, e.g. "3.5 hours / Average time lost per commercial flight". */
   | { type: 'stats'; items: Array<{ value: string; label: string }> }
+  /**
+   * In-body photograph, served from public/images/blog/.
+   *
+   * width/height are the file's real pixel dimensions, not a display size —
+   * next/image needs the intrinsic ratio to reserve space before the bytes
+   * arrive, and without it every image in a post is a layout shift. `alt` is
+   * required rather than optional: the WordPress originals carried none, and
+   * making it opt-out is how a post ships with eight undescribed photographs.
+   */
+  | { type: 'image'; src: string; alt: string; width: number; height: number; caption?: string }
   /** Closing call to action, rendered as a distinct panel rather than body copy. */
   | { type: 'cta'; text: string }
 
@@ -83,6 +93,13 @@ const CIQ_BODY: ArticleBlock[] = [
     text: 'These three functions may be handled by separate agencies or, at some airports, by an integrated border force, but all three must be satisfied for every international flight, without exception.',
   },
   {
+    type: 'image',
+    src: '/images/blog/ciq-process.jpg',
+    alt: 'A HondaJet parked outside a glass executive terminal at dusk while uniformed officers check documents beside the wing and ground crew load baggage onto a support cart.',
+    width: 1408,
+    height: 768,
+  },
+  {
     type: 'heading',
     level: 2,
     text: 'Why CIQ Is Particularly Consequential in Business Aviation',
@@ -132,6 +149,13 @@ const CIQ_BODY: ArticleBlock[] = [
     text: 'Failure to submit an accurate Gen Dec, or submitting it too late, can result in delayed clearance, fines, and, in serious cases, detention of the aircraft. EAN Aviation manages this process on behalf of operators, ensuring submissions are accurate, timely, and compliant with local regulatory requirements.',
   },
   {
+    type: 'image',
+    src: '/images/blog/ciq-vip-process.jpg',
+    alt: 'A traveller handing a passport across a counter signed “Federal Republic of Nigeria — Premium CIQ Services”, staffed by uniformed immigration and customs officers.',
+    width: 896,
+    height: 421,
+  },
+  {
     type: 'heading',
     level: 3,
     text: '3. Visa and Travel Document Complexity',
@@ -165,6 +189,13 @@ const CIQ_BODY: ArticleBlock[] = [
   {
     type: 'paragraph',
     text: 'EAN Aviation provides operators with destination-specific CIQ briefings that address these requirements before departure, ensuring passengers and crew are properly prepared.',
+  },
+  {
+    type: 'image',
+    src: '/images/blog/ciq-guest-entrance.jpg',
+    alt: 'Three travellers walking through an FBO lounge past a CIQ and immigration desk signed for Lagos, Nigeria, with a business jet on the ramp beyond the glass.',
+    width: 1408,
+    height: 768,
   },
   {
     type: 'heading',
@@ -218,6 +249,13 @@ const CIQ_BODY: ArticleBlock[] = [
     text: 'None of this is inevitable. In practice, a CIQ failure is almost always preventable, which is why choosing the right ground handler matters as much as choosing the right aircraft.',
   },
   {
+    type: 'image',
+    src: '/images/blog/ciq-passport-review.jpg',
+    alt: 'An operations team reviewing passenger manifests and passports at a bank of monitors showing flight tracking and permit status.',
+    width: 1408,
+    height: 768,
+  },
+  {
     type: 'heading',
     level: 2,
     text: 'CIQ and African Aviation: A Special Consideration',
@@ -250,6 +288,13 @@ const CIQ_BODY: ArticleBlock[] = [
       'Ensure aircraft documentation (Certificate of Registration, Airworthiness Certificate, Radio Licence, Insurance) is current and accessible',
       'Brief passengers on local Customs regulations, particularly regarding currency declaration thresholds and prohibited items',
     ],
+  },
+  {
+    type: 'image',
+    src: '/images/blog/ciq-passport-desk.jpg',
+    alt: 'Passports from several countries laid out on a desk beside a filed IFR flight plan, a completed customs declaration and a pilot’s headset.',
+    width: 1408,
+    height: 768,
   },
   {
     type: 'heading',
@@ -314,6 +359,13 @@ const FBO_VS_FIRST_CLASS_BODY: ArticleBlock[] = [
     text: 'First-class cabins, however elegant, are shared spaces. Sensitive board discussions, merger negotiations, or strategic planning conversations carry real risk in commercial environments. FBO lounges and private aircraft offer complete discretion, where conversations stay confidential and the passenger controls who is in the room entirely.',
   },
   {
+    type: 'image',
+    src: '/images/blog/fbo-hondajet-experience.jpg',
+    alt: 'An executive working on a tablet at the cabin table of a HondaJet in cruise, with briefing papers and a glass of water beside him.',
+    width: 1920,
+    height: 1047,
+  },
+  {
     type: 'heading',
     level: 2,
     text: 'A Direct Route to Productivity',
@@ -332,6 +384,13 @@ const FBO_VS_FIRST_CLASS_BODY: ArticleBlock[] = [
     text: 'Schedules change. Deals evolve. Opportunities do not wait for the next available commercial flight. FBO services give executives the flexibility to depart on their timeline, adjust destinations mid-trip, and access airports that commercial airlines simply do not serve. For operations across Nigeria and West Africa — where business demands can shift rapidly — this flexibility is not a luxury; it is a competitive advantage.',
   },
   {
+    type: 'image',
+    src: '/images/blog/fbo-first-class-comparison.jpg',
+    alt: 'A split image contrasting a crowded commercial terminal security queue on the left with an executive walking from a private jet into an FBO lounge on the right.',
+    width: 1024,
+    height: 559,
+  },
+  {
     type: 'heading',
     level: 2,
     text: 'The FBO vs. First Class Comparison',
@@ -348,6 +407,13 @@ const FBO_VS_FIRST_CLASS_BODY: ArticleBlock[] = [
       ['Connectivity', 'Unreliable', 'Dedicated onboard connectivity'],
       ['Privacy', 'No guarantee', 'Complete privacy & discretion'],
     ],
+  },
+  {
+    type: 'image',
+    src: '/images/blog/fbo-ground-handling.jpg',
+    alt: 'Ground crew in high-visibility vests refuelling a business jet on an FBO ramp while baggage is loaded onto a handling cart.',
+    width: 1408,
+    height: 768,
   },
   {
     type: 'heading',
@@ -410,6 +476,20 @@ const MEMORIAL_BODY: ArticleBlock[] = [
     text: 'At EAN Aviation, West Africa’s first comprehensive aviation service provider, Tayo was more than a colleague; he was family. He was central to the refurbishment of the Lagos VIP lounge, a key figure during EAN’s landmark partnership with Airbus Helicopters as their first independent West African distributor, and a respected panelist at the Nigerian Business Aviation Conference. His contributions to operational efficiency, customer service excellence, and ground handling standards significantly strengthened every organisation he served.',
   },
   {
+    type: 'image',
+    src: '/images/blog/tayo-aiyetan-collaboration.jpg',
+    alt: 'Tayo Aiyetan, in an Airbus jacket, with five colleagues in an Airbus Helicopters production hangar during EAN’s distributorship partnership.',
+    width: 1512,
+    height: 1080,
+  },
+  {
+    type: 'image',
+    src: '/images/blog/tayo-aiyetan-private-jet.jpg',
+    alt: 'Tayo Aiyetan seated in the cabin of a light business jet.',
+    width: 810,
+    height: 516,
+  },
+  {
     type: 'heading',
     level: 2,
     text: 'The Man Behind the Role',
@@ -426,6 +506,777 @@ const MEMORIAL_BODY: ArticleBlock[] = [
     type: 'paragraph',
     text: 'Tayo valued integrity, teamwork, and excellence not as corporate slogans but as personal convictions. He lived them quietly, consistently, and without fanfare. That is perhaps the truest measure of a professional.',
   },
+  {
+    type: 'image',
+    src: '/images/blog/tayo-aiyetan-tribute.jpg',
+    alt: 'Tayo Aiyetan photographed in an Airbus jacket inside a helicopter hangar.',
+    width: 1620,
+    height: 1080,
+  },
+]
+
+// =============================================================================
+// Private Jet Whole Ownership vs. Fractional Ownership in West Africa
+// =============================================================================
+// Migrated from ean.aero post 1214 (20 April 2026). Copy is reproduced as
+// published, with one exception: the WordPress source repeats the paragraph
+// beginning "Global aviation brochures rarely account for…" and its following
+// FX bullet twice, back to back. That is a copy-paste error, not emphasis, so
+// it appears once here. Nothing else has been altered.
+
+const OWNERSHIP_BODY: ArticleBlock[] = [
+  {
+    type: 'lead',
+    text: 'In Nigeria’s high-stakes business environment, a private aircraft is no longer just a trophy asset. For executives in oil and gas, banking, and telecoms, it is a productivity multiplier — and often, the difference between closing a deal and missing it entirely.',
+  },
+  {
+    type: 'paragraph',
+    text: 'Nigeria’s private jet fleet has grown from just 44 aircraft in 2005 to over 150 today. The conversation has shifted. The question is no longer “Should we fly private?” It is “How should we structure the ownership?” If you’re new to the space, our Beginner’s Guide to Private Aviation in Nigeria is a good place to start before diving into ownership structures.',
+  },
+  {
+    type: 'paragraph',
+    text: 'For businesses operating across West Africa, where infrastructure gaps, erratic commercial schedules, and FX volatility define the operating environment, the choice between whole ownership and fractional ownership is a capital strategy decision with long-term consequences. This guide breaks down both models, compares them head-to-head, and helps you identify which one fits your mission profile.',
+  },
+  {
+    type: 'image',
+    src: '/images/blog/ownership-opening.jpg',
+    alt: 'EAN Aviation’s hangar with its doors drawn back, two business jets and a light aircraft parked inside.',
+    width: 624,
+    height: 416,
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'What is Private Jet Whole Ownership?',
+  },
+  {
+    type: 'paragraph',
+    text: 'Whole ownership means you (or your company) hold 100% of the aircraft – full control, full responsibility, and full asset. In a market like Nigeria, where time is a direct measure of competitive advantage, this model offers the highest level of operational sovereignty.',
+  },
+  {
+    type: 'definitionList',
+    items: [
+      {
+        term: 'Maximum Availability',
+        text: 'The aircraft is ready when you are. There are no “peak day” restrictions, no notice periods, and no competing priorities from other owners.',
+      },
+      {
+        term: 'Customization & Privacy',
+        text: 'From the interior livery to the onboard Wi-Fi and the “human sanctuary” of a familiar crew, the environment is entirely yours.',
+      },
+      {
+        term: 'Revenue Potential',
+        text: 'Many Nigerian owners offset high operational costs by placing their aircraft under an aircraft management company (like EAN Aviation) to be chartered out when not in use. This transforms the aircraft from a cost centre into a partial revenue asset.',
+      },
+    ],
+  },
+  {
+    type: 'heading',
+    level: 3,
+    text: 'The Reality Check',
+  },
+  {
+    type: 'paragraph',
+    text: 'You bear 100% of the risk. From FX-sensitive maintenance costs to regulatory compliance and pilot training, the administrative burden is significant unless managed by experts.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'What is Fractional Jet Ownership?',
+  },
+  {
+    type: 'paragraph',
+    text: 'Fractional ownership allows you to buy a “share” of an aircraft (typically 1/16th or 50 hours). Think of it as a structured time-share agreement for business aviation, with access to a professionally managed fleet.',
+  },
+  {
+    type: 'paragraph',
+    text: 'This model is gaining rapid traction across West Africa as more enterprises seek the mobility of private aviation without the full capital commitment.',
+  },
+  {
+    type: 'definitionList',
+    items: [
+      {
+        term: 'Lower Entry Point',
+        text: 'You access the performance, privacy, and prestige of a multi-million-dollar aircraft at a fraction of the acquisition cost.',
+      },
+      {
+        term: 'Predictable Costs',
+        text: 'You pay for what you use. Monthly management fees and hourly rates are fixed, shielding you from the volatility of individual maintenance events.',
+      },
+      {
+        term: 'No Positioning Fees',
+        text: 'In many fractional models, you only pay for “occupied” hours, meaning you don’t pay to fly an empty plane back to its base in Lagos or Abuja.',
+      },
+    ],
+  },
+  {
+    type: 'heading',
+    level: 3,
+    text: 'The Reality Check',
+  },
+  {
+    type: 'paragraph',
+    text: 'Fractional owners may not fly the same tail number on every trip. Cabin customization is limited to standardized fleet interiors. During high-demand windows like election cycles, major public holidays, or industry conference seasons, booking notice periods can increase, reducing last-minute flexibility.',
+  },
+  {
+    type: 'image',
+    src: '/images/blog/ownership-fractional.jpg',
+    alt: 'The inside of EAN’s hangar looking out through the open door at dusk, with three aircraft parked on the floor.',
+    width: 624,
+    height: 416,
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'Comparing the Models: At a Glance',
+  },
+  {
+    type: 'table',
+    headers: ['Feature', 'Whole Ownership', 'Fractional Ownership'],
+    rows: [
+      ['Typical Annual Hours', '200+ Hours', '50 – 150 Hours'],
+      ['Capital Outlay', 'High (Multi-million $)', 'Moderate (Asset Share)'],
+      ['Operational Control', '100% (Your Crew, Your Plane)', 'Fleet access, managed by provider'],
+      ['Admin Burden', 'High (Requires Management partner)', 'Low (Provider Handles All)'],
+      ['Customization', 'Full Bespoke Interiors', 'Standardized Fleet'],
+      ['Resale Risk', 'Direct Market Exposure', 'Defined Buy-back Terms'],
+    ],
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'The West African Factor: Why Local Variables Change the Calculus',
+  },
+  {
+    type: 'paragraph',
+    text: 'Global aviation brochures rarely account for the realities of operating in Nigeria and across West Africa. Private aviation is already fueling economic growth across the continent, but converting that opportunity into a competitive advantage depends on choosing the right ownership structure for your local operating environment. Before selecting a model, consider the following:',
+  },
+  {
+    type: 'definitionList',
+    items: [
+      {
+        term: 'Foreign Exchange (FX) Volatility',
+        text: 'Ground handling fees, cabin crew, maintenance, spare parts, insurance, and fuel are mostly priced in USD. Fractional models often provide more predictable billing, while whole owners must have robust cash flow management to handle USD-denominated invoices.',
+      },
+      {
+        term: 'The Regulatory Landscape',
+        text: 'The NCAA (Nigerian Civil Aviation Authority) enforces strict requirements for aircraft registration and Part 135 (commercial charter) operations. Whole owners who intend to charter their aircraft require a qualified partner, such as EAN Aviation’s NCAA-approved AMO, to maintain ongoing compliance, airworthiness documentation, and crew certification.',
+      },
+      {
+        term: 'Operational Geography',
+        text: 'Not all Nigerian business missions terminate at major hubs. Frequent travel to remote airstrips for oil field operations, mining sites, or upstream energy projects may make a wholly owned turboprop more practical than a fractional share in a light jet restricted to paved, major-hub runways.',
+      },
+    ],
+  },
+  {
+    type: 'image',
+    src: '/images/blog/ownership-west-africa.jpg',
+    alt: 'An EAN engineer in a high-visibility vest working on aircraft components at a bench in the maintenance workshop.',
+    width: 624,
+    height: 351,
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'Decision Time: Which One Fits You?',
+  },
+  {
+    type: 'paragraph',
+    text: 'The choice boils down to utilization and intent.',
+  },
+  {
+    type: 'definitionList',
+    items: [
+      {
+        term: 'Choose whole ownership if',
+        text: 'Your organization flies more than 200 hours annually, requires complete confidentiality and cabin continuity, and has the infrastructure, or a management partner, to handle compliance and operations. Tier-1 financial institutions and multinationals with active regional travel programs typically fall into this category.',
+      },
+      {
+        term: 'Choose fractional ownership if',
+        text: 'You fly between 50 and 150 hours per year and want the benefits of private aviation without the operational complexity of aircraft ownership. Growing enterprises and high-net-worth individuals who need reliable, premium mobility, on demand, are the ideal fractional candidates.',
+      },
+    ],
+  },
+  {
+    type: 'image',
+    src: '/images/blog/ownership-decision.jpg',
+    alt: 'EAN’s passenger lounge, with wood panelling, armchairs and the ean Aviation branded glass entrance.',
+    width: 624,
+    height: 468,
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'How EAN Aviation Can Help',
+  },
+  {
+    type: 'paragraph',
+    text: 'Besides aircraft acquisition, EAN Aviation is not just an FBO. We are a full-service aviation partner operating from Murtala Muhammed International Airport, Lagos, with an NCAA-approved AMO, a VIP passenger lounge, and a dedicated aircraft management division.',
+  },
+  {
+    type: 'paragraph',
+    text: 'Whether you are evaluating a wholly owned asset that needs a professional management structure or exploring on-demand charter as a first step into private aviation, EAN Aviation provides the expertise, regulatory standing, and operational infrastructure to support your aviation strategy across West Africa.',
+  },
+  {
+    type: 'cta',
+    text: 'Visit the EAN Aviation website or fill out our inquiry form to discover how we can support every stage of your journey, from concept to takeoff.',
+  },
+]
+
+// =============================================================================
+// What Is Business Aviation? A Beginner’s Guide to Private Aviation in Nigeria
+// =============================================================================
+// Migrated from ean.aero post 1122 (23 February 2026). Copy is reproduced as
+// published. The source marks its sections with bold paragraphs rather than
+// heading tags, so the numbered sections are set as h2 and the lettered
+// sub-sections of the "Business Aviation Cycle" as h3 — the outline the copy
+// already implies, made real so the page is navigable by assistive technology.
+// The FAQ was a numbered list of question/answer pairs; it is a definition list
+// here for the same reason.
+
+const WHAT_IS_BIZAV_BODY: ArticleBlock[] = [
+  {
+    type: 'lead',
+    text: 'If you’ve ever seen a private jet taxi past a commercial aircraft and wondered, “How does this actually work?” you’re not alone.',
+  },
+  {
+    type: 'paragraph',
+    text: 'It is a global network of specialized professionals, advanced technology, and logistics designed to do one thing: optimize time.',
+  },
+  {
+    type: 'paragraph',
+    text: 'If you are an aspiring owner or an industry hopeful, this guide breaks down the “invisible” mechanics of how the sector actually functions.',
+  },
+  {
+    type: 'image',
+    src: '/images/blog/business-aviation-hangar.jpg',
+    alt: 'The interior of EAN’s hangar, with a business jet centred between a light aircraft and a second jet under the roof trusses.',
+    width: 873,
+    height: 582,
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: '1. The Definition: It’s Not Just “Private Jets”',
+  },
+  {
+    type: 'paragraph',
+    text: 'Business aviation (often called “BizAv”) is a subset of general aviation that encompasses the use of aircraft for business or personal travel. While “private jets” get the headlines, the industry includes everything from single-engine pistons and rugged turboprops to long-range intercontinental jets and helicopters configured for luxury.',
+  },
+  {
+    type: 'paragraph',
+    text: 'Unlike commercial airlines, where you follow fixed schedules, business aviation is built around you, which offers the flexibility to fly when and where you want, paired with the premium onboard convenience of a private environment tailored to your journey.',
+  },
+  {
+    type: 'paragraph',
+    text: 'Think of it this way: commercial aviation is like taking a bus. Business aviation is like having your own car or hiring one that moves exactly when you need it.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: '2. Who Uses Business Aviation?',
+  },
+  {
+    type: 'paragraph',
+    text: 'It’s not just billionaires (though they’re definitely part of the ecosystem). Business aviation is used by:',
+  },
+  {
+    type: 'list',
+    items: [
+      'Corporate executives managing tight schedules',
+      'Governments and diplomatic teams',
+      'High-net-worth individuals (HNIs)',
+      'Entertainment professionals managing complex, multi-site schedules',
+      'Oil & gas, mining, and infrastructure companies',
+      'Medical evacuation teams (MEDEVAC)',
+    ],
+  },
+  {
+    type: 'paragraph',
+    text: 'An executive based in Lagos needs to visit Port Harcourt, Accra, and Abuja, all in one day. Commercial flights connectivity makes this nearly impossible. A chartered aircraft makes it seamless.',
+  },
+  {
+    type: 'image',
+    src: '/images/blog/business-aviation-acquisition.jpg',
+    alt: 'Two people shaking hands at the entrance to EAN Aviation’s office, beside the branded glass partition.',
+    width: 916,
+    height: 572,
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: '3. The Business Aviation Cycle: From Purchase to Takeoff',
+  },
+  {
+    type: 'paragraph',
+    text: 'Let’s walk through the full journey; this is where it gets interesting. For an aircraft to fly, an entire ecosystem of service providers must work in perfect synchronization.',
+  },
+  {
+    type: 'heading',
+    level: 3,
+    text: 'A. Aircraft Acquisition (Buying or Leasing)',
+  },
+  {
+    type: 'paragraph',
+    text: 'Owning an aircraft goes far beyond selecting and paying for one, it involves a series of financial, regulatory, and operational decisions.',
+  },
+  {
+    type: 'paragraph',
+    text: 'First, it starts with a decision: Do I buy, lease, or charter?',
+  },
+  {
+    type: 'list',
+    items: [
+      'Purchase → Long-term ownership',
+      'Lease → Medium-term flexibility',
+      'Charter → Pay per trip',
+    ],
+  },
+  {
+    type: 'paragraph',
+    text: 'At this stage, factors like travel purpose, aircraft size, range, operating cost and number of passengers.',
+  },
+  {
+    type: 'paragraph',
+    text: 'In addition, for those considering ownership, there are two key models:',
+  },
+  {
+    type: 'list',
+    items: [
+      'Full ownership, where you own 100% of the aircraft and have complete control over its use',
+      'Fractional ownership, where multiple parties share the cost and access, providing flexibility without full financial commitment',
+    ],
+  },
+  {
+    type: 'paragraph',
+    text: 'However, acquiring an aircraft is only the first step. Before it can operate, the aircraft must be:',
+  },
+  {
+    type: 'list',
+    items: [
+      'Registered with the relevant aviation authority',
+      'Certified as airworthy and compliant with safety regulations',
+      'Issued the required operational approvals or licenses based on usage — for private operations or reward-for-hire (commercial charter) services, such as an Air Operator Certificate (AOC) or Permit for Non-Commercial Flight (PNCF)',
+      'Supported with insurance, crew, and operational structure',
+    ],
+  },
+  {
+    type: 'paragraph',
+    text: 'This is where experienced operators and advisors (like EAN Aviation) play a critical role. We ensure that beyond acquisition, the aircraft is fully positioned for safe and compliant operations.',
+  },
+  {
+    type: 'heading',
+    level: 3,
+    text: 'B. Aircraft Management',
+  },
+  {
+    type: 'paragraph',
+    text: 'As mentioned earlier, owning an aircraft is one thing, while running it is another. Most owners do not want to manage the “headaches” of aviation (hiring pilots, scheduling maintenance, training and compliance). They hire a Management Company to handle the “Technical Mastery” of the asset. This is a massive sector for those interested in logistics and fleet operations.',
+  },
+  {
+    type: 'image',
+    src: '/images/blog/business-aviation-who-it-fits.jpg',
+    alt: 'Two EAN engineers in high-visibility shirts and ear defenders working on an aircraft’s nose landing gear on the ramp.',
+    width: 1364,
+    height: 768,
+  },
+  {
+    type: 'paragraph',
+    text: 'Aircraft management includes:',
+  },
+  {
+    type: 'list',
+    items: [
+      'Crew hiring and training',
+      'Aircraft and crew licensing',
+      'Maintenance scheduling',
+      'Regulatory compliance',
+      'Insurance and documentation',
+    ],
+  },
+  {
+    type: 'paragraph',
+    text: 'An aircraft owner may never directly deal with maintenance logs or crew rotations, a management company handles it all.',
+  },
+  {
+    type: 'heading',
+    level: 3,
+    text: 'C. Maintenance & Safety Checks',
+  },
+  {
+    type: 'paragraph',
+    text: 'Before any aircraft flies, it must be certified as safe by aircraft type-rated engineers.',
+  },
+  {
+    type: 'image',
+    src: '/images/blog/business-aviation-brake-shop.jpg',
+    alt: 'A technician operating a pedestal drilling machine in EAN Aviation’s aircraft brakes shop.',
+    width: 1920,
+    height: 1080,
+  },
+  {
+    type: 'paragraph',
+    text: 'An Approved Maintenance Organisation (AMO) is the technical heart of aviation operations. It is where licensed engineers and technicians maintain, repair, and overhaul aircraft to ensure airworthiness and regulatory compliance. For individuals passionate about aviation engineering, systems, and safety, the AMO represents the ultimate professional environment for technical mastery.',
+  },
+  {
+    type: 'paragraph',
+    text: 'This includes:',
+  },
+  {
+    type: 'list',
+    items: [
+      'Routine inspections',
+      'Component checks (like wheels, brakes, engines)',
+      'Non-Destructive Testing (NDT) for hidden faults',
+    ],
+  },
+  {
+    type: 'paragraph',
+    text: 'At EAN Aviation, this is handled through structured maintenance operations designed to ensure reliability and safety at every stage.',
+  },
+  {
+    type: 'heading',
+    level: 3,
+    text: 'D. The FBO (Fixed-Base Operator)',
+  },
+  {
+    type: 'paragraph',
+    text: 'Think of the FBO as a “private terminal.” It is the ground-based hub where aircraft are fueled, parked, and maintained. Before takeoff, everything comes together at the Fixed Base Operator (FBO), where passenger experience, aircraft handling, fueling, parking, maintenance coordination, and flight readiness all come together in one place. Some FBOs, like EAN Aviation, also extends this ecosystem to include office spaces and integrated aviation facilities, creating a complete environment for operators and clients.',
+  },
+  {
+    type: 'image',
+    src: '/images/blog/business-aviation-vip-lounge.jpg',
+    alt: 'EAN Aviation’s VIP lounge, lined with cream wing-back armchairs along a marble floor leading to the branded reception.',
+    width: 1920,
+    height: 1440,
+  },
+  {
+    type: 'paragraph',
+    text: 'Instead of crowded terminals, passengers enjoy:',
+  },
+  {
+    type: 'list',
+    items: [
+      'VIP treatment in a private lounge',
+      'Fast-track security',
+      'Concierge services',
+      'Inflight catering coordination',
+    ],
+  },
+  {
+    type: 'paragraph',
+    text: 'At the same time, critical ground and operational activities are executed with precision:',
+  },
+  {
+    type: 'list',
+    items: [
+      'Aircraft is positioned on the ramp',
+      'Fueling is completed',
+      'Baggage is handled',
+      'Flight plan is coordinated',
+      'Flight permits are secured',
+      'Air traffic clearance is obtained',
+    ],
+  },
+  {
+    type: 'image',
+    src: '/images/blog/business-aviation-operations-desk.jpg',
+    alt: 'EAN operations staff working a radio and reviewing paperwork at a desk overlooking the ramp.',
+    width: 1920,
+    height: 1080,
+  },
+  {
+    type: 'paragraph',
+    text: 'This is where timing and coordination are crucial, even small delays at this stage can impact the entire operation.',
+  },
+  {
+    type: 'paragraph',
+    text: 'At EAN Aviation, the VIP lounge experience is carefully curated based on client preferences, built from years of understanding passenger needs, while our ground handling and ramp operations ensure every aircraft arrival and departure is smooth, efficient, and on schedule.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: '4. Why Business Aviation Matters',
+  },
+  {
+    type: 'paragraph',
+    text: 'Business aviation isn’t just about luxury, it’s about efficiency and control. It allows:',
+  },
+  {
+    type: 'list',
+    items: [
+      'Faster decision-making',
+      'Access to remote locations',
+      'Increased productivity',
+      'Enhanced privacy and security',
+    ],
+  },
+  {
+    type: 'paragraph',
+    text: 'For many businesses, it’s not a cost, it’s a strategic advantage.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: '5. Where EAN Aviation Fits In',
+  },
+  {
+    type: 'paragraph',
+    text: 'At EAN Aviation, business aviation is delivered as an integrated experience, not fragmented services. From:',
+  },
+  {
+    type: 'list',
+    items: [
+      'Aircraft acquisition advisory',
+      'Maintenance and technical support',
+      'Ground handling and ramp operations',
+      'VIP lounge and passenger experience',
+      'Facility management and infrastructure',
+    ],
+  },
+  {
+    type: 'paragraph',
+    text: 'Everything works together to ensure seamless operations from arrival to departure.',
+  },
+  {
+    type: 'image',
+    src: '/images/blog/business-aviation-falcon-tow.jpg',
+    alt: 'A Falcon business jet under tow on the ramp by an EAN tug, with two ground crew aboard.',
+    width: 1364,
+    height: 768,
+  },
+  {
+    type: 'heading',
+    level: 3,
+    text: 'Final Thoughts',
+  },
+  {
+    type: 'paragraph',
+    text: 'The next time you see a private jet take off, remember, it’s not just a flight. It’s the result of a carefully orchestrated system designed to deliver precision, efficiency, and trust. And now, you understand how it all works.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'Frequently Asked Questions (FAQs)',
+  },
+  {
+    type: 'definitionList',
+    items: [
+      {
+        term: 'What is business aviation?',
+        text: 'Business aviation refers to private or chartered aircraft used for business or personal travel.',
+      },
+      {
+        term: 'How is business aviation different from commercial aviation?',
+        text: 'Commercial aviation follows fixed schedules, while business aviation offers flexibility and customization.',
+      },
+      {
+        term: 'What is an FBO?',
+        text: 'An FBO is a private terminal providing services such as fueling, parking, VIP lounges, and ground handling.',
+      },
+      {
+        term: 'Can individuals own aircraft in Nigeria?',
+        text: 'Yes, individuals and companies can own aircraft, subject to regulatory approvals and licensing.',
+      },
+    ],
+  },
+  {
+    type: 'cta',
+    text: 'Looking to explore business aviation or understand how it can work for you? Visit the EAN Aviation website or fill out our enquiry form to discover how we support every stage of your journey, from concept to takeoff.',
+  },
+]
+
+// =============================================================================
+// Safety Innovations in Business Aviation
+// =============================================================================
+// Migrated from ean.aero post 1079 (17 December 2025). Copy is reproduced as
+// published. Like the beginner's guide above, the source uses italic and bold
+// paragraphs where headings belong; the numbered sections are set as h2 here.
+// The post carries no body photography on WordPress — only its cover.
+
+const SAFETY_BODY: ArticleBlock[] = [
+  {
+    type: 'lead',
+    text: 'At EAN Aviation, safety is the cornerstone of our operations and a defining element of our leadership in business aviation in Nigeria.',
+  },
+  {
+    type: 'paragraph',
+    text: 'Whether supporting clients through our VIP lounge, FBO services, ground handling, ramp operations, or aircraft maintenance, safety remains our highest operational priority. Our Safety Management System (SMS) is aligned with international aviation safety standards and globally recognized frameworks, including ICAO recommendations, reinforcing EAN Aviation’s commitment to safe, compliant, and reliable business aviation operations in Nigeria.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: '1. Integrating SMS Across All Business Aviation Operations',
+  },
+  {
+    type: 'paragraph',
+    text: 'EAN Aviation embeds SMS into every part of our business, from aircraft handling to hangar operations, facility management, and engineering support. By fostering a culture of reporting, transparency, and continuous learning, our SMS empowers teams to prevent incidents before they occur, protecting passengers, aircraft, personnel, and infrastructure.',
+  },
+  {
+    type: 'callout',
+    title: 'Core strengths of SMS at EAN Aviation',
+    items: [
+      'Management Commitment: Leadership involvement drives accountability and reinforces our safety-first culture.',
+      'Proactive Risk Management: Early identification and mitigation of hazards across VIP, ramp, hangar, and technical operations.',
+      'Continuous Improvement: Lessons learned from operational and maintenance activities are integrated into safer, more efficient processes.',
+    ],
+  },
+  {
+    type: 'paragraph',
+    text: 'This alignment ensures compliance with best practices across the business aviation sector in West Africa.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: '2. Safety in VIP, Ramp, and Ground Handling Operations',
+  },
+  {
+    type: 'paragraph',
+    text: 'Our VIP lounge services, ramp operations, and ground handling teams follow strict procedures and communication protocols designed to reduce risk at every stage, from passenger movement to baggage handling to aircraft turnaround. Highly trained personnel ensure that safety and efficiency go hand in hand, delivering a seamless experience for private aviation clients.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: '3. Maintenance and Facility Safety',
+  },
+  {
+    type: 'paragraph',
+    text: 'Safety within aircraft maintenance and facility management directly influences operational reliability. Through structured inspections, preventive maintenance routines, and SMS-driven reporting, EAN minimizes downtime and ensures our hangar and support facilities operate at the highest safety standards.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: '4. Aligning Business Excellence and Safety Performance',
+  },
+  {
+    type: 'paragraph',
+    text: 'At EAN Aviation, safety is not a separate function, it is integral to our FBO operations, service quality, and business performance. A strong SMS enhances reliability, protects our reputation, and supports sustainable growth. Every team member, from engineers to lounge attendants, is part of our company-wide safety ecosystem.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'Conclusion',
+  },
+  {
+    type: 'paragraph',
+    text: 'EAN Aviation continues to set the benchmark for safe and reliable business aviation in Nigeria. Guided by a robust Safety Management System, supported by active leadership, and strengthened by continuous improvement, we safeguard passengers, personnel, and aircraft while reinforcing our position as a trusted AMO and FBO operator in the region.',
+  },
+  {
+    type: 'cta',
+    text: 'At EAN Aviation, safety is embedded in every aspect of how we support business aviation in Nigeria. From premium FBO and VIP lounge services to ground handling, ramp operations, aircraft maintenance, and inflight catering coordination, our teams deliver seamless, safety-driven solutions designed to meet the expectations of operators, owners, and high-value passengers.',
+  },
+]
+
+// =============================================================================
+// How Business Aviation Is Fueling Economic Growth in Africa
+// =============================================================================
+// Migrated from ean.aero post 703 (1 July 2025). Copy is reproduced as
+// published. The source opens with its own title repeated twice as h2 above the
+// first paragraph; both are dropped here because the page already renders the
+// title as the h1. Nothing else has been altered.
+
+const AFRICA_GROWTH_BODY: ArticleBlock[] = [
+  {
+    type: 'lead',
+    text: 'Flying is no longer just about reaching a destination. In today’s aviation landscape, business aircraft are equipped with high-speed internet, real-time communication, and digital tools that keep travelers connected and productive throughout their journey.',
+  },
+  {
+    type: 'paragraph',
+    text: 'This seamless connectivity has become especially critical for business travelers across Africa, where geography and infrastructure often pose challenges. Yet, with increased connectivity comes increased vulnerability. Sensitive data such as financial details, business strategies, flight plans, and private communications, are now routinely transmitted mid-flight. As aviation technology evolves, cybersecurity is no longer optional; it’s essential. Secure, dependable travel builds trust and ensures business continuity.',
+  },
+  {
+    type: 'paragraph',
+    text: 'At EAN Aviation, we believe business aviation is more than just a mode of transport. It’s a catalyst for Africa’s economic transformation that is connecting people, regions, and opportunities that would otherwise remain isolated.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'Connecting the Unconnected',
+  },
+  {
+    type: 'paragraph',
+    text: 'Business aviation is doing far more than ferrying executives between cities. It’s stitching together Africa’s vast and diverse landscape. In many parts of the continent, road and rail infrastructure is limited, especially in remote or rural regions. Business aviation fills these critical gaps, offering direct, time-saving access to areas that would otherwise be difficult or impossible to reach quickly.',
+  },
+  {
+    type: 'paragraph',
+    text: 'This improved access reshapes how businesses operate. Whether it’s a local entrepreneur distributing products or a multinational coordinating across borders, mobility is key. Business aviation enables faster meetings, more efficient decision-making, and agile logistics. For industries such as agriculture, mining, energy, and telecommunications, many of which function far from major urban centers, air access isn’t a luxury. It’s a necessity.',
+  },
+  {
+    type: 'paragraph',
+    text: 'In Nigeria, for instance, energy companies regularly deploy engineers and technicians to remote oilfields. Business aviation reduces response times and keeps operations running smoothly. In Rwanda, private aviation has helped health authorities quickly deliver medical supplies to rural clinics during disease outbreaks and natural disasters.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'Boosting Tourism and Local Economies',
+  },
+  {
+    type: 'paragraph',
+    text: 'Beyond commerce, business aviation is unlocking Africa’s vast tourism potential. Many top destinations, including wildlife reserves, heritage sites, and coastal retreats, are situated far from major airports. Private aviation provides flexible, direct access to these locations, opening them up to both domestic and international visitors.',
+  },
+  {
+    type: 'paragraph',
+    text: 'This improved access increases tourist spending and supports local jobs in hospitality, transportation, and tour operations. In Kenya, for example, charter flights have become a crucial component of luxury safari experiences, linking travelers directly to game reserves that would otherwise involve hours of overland travel. As a result, local communities benefit through employment opportunities and rising demand for locally sourced products and services.',
+  },
+  {
+    type: 'image',
+    src: '/images/blog/africa-growth-tourism.jpg',
+    alt: 'Two business travellers shaking hands on the ramp in front of a parked business jet, under the EAN Aviation “you first” lockup.',
+    width: 1920,
+    height: 1192,
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'A Signal to Investors',
+  },
+  {
+    type: 'paragraph',
+    text: 'A strong business aviation sector also signals a country’s readiness for investment. The ability to move quickly between regions demonstrates openness, efficiency, and logistical capability; qualities that appeal to investors.',
+  },
+  {
+    type: 'paragraph',
+    text: 'Reliable private aviation access reduces downtime, improves productivity, and enables faster deal-making. A well-developed aviation system also reflects broader economic maturity: stable infrastructure, forward-thinking policy, and alignment between public and private sectors. These are precisely the traits that encourage long-term investment and strategic partnerships.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'Supporting Resilience in Times of Crisis',
+  },
+  {
+    type: 'paragraph',
+    text: 'The COVID-19 pandemic highlighted just how vital business aviation can be during crises. While commercial aviation largely came to a halt, private aviation stepped up. It moved essential workers, delivered urgent medical supplies, and supported critical industries. Countries with established business aviation networks adapted faster and recovered more efficiently. In such moments, aviation is both a convenience and a lifeline.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'Job Creation and Local Impact',
+  },
+  {
+    type: 'paragraph',
+    text: 'As business aviation activity increases, the economic ripple effect reaches multiple sectors. Job creation follows in aircraft maintenance, ground handling, logistics, flight operations, and customer service—high-skill roles that strengthen the broader aviation ecosystem.',
+  },
+  {
+    type: 'paragraph',
+    text: 'The hospitality and service industries benefit as well. In towns near regional airstrips or secondary airports, aviation can revive local economies. It sparks demand for fuel, catering, repair services, and infrastructure development. These multipliers make business aviation a powerful driver of inclusive, sustainable growth.',
+  },
+  {
+    type: 'heading',
+    level: 2,
+    text: 'The Road Ahead',
+  },
+  {
+    type: 'paragraph',
+    text: 'Despite its promise, business aviation in Africa still faces real challenges. Regulatory hurdles, inconsistent policies, and underdeveloped infrastructure continue to slow growth and hinder regional integration.',
+  },
+  {
+    type: 'paragraph',
+    text: 'Unlocking the full potential of aviation-led development will require coordinated effort. Governments and private-sector leaders must streamline regulations, modernize airports, and invest in training and technology. With strategic investment and policy reform, business aviation can evolve from a niche service into a core engine of economic advancement.',
+  },
+  {
+    type: 'cta',
+    text: 'At EAN Aviation, we see this moment as a turning point. Business aviation isn’t just lifting off, it’s lifting economies. With collaboration and vision, it can become a cornerstone of Africa’s future.',
+  },
 ]
 
 /**
@@ -436,4 +1287,9 @@ export const ARTICLE_BODIES: Record<string, ArticleBlock[]> = {
   'understanding-ciq-business-aviation-international-flights': CIQ_BODY,
   'why-top-ceos-are-choosing-fbo-services-over-first-class': FBO_VS_FIRST_CLASS_BODY,
   'in-loving-memory-of-eyitayo-aiyetan': MEMORIAL_BODY,
+  'private-jet-whole-ownership-vs-fractional-ownership-in-west-africa-which-model-makes-business-sense':
+    OWNERSHIP_BODY,
+  'what-is-business-aviation-nigeria': WHAT_IS_BIZAV_BODY,
+  'safety-innovations-business-aviation-nigeria-ean-aviation': SAFETY_BODY,
+  'how-business-aviation-is-fueling-economic-growth-in-africa': AFRICA_GROWTH_BODY,
 }

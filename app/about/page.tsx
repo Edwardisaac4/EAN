@@ -129,10 +129,10 @@ export default function AboutPage() {
         {/* SECTION 1: Cinematic Hero */}
         <section
           ref={heroRef}
-          className="relative w-full h-[75vh] min-h-125 overflow-hidden bg-ean-navy flex items-center text-white"
+          className="relative w-full h-[75vh] min-h-125 overflow-hidden bg-[#08080a] flex items-center text-white border-b border-white/10"
         >
           {/* Parallax Background */}
-          <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%]">
+          <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
             <Image
               src="/images/hero/slide-2.jpg"
               alt="EAN Aviation executive private aircraft on the ramp at Lagos"
@@ -142,9 +142,10 @@ export default function AboutPage() {
               className="object-cover"
               quality={80}
             />
-            {/* Immersive overlay gradient (radial + linear dark wash) */}
-            <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-ean-navy/60 to-ean-navy/40" />
-            <div className="absolute inset-0 bg-radial-at-c from-transparent via-ean-navy/40 to-ean-navy/90" />
+            {/* Cinematic Obsidian Black luxury overlays */}
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-linear-to-b from-[#08080a]/80 via-transparent to-[#08080a]/90" />
+            <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 w-full pt-20">
@@ -163,7 +164,7 @@ export default function AboutPage() {
               </h1>
               <p
                 ref={subtitleRef}
-                className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-light max-w-2xl leading-relaxed"
+                className="font-ui text-base sm:text-lg md:text-xl text-white/80 max-w-2xl leading-relaxed"
               >
                 For over a decade, EAN Aviation has defined business flight in West Africa, 
                 combining state-of-the-art infrastructure with an unyielding commitment to safety and precision.
@@ -180,7 +181,7 @@ export default function AboutPage() {
               statsSection?.scrollIntoView({ behavior: 'smooth' });
             }}
           >
-            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-ean-muted-light">
+            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-white/60">
               Discover EAN
             </span>
             <ChevronDown className="w-5 h-5 text-ean-gold" />

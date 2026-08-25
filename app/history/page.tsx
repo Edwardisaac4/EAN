@@ -173,10 +173,10 @@ export default function HistoryPage() {
         {/* SECTION 1: Cinematic Hero */}
         <section
           ref={heroRef}
-          className="relative w-full h-[55vh] min-h-100 overflow-hidden bg-ean-navy flex items-center text-white"
+          className="relative w-full h-[55vh] min-h-100 overflow-hidden bg-[#08080a] flex items-center text-white border-b border-white/10"
         >
           {/* Parallax Background */}
-          <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%]">
+          <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
             <Image
               src="/images/hero/slide-4.jpg"
               alt="EAN Aviation terminal and hangar facilities at Murtala Muhammed Airport"
@@ -186,9 +186,10 @@ export default function HistoryPage() {
               className="object-cover"
               quality={80}
             />
-            {/* Immersive overlay gradient (radial + linear dark wash) */}
-            <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-ean-navy/60 to-ean-navy/40" />
-            <div className="absolute inset-0 bg-radial-at-c from-transparent via-ean-navy/40 to-ean-navy/90" />
+            {/* Cinematic Obsidian Black luxury overlays */}
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-linear-to-b from-[#08080a]/80 via-transparent to-[#08080a]/90" />
+            <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 w-full pt-20">
@@ -207,7 +208,7 @@ export default function HistoryPage() {
               </h1>
               <p
                 ref={subtitleRef}
-                className="font-ui text-base sm:text-lg text-ean-muted-light max-w-2xl leading-relaxed"
+                className="font-ui text-base sm:text-lg text-white/80 max-w-2xl leading-relaxed"
               >
                 A decade of pushing boundaries, elevating safety records, and creating a world-class business aviation hub in West Africa.
               </p>
@@ -223,7 +224,7 @@ export default function HistoryPage() {
               timelineSection?.scrollIntoView({ behavior: 'smooth' });
             }}
           >
-            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-ean-muted-light">
+            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-white/60">
               Explore History
             </span>
             <ChevronDown className="w-5 h-5 text-ean-gold" />
@@ -393,8 +394,9 @@ export default function HistoryPage() {
         </div>
 
         {/* SECTION 4: Premium Call to Action */}
-        <section className="bg-linear-to-r from-ean-navy to-ean-navy-mid py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
-          <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/5 blur-[120px] pointer-events-none" />
+        <section className="bg-[#08080a] py-20 sm:py-24 relative overflow-hidden border-t border-white/10">
+          <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/10 blur-[140px] pointer-events-none" />
+          <div className="absolute -top-48 -left-48 w-96 h-96 rounded-full bg-white/5 blur-[120px] pointer-events-none" />
 
           <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 text-center">
             <div className="max-w-3xl mx-auto space-y-8">
@@ -404,12 +406,12 @@ export default function HistoryPage() {
               <h2 className="font-display text-4xl sm:text-6xl font-light text-white leading-tight">
                 Pioneering the Skies of West Africa
               </h2>
-              <p className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-light max-w-2xl mx-auto leading-relaxed">
+              <p className="font-ui text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
                 Connect with our legacy. Secure direct airport handling, schedule executive jet charters, or inspect our AMO hangars at Lagos.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                 <Link href="/contact">
-                  <GoldButton className="w-full sm:w-auto">
+                  <GoldButton className="w-full sm:w-auto px-10 py-4 shadow-[0_4px_20px_rgba(196,149,42,0.35)] hover:shadow-[0_4px_30px_rgba(196,149,42,0.55)]">
                     Contact Us
                   </GoldButton>
                 </Link>

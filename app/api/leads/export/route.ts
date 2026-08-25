@@ -4,11 +4,18 @@
 // =============================================================================
 
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/auth-guard'
 import { exportLeadsCSV } from '@/lib/services/leads-service'
 import { dbError } from '@/lib/supabase/helpers'
 import type { LeadStatusEnum, LeadServiceEnum, LeadPriorityEnum } from '@/types/database'
 
 export async function GET(request: Request) {
+  // This route returns every lead as a single downloadable file, so it is the
+  // highest-value target on the API. It gets the same check as everything else,
+  // not a lighter one.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response
+
   try {
     const { searchParams } = new URL(request.url)
 

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import { adminSupabase } from '@/utils/supabase/admin'
-import { verifySessionToken, SESSION_COOKIE_NAME } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth-guard'
 
 interface RouteParams {
   params: Promise<{ slug: string }>
@@ -9,16 +8,8 @@ interface RouteParams {
 
 export async function PATCH(req: NextRequest, { params }: RouteParams) {
   try {
-    const cookieStore = await cookies()
-    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value
-    const payload = sessionCookie ? await verifySessionToken(sessionCookie) : null
-
-    if (!payload || payload.role !== 'admin') {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized. Valid admin session required.' },
-        { status: 401 }
-      )
-    }
+    const guard = await requireAdmin()
+    if (!guard.ok) return guard.response
 
     const { slug } = await params
 

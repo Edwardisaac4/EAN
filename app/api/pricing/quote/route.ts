@@ -9,26 +9,13 @@ import {
   updateLead,
 } from '@/lib/services/leads-service'
 import { leadTrackingSchema } from '@/lib/services/lead-input'
-
-// Simple IP rate limiter
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
-
-function isRateLimited(ip: string, limit = 20, windowMs = 60000): boolean {
-  const now = Date.now()
-  const record = rateLimitMap.get(ip)
-
-  if (!record || now > record.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + windowMs })
-    return false
-  }
-
-  if (record.count >= limit) {
-    return true
-  }
-
-  record.count += 1
-  return false
-}
+import {
+  clientIpFrom,
+  consumeRateLimit,
+  quoteKey,
+  QUOTE_MAX_SUBMISSIONS,
+  QUOTE_WINDOW_SECONDS,
+} from '@/lib/rate-limiter'
 
 /**
  * Contact details. The sections calculator posts this as `contact` and the
@@ -70,12 +57,28 @@ const quoteRequestSchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1'
+  // Shared, Postgres-backed counters. The previous implementation kept a
+  // module-level Map, which on Vercel means one bucket per warm lambda that
+  // empties on every cold start — so "20 per minute" was really "20 per minute
+  // per instance, sometimes". AGENTS.md §11 records removing exactly that
+  // pattern elsewhere; this route was missed. The Map also never evicted, so it
+  // grew with every distinct IP for the life of the instance.
+  const ip = clientIpFrom(request)
+  const rateCheck = await consumeRateLimit(
+    quoteKey(ip),
+    QUOTE_MAX_SUBMISSIONS,
+    QUOTE_WINDOW_SECONDS
+  )
 
-  if (isRateLimited(ip)) {
+  if (!rateCheck.isAllowed) {
     return NextResponse.json(
       { success: false, error: 'Rate limit exceeded. Please wait before submitting again.' },
-      { status: 429 }
+      {
+        status: 429,
+        headers: rateCheck.retryAfterSeconds
+          ? { 'Retry-After': String(rateCheck.retryAfterSeconds) }
+          : undefined,
+      }
     )
   }
 
