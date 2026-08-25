@@ -61,6 +61,9 @@ export function AdminSidebar() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [prevPathname, setPrevPathname] = useState(pathname);
+  // A failed sign-out left the admin looking at an authenticated portal with no
+  // indication the session is still live.
+  const [logoutError, setLogoutError] = useState('');
 
   // Close mobile drawer on route change without cascading effect render
   if (prevPathname !== pathname) {
@@ -69,17 +72,20 @@ export function AdminSidebar() {
   }
 
   const handleLogout = async () => {
+    setLogoutError('');
     try {
       const res = await fetch('/api/admin/logout', { method: 'POST' });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         console.error('Logout error:', data.error || `Logout failed with status ${res.status}`);
+        setLogoutError('Sign-out failed — you are still signed in. Please try again.');
         return;
       }
       router.replace('/admin/login');
       router.refresh();
     } catch (err) {
       console.error('Logout error:', err);
+      setLogoutError('Sign-out could not be reached — you are still signed in.');
     }
   };
 
@@ -220,6 +226,11 @@ export function AdminSidebar() {
               <LogOut className="w-4 h-4" />
             </button>
           </div>
+          {logoutError && (
+            <p role="alert" className="mt-2 text-[10px] text-red-400">
+              {logoutError}
+            </p>
+          )}
         </div>
       </aside>
     </>
