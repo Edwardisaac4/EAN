@@ -42,6 +42,17 @@ export const LEAD_WINDOW_SECONDS = 60 * 60
 export const AIRCRAFT_SEARCH_MAX = 30
 export const AIRCRAFT_SEARCH_WINDOW_SECONDS = 60
 
+/**
+ * Pricing quote calculator: 20 submissions per minute per IP.
+ *
+ * Same ceiling the route enforced before, now shared across instances. This
+ * endpoint writes a lead on success, so it is a write path wearing a
+ * calculator's clothes — the limit is the only thing between an unauthenticated
+ * caller and unbounded inserts into `leads`.
+ */
+export const QUOTE_MAX_SUBMISSIONS = 20
+export const QUOTE_WINDOW_SECONDS = 60
+
 type RpcRow = { is_allowed: boolean; retry_after_seconds: number }
 
 /**
@@ -86,6 +97,11 @@ export function leadKey(ip: string): string {
 /** Bucket key for the metered aircraft lookup proxy. */
 export function aircraftSearchKey(ip: string): string {
   return `aircraft:${normalise(ip)}`
+}
+
+/** Bucket key for the public pricing quote calculator — IP only, like leads. */
+export function quoteKey(ip: string): string {
+  return `quote:${normalise(ip)}`
 }
 
 /**

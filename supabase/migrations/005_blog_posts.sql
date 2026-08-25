@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS public.blog_posts (
 
 -- The slug is the public URL segment, so a duplicate would make one of the two
 -- posts permanently unreachable — .single() in getArticleData would error.
-DO $
+DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_constraint
@@ -55,11 +55,11 @@ BEGIN
   ) THEN
     ALTER TABLE public.blog_posts ADD CONSTRAINT blog_posts_slug_key UNIQUE (slug);
   END IF;
-END $;
+END $$;
 
 -- status is read as a two-value union in TypeScript ('draft' | 'published'), so
 -- the database has to actually guarantee that rather than trust the writer.
-DO $
+DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_constraint
@@ -69,7 +69,7 @@ BEGIN
     ALTER TABLE public.blog_posts
       ADD CONSTRAINT blog_posts_status_check CHECK (status IN ('draft', 'published'));
   END IF;
-END $;
+END $$;
 
 -- ============================================================================
 -- 3. INDEXES

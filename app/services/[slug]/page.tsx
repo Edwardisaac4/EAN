@@ -100,7 +100,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
       <main className="flex-1 flex flex-col bg-ean-surface text-ean-text-dark">
         {/* HERO BANNER SECTION */}
-        <section className="relative w-full min-h-[60vh] lg:min-h-[65vh] overflow-hidden bg-ean-navy flex items-center text-white pt-24 pb-16">
+        <section className="relative w-full min-h-[60vh] lg:min-h-[65vh] overflow-hidden bg-ean-obsidian flex items-center text-white pt-24 pb-16">
           {/* Background Image */}
           <div className="absolute inset-0 w-full h-full">
             <Image
@@ -109,12 +109,13 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center filter brightness-90"
-              quality={80}
+              className="object-cover object-center"
+              quality={85}
             />
-            {/* Dark Gradient Overlay */}
-            <div className="absolute inset-0 bg-linear-to-t from-ean-burgundy-dark via-ean-burgundy-deep/80 to-ean-burgundy-deep/50" />
-            <div className="absolute inset-0 bg-radial-at-c from-transparent via-ean-burgundy-dark/40 to-ean-burgundy-dark/90" />
+            {/* Balanced Obsidian Black gradient overlays — keeping imagery clear while ensuring text contrast */}
+            <div className="absolute inset-0 bg-black/25" />
+            <div className="absolute inset-0 bg-linear-to-r from-ean-obsidian/85 via-ean-obsidian/45 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-ean-obsidian/80 via-transparent to-black/20" />
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 w-full">
@@ -144,7 +145,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               </h1>
 
               {/* Short summary */}
-              <p className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-light leading-relaxed max-w-2xl">
+              <p className="font-ui text-base sm:text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl">
                 {service.short}
               </p>
 
@@ -168,7 +169,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
         {/* KEY HIGHLIGHTS BAR */}
         {service.stats && service.stats.length > 0 && (
-          <section className="bg-linear-to-r from-ean-burgundy-mid via-ean-burgundy-deep to-ean-burgundy-mid text-white border-y border-ean-gold/30 py-6 relative z-20">
+          <section className="bg-ean-obsidian-raised text-white border-y border-white/10 py-6 relative z-20">
             <div className="max-w-7xl mx-auto px-6 md:px-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-center divide-y sm:divide-y-0 sm:divide-x divide-white/10">
                 {service.stats.map((stat, sIdx) => (
@@ -202,39 +203,39 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                     <span className="font-ui text-xs font-semibold tracking-[0.25em] text-ean-gold uppercase">
                       Service Breakdown
                     </span>
-                    <h2 className="font-display text-3xl sm:text-4xl font-light text-ean-navy leading-tight">
+                    <h2 className="font-display text-3xl sm:text-4xl font-light text-slate-900 leading-tight">
                       Uncompromising Precision & Airside Excellence
                     </h2>
                   </div>
 
-                  <p className="font-ui text-base text-ean-muted-dark leading-relaxed">
+                  <p className="font-ui text-base text-slate-600 leading-relaxed">
                     {service.extendedDescription || service.short}
                   </p>
 
-                  <div className="p-6 bg-ean-surface dark:bg-ean-navy/5 border border-ean-border-light rounded-xs space-y-4">
-                    <h3 className="font-ui text-sm font-bold uppercase tracking-wider text-ean-navy flex items-center gap-2">
+                  <div className="p-6 bg-white border border-ean-border-light rounded-xs space-y-4 shadow-sm">
+                    <h3 className="font-ui text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-ean-gold" />
                       Operational Base & Facilities
                     </h3>
-                    <p className="font-ui text-xs sm:text-sm text-ean-muted-dark leading-relaxed">
+                    <p className="font-ui text-xs sm:text-sm text-slate-600 leading-relaxed">
                       All operations are conducted under strict regulatory guidelines at EAN Aviation&apos;s private terminal and maintenance hangar at Murtala Muhammed International Airport (MMIA), Ikeja, Lagos.
                     </p>
                   </div>
 
                   {/* 24/7 Operations Desk Callout */}
-                  <div className="p-6 bg-linear-to-br from-ean-burgundy-mid to-ean-burgundy-dark text-white rounded-xs border border-ean-gold/30 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg">
+                  <div className="p-6 bg-linear-to-br from-ean-obsidian-elevated to-ean-obsidian text-white rounded-xs border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg">
                     <div className="space-y-1 text-center sm:text-left">
                       <div className="font-display text-lg font-light text-white">
                         Require Immediate Flight Support?
                       </div>
-                      <p className="font-ui text-xs text-ean-muted-light">
+                      <p className="font-ui text-xs text-white/70">
                         Our 24/7 flight operations desk is ready to assist your dispatch.
                       </p>
                     </div>
 
                     <a
                       href="tel:+2348050333410"
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-ean-gold text-ean-navy font-semibold text-xs rounded-xs hover:bg-ean-gold-light transition-colors shrink-0"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-ean-gold text-ean-obsidian font-semibold text-xs rounded-xs hover:bg-ean-gold-light transition-colors shrink-0"
                     >
                       <Phone className="w-4 h-4" />
                       <span>+234 (0) 805 033 3410</span>
@@ -245,10 +246,10 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                 {/* Right Column: Features & Capabilities Card */}
                 <div className="lg:col-span-5 bg-white border border-ean-border-light p-6 sm:p-8 rounded-xs shadow-xl space-y-6">
                   <div className="border-b border-ean-border-light pb-4">
-                    <h3 className="font-display text-2xl font-light text-ean-navy">
+                    <h3 className="font-display text-2xl font-light text-slate-900">
                       Core Capabilities
                     </h3>
-                    <p className="font-ui text-xs text-ean-muted-dark mt-1">
+                    <p className="font-ui text-xs text-slate-500 mt-1">
                       Key features included with {service.name}
                     </p>
                   </div>
@@ -259,7 +260,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                         <div className="p-1 bg-ean-gold/15 text-ean-gold rounded-full shrink-0 mt-0.5">
                           <CheckCircle2 className="w-4 h-4" />
                         </div>
-                        <span className="font-ui text-sm text-ean-muted-dark leading-snug">
+                        <span className="font-ui text-sm text-slate-600 leading-snug">
                           {feat}
                         </span>
                       </li>
@@ -267,7 +268,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                   </ul>
 
                   <div className="pt-6 border-t border-ean-border-light space-y-4">
-                    <div className="flex items-center justify-between text-xs text-ean-muted-dark font-ui">
+                    <div className="flex items-center justify-between text-xs text-slate-500 font-ui">
                       <span>Status:</span>
                       <span className="text-emerald-600 font-bold uppercase tracking-wider flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -295,12 +296,12 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                     <span className="font-ui text-xs font-semibold tracking-[0.25em] text-ean-gold uppercase">
                       Comprehensive Portfolio
                     </span>
-                    <h3 className="font-display text-2xl sm:text-3xl font-light text-ean-navy">
+                    <h3 className="font-display text-2xl sm:text-3xl font-light text-slate-900">
                       Explore Other Aviation Services
                     </h3>
                   </div>
 
-                  <Link href="/services" className="font-ui text-xs font-semibold text-ean-gold hover:text-ean-navy flex items-center gap-1 uppercase tracking-wider">
+                  <Link href="/services" className="font-ui text-xs font-semibold text-ean-gold hover:text-slate-900 flex items-center gap-1 uppercase tracking-wider">
                     <span>View Full Directory</span>
                     <ChevronRight className="w-4 h-4" />
                   </Link>
@@ -314,15 +315,15 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                         <div className="bg-white border border-ean-border-light hover:border-ean-gold/60 p-6 rounded-xs shadow-md hover:shadow-xl transition-all duration-300 space-y-4 h-full flex flex-col justify-between">
                           <div className="space-y-3">
                             <div className="flex items-center justify-between">
-                              <div className="p-2.5 bg-ean-navy/5 text-ean-navy rounded-xs group-hover:bg-ean-gold group-hover:text-ean-navy transition-colors">
+                              <div className="p-2.5 bg-ean-obsidian/5 text-ean-obsidian rounded-xs group-hover:bg-ean-gold group-hover:text-ean-obsidian transition-colors">
                                 <OtherIcon className="w-4 h-4" />
                               </div>
                               <ChevronRight className="w-4 h-4 text-ean-gold group-hover:translate-x-1 transition-transform" />
                             </div>
-                            <h4 className="font-display text-xl font-semibold text-ean-navy group-hover:text-ean-gold transition-colors">
+                            <h4 className="font-display text-xl font-semibold text-slate-900 group-hover:text-ean-gold transition-colors">
                               {other.name}
                             </h4>
-                            <p className="font-ui text-xs text-ean-muted-dark line-clamp-2">
+                            <p className="font-ui text-xs text-slate-600 line-clamp-2">
                               {other.short}
                             </p>
                           </div>

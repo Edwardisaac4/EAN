@@ -4,6 +4,7 @@
 // =============================================================================
 
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/auth-guard'
 import { getLeadById, updateLead, addLeadNote, LEAD_NOT_FOUND } from '@/lib/services/leads-service'
 import { dbError, notFound, badRequest } from '@/lib/supabase/helpers'
 
@@ -15,6 +16,9 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response
+
   try {
     const { id } = await params
     const { lead, error } = await getLeadById(id)
@@ -38,6 +42,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response
+
   try {
     const { id } = await params
     let body: Record<string, unknown>

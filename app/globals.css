@@ -12,6 +12,21 @@
   --color-ean-white: #ffffff;
   --color-ean-surface: #fdf6f7;
 
+  /*
+   * Obsidian — the cinematic near-black used by the page heroes and the dark
+   * service cards. Deliberately NOT part of the burgundy ramp above: those are
+   * wine-tinted (#070103 upward), while these are neutral with a faint blue
+   * cast, which is what keeps hero photography from picking up a red wash.
+   * Substituting ean-black-pure here would change the hue, not just the name.
+   *
+   * Ordered as an elevation ramp, darkest first — the dark cards gradient from
+   * -highlight at the top edge down to the base.
+   */
+  --color-ean-obsidian: #08080a;
+  --color-ean-obsidian-raised: #0a0a0d;
+  --color-ean-obsidian-elevated: #0d0d12;
+  --color-ean-obsidian-highlight: #0f0f14;
+
   /* Burgundy Palette - Toned down to Footer's deep wine-black shades */
   --color-ean-burgundy: #2d0710;
   --color-ean-burgundy-mid: #2d0710;
@@ -36,6 +51,15 @@
   /* Borders */
   --color-ean-border-dark: rgba(255, 255, 255, 0.1);
   --color-ean-border-light: #f0d8dc;
+
+  /*
+   * Gold elevation. Both are the ean-gold #c4952a channel values at two
+   * strengths — the resting and hover states of a gold CTA. Named so the alpha
+   * ramp lives here rather than being re-typed as an arbitrary shadow value at
+   * each call site.
+   */
+  --shadow-ean-gold: 0 4px 20px rgba(196, 149, 42, 0.35);
+  --shadow-ean-gold-strong: 0 4px 30px rgba(196, 149, 42, 0.55);
 
   /* Typography */
   --font-display: var(--font-display), serif;
