@@ -6,10 +6,13 @@
 // client in lib/graphql-client.ts is the only consumer and sends a fixed set
 // of documents.
 //
-// Access is gated by middleware.ts (admin session required) because every
-// response here contains lead PII.
+// Access is gated twice — by proxy.ts and by requireAdmin() in each handler —
+// because every response here contains lead PII. The GET is guarded too: it
+// only returns a schema summary, but that summary is a map of the mutations
+// available against the lead table and is not worth publishing.
 
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/auth-guard'
 import {
   getLeadAnalytics,
   getLeads,
@@ -25,7 +28,6 @@ import {
   requiredString,
 } from '@/lib/services/lead-input'
 import { mapLeadRowToUiLead, mapLeadRowsToUiLeads } from '@/lib/mappers/lead-mapper'
-import { adminGuard } from '@/lib/api-auth'
 import { SERVICE_LABELS } from '@/lib/admin-leads-data';import type { ServiceCategory } from '@/lib/admin-leads-data'
 import type {
   LeadPriorityEnum,
@@ -62,11 +64,12 @@ async function fetchUiLeadById(id: string) {
 }
 
 export async function POST(request: Request) {
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response
+
   try {
     // Every branch below reads or writes lead PII, so the session is verified in
     // the handler as well as in proxy.ts.
-    const denied = await adminGuard()
-    if (denied) return denied
 
     let body: GraphQLBody
     try {
@@ -280,6 +283,9 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response
+
   return NextResponse.json({
     message: 'EAN Aviation admin lead API endpoint',
     schema: {

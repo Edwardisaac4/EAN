@@ -4,6 +4,7 @@
 // =============================================================================
 
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/auth-guard'
 import { createLead, getLeads, findRecentDuplicateLead } from '@/lib/services/leads-service'
 import {
   optionalString,
@@ -20,7 +21,6 @@ import {
   LEAD_WINDOW_SECONDS,
 } from '@/lib/rate-limiter'
 import { dbError, badRequest } from '@/lib/supabase/helpers'
-import { adminGuard } from '@/lib/api-auth'
 import type { LeadSubmissionPayload, LeadServiceEnum, LeadStatusEnum, LeadPriorityEnum } from '@/types/database'
 
 /** Ceiling on a single page of leads, so one request cannot pull the table. */
@@ -40,14 +40,17 @@ function clampInteger(
 // ---------------------------------------------------------------------------
 // GET /api/leads — fetch leads (admin, paginated, filterable)
 // ---------------------------------------------------------------------------
+//
+// Admin-only, unlike the POST below it. This is the one file on the API where
+// the two verbs have opposite audiences: GET returns the lead table, POST is the
+// public contact form. Guarding the module rather than the handler would take
+// the website's enquiry form offline.
 
 export async function GET(request: Request) {
-  try {
-    // Lead rows are PII. proxy.ts gates this prefix too; the check is repeated
-    // here so the route is not left open by a matcher change or a proxy bypass.
-    const denied = await adminGuard()
-    if (denied) return denied
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response
 
+  try {
     const { searchParams } = new URL(request.url)
 
     const status   = searchParams.get('status') as LeadStatusEnum | 'all' | null

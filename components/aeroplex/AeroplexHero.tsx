@@ -87,7 +87,7 @@ export default function AeroplexHero() {
     <>
       <section
         ref={heroRef}
-        className="relative w-full h-[76vh] min-h-130 max-h-180 overflow-hidden bg-[#08080a] flex items-end text-white"
+        className="relative w-full h-[76vh] min-h-130 max-h-180 overflow-hidden bg-ean-obsidian flex items-end text-white"
       >
         {/* Background Image Container */}
         <div ref={heroBgRef} className="absolute inset-0 w-full h-[118%] top-[-9%] select-none">
@@ -101,8 +101,8 @@ export default function AeroplexHero() {
             className="object-cover object-center"
           />
           {/* Obsidian black overlays matching reference */}
-          <div className="absolute inset-0 bg-linear-to-t from-[#08080a] via-[#08080a]/75 via-40% to-black/35" />
-          <div className="absolute inset-0 bg-linear-to-r from-[#08080a]/92 via-[#08080a]/55 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-ean-obsidian via-ean-obsidian/75 via-40% to-black/35" />
+          <div className="absolute inset-0 bg-linear-to-r from-ean-obsidian/92 via-ean-obsidian/55 to-transparent" />
         </div>
 
         {/* Hero Title & Lede Content */}
@@ -139,7 +139,7 @@ export default function AeroplexHero() {
       </section>
 
       {/* KPI / Spec Bar with Obsidian Black styling */}
-      <div className="relative z-20 bg-[#0a0a0d] border-y border-white/10">
+      <div className="relative z-20 bg-ean-obsidian-raised border-y border-white/10">
         <dl className="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-white/10">
           {AEROPLEX_FACTS.map((fact) => {
             const Icon = fact.iconName ? factIcons[fact.iconName] : undefined;

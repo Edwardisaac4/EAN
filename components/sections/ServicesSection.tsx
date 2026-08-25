@@ -88,7 +88,7 @@ export default function ServicesSection() {
     <section
       ref={containerRef}
       id="services-section"
-      className="bg-linear-to-b from-ean-burgundy-dusk via-ean-burgundy-dark to-ean-burgundy-mid text-white py-20 sm:py-24 relative overflow-hidden border-y border-white/10 select-none"
+      className="bg-linear-to-b from-ean-obsidian-raised via-ean-obsidian to-ean-obsidian-elevated text-white py-20 sm:py-24 relative overflow-hidden border-y border-white/10 select-none"
     >
       {/* Subtle Ambient Radial Gold Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-180 h-180 rounded-full bg-ean-gold/5 blur-[140px] pointer-events-none" />
@@ -154,12 +154,12 @@ export default function ServicesSection() {
                   onClick={() => setActiveTab(idx)}
                   className={`relative z-10 flex items-center gap-2.5 px-5 py-3 rounded-xs font-ui text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap transition-all duration-300 cursor-pointer ${
                     isActive
-                      ? 'text-ean-navy font-semibold'
-                      : 'text-ean-muted-light hover:text-white bg-ean-navy-mid/70 border border-white/10 hover:border-white/25'
+                      ? 'text-ean-obsidian font-semibold'
+                      : 'text-zinc-400 hover:text-white bg-ean-obsidian-elevated/80 border border-white/10 hover:border-white/25'
                   }`}
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    <IconComp size={16} className={isActive ? 'text-ean-navy' : 'text-ean-gold'} />
+                    <IconComp size={16} className={isActive ? 'text-ean-obsidian' : 'text-ean-gold'} />
                     <span>{srv.tabLabel || srv.name}</span>
                   </span>
                 </button>
@@ -168,7 +168,7 @@ export default function ServicesSection() {
           </div>
 
           {/* Active Service Showcase Spotlight (White Container Box) */}
-          <div className="bg-white border-t-4 border-t-ean-navy border-x border-b border-slate-200 rounded-xs overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-12 relative text-slate-900">
+          <div className="bg-white border-t-4 border-t-ean-obsidian border-x border-b border-slate-200 rounded-xs overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-12 relative text-slate-900">
             {/* Keying on the slug replays the CSS enter animation per service */}
             <div
               key={activeService.slug}
@@ -177,19 +177,19 @@ export default function ServicesSection() {
               {/* Left Column: Details & Capabilities */}
               <div className="lg:col-span-7 space-y-6">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="font-mono text-xs font-bold tracking-widest text-ean-navy bg-ean-navy/10 border border-ean-navy/20 px-3 py-1 rounded-xs uppercase">
+                  <span className="font-mono text-xs font-bold tracking-widest text-ean-obsidian bg-ean-obsidian/5 border border-ean-obsidian/15 px-3 py-1 rounded-xs uppercase">
                     {activeService.eyebrow || `0${activeTab + 1} / 0${SERVICES_DATA.length}`}
                   </span>
                   {activeService.stats?.[0] && (
                     <span className="font-ui text-xs font-medium text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-xs flex items-center gap-1.5">
-                      <Sparkles size={12} className="text-ean-navy" />
+                      <Sparkles size={12} className="text-ean-gold" />
                       <span>{activeService.stats[0]}</span>
                     </span>
                   )}
                 </div>
 
                 <div className="space-y-3">
-                  <h3 className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-ean-text-dark leading-tight">
+                  <h3 className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 leading-tight">
                     {activeService.name}
                   </h3>
                   <p className="font-ui text-base sm:text-lg text-slate-600 leading-relaxed">
@@ -199,13 +199,13 @@ export default function ServicesSection() {
 
                 {/* Features Grid */}
                 <div className="border-t border-slate-200 pt-6 space-y-3">
-                  <span className="font-ui text-xs font-bold tracking-wider text-ean-navy uppercase block">
+                  <span className="font-ui text-xs font-bold tracking-wider text-slate-900 uppercase block">
                     Operational Highlights
                   </span>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-ui text-sm text-slate-800">
                     {activeService.features.map((feat, fIdx) => (
                       <li key={fIdx} className="flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-ean-navy shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-4 h-4 text-ean-gold shrink-0 mt-0.5" />
                         <span className="leading-snug">{feat}</span>
                       </li>
                     ))}
@@ -249,17 +249,17 @@ export default function ServicesSection() {
                     loading="lazy"
                   />
                   {/* Soft Shadow Gradient Overlay */}
-                  <div className="absolute inset-0 bg-linear-to-t from-ean-black/80 via-ean-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
 
                   {/* Top Icon Badge - Crisp White Glass */}
-                  <div className="absolute top-4 left-4 p-3.5 bg-white/95 border border-slate-200 text-ean-navy rounded-xs shadow-md backdrop-blur-xs">
+                  <div className="absolute top-4 left-4 p-3.5 bg-white/95 border border-slate-200 text-ean-obsidian rounded-xs shadow-md backdrop-blur-xs">
                     <ActiveIcon size={24} />
                   </div>
 
                   {/* Bottom Status Pill - Crisp White Glass */}
                   <div className="absolute bottom-4 left-4 right-4 bg-white/95 border border-slate-200 backdrop-blur-xs p-3 rounded-xs flex items-center justify-between text-xs font-ui shadow-lg">
                     <span className="text-slate-900 font-semibold truncate">{activeService.name}</span>
-                    <span className="flex items-center gap-1.5 text-ean-navy shrink-0 font-mono text-[10px] uppercase font-bold tracking-wider">
+                    <span className="flex items-center gap-1.5 text-ean-obsidian shrink-0 font-mono text-[10px] uppercase font-bold tracking-wider">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                       24/7 Active
                     </span>

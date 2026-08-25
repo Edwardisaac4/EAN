@@ -6,14 +6,15 @@
 // never disagree on a number.
 
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/auth-guard'
 import { getLeadAnalytics } from '@/lib/services/leads-service'
 import { dbError } from '@/lib/supabase/helpers'
-import { adminGuard } from '@/lib/api-auth'
 
 export async function GET() {
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response
+
   try {
-    const denied = await adminGuard()
-    if (denied) return denied
 
     const { analytics, error } = await getLeadAnalytics()
 

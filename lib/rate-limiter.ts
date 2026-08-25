@@ -43,11 +43,15 @@ export const AIRCRAFT_SEARCH_MAX = 30
 export const AIRCRAFT_SEARCH_WINDOW_SECONDS = 60
 
 /**
- * Pricing quote: public, writes a lead, and sends an email on a new one, so the
- * budget is close to the lead form's rather than a per-instance courtesy limit.
+ * Pricing quote calculator: 20 submissions per minute per IP.
+ *
+ * Same ceiling the route enforced before, now shared across instances. This
+ * endpoint writes a lead on success, so it is a write path wearing a
+ * calculator's clothes — the limit is the only thing between an unauthenticated
+ * caller and unbounded inserts into `leads`.
  */
-export const QUOTE_MAX_REQUESTS = 20
-export const QUOTE_WINDOW_SECONDS = 60 * 60
+export const QUOTE_MAX_SUBMISSIONS = 20
+export const QUOTE_WINDOW_SECONDS = 60
 
 type RpcRow = { is_allowed: boolean; retry_after_seconds: number }
 
@@ -95,7 +99,7 @@ export function aircraftSearchKey(ip: string): string {
   return `aircraft:${normalise(ip)}`
 }
 
-/** Bucket key for a pricing-portal quote submission. */
+/** Bucket key for the public pricing quote calculator — IP only, like leads. */
 export function quoteKey(ip: string): string {
   return `quote:${normalise(ip)}`
 }

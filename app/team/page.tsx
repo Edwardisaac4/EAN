@@ -104,25 +104,26 @@ export default function TeamPage() {
       <Navbar />
 
       <main className="flex-1 flex flex-col bg-ean-black text-white">
-        {/* SECTION 1: Deep Midnight Cinematic Hero */}
+        {/* SECTION 1: Obsidian Black Cinematic Hero */}
         <section
           ref={heroRef}
-          className="relative w-full h-[60vh] min-h-110 overflow-hidden bg-linear-to-b from-ean-burgundy-night via-ean-burgundy-deep to-ean-burgundy-mid flex items-center border-b border-white/10"
+          className="relative w-full h-[75vh] min-h-125 overflow-hidden bg-ean-obsidian flex items-center text-white border-b border-white/10"
         >
           {/* Parallax Background */}
-          <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%]">
+          <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
             <Image
               src="/images/contact-cta.jpg"
               alt="EAN Aviation executive personnel at runway sunset"
               fill
               sizes="100vw"
               priority
-              className="object-cover"
+              className="object-cover object-center"
               quality={80}
             />
-            {/* Immersive dark radial & linear overlay gradients */}
-            <div className="absolute inset-0 bg-linear-to-t from-ean-black via-ean-burgundy-deep/80 to-ean-burgundy-night/90" />
-            <div className="absolute inset-0 bg-radial-at-c from-transparent via-ean-burgundy-night/60 to-ean-burgundy-night/95" />
+            {/* Cinematic Obsidian Black luxury overlays */}
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-linear-to-b from-ean-obsidian/80 via-transparent to-ean-obsidian/90" />
+            <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 w-full pt-20">
@@ -132,19 +133,19 @@ export default function TeamPage() {
                 className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase flex items-center gap-2"
               >
                 <Users className="w-4 h-4 text-ean-gold" />
-                Executive Leadership & Management
+                Leadership & Governance
               </p>
               <h1
                 ref={titleRef}
-                className="font-display text-4xl sm:text-5xl md:text-6xl font-light text-white leading-[1.1]"
+                className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white leading-[1.1]"
               >
-                Leadership & Governance
+                The Minds Behind the Mission
               </h1>
               <p
                 ref={subtitleRef}
-                className="font-ui text-base sm:text-lg text-ean-muted-light max-w-2xl leading-relaxed"
+                className="font-ui text-base sm:text-lg md:text-xl text-white/80 max-w-2xl leading-relaxed"
               >
-                Meet the Seasoned aviation executives, captains, and engineers steering EAN Aviation toward new frontiers of growth, safety, and operational precision in West Africa.
+                Meet the seasoned aviation executives, captains, and engineers steering EAN Aviation toward new frontiers of growth, safety, and operational precision in West Africa.
               </p>
             </div>
           </div>
@@ -158,7 +159,7 @@ export default function TeamPage() {
               ceoSection?.scrollIntoView({ behavior: 'smooth' });
             }}
           >
-            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-ean-muted-light">
+            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-white/60">
               Meet Leadership
             </span>
             <ChevronDown className="w-5 h-5 text-ean-gold" />

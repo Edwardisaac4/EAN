@@ -434,7 +434,7 @@ export const SERVICES_DATA: ServiceRichData[] = [
     primaryButtonText: "MAKE AN INQUIRY",
     primaryButtonHref: "/contact?service=fbo-ground-support",
     secondaryButtonText: "BUILD YOUR QUOTE",
-    secondaryButtonHref: "/contact?service=fbo-ground-support&action=quote",
+    secondaryButtonHref: "/pricing",
   },
   {
     slug: "aircraft-maintenance",
@@ -567,7 +567,7 @@ export const ARTICLES_DATABASE: Article[] = [
       "CIQ — Customs, Immigration, and Quarantine — is the gateway to international business aviation. Understand what CIQ means, why it matters, and how EAN Aviation’s FBO services ensure your passengers clear borders efficiently and professionally.",
     publishedAt: "July 8, 2026",
     readTime: "9 min read",
-    image: "/images/about-jet.jpg",
+    image: "/images/blog/ciq-passenger-arrival.jpg",
     isFeatured: true,
   },
   {
@@ -578,7 +578,16 @@ export const ARTICLES_DATABASE: Article[] = [
       "Honouring Eyitayo Aiyetan — Head of FBO Operations at EAN Aviation, a consummate aviation professional, mentor and bridge-builder across West and Central Africa.",
     publishedAt: "July 7, 2026",
     readTime: "4 min read",
-    image: "/images/runway.jpg",
+    // Cut from the 2333×3500 studio original as a head-and-shoulders landscape
+    // (1920×1029) rather than shipped full-height: the cover frame is landscape,
+    // and a centre crop of the standing portrait framed his folded arms instead
+    // of his face.
+    //
+    // Named -cover, not -portrait, deliberately. The first attempt replaced the
+    // full-length file in place, and because images.minimumCacheTTL is a year
+    // and the optimiser keys on (url, w, q), the old arms-only derivative kept
+    // being served from cache. Re-crop this and you must rename it too.
+    image: "/images/blog/tayo-aiyetan-cover.jpg",
   },
   {
     slug: "why-top-ceos-are-choosing-fbo-services-over-first-class",
@@ -588,7 +597,48 @@ export const ARTICLES_DATABASE: Article[] = [
       "Discover why top CEOs and executives are ditching first-class airline seats for FBO services. From time efficiency and privacy to productivity and prestige — here’s the business case for choosing FBO over commercial aviation.",
     publishedAt: "May 8, 2026",
     readTime: "6 min read",
-    image: "/images/charter-cabin.jpg",
+    image: "/images/blog/fbo-hondajet-departure.jpg",
+  },
+  {
+    slug: "private-jet-whole-ownership-vs-fractional-ownership-in-west-africa-which-model-makes-business-sense",
+    title:
+      "Private Jet Whole Ownership vs. Fractional Ownership in West Africa: Which Model Makes Business Sense?",
+    category: "Business Aviation",
+    excerpt:
+      "In Nigeria’s high-stakes business environment, a private aircraft is no longer just a trophy asset. For executives in oil and gas, banking, and telecoms, it is a productivity multiplier.",
+    publishedAt: "April 20, 2026",
+    readTime: "6 min read",
+    image: "/images/blog/ownership-whole.jpg",
+  },
+  {
+    slug: "what-is-business-aviation-nigeria",
+    title: "What Is Business Aviation? A Beginner’s Guide to Private Aviation in Nigeria",
+    category: "Business Aviation",
+    excerpt:
+      "If you’ve ever seen a private jet taxi past a commercial aircraft and wondered, “How does this actually work?” you’re not alone. This guide breaks down the network of specialists, technology and logistics built to do one thing: optimise time.",
+    publishedAt: "February 23, 2026",
+    readTime: "8 min read",
+    image: "/images/blog/business-aviation-definition.jpg",
+  },
+  {
+    slug: "safety-innovations-business-aviation-nigeria-ean-aviation",
+    title: "Safety Innovations in Business Aviation: How EAN Aviation Leads in Nigeria",
+    category: "Business Aviation",
+    excerpt:
+      "Safety is the cornerstone of EAN Aviation’s operations, from the VIP lounge to the ramp to the hangar. How a Safety Management System aligned with ICAO recommendations underpins business aviation in Nigeria.",
+    publishedAt: "December 17, 2025",
+    readTime: "3 min read",
+    image: "/images/blog/safety-innovations.jpg",
+  },
+  {
+    slug: "how-business-aviation-is-fueling-economic-growth-in-africa",
+    title: "How Business Aviation Is Fueling Economic Growth in Africa",
+    category: "Business Aviation",
+    excerpt:
+      "Business aviation is more than a mode of transport. It is a catalyst for Africa’s economic transformation — connecting people, regions and opportunities that would otherwise remain isolated.",
+    publishedAt: "July 1, 2025",
+    readTime: "6 min read",
+    image: "/images/blog/africa-growth-cover.jpg",
   },
 ];
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import type { ArticleBlock } from '@/lib/blog-content';
 
 interface ArticleBodyProps {
@@ -163,6 +164,33 @@ function Block({ block }: { block: ArticleBlock }) {
               </tbody>
             </table>
           </div>
+          {block.caption && (
+            <figcaption className="font-ui text-xs text-ean-muted-dark italic">
+              {block.caption}
+            </figcaption>
+          )}
+        </figure>
+      );
+
+    case 'image':
+      return (
+        <figure className="my-8 space-y-3">
+          {/*
+            Intrinsic sizing rather than a fixed-height box: these came from
+            WordPress at every aspect ratio from 4:3 to panoramic, and forcing
+            them into one crop box would cut the subject out of half of them.
+            quality 80 is the content-imagery value whitelisted in
+            next.config.ts — anything not in that list is served as a 400.
+          */}
+          <Image
+            src={block.src}
+            alt={block.alt}
+            width={block.width}
+            height={block.height}
+            sizes="(max-width: 896px) 100vw, 896px"
+            quality={80}
+            className="w-full h-auto rounded-xs border border-ean-border-light bg-black/5"
+          />
           {block.caption && (
             <figcaption className="font-ui text-xs text-ean-muted-dark italic">
               {block.caption}
