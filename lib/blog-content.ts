@@ -733,6 +733,15 @@ const OWNERSHIP_BODY: ArticleBlock[] = [
 // already implies, made real so the page is navigable by assistive technology.
 // The FAQ was a numbered list of question/answer pairs; it is a definition list
 // here for the same reason.
+//
+// Three grammar slips are corrected rather than carried over, on the same basis
+// as the CIQ punctuation fixes at the top of this file — each is reader-visible
+// and none changes the meaning:
+//   * "Commercial flights connectivity" -> "Commercial flight connectivity".
+//   * "At this stage, factors like travel purpose, …and number of passengers."
+//     was a sentence with no verb; it now ends "…all come into play."
+//   * "Some FBOs, like EAN Aviation, also extends" -> "also extend", to agree
+//     with the plural subject.
 
 const WHAT_IS_BIZAV_BODY: ArticleBlock[] = [
   {
@@ -793,7 +802,7 @@ const WHAT_IS_BIZAV_BODY: ArticleBlock[] = [
   },
   {
     type: 'paragraph',
-    text: 'An executive based in Lagos needs to visit Port Harcourt, Accra, and Abuja, all in one day. Commercial flights connectivity makes this nearly impossible. A chartered aircraft makes it seamless.',
+    text: 'An executive based in Lagos needs to visit Port Harcourt, Accra, and Abuja, all in one day. Commercial flight connectivity makes this nearly impossible. A chartered aircraft makes it seamless.',
   },
   {
     type: 'image',
@@ -834,7 +843,7 @@ const WHAT_IS_BIZAV_BODY: ArticleBlock[] = [
   },
   {
     type: 'paragraph',
-    text: 'At this stage, factors like travel purpose, aircraft size, range, operating cost and number of passengers.',
+    text: 'At this stage, factors like travel purpose, aircraft size, range, operating cost and number of passengers all come into play.',
   },
   {
     type: 'paragraph',
@@ -941,7 +950,7 @@ const WHAT_IS_BIZAV_BODY: ArticleBlock[] = [
   },
   {
     type: 'paragraph',
-    text: 'Think of the FBO as a “private terminal.” It is the ground-based hub where aircraft are fueled, parked, and maintained. Before takeoff, everything comes together at the Fixed Base Operator (FBO), where passenger experience, aircraft handling, fueling, parking, maintenance coordination, and flight readiness all come together in one place. Some FBOs, like EAN Aviation, also extends this ecosystem to include office spaces and integrated aviation facilities, creating a complete environment for operators and clients.',
+    text: 'Think of the FBO as a “private terminal.” It is the ground-based hub where aircraft are fueled, parked, and maintained. Before takeoff, everything comes together at the Fixed Base Operator (FBO), where passenger experience, aircraft handling, fueling, parking, maintenance coordination, and flight readiness all come together in one place. Some FBOs, like EAN Aviation, also extend this ecosystem to include office spaces and integrated aviation facilities, creating a complete environment for operators and clients.',
   },
   {
     type: 'image',

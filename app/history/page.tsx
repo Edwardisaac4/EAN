@@ -173,7 +173,7 @@ export default function HistoryPage() {
         {/* SECTION 1: Cinematic Hero */}
         <section
           ref={heroRef}
-          className="relative w-full h-[55vh] min-h-100 overflow-hidden bg-[#08080a] flex items-center text-white border-b border-white/10"
+          className="relative w-full h-[55vh] min-h-100 overflow-hidden bg-ean-obsidian flex items-center text-white border-b border-ean-border-dark"
         >
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
@@ -188,7 +188,7 @@ export default function HistoryPage() {
             />
             {/* Cinematic Obsidian Black luxury overlays */}
             <div className="absolute inset-0 bg-black/60" />
-            <div className="absolute inset-0 bg-linear-to-b from-[#08080a]/80 via-transparent to-[#08080a]/90" />
+            <div className="absolute inset-0 bg-linear-to-b from-ean-obsidian/80 via-transparent to-ean-obsidian/90" />
             <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
           </div>
 
@@ -394,7 +394,7 @@ export default function HistoryPage() {
         </div>
 
         {/* SECTION 4: Premium Call to Action */}
-        <section className="bg-[#08080a] py-20 sm:py-24 relative overflow-hidden border-t border-white/10">
+        <section className="bg-ean-obsidian py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
           <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/10 blur-[140px] pointer-events-none" />
           <div className="absolute -top-48 -left-48 w-96 h-96 rounded-full bg-white/5 blur-[120px] pointer-events-none" />
 
@@ -411,7 +411,7 @@ export default function HistoryPage() {
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                 <Link href="/contact">
-                  <GoldButton className="w-full sm:w-auto px-10 py-4 shadow-[0_4px_20px_rgba(196,149,42,0.35)] hover:shadow-[0_4px_30px_rgba(196,149,42,0.55)]">
+                  <GoldButton className="w-full sm:w-auto px-10 py-4 shadow-ean-gold hover:shadow-ean-gold-strong">
                     Contact Us
                   </GoldButton>
                 </Link>

@@ -107,7 +107,7 @@ export default function TeamPage() {
         {/* SECTION 1: Obsidian Black Cinematic Hero */}
         <section
           ref={heroRef}
-          className="relative w-full h-[75vh] min-h-125 overflow-hidden bg-[#08080a] flex items-center text-white border-b border-white/10"
+          className="relative w-full h-[75vh] min-h-125 overflow-hidden bg-ean-obsidian flex items-center text-white border-b border-white/10"
         >
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
@@ -122,7 +122,7 @@ export default function TeamPage() {
             />
             {/* Cinematic Obsidian Black luxury overlays */}
             <div className="absolute inset-0 bg-black/60" />
-            <div className="absolute inset-0 bg-linear-to-b from-[#08080a]/80 via-transparent to-[#08080a]/90" />
+            <div className="absolute inset-0 bg-linear-to-b from-ean-obsidian/80 via-transparent to-ean-obsidian/90" />
             <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
           </div>
 

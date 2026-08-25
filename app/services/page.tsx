@@ -116,7 +116,7 @@ export default function ServicesPage() {
         {/* SECTION 1: Cinematic Header */}
         <section
           ref={heroRef}
-          className="relative pt-32 pb-20 bg-[#08080a] border-b border-white/10 overflow-hidden text-white"
+          className="relative pt-32 pb-20 bg-ean-obsidian border-b border-ean-border-dark overflow-hidden text-white"
         >
           {/* Ambient Glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-175 h-175 rounded-full bg-ean-gold/5 blur-[130px] pointer-events-none" />
@@ -150,10 +150,10 @@ export default function ServicesPage() {
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
                 Service Lines
               </span>
-              <h2 className="font-display text-4xl sm:text-5xl font-light text-slate-900 leading-tight">
+              <h2 className="font-display text-4xl sm:text-5xl font-light text-ean-navy leading-tight">
                 Our Services at a Glance
               </h2>
-              <p className="font-ui text-base sm:text-lg text-slate-600 leading-relaxed">
+              <p className="font-ui text-base sm:text-lg text-ean-muted-dark leading-relaxed">
                 Explore EAN&apos;s full spectrum of specialized business aviation solutions. Select any service to inquire with our operations desk.
               </p>
             </SectionReveal>
@@ -171,7 +171,7 @@ export default function ServicesPage() {
                   <SectionReveal key={srv.slug} id={srv.slug} className={`h-full scroll-mt-28 ${config.gridClass}`}>
                     {config.cardType === 'wide' && (
                       <div
-                        className={`relative bg-linear-to-b from-[#0f0f14] via-[#0a0a0d] to-[#08080a] border border-white/10 hover:border-ean-gold/60 rounded-xs flex flex-col ${isImageRight ? 'lg:flex-row-reverse' : 'lg:flex-row'
+                        className={`relative bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-white/10 hover:border-ean-gold/60 rounded-xs flex flex-col ${isImageRight ? 'lg:flex-row-reverse' : 'lg:flex-row'
                           } h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-black/50 overflow-hidden`}
                       >
                         {/* Image Section */}
@@ -185,9 +185,9 @@ export default function ServicesPage() {
                             quality={80}
                           />
                           <div
-                            className={`absolute inset-0 bg-linear-to-t from-[#08080a] via-[#08080a]/60 to-transparent ${isImageRight
-                                ? 'lg:bg-linear-to-l from-[#08080a]/90 via-[#08080a]/40 to-transparent'
-                                : 'lg:bg-linear-to-r from-[#08080a]/90 via-[#08080a]/40 to-transparent'
+                            className={`absolute inset-0 bg-linear-to-t from-ean-obsidian via-ean-obsidian/60 to-transparent ${isImageRight
+                                ? 'lg:bg-linear-to-l from-ean-obsidian/90 via-ean-obsidian/40 to-transparent'
+                                : 'lg:bg-linear-to-r from-ean-obsidian/90 via-ean-obsidian/40 to-transparent'
                               }`}
                           />
                         </div>
@@ -196,10 +196,10 @@ export default function ServicesPage() {
                         <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between space-y-6 lg:w-1/2 relative z-10">
                           {/* Header row: Icon & Number Badge */}
                           <div className="flex items-center justify-between">
-                            <div className="p-3 bg-[#08080a]/90 border border-white/20 text-ean-gold rounded-xs shadow-md transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold group-hover:bg-ean-gold/10">
+                            <div className="p-3 bg-ean-obsidian/90 border border-white/20 text-ean-gold rounded-xs shadow-md transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold group-hover:bg-ean-gold/10">
                               <Icon className="w-5 h-5" />
                             </div>
-                            <span className="font-mono text-xs font-bold tracking-widest text-ean-gold bg-[#08080a]/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
+                            <span className="font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-obsidian/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
                               0{idx + 1}
                             </span>
                           </div>
@@ -251,7 +251,7 @@ export default function ServicesPage() {
 
                     {config.cardType === 'tall' && (
                       <div
-                        className="relative bg-linear-to-b from-[#0f0f14] via-[#0a0a0d] to-[#08080a] border border-white/10 hover:border-ean-gold/60 rounded-xs flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-black/50 overflow-hidden min-h-125 lg:min-h-full"
+                        className="relative bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-white/10 hover:border-ean-gold/60 rounded-xs flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-black/50 overflow-hidden min-h-125 lg:min-h-full"
                       >
                         {/* Background Image */}
                         <div className="absolute inset-0 w-full h-full overflow-hidden">
@@ -263,16 +263,16 @@ export default function ServicesPage() {
                             className="object-cover transition-transform duration-750 group-hover:scale-105"
                             quality={80}
                           />
-                          <div className="absolute inset-0 bg-linear-to-b from-[#08080a]/75 via-[#08080a]/90 to-[#08080a]" />
+                          <div className="absolute inset-0 bg-linear-to-b from-ean-obsidian/75 via-ean-obsidian/90 to-ean-obsidian" />
                         </div>
 
                         {/* Card Content */}
                         <div className="relative z-10 p-6 sm:p-8 flex-1 flex flex-col justify-between h-full space-y-8">
                           <div className="flex justify-between items-center">
-                            <div className="p-3 bg-[#08080a]/90 border border-white/20 text-ean-gold rounded-xs shadow-md backdrop-blur-xs transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold">
+                            <div className="p-3 bg-ean-obsidian/90 border border-white/20 text-ean-gold rounded-xs shadow-md backdrop-blur-xs transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold">
                               <Icon className="w-5 h-5" />
                             </div>
-                            <span className="font-mono text-xs font-bold tracking-widest text-ean-gold bg-[#08080a]/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
+                            <span className="font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-obsidian/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
                               0{idx + 1}
                             </span>
                           </div>
@@ -323,7 +323,7 @@ export default function ServicesPage() {
 
                     {config.cardType === 'square' && (
                       <div
-                        className="bg-linear-to-b from-[#0f0f14] via-[#0a0a0d] to-[#08080a] border border-white/10 hover:border-ean-gold/60 rounded-xs flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-black/50 overflow-hidden"
+                        className="bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-white/10 hover:border-ean-gold/60 rounded-xs flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-black/50 overflow-hidden"
                       >
                         {/* Card Image */}
                         <div className="relative h-48 w-full overflow-hidden shrink-0">
@@ -335,8 +335,8 @@ export default function ServicesPage() {
                             className="object-cover transition-transform duration-750 group-hover:scale-105"
                             quality={80}
                           />
-                          <div className="absolute inset-0 bg-linear-to-t from-[#08080a] via-[#08080a]/40 to-transparent" />
-                          <div className="absolute top-4 right-4 font-mono text-xs font-bold tracking-widest text-ean-gold bg-[#08080a]/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
+                          <div className="absolute inset-0 bg-linear-to-t from-ean-obsidian via-ean-obsidian/40 to-transparent" />
+                          <div className="absolute top-4 right-4 font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-obsidian/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
                             0{idx + 1}
                           </div>
                         </div>
@@ -397,7 +397,7 @@ export default function ServicesPage() {
         <div className="h-16 lg:h-24 bg-ean-surface" />
 
         {/* SECTION 4: Charter & Hangar CTA Banner */}
-        <section className="bg-linear-to-r from-[#08080a] via-[#0d0d12] to-[#08080a] py-20 sm:py-24 relative overflow-hidden border-t border-white/10">
+        <section className="bg-linear-to-r from-ean-obsidian via-ean-obsidian-elevated to-ean-obsidian py-20 sm:py-24 relative overflow-hidden border-t border-white/10">
           {/* Golden glow */}
           <div className="absolute -bottom-48 -left-48 w-96 h-96 rounded-full bg-ean-gold/5 blur-[120px] pointer-events-none" />
 

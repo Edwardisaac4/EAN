@@ -100,7 +100,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
       <main className="flex-1 flex flex-col bg-ean-surface text-ean-text-dark">
         {/* HERO BANNER SECTION */}
-        <section className="relative w-full min-h-[60vh] lg:min-h-[65vh] overflow-hidden bg-[#08080a] flex items-center text-white pt-24 pb-16">
+        <section className="relative w-full min-h-[60vh] lg:min-h-[65vh] overflow-hidden bg-ean-obsidian flex items-center text-white pt-24 pb-16">
           {/* Background Image */}
           <div className="absolute inset-0 w-full h-full">
             <Image
@@ -114,8 +114,8 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
             />
             {/* Balanced Obsidian Black gradient overlays — keeping imagery clear while ensuring text contrast */}
             <div className="absolute inset-0 bg-black/25" />
-            <div className="absolute inset-0 bg-linear-to-r from-[#08080a]/85 via-[#08080a]/45 to-transparent" />
-            <div className="absolute inset-0 bg-linear-to-t from-[#08080a]/80 via-transparent to-black/20" />
+            <div className="absolute inset-0 bg-linear-to-r from-ean-obsidian/85 via-ean-obsidian/45 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-ean-obsidian/80 via-transparent to-black/20" />
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 w-full">
@@ -169,7 +169,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
         {/* KEY HIGHLIGHTS BAR */}
         {service.stats && service.stats.length > 0 && (
-          <section className="bg-[#0a0a0d] text-white border-y border-white/10 py-6 relative z-20">
+          <section className="bg-ean-obsidian-raised text-white border-y border-white/10 py-6 relative z-20">
             <div className="max-w-7xl mx-auto px-6 md:px-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-center divide-y sm:divide-y-0 sm:divide-x divide-white/10">
                 {service.stats.map((stat, sIdx) => (
@@ -223,7 +223,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                   </div>
 
                   {/* 24/7 Operations Desk Callout */}
-                  <div className="p-6 bg-linear-to-br from-[#0d0d12] to-[#08080a] text-white rounded-xs border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg">
+                  <div className="p-6 bg-linear-to-br from-ean-obsidian-elevated to-ean-obsidian text-white rounded-xs border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg">
                     <div className="space-y-1 text-center sm:text-left">
                       <div className="font-display text-lg font-light text-white">
                         Require Immediate Flight Support?
@@ -235,7 +235,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
                     <a
                       href="tel:+2348050333410"
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-ean-gold text-[#08080a] font-semibold text-xs rounded-xs hover:bg-ean-gold-light transition-colors shrink-0"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-ean-gold text-ean-obsidian font-semibold text-xs rounded-xs hover:bg-ean-gold-light transition-colors shrink-0"
                     >
                       <Phone className="w-4 h-4" />
                       <span>+234 (0) 805 033 3410</span>
@@ -315,7 +315,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                         <div className="bg-white border border-ean-border-light hover:border-ean-gold/60 p-6 rounded-xs shadow-md hover:shadow-xl transition-all duration-300 space-y-4 h-full flex flex-col justify-between">
                           <div className="space-y-3">
                             <div className="flex items-center justify-between">
-                              <div className="p-2.5 bg-[#08080a]/5 text-[#08080a] rounded-xs group-hover:bg-ean-gold group-hover:text-[#08080a] transition-colors">
+                              <div className="p-2.5 bg-ean-obsidian/5 text-ean-obsidian rounded-xs group-hover:bg-ean-gold group-hover:text-ean-obsidian transition-colors">
                                 <OtherIcon className="w-4 h-4" />
                               </div>
                               <ChevronRight className="w-4 h-4 text-ean-gold group-hover:translate-x-1 transition-transform" />

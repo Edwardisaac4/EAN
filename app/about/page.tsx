@@ -20,20 +20,18 @@ import {
 
 import Navbar from '@/components/layout/Navbar';
 import SectionReveal from '@/components/shared/SectionReveal';
-import { withReducedMotion } from '@/lib/gsap-motion';
-
 import OutlineButton from '@/components/shared/OutlineButton';
-
-// Register GSAP plugins at the file level
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
+import { withReducedMotion } from '@/lib/gsap-motion';
 import {
   VALUE_PILLARS,
   CREDENTIAL_ITEMS,
   TRUST_STATS
 } from '@/lib/constants';
+
+// Register GSAP plugins at the file level
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const iconMap = {
   ShieldCheck,
@@ -129,7 +127,7 @@ export default function AboutPage() {
         {/* SECTION 1: Cinematic Hero */}
         <section
           ref={heroRef}
-          className="relative w-full h-[75vh] min-h-125 overflow-hidden bg-[#08080a] flex items-center text-white border-b border-white/10"
+          className="relative w-full h-[75vh] min-h-125 overflow-hidden bg-ean-obsidian flex items-center text-white border-b border-ean-border-dark"
         >
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
@@ -144,7 +142,7 @@ export default function AboutPage() {
             />
             {/* Cinematic Obsidian Black luxury overlays */}
             <div className="absolute inset-0 bg-black/60" />
-            <div className="absolute inset-0 bg-linear-to-b from-[#08080a]/80 via-transparent to-[#08080a]/90" />
+            <div className="absolute inset-0 bg-linear-to-b from-ean-obsidian/80 via-transparent to-ean-obsidian/90" />
             <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
           </div>
 

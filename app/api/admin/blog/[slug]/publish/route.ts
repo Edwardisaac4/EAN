@@ -25,9 +25,23 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       .single()
 
     if (error) {
-      console.warn('[Publish API] Supabase publish error:', error.message)
+      // Full detail stays server-side. A Postgres error message can name
+      // columns, constraints and policies, none of which belong in a response
+      // body — even an authenticated one.
+      console.warn('[Publish API] Supabase publish error:', error)
+
+      // .single() reports "no rows returned" as PGRST116. Publishing a slug that
+      // does not exist is a client mistake, not a server fault, and returning
+      // 500 for it made a typo indistinguishable from an outage.
+      if (error.code === 'PGRST116') {
+        return NextResponse.json(
+          { success: false, error: 'Blog post not found' },
+          { status: 404 }
+        )
+      }
+
       return NextResponse.json(
-        { success: false, error: error.message || 'Failed to publish post' },
+        { success: false, error: 'Failed to publish post' },
         { status: 500 }
       )
     }

@@ -434,7 +434,7 @@ export const SERVICES_DATA: ServiceRichData[] = [
     primaryButtonText: "MAKE AN INQUIRY",
     primaryButtonHref: "/contact?service=fbo-ground-support",
     secondaryButtonText: "BUILD YOUR QUOTE",
-    secondaryButtonHref: "/contact?service=fbo-ground-support&action=quote",
+    secondaryButtonHref: "/pricing",
   },
   {
     slug: "aircraft-maintenance",
