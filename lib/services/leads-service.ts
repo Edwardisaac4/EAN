@@ -602,13 +602,24 @@ export async function addLeadNote(
     return { note: null, error: error?.message || "Failed to add note" };
   }
 
-  // Also log the activity
-  await adminSupabase.from("lead_activities").insert({
-    lead_id: leadId,
-    author,
-    action: "Added internal note",
-    note: content,
-  } satisfies NewLeadActivity);
+  // Also log the activity. The note itself is already persisted, so a failure
+  // here is not fatal — but it was previously discarded entirely, leaving a gap
+  // in the lead's audit trail that nothing recorded.
+  const { error: activityError } = await adminSupabase
+    .from("lead_activities")
+    .insert({
+      lead_id: leadId,
+      author,
+      action: "Added internal note",
+      note: content,
+    } satisfies NewLeadActivity);
+
+  if (activityError) {
+    console.error(
+      `Failed to log note activity for lead ${leadId}:`,
+      activityError,
+    );
+  }
 
   return { note, error: null };
 }

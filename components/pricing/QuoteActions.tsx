@@ -17,6 +17,27 @@ export default function QuoteActions({
 }: QuoteActionsProps) {
   const [waCopied, setWaCopied] = useState(false)
   const [emailCopied, setEmailCopied] = useState(false)
+  // A clipboard rejection (or a browser without the API) previously left the
+  // button unchanged, so the quote text was never on the clipboard and nothing
+  // said so.
+  const [copyError, setCopyError] = useState('')
+
+  const writeToClipboard = async (text: string, onSuccess: () => void) => {
+    setCopyError('')
+
+    if (typeof navigator === 'undefined' || !navigator.clipboard) {
+      setCopyError('Copying is not supported in this browser — select the quote text manually.')
+      return
+    }
+
+    try {
+      await navigator.clipboard.writeText(text)
+      onSuccess()
+    } catch (err) {
+      console.error('Failed to copy to clipboard:', err)
+      setCopyError('Could not copy the quote. Please try again or copy it manually.')
+    }
+  }
 
   const aircraftName = state.aircraft?.name ?? (state.mtow_manual ? `Aircraft (${state.mtow_manual.toLocaleString()} kg)` : 'Unspecified Aircraft')
   const locationLabel = state.location === 'LOS' ? 'Lagos (MMIA)' : 'Abuja (NAIA)'
@@ -34,15 +55,10 @@ TOTAL: ${quote.totalDisplay}
 
 Fuel at Platts pricing on request. PSC subject to CAA ratification.`
 
-    try {
-      if (typeof navigator !== 'undefined' && navigator.clipboard) {
-        await navigator.clipboard.writeText(waText)
-        setWaCopied(true)
-        setTimeout(() => setWaCopied(false), 1500)
-      }
-    } catch (err) {
-      console.error('Failed to copy to clipboard:', err)
-    }
+    await writeToClipboard(waText, () => {
+      setWaCopied(true)
+      setTimeout(() => setWaCopied(false), 1500)
+    })
   }
 
   const handleCopyEmail = async () => {
@@ -71,19 +87,20 @@ EAN Aviation Flight Support
 ops@ean.aero | +234 1 291 1000`
 
     const fullContent = `Subject: ${emailSubject}\n\n${emailBody}`
-    try {
-      if (typeof navigator !== 'undefined' && navigator.clipboard) {
-        await navigator.clipboard.writeText(fullContent)
-        setEmailCopied(true)
-        setTimeout(() => setEmailCopied(false), 1500)
-      }
-    } catch (err) {
-      console.error('Failed to copy email to clipboard:', err)
-    }
+    await writeToClipboard(fullContent, () => {
+      setEmailCopied(true)
+      setTimeout(() => setEmailCopied(false), 1500)
+    })
   }
 
   return (
     <div className="space-y-2.5 mt-4">
+      {copyError && (
+        <p role="alert" className="text-xs font-ui text-red-300">
+          {copyError}
+        </p>
+      )}
+
       {/* BUTTON 1 — Copy for WhatsApp */}
       <button
         type="button"

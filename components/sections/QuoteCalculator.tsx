@@ -134,10 +134,14 @@ export default function QuoteCalculator() {
   }, []);
 
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
+  const [shareError, setShareError] = useState<string>('');
   // Live API Aircraft List & Selection State
   const [apiAircraftList, setApiAircraftList] = useState<FleetAircraft[]>(AIRCRAFT_DATASET);
   const [selectedAircraft, setSelectedAircraft] = useState<FleetAircraft>(AIRCRAFT_DATASET[0]);
   const [isLoadingApi, setIsLoadingApi] = useState<boolean>(false);
+  // A failed search used to leave the previous result set on screen, so a dead
+  // lookup looked like a complete answer for whatever the visitor had typed.
+  const [searchError, setSearchError] = useState<string>('');
 
   // Live API Search Fetcher
   useEffect(() => {
@@ -145,104 +149,118 @@ export default function QuoteCalculator() {
     const fetchLiveAircraft = async () => {
       if (!searchQuery.trim()) {
         setApiAircraftList(AIRCRAFT_DATASET);
+        setSearchError('');
         return;
       }
       setIsLoadingApi(true);
+      setSearchError('');
       try {
         const res = await fetch(`/api/aircraft/search?q=${encodeURIComponent(searchQuery)}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (isMounted && data.success && Array.isArray(data.data || data.aircraft)) {
-            const items = (data.data || data.aircraft) as Record<string, unknown>[];
-            const mapped: FleetAircraft[] = items.map(item => {
-              const existingId = String(item.id || '');
-              const curated = AIRCRAFT_DATASET.find(a => a.id === existingId || a.name.toLowerCase() === String(item.name || '').toLowerCase());
-              if (curated) return curated;
+        const data = await res.json().catch(() => null);
 
-              const mtowKg = item.mtow_kg !== undefined && item.mtow_kg !== null ? Number(item.mtow_kg) : (item.mtowKg ? Number(item.mtowKg) : null);
-              const rawCategory = item.category ? String(item.category) : undefined;
-              const rawPax = item.pax_max !== undefined && item.pax_max !== null ? Number(item.pax_max) : (item.maxPassengers ? Number(item.maxPassengers) : undefined);
-
-              const validCategories = ['Light Jet', 'Midsize Jet', 'Super Midsize', 'Heavy Jet', 'Ultra Long Range', 'Helicopter', 'VIP Airliner', 'Turboprop'] as const;
-              let category: FleetAircraft['category'] = 'Midsize Jet';
-              if (rawCategory && validCategories.includes(rawCategory as typeof validCategories[number])) {
-                category = rawCategory as FleetAircraft['category'];
-              } else if (mtowKg && mtowKg > 0) {
-                if (mtowKg <= 10000) category = 'Light Jet';
-                else if (mtowKg <= 15000) category = 'Midsize Jet';
-                else if (mtowKg <= 20000) category = 'Super Midsize';
-                else if (mtowKg <= 30000) category = 'Heavy Jet';
-                else if (mtowKg <= 60000) category = 'Ultra Long Range';
-                else category = 'VIP Airliner';
-              }
-              let maxPassengers = rawPax && rawPax > 0 ? rawPax : 8;
-              if (!rawPax || rawPax <= 0) {
-                if (category === 'Light Jet') maxPassengers = 7;
-                else if (category === 'Midsize Jet') maxPassengers = 8;
-                else if (category === 'Super Midsize') maxPassengers = 10;
-                else if (category === 'Heavy Jet') maxPassengers = 13;
-                else if (category === 'Ultra Long Range') maxPassengers = 16;
-                else if (category === 'VIP Airliner') maxPassengers = 25;
-                else if (category === 'Turboprop') maxPassengers = 8;
-                else if (category === 'Helicopter') maxPassengers = 6;
-              }
-
-              let baseHandlingFeeUsd = { domestic: 1300, international: 2050 };
-              let landingParkingFeeUsdPerDay = { domestic: 210, international: 420 };
-              let paxFeeUsdPerPax = 35;
-
-              if (mtowKg && mtowKg > 0) {
-                if (mtowKg <= 5000) {
-                  baseHandlingFeeUsd = { domestic: 850, international: 1350 };
-                  landingParkingFeeUsdPerDay = { domestic: 120, international: 240 };
-                  paxFeeUsdPerPax = 25;
-                } else if (mtowKg <= 10000) {
-                  baseHandlingFeeUsd = { domestic: 1100, international: 1750 };
-                  landingParkingFeeUsdPerDay = { domestic: 170, international: 340 };
-                  paxFeeUsdPerPax = 30;
-                } else if (mtowKg <= 15000) {
-                  baseHandlingFeeUsd = { domestic: 1300, international: 2050 };
-                  landingParkingFeeUsdPerDay = { domestic: 210, international: 420 };
-                  paxFeeUsdPerPax = 35;
-                } else if (mtowKg <= 20000) {
-                  baseHandlingFeeUsd = { domestic: 1550, international: 2400 };
-                  landingParkingFeeUsdPerDay = { domestic: 260, international: 510 };
-                  paxFeeUsdPerPax = 40;
-                } else if (mtowKg <= 30000) {
-                  baseHandlingFeeUsd = { domestic: 1850, international: 2950 };
-                  landingParkingFeeUsdPerDay = { domestic: 320, international: 650 };
-                  paxFeeUsdPerPax = 45;
-                } else if (mtowKg <= 60000) {
-                  baseHandlingFeeUsd = { domestic: 2300, international: 3600 };
-                  landingParkingFeeUsdPerDay = { domestic: 470, international: 920 };
-                  paxFeeUsdPerPax = 50;
-                } else {
-                  baseHandlingFeeUsd = { domestic: 3800, international: 5900 };
-                  landingParkingFeeUsdPerDay = { domestic: 850, international: 1650 };
-                  paxFeeUsdPerPax = 65;
-                }
-              }
-
-              return {
-                id: String(item.id || `custom-${item.name}`),
-                name: String(item.name || 'Aircraft'),
-                manufacturer: String(item.manufacturer || 'General Aviation'),
-                category,
-                mtowKg: mtowKg ?? 12000,
-                mtowRange: mtowKg ? `${mtowKg.toLocaleString()} kg` : 'Standard MTOW',
-                maxPassengers,
-                icao: String(item.icao_code || item.icao || 'AVIA'),
-                rangeNm: Number(item.range_nm || item.rangeNm || 2500),
-                baseHandlingFeeUsd,
-                landingParkingFeeUsdPerDay,
-                paxFeeUsdPerPax,
-              };
-            });
-            setApiAircraftList(mapped);
+        if (!res.ok || !data?.success || !Array.isArray(data.data || data.aircraft)) {
+          if (isMounted) {
+            setSearchError(
+              res.status === 429
+                ? 'Too many searches — pause a moment and try again.'
+                : 'Aircraft search is unavailable. Showing the curated fleet instead.'
+            );
+            setApiAircraftList(AIRCRAFT_DATASET);
           }
+        } else if (isMounted) {
+          const items = (data.data || data.aircraft) as Record<string, unknown>[];
+          const mapped: FleetAircraft[] = items.map(item => {
+            const existingId = String(item.id || '');
+            const curated = AIRCRAFT_DATASET.find(a => a.id === existingId || a.name.toLowerCase() === String(item.name || '').toLowerCase());
+            if (curated) return curated;
+
+            const mtowKg = item.mtow_kg !== undefined && item.mtow_kg !== null ? Number(item.mtow_kg) : (item.mtowKg ? Number(item.mtowKg) : null);
+            const rawCategory = item.category ? String(item.category) : undefined;
+            const rawPax = item.pax_max !== undefined && item.pax_max !== null ? Number(item.pax_max) : (item.maxPassengers ? Number(item.maxPassengers) : undefined);
+
+            const validCategories = ['Light Jet', 'Midsize Jet', 'Super Midsize', 'Heavy Jet', 'Ultra Long Range', 'Helicopter', 'VIP Airliner', 'Turboprop'] as const;
+            let category: FleetAircraft['category'] = 'Midsize Jet';
+            if (rawCategory && validCategories.includes(rawCategory as typeof validCategories[number])) {
+              category = rawCategory as FleetAircraft['category'];
+            } else if (mtowKg && mtowKg > 0) {
+              if (mtowKg <= 10000) category = 'Light Jet';
+              else if (mtowKg <= 15000) category = 'Midsize Jet';
+              else if (mtowKg <= 20000) category = 'Super Midsize';
+              else if (mtowKg <= 30000) category = 'Heavy Jet';
+              else if (mtowKg <= 60000) category = 'Ultra Long Range';
+              else category = 'VIP Airliner';
+            }
+            let maxPassengers = rawPax && rawPax > 0 ? rawPax : 8;
+            if (!rawPax || rawPax <= 0) {
+              if (category === 'Light Jet') maxPassengers = 7;
+              else if (category === 'Midsize Jet') maxPassengers = 8;
+              else if (category === 'Super Midsize') maxPassengers = 10;
+              else if (category === 'Heavy Jet') maxPassengers = 13;
+              else if (category === 'Ultra Long Range') maxPassengers = 16;
+              else if (category === 'VIP Airliner') maxPassengers = 25;
+              else if (category === 'Turboprop') maxPassengers = 8;
+              else if (category === 'Helicopter') maxPassengers = 6;
+            }
+
+            let baseHandlingFeeUsd = { domestic: 1300, international: 2050 };
+            let landingParkingFeeUsdPerDay = { domestic: 210, international: 420 };
+            let paxFeeUsdPerPax = 35;
+
+            if (mtowKg && mtowKg > 0) {
+              if (mtowKg <= 5000) {
+                baseHandlingFeeUsd = { domestic: 850, international: 1350 };
+                landingParkingFeeUsdPerDay = { domestic: 120, international: 240 };
+                paxFeeUsdPerPax = 25;
+              } else if (mtowKg <= 10000) {
+                baseHandlingFeeUsd = { domestic: 1100, international: 1750 };
+                landingParkingFeeUsdPerDay = { domestic: 170, international: 340 };
+                paxFeeUsdPerPax = 30;
+              } else if (mtowKg <= 15000) {
+                baseHandlingFeeUsd = { domestic: 1300, international: 2050 };
+                landingParkingFeeUsdPerDay = { domestic: 210, international: 420 };
+                paxFeeUsdPerPax = 35;
+              } else if (mtowKg <= 20000) {
+                baseHandlingFeeUsd = { domestic: 1550, international: 2400 };
+                landingParkingFeeUsdPerDay = { domestic: 260, international: 510 };
+                paxFeeUsdPerPax = 40;
+              } else if (mtowKg <= 30000) {
+                baseHandlingFeeUsd = { domestic: 1850, international: 2950 };
+                landingParkingFeeUsdPerDay = { domestic: 320, international: 650 };
+                paxFeeUsdPerPax = 45;
+              } else if (mtowKg <= 60000) {
+                baseHandlingFeeUsd = { domestic: 2300, international: 3600 };
+                landingParkingFeeUsdPerDay = { domestic: 470, international: 920 };
+                paxFeeUsdPerPax = 50;
+              } else {
+                baseHandlingFeeUsd = { domestic: 3800, international: 5900 };
+                landingParkingFeeUsdPerDay = { domestic: 850, international: 1650 };
+                paxFeeUsdPerPax = 65;
+              }
+            }
+
+            return {
+              id: String(item.id || `custom-${item.name}`),
+              name: String(item.name || 'Aircraft'),
+              manufacturer: String(item.manufacturer || 'General Aviation'),
+              category,
+              mtowKg: mtowKg ?? 12000,
+              mtowRange: mtowKg ? `${mtowKg.toLocaleString()} kg` : 'Standard MTOW',
+              maxPassengers,
+              icao: String(item.icao_code || item.icao || 'AVIA'),
+              rangeNm: Number(item.range_nm || item.rangeNm || 2500),
+              baseHandlingFeeUsd,
+              landingParkingFeeUsdPerDay,
+              paxFeeUsdPerPax,
+            };
+          });
+          setApiAircraftList(mapped);
         }
       } catch (err) {
         console.warn('Error fetching live aircraft search:', err);
+        if (isMounted) {
+          setSearchError('Aircraft search could not be reached. Showing the curated fleet instead.');
+          setApiAircraftList(AIRCRAFT_DATASET);
+        }
       } finally {
         if (isMounted) setIsLoadingApi(false);
       }
@@ -387,15 +405,24 @@ const getWhatsAppShareUrl = () => {
 
 // Share URL Generator
 const handleShareLink = async () => {
+  // Both the unsupported-API branch and a rejected write used to end in silence,
+  // leaving the visitor to paste a clipboard that never received the link.
+  setShareError('');
+  if (typeof navigator === 'undefined' || !navigator.clipboard) {
+    setShareError('Copying is not supported here');
+    setTimeout(() => setShareError(''), 3000);
+    return;
+  }
+
   try {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      const url = `${window.location.origin}/pricing?aircraft=${selectedAircraft.id}&location=${location}&op=${operation}&pax=${passengers}`;
-      await navigator.clipboard.writeText(url);
-      setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 3000);
-    }
+    const url = `${window.location.origin}/pricing?aircraft=${selectedAircraft.id}&location=${location}&op=${operation}&pax=${passengers}`;
+    await navigator.clipboard.writeText(url);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 3000);
   } catch (err) {
     console.error('Failed to copy share link:', err);
+    setShareError('Could not copy link');
+    setTimeout(() => setShareError(''), 3000);
   }
 };
 
@@ -491,6 +518,11 @@ return (
               {copiedLink && (
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-ean-gold text-ean-burgundy-night text-[10px] font-bold whitespace-nowrap shadow-lg">
                   Copied!
+                </span>
+              )}
+              {shareError && (
+                <span role="alert" className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-red-500 text-white text-[10px] font-bold whitespace-nowrap shadow-lg">
+                  {shareError}
                 </span>
               )}
             </button>
@@ -611,6 +643,8 @@ return (
                         <Loader2 className="w-4 h-4 text-ean-gold animate-spin" />
                         <span className="text-xs text-ean-muted-light">Searching aircraft…</span>
                       </div>
+                    ) : searchError ? (
+                      <p role="alert" className="p-4 text-xs text-red-300 text-center">{searchError}</p>
                     ) : filteredAircraft.length === 0 ? (
                       <p className="p-4 text-xs text-ean-muted-light text-center">No aircraft matching criteria</p>
                     ) : (

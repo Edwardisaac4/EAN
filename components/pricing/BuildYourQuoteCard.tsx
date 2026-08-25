@@ -64,17 +64,20 @@ export default function BuildYourQuoteCard({
   }, [searchQuery])
 
   // Fetch aircraft data from API or defaults
-  const { data: aircraftResults = [] } = useQuery({
+  const { data: aircraftResults = [], isError: isSearchError } = useQuery({
     queryKey: ['aircraft-search', debouncedQuery],
-    queryFn: async () => {
+    queryFn: async (): Promise<Aircraft[]> => {
       const res = await fetch(`/api/aircraft/search?q=${encodeURIComponent(debouncedQuery)}`)
-      const json = await res.json()
-      if (json.success && Array.isArray(json.data)) {
-        return json.data as Aircraft[]
+      const json = await res.json().catch(() => null)
+
+      if (!res.ok || !json?.success || !Array.isArray(json.data)) {
+        throw new Error(json?.error || `Aircraft search failed (HTTP ${res.status}).`)
       }
-      return []
+
+      return json.data as Aircraft[]
     },
     staleTime: 1000 * 60 * 60,
+    retry: 1,
   })
 
   // Close dropdown on click outside
@@ -183,7 +186,11 @@ export default function BuildYourQuoteCard({
                 </div>
 
                 <div className="max-h-60 overflow-y-auto divide-y divide-gray-100">
-                  {aircraftResults.length === 0 ? (
+                  {isSearchError ? (
+                    <div role="alert" className="p-3 text-xs font-ui text-[#581825] text-center">
+                      Aircraft lookup is unavailable right now. Enter a manual MTOW to continue your quote.
+                    </div>
+                  ) : aircraftResults.length === 0 ? (
                     <div className="p-3 text-xs font-ui text-ean-muted-dark text-center">
                       No matching aircraft found. Try typing or enter manual MTOW.
                     </div>

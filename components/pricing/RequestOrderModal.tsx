@@ -22,6 +22,7 @@ export default function RequestOrderModal({
   refCode,
 }: RequestOrderModalProps) {
   const [copied, setCopied] = useState(false)
+  const [copyError, setCopyError] = useState('')
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -68,14 +69,22 @@ Estimated total: ${quote.totalDisplay}
 Status: NEW — route to Operations (ABO One / RPS)`
 
   const handleCopy = async () => {
+    setCopyError('')
+
+    // Silence here meant the operator emailed Operations believing the order
+    // text was on their clipboard.
+    if (typeof navigator === 'undefined' || !navigator.clipboard) {
+      setCopyError('Copying is not supported in this browser — select the order text above.')
+      return
+    }
+
     try {
-      if (typeof navigator !== 'undefined' && navigator.clipboard) {
-        await navigator.clipboard.writeText(orderText)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 1500)
-      }
+      await navigator.clipboard.writeText(orderText)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
     } catch (err) {
       console.error('Failed to copy order text:', err)
+      setCopyError('Could not copy the order. Select the text above and copy it manually.')
     }
   }
 
@@ -119,6 +128,11 @@ Status: NEW — route to Operations (ABO One / RPS)`
         </div>
 
         {/* Footer Actions */}
+        {copyError && (
+          <p role="alert" className="px-6 pt-3 text-xs font-ui text-red-300">
+            {copyError}
+          </p>
+        )}
         <div className="px-6 py-4 border-t border-ean-border-dark bg-ean-navy-mid flex items-center justify-between gap-3">
           <button
             type="button"

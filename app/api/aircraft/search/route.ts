@@ -25,12 +25,25 @@ interface ApiNinjasAircraft {
   engine_type?: string | null
 }
 
-async function fetchApiNinjas(q: string): Promise<ApiNinjasAircraft[]> {
+/**
+ * `degraded` is true when a provider *is* configured but the lookup failed, so
+ * the route can say the live half of the search is missing. Returning a bare
+ * empty array made an upstream outage indistinguishable from "no such
+ * aircraft", and the caller then cached that emptiness as a valid answer.
+ */
+interface ApiNinjasResult {
+  items: ApiNinjasAircraft[]
+  degraded: boolean
+}
+
+async function fetchApiNinjas(q: string): Promise<ApiNinjasResult> {
   const rapidApiKey = process.env.RAPIDAPI_KEY || process.env.RAPIDAPI_AERODATABOX_KEY
   const apiNinjasKey = process.env.API_NINJAS_KEY
 
   const provider = rapidApiKey ? 'rapidapi' : apiNinjasKey ? 'apininjas' : null
-  if (!provider) return []
+  // No key is a deployment choice, not a failure: the curated dataset is the
+  // whole answer, so nothing is degraded.
+  if (!provider) return { items: [], degraded: false }
 
   const urls = provider === 'rapidapi'
     ? [
@@ -56,18 +69,35 @@ async function fetchApiNinjas(q: string): Promise<ApiNinjasAircraft[]> {
       urls.map(url => fetch(url, { headers, signal: AbortSignal.timeout(8000), next: { revalidate: 86400 } }))
     )
 
+    let failures = 0
+
     const dataArrays = await Promise.all(
       responses.map(async r => {
-        if (!r.ok) return []
-        const json = await r.json()
-        return Array.isArray(json) ? json : []
+        if (!r.ok) {
+          failures += 1
+          // A 401/429 here is the difference between an empty result and an
+          // expired key or an exhausted quota. Log the status so it is
+          // diagnosable from the server logs rather than only visible as
+          // missing rows.
+          console.error(`[aircraft-search] ${provider} responded ${r.status} ${r.statusText} for ${r.url}`)
+          return []
+        }
+
+        try {
+          const json = await r.json()
+          return Array.isArray(json) ? json : []
+        } catch (parseErr) {
+          failures += 1
+          console.error(`[aircraft-search] ${provider} returned an unreadable body for ${r.url}:`, parseErr)
+          return []
+        }
       })
     )
 
-    return dataArrays.flat()
+    return { items: dataArrays.flat(), degraded: failures === responses.length }
   } catch (err) {
     console.error('API Ninjas fetch error details:', err)
-    return []
+    return { items: [], degraded: true }
   }
 }
 
@@ -137,7 +167,7 @@ export async function GET(req: NextRequest) {
       }))
 
     // 2. Fetch live API Ninjas search results
-    const rawItems = await fetchApiNinjas(query)
+    const { items: rawItems, degraded: liveSearchDegraded } = await fetchApiNinjas(query)
 
     // Deduplicate by manufacturer + model
     const seen = new Set<string>(localMatches.map(m => m.name.toLowerCase()))
@@ -183,7 +213,17 @@ export async function GET(req: NextRequest) {
     const usableApi = apiNormalized.filter((a: Aircraft) => a.mtow_kg !== null && a.mtow_kg > 0)
     const combined = [...localMatches, ...usableApi]
 
-    return NextResponse.json({ success: true, data: combined, count: combined.length })
+    // The curated matches are still a real answer, so this stays a 200 — but the
+    // caller is told the live half is missing so it can say so instead of
+    // presenting a short list as complete.
+    return NextResponse.json({
+      success: true,
+      data: combined,
+      count: combined.length,
+      ...(liveSearchDegraded
+        ? { liveSearchDegraded: true, warning: 'Live aircraft lookup is unavailable — showing curated fleet matches only.' }
+        : {}),
+    })
 
   } catch (err) {
     console.error('Error in aircraft search route:', err)
