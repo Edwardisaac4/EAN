@@ -32,6 +32,9 @@ function clampInteger(
   min: number,
   max: number
 ): number {
+  // An absent or blank param must reach the fallback: `Number(null)` and
+  // `Number('')` are both 0, which is finite and would clamp to `min`.
+  if (raw === null || raw.trim() === '') return fallback
   const parsed = Number(raw)
   if (!Number.isFinite(parsed)) return fallback
   return Math.min(Math.max(Math.trunc(parsed), min), max)

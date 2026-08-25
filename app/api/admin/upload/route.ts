@@ -33,7 +33,9 @@ export async function POST(req: NextRequest) {
       'image/webp': 'webp',
     }
     const contentType = file.type.toLowerCase()
-    if (!(contentType in EXTENSION_BY_TYPE)) {
+    // `in` would traverse the prototype chain, so a Content-Type of
+    // `constructor` or `__proto__` would pass the allow-list.
+    if (!Object.hasOwn(EXTENSION_BY_TYPE, contentType)) {
       return NextResponse.json(
         { success: false, error: 'Only JPG, PNG, and WebP images are allowed' },
         { status: 400 }
