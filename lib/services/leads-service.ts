@@ -11,6 +11,7 @@ import type {
   LeadWithDetails,
   LeadActivityRow,
   LeadNoteRow,
+  LeadTrackingRow,
   NewLead,
   NewLeadTracking,
   NewLeadActivity,
@@ -24,6 +25,40 @@ import type {
 
 /** Sentinel error message callers can map to a 404. */
 export const LEAD_NOT_FOUND = "Lead not found";
+
+const LEAD_DETAILS_SELECT = `
+  *,
+  lead_tracking (*),
+  lead_activities (*, id, lead_id, author, action, note, created_at),
+  lead_notes (*, id, lead_id, author, content, created_at)
+`;
+
+interface LeadDetailsJoin extends LeadRow {
+  lead_tracking: LeadTrackingRow | LeadTrackingRow[] | null;
+  lead_activities: LeadActivityRow[] | null;
+  lead_notes: LeadNoteRow[] | null;
+}
+
+function normalizeLeadDetails(row: LeadDetailsJoin): LeadWithDetails {
+  return {
+    ...row,
+    lead_tracking: Array.isArray(row.lead_tracking)
+      ? row.lead_tracking[0] || null
+      : row.lead_tracking || null,
+    lead_activities: Array.isArray(row.lead_activities)
+      ? [...row.lead_activities].sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        )
+      : [],
+    lead_notes: Array.isArray(row.lead_notes)
+      ? [...row.lead_notes].sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        )
+      : [],
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Helper: auto-assign priority based on service + message keywords
@@ -339,15 +374,7 @@ export async function getLeads(options: GetLeadsOptions = {}) {
 
   let query = adminSupabase
     .from("leads")
-    .select(
-      `
-      *,
-      lead_tracking (*),
-      lead_activities (*, id, lead_id, author, action, note, created_at),
-      lead_notes (*, id, lead_id, author, content, created_at)
-    `,
-      { count: "exact" },
-    )
+    .select(LEAD_DETAILS_SELECT, { count: "exact" })
     .order("created_at", { ascending: false })
     .range((page - 1) * limit, page * limit - 1);
 
@@ -384,25 +411,7 @@ export async function getLeads(options: GetLeadsOptions = {}) {
     return { leads: [], total: 0, error: error.message };
   }
 
-  // Normalize the join shape
-  const leads: LeadWithDetails[] = (data || []).map((row) => ({
-    ...row,
-    lead_tracking: Array.isArray(row.lead_tracking)
-      ? row.lead_tracking[0] || null
-      : row.lead_tracking || null,
-    lead_activities: Array.isArray(row.lead_activities)
-      ? row.lead_activities.sort(
-          (a: LeadActivityRow, b: LeadActivityRow) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-        )
-      : [],
-    lead_notes: Array.isArray(row.lead_notes)
-      ? row.lead_notes.sort(
-          (a: LeadNoteRow, b: LeadNoteRow) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-        )
-      : [],
-  }));
+  const leads: LeadWithDetails[] = (data || []).map(normalizeLeadDetails);
 
   return { leads, total: count ?? 0, error: null };
 }
@@ -417,14 +426,7 @@ export async function getLeadById(id: string): Promise<{
 }> {
   const { data, error } = await adminSupabase
     .from("leads")
-    .select(
-      `
-      *,
-      lead_tracking (*),
-      lead_activities (*, id, lead_id, author, action, note, created_at),
-      lead_notes (*, id, lead_id, author, content, created_at)
-    `,
-    )
+    .select(LEAD_DETAILS_SELECT)
     .eq("id", id)
     .single();
 
@@ -432,26 +434,7 @@ export async function getLeadById(id: string): Promise<{
     return { lead: null, error: error?.message || "Lead not found" };
   }
 
-  const lead: LeadWithDetails = {
-    ...data,
-    lead_tracking: Array.isArray(data.lead_tracking)
-      ? data.lead_tracking[0] || null
-      : data.lead_tracking || null,
-    lead_activities: Array.isArray(data.lead_activities)
-      ? data.lead_activities.sort(
-          (a: LeadActivityRow, b: LeadActivityRow) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-        )
-      : [],
-    lead_notes: Array.isArray(data.lead_notes)
-      ? data.lead_notes.sort(
-          (a: LeadNoteRow, b: LeadNoteRow) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-        )
-      : [],
-  };
-
-  return { lead, error: null };
+  return { lead: normalizeLeadDetails(data), error: null };
 }
 
 // =============================================================================
@@ -464,14 +447,7 @@ export async function getLeadByCode(leadCode: string): Promise<{
 }> {
   const { data, error } = await adminSupabase
     .from("leads")
-    .select(
-      `
-      *,
-      lead_tracking (*),
-      lead_activities (*),
-      lead_notes (*)
-    `,
-    )
+    .select(LEAD_DETAILS_SELECT)
     .eq("lead_code", leadCode)
     .single();
 
@@ -479,26 +455,7 @@ export async function getLeadByCode(leadCode: string): Promise<{
     return { lead: null, error: error?.message || "Lead not found" };
   }
 
-  const lead: LeadWithDetails = {
-    ...data,
-    lead_tracking: Array.isArray(data.lead_tracking)
-      ? data.lead_tracking[0] || null
-      : data.lead_tracking || null,
-    lead_activities: Array.isArray(data.lead_activities)
-      ? data.lead_activities.sort(
-          (a: LeadActivityRow, b: LeadActivityRow) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-        )
-      : [],
-    lead_notes: Array.isArray(data.lead_notes)
-      ? data.lead_notes.sort(
-          (a: LeadNoteRow, b: LeadNoteRow) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-        )
-      : [],
-  };
-
-  return { lead, error: null };
+  return { lead: normalizeLeadDetails(data), error: null };
 }
 
 // =============================================================================
