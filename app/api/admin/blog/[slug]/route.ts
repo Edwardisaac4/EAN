@@ -71,6 +71,8 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
       if (error.code === 'PGRST116') {
         return NextResponse.json({ success: false, error: 'Blog post not found' }, { status: 404 })
       }
+      // Postgres messages name columns, constraints and policies; they stay in
+      // the server log rather than the response body.
       console.warn('[Blog API GET] Supabase fetch error:', error)
       return NextResponse.json({ success: false, error: 'Failed to fetch blog post' }, { status: 500 })
     }
@@ -172,6 +174,14 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
         return NextResponse.json(
           { success: false, error: 'Blog post not found' },
           { status: 404 }
+        )
+      }
+
+      // The slug is the only unique column, so this is a slug already in use.
+      if (error.code === '23505') {
+        return NextResponse.json(
+          { success: false, error: 'A post with this slug already exists. Choose a different one.' },
+          { status: 409 }
         )
       }
 
