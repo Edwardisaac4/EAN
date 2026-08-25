@@ -20,7 +20,22 @@ import {
   LEAD_WINDOW_SECONDS,
 } from '@/lib/rate-limiter'
 import { dbError, badRequest } from '@/lib/supabase/helpers'
+import { adminGuard } from '@/lib/api-auth'
 import type { LeadSubmissionPayload, LeadServiceEnum, LeadStatusEnum, LeadPriorityEnum } from '@/types/database'
+
+/** Ceiling on a single page of leads, so one request cannot pull the table. */
+const MAX_PAGE_SIZE = 200
+
+function clampInteger(
+  raw: string | null,
+  fallback: number,
+  min: number,
+  max: number
+): number {
+  const parsed = Number(raw)
+  if (!Number.isFinite(parsed)) return fallback
+  return Math.min(Math.max(Math.trunc(parsed), min), max)
+}
 
 // ---------------------------------------------------------------------------
 // GET /api/leads — fetch leads (admin, paginated, filterable)
@@ -28,14 +43,21 @@ import type { LeadSubmissionPayload, LeadServiceEnum, LeadStatusEnum, LeadPriori
 
 export async function GET(request: Request) {
   try {
+    // Lead rows are PII. proxy.ts gates this prefix too; the check is repeated
+    // here so the route is not left open by a matcher change or a proxy bypass.
+    const denied = await adminGuard()
+    if (denied) return denied
+
     const { searchParams } = new URL(request.url)
 
     const status   = searchParams.get('status') as LeadStatusEnum | 'all' | null
     const service  = searchParams.get('service') as LeadServiceEnum | 'all' | null
     const priority = searchParams.get('priority') as LeadPriorityEnum | 'all' | null
     const search   = searchParams.get('q') || searchParams.get('search') || undefined
-    const page     = Number(searchParams.get('page') ?? 1)
-    const limit    = Number(searchParams.get('limit') ?? 20)
+    // Clamped: `?limit=1e9` reached the query builder as a range of that size,
+    // and a non-numeric value produced NaN offsets.
+    const page     = clampInteger(searchParams.get('page'), 1, 1, Number.MAX_SAFE_INTEGER)
+    const limit    = clampInteger(searchParams.get('limit'), 20, 1, MAX_PAGE_SIZE)
 
     const { leads, total, error } = await getLeads({
       status:   status || 'all',

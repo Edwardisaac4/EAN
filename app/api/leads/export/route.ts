@@ -6,10 +6,16 @@
 import { NextResponse } from 'next/server'
 import { exportLeadsCSV } from '@/lib/services/leads-service'
 import { dbError } from '@/lib/supabase/helpers'
+import { adminGuard } from '@/lib/api-auth'
 import type { LeadStatusEnum, LeadServiceEnum, LeadPriorityEnum } from '@/types/database'
 
 export async function GET(request: Request) {
   try {
+    // A CSV of every lead is the highest-value response on the site, so the
+    // session is checked here as well as in proxy.ts.
+    const denied = await adminGuard()
+    if (denied) return denied
+
     const { searchParams } = new URL(request.url)
 
     const status   = searchParams.get('status') as LeadStatusEnum | 'all' | null

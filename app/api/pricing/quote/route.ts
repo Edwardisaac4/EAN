@@ -9,26 +9,13 @@ import {
   updateLead,
 } from '@/lib/services/leads-service'
 import { leadTrackingSchema } from '@/lib/services/lead-input'
-
-// Simple IP rate limiter
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
-
-function isRateLimited(ip: string, limit = 20, windowMs = 60000): boolean {
-  const now = Date.now()
-  const record = rateLimitMap.get(ip)
-
-  if (!record || now > record.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + windowMs })
-    return false
-  }
-
-  if (record.count >= limit) {
-    return true
-  }
-
-  record.count += 1
-  return false
-}
+import {
+  clientIpFrom,
+  consumeRateLimit,
+  quoteKey,
+  QUOTE_MAX_REQUESTS,
+  QUOTE_WINDOW_SECONDS,
+} from '@/lib/rate-limiter'
 
 /**
  * Contact details. The sections calculator posts this as `contact` and the
@@ -70,12 +57,20 @@ const quoteRequestSchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1'
+  // Shared Postgres counter rather than a module-level Map: on Vercel each warm
+  // lambda held its own copy, so the cap was per-instance and never expired
+  // entries grew without bound. An unidentifiable caller must also not be
+  // bucketed as 127.0.0.1 alongside every other one.
+  const ip = clientIpFrom(request)
+  const rateCheck = await consumeRateLimit(quoteKey(ip), QUOTE_MAX_REQUESTS, QUOTE_WINDOW_SECONDS)
 
-  if (isRateLimited(ip)) {
+  if (!rateCheck.isAllowed) {
     return NextResponse.json(
       { success: false, error: 'Rate limit exceeded. Please wait before submitting again.' },
-      { status: 429 }
+      {
+        status: 429,
+        headers: { 'Retry-After': String(rateCheck.retryAfterSeconds ?? QUOTE_WINDOW_SECONDS) },
+      }
     )
   }
 
@@ -154,7 +149,6 @@ export async function POST(request: NextRequest) {
           }
         }
       } else {
-        const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
         const { lead: created, error } = await createLead(
           {
             fullName: leadName,
@@ -166,7 +160,7 @@ export async function POST(request: NextRequest) {
             estimatedValue: quote.usdTotal,
             tracking,
           },
-          clientIp
+          ip === 'unknown' ? undefined : ip
         )
 
         if (error) {

@@ -35,7 +35,10 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
       if (error.code === 'PGRST116') {
         return NextResponse.json({ success: false, error: 'Blog post not found' }, { status: 404 })
       }
-      return NextResponse.json({ success: false, error: error.message || 'Database error' }, { status: 500 })
+      // Postgres messages name columns, constraints and policies; they stay in
+      // the server log rather than the response body.
+      console.warn('[Blog API GET] Supabase fetch error:', error)
+      return NextResponse.json({ success: false, error: 'Failed to fetch blog post' }, { status: 500 })
     }
 
     if (!data) {
@@ -117,9 +120,18 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       .single()
 
     if (error) {
-      console.warn('[Blog API PATCH] Supabase update error:', error.message)
+      console.warn('[Blog API PATCH] Supabase update error:', error)
+
+      // The slug is the only unique column, so this is a slug already in use.
+      if (error.code === '23505') {
+        return NextResponse.json(
+          { success: false, error: 'A post with this slug already exists. Choose a different one.' },
+          { status: 409 }
+        )
+      }
+
       return NextResponse.json(
-        { success: false, error: error.message || 'Failed to update post' },
+        { success: false, error: 'Failed to update post' },
         { status: 500 }
       )
     }
@@ -152,9 +164,9 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
       .eq('slug', slug)
 
     if (error) {
-      console.warn('[Blog API DELETE] Supabase delete error:', error.message)
+      console.warn('[Blog API DELETE] Supabase delete error:', error)
       return NextResponse.json(
-        { success: false, error: error.message || 'Failed to delete post' },
+        { success: false, error: 'Failed to delete post' },
         { status: 500 }
       )
     }

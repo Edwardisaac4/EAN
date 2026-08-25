@@ -11,9 +11,13 @@
 import { NextResponse } from 'next/server';
 import { getLeadAnalytics } from '@/lib/services/leads-service';
 import { dbError } from '@/lib/supabase/helpers';
+import { adminGuard } from '@/lib/api-auth';
 
 export async function GET() {
   try {
+    const denied = await adminGuard();
+    if (denied) return denied;
+
     const { analytics, error } = await getLeadAnalytics();
 
     if (error || !analytics) {

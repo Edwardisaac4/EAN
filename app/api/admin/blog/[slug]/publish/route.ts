@@ -34,9 +34,9 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
       .single()
 
     if (error) {
-      console.warn('[Publish API] Supabase publish error:', error.message)
+      console.warn('[Publish API] Supabase publish error:', error)
       return NextResponse.json(
-        { success: false, error: error.message || 'Failed to publish post' },
+        { success: false, error: 'Failed to publish post' },
         { status: 500 }
       )
     }

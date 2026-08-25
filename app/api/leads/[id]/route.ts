@@ -6,6 +6,7 @@
 import { NextResponse } from 'next/server'
 import { getLeadById, updateLead, addLeadNote, LEAD_NOT_FOUND } from '@/lib/services/leads-service'
 import { dbError, notFound, badRequest } from '@/lib/supabase/helpers'
+import { adminGuard } from '@/lib/api-auth'
 
 // ---------------------------------------------------------------------------
 // GET /api/leads/[id] — fetch single lead with all related data
@@ -16,6 +17,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const denied = await adminGuard()
+    if (denied) return denied
+
     const { id } = await params
     const { lead, error } = await getLeadById(id)
 
@@ -39,6 +43,9 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const denied = await adminGuard()
+    if (denied) return denied
+
     const { id } = await params
     let body: Record<string, unknown>
 

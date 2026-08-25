@@ -42,6 +42,13 @@ export const LEAD_WINDOW_SECONDS = 60 * 60
 export const AIRCRAFT_SEARCH_MAX = 30
 export const AIRCRAFT_SEARCH_WINDOW_SECONDS = 60
 
+/**
+ * Pricing quote: public, writes a lead, and sends an email on a new one, so the
+ * budget is close to the lead form's rather than a per-instance courtesy limit.
+ */
+export const QUOTE_MAX_REQUESTS = 20
+export const QUOTE_WINDOW_SECONDS = 60 * 60
+
 type RpcRow = { is_allowed: boolean; retry_after_seconds: number }
 
 /**
@@ -86,6 +93,11 @@ export function leadKey(ip: string): string {
 /** Bucket key for the metered aircraft lookup proxy. */
 export function aircraftSearchKey(ip: string): string {
   return `aircraft:${normalise(ip)}`
+}
+
+/** Bucket key for a pricing-portal quote submission. */
+export function quoteKey(ip: string): string {
+  return `quote:${normalise(ip)}`
 }
 
 /**

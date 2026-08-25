@@ -25,6 +25,7 @@ import {
   requiredString,
 } from '@/lib/services/lead-input'
 import { mapLeadRowToUiLead, mapLeadRowsToUiLeads } from '@/lib/mappers/lead-mapper'
+import { adminGuard } from '@/lib/api-auth'
 import { SERVICE_LABELS } from '@/lib/admin-leads-data';import type { ServiceCategory } from '@/lib/admin-leads-data'
 import type {
   LeadPriorityEnum,
@@ -62,6 +63,11 @@ async function fetchUiLeadById(id: string) {
 
 export async function POST(request: Request) {
   try {
+    // Every branch below reads or writes lead PII, so the session is verified in
+    // the handler as well as in proxy.ts.
+    const denied = await adminGuard()
+    if (denied) return denied
+
     let body: GraphQLBody
     try {
       body = (await request.json()) as GraphQLBody
