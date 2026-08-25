@@ -20,7 +20,6 @@ export async function GET(
   if (!guard.ok) return guard.response
 
   try {
-
     const { id } = await params
     const { lead, error } = await getLeadById(id)
 
@@ -47,7 +46,6 @@ export async function PATCH(
   if (!guard.ok) return guard.response
 
   try {
-
     const { id } = await params
     let body: Record<string, unknown>
 

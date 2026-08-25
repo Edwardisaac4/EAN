@@ -68,9 +68,6 @@ export async function POST(request: Request) {
   if (!guard.ok) return guard.response
 
   try {
-    // Every branch below reads or writes lead PII, so the session is verified in
-    // the handler as well as in proxy.ts.
-
     let body: GraphQLBody
     try {
       body = (await request.json()) as GraphQLBody

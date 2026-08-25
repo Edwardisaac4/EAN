@@ -17,9 +17,6 @@ export async function GET(request: Request) {
   if (!guard.ok) return guard.response
 
   try {
-    // A CSV of every lead is the highest-value response on the site, so the
-    // session is checked here as well as in proxy.ts.
-
     const { searchParams } = new URL(request.url)
 
     const status   = searchParams.get('status') as LeadStatusEnum | 'all' | null

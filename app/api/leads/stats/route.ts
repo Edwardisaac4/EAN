@@ -15,7 +15,6 @@ export async function GET() {
   if (!guard.ok) return guard.response
 
   try {
-
     const { analytics, error } = await getLeadAnalytics()
 
     if (error || !analytics) {
