@@ -75,6 +75,14 @@ re-exports or side effects at module scope.
 component or a route. `buildQuote` falls back to a 5,700 kg MTOW when weight is
 missing — that default is deliberate, not a placeholder.
 
+Every figure in `pricing/bands.ts` is transcribed from
+`docs/FBO PRICE LIST_adjusted.pdf` and nothing else. The MTOW bands are that
+sheet's columns (0–9,000 · 9,001–20,000 · 20,001–30,000 · 30,001–50,000 ·
+50,001+ kg), and the quote is USD-only — the passenger service charges, the
+₦85,000 VIP lounge rate and the $850 international terminal fee were removed in
+August 2026 because the sheet does not carry them. Do not reintroduce a rate the
+sheet does not publish; revise the sheet first.
+
 ## Database
 
 Tables: `leads`, `lead_tracking`, `lead_activities`, `lead_notes`.

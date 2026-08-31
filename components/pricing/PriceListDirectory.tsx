@@ -1,7 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
-import { BANDS, HANDLING_LOS, HANDLING_ABV, TERMINAL_INTL_USD, CIQ_USD, PARKING_PER_NIGHT_USD, PSC, VIP_LOCAL_NGN, ADDONS } from '@/lib/pricing/bands'
+import {
+  BANDS,
+  HANDLING_LOS,
+  HANDLING_ABV,
+  OUTSTATION_HANDLING_USD,
+  CIQ_USD,
+  PARKING_PER_NIGHT_USD,
+  DISBURSEMENT_RATE,
+  MONTHLY_HANDLING,
+  ADDONS,
+  addonRate,
+} from '@/lib/pricing/bands'
 import { MtowBand } from '@/types/pricing'
 import {
   FileSpreadsheet,
@@ -17,13 +28,20 @@ interface PriceListDirectoryProps {
   onSwitchToQuote: () => void
 }
 
+const BANDS_ORDER = ['A', 'B', 'C', 'D', 'E'] as const
+
 const BAND_EXAMPLES: Record<MtowBand, string> = {
-  A: 'Citation Mustang, Embraer Phenom 100/300, King Air 350',
-  B: 'Hawker 800XP, Learjet 60, Citation XLS, Challenger 300/350',
-  C: 'Challenger 604/605, Falcon 2000/900, Legacy 600/650, Gulfstream G450',
-  D: 'Gulfstream G550/G650, Bombardier Global 6000/7500, Falcon 8X',
-  E: 'Boeing BBJ Series, Airbus ACJ Series, Lineage 1000',
+  A: 'Citation Mustang, Phenom 100/300, King Air 350, Learjet 45',
+  B: 'Hawker 800XP/900XP, Citation XLS+/Sovereign, Challenger 300/350, Falcon 2000',
+  C: 'Challenger 604/605, Falcon 900EX, Legacy 600/650, Gulfstream G280',
+  D: 'Gulfstream G450/G550/G650, Global 5000/6000, Falcon 8X',
+  E: 'Global 7500, Lineage 1000, Boeing BBJ Series, Airbus ACJ Series',
 }
+
+// Read out of ADDONS by id so Category 03 renders the same published figures
+// the add-on rate card does, rather than a second hand-keyed copy of them.
+const APRON_PARKING = ADDONS.find((a) => a.id === 'apron_parking')
+const HANGARAGE = ADDONS.find((a) => a.id === 'hangarage')
 
 export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirectoryProps) {
   const [searchQuery, setSearchQuery] = useState('')
@@ -137,10 +155,10 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-ean-navy">
-              {(['A', 'B', 'C', 'D', 'E'] as const).map((b) => {
+              {BANDS_ORDER.map((b) => {
                 const rate = HANDLING_LOS[b]
-                const minRate = typeof rate === 'object' ? `$${rate.min.toLocaleString()}` : `$${rate.toLocaleString()}`
-                const stdRate = typeof rate === 'object' ? `$${rate.standard.toLocaleString()}` : `$${rate.toLocaleString()}`
+                const minRate = `$${rate.min.toLocaleString()}`
+                const stdRate = `$${rate.standard.toLocaleString()}`
 
                 return (
                   <tr key={b} className="hover:bg-gray-50/80 transition-colors">
@@ -167,7 +185,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
                     )}
                     {(selectedLocation === 'ALL' || selectedLocation === 'ABV') && (
                       <td className="py-4 px-6 text-right font-mono font-semibold text-ean-navy">
-                        ${HANDLING_ABV}
+                        ${HANDLING_ABV.toLocaleString()}
                       </td>
                     )}
                   </tr>
@@ -178,11 +196,11 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
         </div>
         <div className="p-4 bg-ean-surface border-t border-ean-border-light text-[11px] font-ui text-ean-muted-dark flex items-center gap-2">
           <HelpCircle className="w-4 h-4 text-ean-gold shrink-0" />
-          <span>Rates are structured per aircraft turnaround (arrival &amp; departure). Heavy jet operations (&gt;80,000 kg) subject to customized handling requirements.</span>
+          <span>Rates are per aircraft turnaround (arrival &amp; departure) and are quoted in USD. Bands A and B carry a single published figure; bands C, D and E are published as a range, shown here as its floor and ceiling. Outstation handling is ${OUTSTATION_HANDLING_USD} per turnaround at any station outside Lagos and Abuja.</span>
         </div>
       </div>
 
-      {/* SECTION 2: STATUTORY PASSENGER & FACILITATION FEES */}
+      {/* SECTION 2: STATION CHARGES, PARKING & HANGARAGE */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white shadow-sm border border-ean-border-light overflow-hidden flex flex-col">
           <div className="p-5 bg-ean-navy-mid border-b border-ean-border-dark text-ean-text-light">
@@ -190,63 +208,77 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               Category 02
             </span>
             <h3 className="font-display font-bold text-lg text-ean-text-light mt-0.5">
-              Passenger & Regulatory Facilitation Fees
+              Station Handling, Parking &amp; Disbursement
             </h3>
           </div>
           <div className="p-5 space-y-4 flex-1">
             <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
                 <div className="font-ui font-semibold text-xs text-ean-navy">
-                  International Terminal / VIP Terminal Fee
+                  Abuja Handling
                 </div>
                 <div className="text-[11px] text-ean-muted-dark">
-                  Per international arrival or departure turnaround
+                  Per turnaround at Abuja NAIA &middot; flat across every MTOW band
                 </div>
               </div>
               <div className="font-mono font-bold text-sm text-ean-gold">
-                ${TERMINAL_INTL_USD}
+                ${HANDLING_ABV.toLocaleString()}
               </div>
             </div>
 
             <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
                 <div className="font-ui font-semibold text-xs text-ean-navy">
-                  CIQ Facilitation (Customs, Immigration, Quarantine)
+                  Outstation Handling Fee
+                </div>
+                <div className="text-[11px] text-ean-muted-dark">
+                  Per turnaround at any station outside Lagos and Abuja
+                </div>
+              </div>
+              <div className="font-mono font-bold text-sm text-ean-gold">
+                ${OUTSTATION_HANDLING_USD.toLocaleString()}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
+              <div>
+                <div className="font-ui font-semibold text-xs text-ean-navy">
+                  CIQ Fee (Customs, Immigration, Quarantine)
                 </div>
                 <div className="text-[11px] text-ean-muted-dark">
                   Official inspection clearance facilitation per flight
                 </div>
               </div>
               <div className="font-mono font-bold text-sm text-ean-gold">
-                ${CIQ_USD}
+                ${CIQ_USD.toLocaleString()}
               </div>
             </div>
 
             <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
                 <div className="font-ui font-semibold text-xs text-ean-navy">
-                  Passenger Service Charge (International)
+                  Overnight Parking
                 </div>
                 <div className="text-[11px] text-ean-muted-dark">
-                  Per passenger · CAA statutory charge
+                  Per night &middot; flat across every MTOW band
                 </div>
               </div>
               <div className="font-mono font-bold text-sm text-ean-gold">
-                ${PSC.intl_usd} / pax
+                ${PARKING_PER_NIGHT_USD.toLocaleString()} / night
               </div>
             </div>
 
             <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
                 <div className="font-ui font-semibold text-xs text-ean-navy">
-                  Passenger Service Charge (Domestic)
+                  Disbursement Fee
                 </div>
                 <div className="text-[11px] text-ean-muted-dark">
-                  Per passenger · Local statutory charge
+                  Levied on any payment EAN makes on the operator&apos;s behalf
                 </div>
               </div>
-              <div className="font-mono font-bold text-sm text-ean-navy">
-                ₦{PSC.dom_ngn.toLocaleString()} / pax
+              <div className="font-mono font-bold text-sm text-ean-gold">
+                {DISBURSEMENT_RATE * 100}%
               </div>
             </div>
           </div>
@@ -258,55 +290,40 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               Category 03
             </span>
             <h3 className="font-display font-bold text-lg text-ean-text-light mt-0.5">
-              Lounge Access & Ramp Overnight Parking
+              Apron Parking &amp; Hangarage
             </h3>
           </div>
           <div className="p-5 space-y-4 flex-1">
-            <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
-              <div>
-                <div className="font-ui font-semibold text-xs text-ean-navy">
-                  Overnight Ramp Parking
-                </div>
-                <div className="text-[11px] text-ean-muted-dark">
-                  Per night · Secure airside apron parking
-                </div>
-              </div>
-              <div className="font-mono font-bold text-sm text-ean-gold">
-                ${PARKING_PER_NIGHT_USD} / night
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
-              <div>
-                <div className="font-ui font-semibold text-xs text-ean-navy">
-                  VIP Lounge Access (Domestic Flight Operators)
-                </div>
-                <div className="text-[11px] text-ean-muted-dark">
-                  Full access to private VIP lounge suites & amenities
-                </div>
-              </div>
-              <div className="font-mono font-bold text-sm text-ean-navy">
-                ₦{VIP_LOCAL_NGN.toLocaleString()}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
-              <div>
-                <div className="font-ui font-semibold text-xs text-ean-navy">
-                  Aviation Fuel (Jet A-1)
-                </div>
-                <div className="text-[11px] text-ean-muted-dark">
-                  Onsite direct refueling · 15% disbursement fee applies
-                </div>
-              </div>
-              <div className="font-mono font-semibold text-xs text-amber-700 bg-amber-50 px-2 py-1">
-                Platts-Based Daily Rate
-              </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left font-ui text-xs">
+                <thead>
+                  <tr className="border-b border-ean-border-light text-ean-navy uppercase tracking-wider font-semibold text-[10px]">
+                    <th className="py-2 pr-2">Band</th>
+                    <th className="py-2 px-2 text-right">Apron Parking</th>
+                    <th className="py-2 pl-2 text-right">Hangarage</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {BANDS_ORDER.map((b) => (
+                    <tr key={b}>
+                      <td className="py-2.5 pr-2 font-semibold text-ean-navy whitespace-nowrap">
+                        {b} &middot; {BANDS[b].range}
+                      </td>
+                      <td className="py-2.5 px-2 text-right font-mono font-semibold text-ean-navy">
+                        ${APRON_PARKING ? (addonRate(APRON_PARKING, b) ?? 0).toLocaleString() : '—'}
+                      </td>
+                      <td className="py-2.5 pl-2 text-right font-mono font-bold text-ean-gold">
+                        ${HANGARAGE ? (addonRate(HANGARAGE, b) ?? 0).toLocaleString() : '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
             <div className="p-3 bg-ean-gold/10 border border-ean-gold/30 text-xs font-ui text-ean-navy flex items-start gap-2">
               <Sparkles className="w-4 h-4 text-ean-gold shrink-0 mt-0.5" />
-              <span>Complimentary high-speed Wi-Fi, executive refreshments, and dedicated CRO ushering included with all handling.</span>
+              <span>Both are charged per day. Every rate on this sheet is quoted in USD &mdash; there are no naira-denominated charges.</span>
             </div>
           </div>
         </div>
@@ -339,7 +356,16 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-6 bg-ean-surface">
           {filteredAddons.map((addon) => {
-            const displayRate = `$${addon.value.toLocaleString()}`
+            // A band-priced service has no single headline figure, so the card
+            // shows the published span and breaks it out per band below.
+            const bandRates = addon.per === 'band'
+              ? BANDS_ORDER.map((b) => addonRate(addon, b) ?? 0)
+              : null
+            const displayRate = addon.per === 'request'
+              ? 'On request'
+              : bandRates
+                ? `$${Math.min(...bandRates).toLocaleString()} – $${Math.max(...bandRates).toLocaleString()}`
+                : `$${(addonRate(addon, 'A') ?? 0).toLocaleString()}`
 
             return (
               <div
@@ -351,8 +377,27 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
                     {addon.label}
                   </div>
                   <div className="text-[11px] font-ui text-ean-muted-dark">
-                    {addon.per === 'flat' ? 'Flat rate per flight service' : 'Rate varies by aircraft MTOW category'}
+                    {addon.per === 'flat'
+                      ? 'Flat rate per flight service'
+                      : addon.per === 'band'
+                        ? 'Rate varies by aircraft MTOW band'
+                        : (addon.note ?? 'Quoted on request')}
                   </div>
+
+                  {bandRates && (
+                    <div className="mt-3 grid grid-cols-5 gap-1">
+                      {BANDS_ORDER.map((b, i) => (
+                        <div key={b} className="text-center bg-ean-surface border border-ean-border-light py-1">
+                          <div className="text-[9px] font-ui uppercase tracking-wider text-ean-muted-dark">
+                            {b}
+                          </div>
+                          <div className="font-mono text-[10px] font-semibold text-ean-navy">
+                            ${bandRates[i].toLocaleString()}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="mt-4 pt-3 border-t border-ean-border-light flex items-center justify-between">
                   <span className="text-[11px] font-ui uppercase tracking-wider text-ean-muted-dark">
@@ -365,6 +410,62 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               </div>
             )
           })}
+        </div>
+      </div>
+
+      {/* SECTION 5: MONTHLY HANDLING & DISBURSEMENT */}
+      <div className="bg-white shadow-sm border border-ean-border-light overflow-hidden">
+        <div className="p-6 bg-ean-navy text-ean-text-light flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-ean-border-dark">
+          <div>
+            <span className="text-[11px] font-ui uppercase tracking-widest text-ean-gold font-semibold">
+              Category 05
+            </span>
+            <h3 className="font-display font-bold text-xl text-ean-text-light mt-0.5">
+              Monthly Handling Arrangements &amp; Disbursement
+            </h3>
+          </div>
+          <span className="text-xs font-ui text-ean-muted-light bg-white/10 px-3 py-1 rounded-full w-fit">
+            Per Calendar Month
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left font-ui text-xs md:text-sm">
+            <thead>
+              <tr className="bg-ean-surface border-b border-ean-border-light text-ean-navy uppercase tracking-wider font-semibold text-[11px]">
+                <th className="py-4 px-6">MTOW Weight Category</th>
+                <th className="py-4 px-6 text-right">Monthly Handling (Hangarage)</th>
+                <th className="py-4 px-6 text-right">Monthly Handling (Apron)</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 text-ean-navy">
+              {BANDS_ORDER.map((b) => (
+                <tr key={b} className="hover:bg-gray-50/80 transition-colors">
+                  <td className="py-4 px-6 font-semibold text-ean-navy">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-ean-gold/10 text-ean-gold font-bold flex items-center justify-center text-xs">
+                        {b}
+                      </span>
+                      <span>{BANDS[b].label}</span>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6 text-right font-mono font-bold text-ean-gold">
+                    ${MONTHLY_HANDLING[b].hangarage.toLocaleString()}
+                  </td>
+                  <td className="py-4 px-6 text-right font-mono font-semibold text-ean-navy">
+                    ${MONTHLY_HANDLING[b].apron.toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="p-4 bg-ean-surface border-t border-ean-border-light text-[11px] font-ui text-ean-muted-dark flex items-center gap-2">
+          <HelpCircle className="w-4 h-4 text-ean-gold shrink-0" />
+          <span>
+            Monthly handling is a standing arrangement billed per calendar month, separate from per-turnaround handling. A disbursement fee of {DISBURSEMENT_RATE * 100}% applies to any payment EAN makes on the operator&apos;s behalf — fuel uplift, permits and third-party invoices included.
+          </span>
         </div>
       </div>
 

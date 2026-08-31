@@ -28,11 +28,11 @@ export default function QuoteActions({
 Aircraft: ${aircraftName}
 ${locationLabel} · ${opLabel} · ${stayLabel}
 
-${quote.items.map(i => `${i.label}: ${i.currency === 'USD' ? 'USD ' : '₦'}${i.value.toLocaleString()}`).join('\n')}
+${quote.items.map(i => `${i.label}: USD ${i.value.toLocaleString()}`).join('\n')}
 
 TOTAL: ${quote.totalDisplay}
 
-Fuel at Platts pricing on request. PSC subject to CAA ratification.`
+A 15% disbursement fee applies to any payment made on your behalf.`
 
     try {
       if (typeof navigator !== 'undefined' && navigator.clipboard) {
@@ -59,12 +59,12 @@ Flight Details:
 - Pax Count: ${state.pax}
 
 Itemized Charges:
-${quote.items.map(i => `- ${i.label}${i.sub ? ` (${i.sub})` : ''}: ${i.currency === 'USD' ? 'USD ' : '₦'}${i.value.toLocaleString()}`).join('\n')}
+${quote.items.map(i => `- ${i.label}${i.sub ? ` (${i.sub})` : ''}: USD ${i.value.toLocaleString()}`).join('\n')}
 
 ESTIMATED TOTAL: ${quote.totalDisplay}
 
 Payment Terms: Credit card, bank transfer, or cash prior to departure.
-Fuel: Available on request at Platts-based pricing (15% disbursement fee).
+Disbursement: A 15% fee applies to any payment made on your behalf.
 
 Best regards,
 EAN Aviation Flight Support

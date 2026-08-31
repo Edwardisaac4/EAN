@@ -4,12 +4,10 @@ import {
   BANDS,
   HANDLING_LOS,
   HANDLING_ABV,
-  TERMINAL_INTL_USD,
   CIQ_USD,
   PARKING_PER_NIGHT_USD,
-  PSC,
-  VIP_LOCAL_NGN,
   ADDONS,
+  addonRate,
 } from './bands'
 
 export function buildQuote(state: QuoteState): QuoteResult {
@@ -19,39 +17,36 @@ export function buildQuote(state: QuoteState): QuoteResult {
   const band = getBand(mtow)
 
   const nights = Math.max(0, state.nights ?? 0)
-  const pax = Math.max(0, state.pax ?? 0)
 
-  const items:    QuoteLineItem[] = []
-  const ngnItems: QuoteLineItem[] = []
+  const items: QuoteLineItem[] = []
 
   // Ground handling
   const handlingRate = HANDLING_LOS[band]
   if (state.location === 'LOS') {
-    const value = typeof handlingRate === 'object'
-      ? (state.handling === 'min' ? handlingRate.min : handlingRate.standard)
-      : handlingRate
+    const value = state.handling === 'min' ? handlingRate.min : handlingRate.standard
+    // Bands A and B are published as a single figure, so the floor/standard
+    // toggle has nothing to move between — say so rather than labelling an
+    // identical number two different ways.
+    const isBanded = handlingRate.min !== handlingRate.standard
     items.push({
-      label: 'Ground handling',
+      label: 'Handling fee',
       sub:   isWeightMissing
         ? 'per turnaround · pending MTOW confirmation'
-        : `per turnaround · ${state.handling === 'min' ? 'floor rate' : 'standard'}`,
+        : isBanded
+          ? `per turnaround · ${state.handling === 'min' ? 'floor rate' : 'standard rate'}`
+          : 'per turnaround · published rate',
       value,
       currency: 'USD',
       provisional: isWeightMissing,
     })
   } else {
     items.push({
-      label: 'Ground handling (Abuja)',
+      label: 'Abuja handling',
       sub: isWeightMissing ? 'per turnaround · pending MTOW confirmation' : 'per turnaround',
       value: HANDLING_ABV,
       currency: 'USD',
       provisional: isWeightMissing,
     })
-  }
-
-  // International terminal fee
-  if (state.operation === 'intl') {
-    items.push({ label: 'International terminal / VIP fee', value: TERMINAL_INTL_USD, currency: 'USD' })
   }
 
   // Statutory CIQ fee (if international and not explicitly selected in add-ons)
@@ -73,43 +68,32 @@ export function buildQuote(state: QuoteState): QuoteResult {
   if (state.addons) {
     ADDONS.forEach((addon) => {
       if (!state.addons[addon.id]) return
-      items.push({ label: addon.label, value: addon.value, currency: 'USD' })
-    })
-  }
-
-  // Passenger service charge — international
-  if (pax > 0 && state.operation === 'intl') {
-    items.push({
-      label:       'Passenger service charge (intl)',
-      sub:         `${pax} pax × $${PSC.intl_usd} · proposed`,
-      value:       PSC.intl_usd * pax,
-      currency:    'USD',
-      provisional: true,
-    })
-  }
-
-  // NGN items — domestic only
-  if (state.operation === 'dom') {
-    ngnItems.push({ label: 'VIP lounge (local operators)', value: VIP_LOCAL_NGN, currency: 'NGN' })
-    if (pax > 0) {
-      ngnItems.push({
-        label: 'Passenger service charge (local)',
-        sub:   `${pax} pax × ₦${PSC.dom_ngn.toLocaleString()} · proposed`,
-        value: PSC.dom_ngn * pax,
-        currency: 'NGN',
-        provisional: true,
+      const rate = addonRate(addon, band)
+      // An on-request item has no published figure, so it rides on the quote as
+      // TBD rather than silently totalling as zero.
+      if (rate === null) {
+        items.push({ label: addon.label, sub: addon.note, value: 0, currency: 'USD', pending: true })
+        return
+      }
+      items.push({
+        label: addon.label,
+        sub:   addon.per === 'band' ? BANDS[band].range : undefined,
+        value: rate,
+        currency: 'USD',
       })
-    }
+    })
   }
 
-  const allItems = [...items, ...ngnItems]
+  // The published sheet prices by aircraft and service only — no passenger
+  // service charge, and nothing billed in naira. Pax count is carried on the
+  // quote for the CRO's planning, not as a charge line.
+  const usdTotal = items.reduce((sum, i) => sum + (i.pending ? 0 : i.value ?? 0), 0)
 
-  const usdTotal = items.reduce((sum, i) => sum + (i.value ?? 0), 0)
-  const ngnTotal = ngnItems.reduce((sum, i) => sum + i.value, 0)
-
-  const totalDisplay = ngnTotal > 0
-    ? `USD ${usdTotal.toLocaleString()} + ₦${ngnTotal.toLocaleString()}`
-    : `USD ${usdTotal.toLocaleString()}`
-
-  return { band, bandLabel: BANDS[band].label, items: allItems, usdTotal, ngnTotal, totalDisplay }
+  return {
+    band,
+    bandLabel: BANDS[band].label,
+    items,
+    usdTotal,
+    totalDisplay: `USD ${usdTotal.toLocaleString()}`,
+  }
 }

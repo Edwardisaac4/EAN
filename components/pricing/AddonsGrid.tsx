@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { ADDONS } from '@/lib/pricing/bands'
+import { ADDONS, addonRate } from '@/lib/pricing/bands'
 import { MtowBand } from '@/types/pricing'
 
 interface AddonsGridProps {
@@ -10,7 +10,7 @@ interface AddonsGridProps {
   onToggleAddon: (id: string) => void
 }
 
-export default function AddonsGrid({ addons, onToggleAddon }: AddonsGridProps) {
+export default function AddonsGrid({ addons, band, onToggleAddon }: AddonsGridProps) {
   // Separate CIQ (first item) and the rest of the items for clean 2-column layout matching screenshot
   const ciqAddon = ADDONS.find(a => a.id === 'ciq')
   const remainingAddons = ADDONS.filter(a => a.id !== 'ciq')
@@ -46,7 +46,7 @@ export default function AddonsGrid({ addons, onToggleAddon }: AddonsGridProps) {
               </span>
             </div>
             <span className="font-ui text-sm text-ean-muted-dark shrink-0">
-              ${ciqAddon.value}
+              ${addonRate(ciqAddon, band)?.toLocaleString()}
             </span>
           </label>
         )}
@@ -55,7 +55,10 @@ export default function AddonsGrid({ addons, onToggleAddon }: AddonsGridProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
           {remainingAddons.map((addon) => {
             const isChecked = Boolean(addons[addon.id])
-            const priceDisplay = `$${addon.value}`
+            const rate = addonRate(addon, band)
+            // Band-priced services move with MTOW, so the figure shown is the
+            // one for the aircraft currently selected, not a headline rate.
+            const priceDisplay = rate === null ? 'On request' : `$${rate.toLocaleString()}`
 
             return (
               <label

@@ -61,7 +61,7 @@ Passengers: ${state.pax} (estimated — CRO confirms on arrival)
 --------------------------------
 Requested services:
 
-${quote.items.map(i => `${i.label}${i.sub ? ` (${i.sub})` : ''}: ${i.currency === 'USD' ? 'USD ' : '₦'}${i.value.toLocaleString()}`).join('\n')}
+${quote.items.map(i => `${i.label}${i.sub ? ` (${i.sub})` : ''}: USD ${i.value.toLocaleString()}`).join('\n')}
 --------------------------------
 Estimated total: ${quote.totalDisplay}
 --------------------------------
