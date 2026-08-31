@@ -8,9 +8,6 @@ interface QuoteLineItemProps {
 }
 
 export default function QuoteLineItem({ item }: QuoteLineItemProps) {
-  const isUsd = item.currency === 'USD'
-  const symbol = isUsd ? 'USD ' : '₦'
-
   return (
     <div className="flex items-start justify-between py-2.5 border-b border-gray-100 last:border-b-0">
       <div className="pr-2">
@@ -37,8 +34,7 @@ export default function QuoteLineItem({ item }: QuoteLineItemProps) {
               item.provisional ? 'text-amber-700' : 'text-ean-text-dark'
             }`}
           >
-            {symbol}
-            {item.value.toLocaleString()}
+            USD {item.value.toLocaleString()}
           </span>
         )}
       </div>

@@ -69,16 +69,16 @@ export default function QuoteSummary({
               {/* BLURRED BACKGROUND PLACEHOLDER ITEM LIST */}
               <div className="mt-6 blur-xs opacity-30 select-none pointer-events-none space-y-3">
                 <div className="flex justify-between text-xs font-ui">
-                  <span className="font-semibold text-ean-navy">Ground handling</span>
-                  <span className="font-mono font-bold text-ean-navy">$1,800</span>
+                  <span className="font-semibold text-ean-navy">Handling fee</span>
+                  <span className="font-mono font-bold text-ean-navy">$550</span>
                 </div>
                 <div className="flex justify-between text-xs font-ui">
-                  <span className="font-semibold text-ean-navy">VIP Lounge (local operators)</span>
-                  <span className="font-mono font-bold text-ean-navy">₦85,000</span>
+                  <span className="font-semibold text-ean-navy">CIQ fee</span>
+                  <span className="font-mono font-bold text-ean-navy">$600</span>
                 </div>
                 <div className="flex justify-between text-xs font-ui">
-                  <span className="font-semibold text-ean-navy">Passenger service charge</span>
-                  <span className="font-mono font-bold text-ean-navy">₦34,000</span>
+                  <span className="font-semibold text-ean-navy">Overnight parking</span>
+                  <span className="font-mono font-bold text-ean-navy">$100</span>
                 </div>
               </div>
             </div>
@@ -119,8 +119,8 @@ export default function QuoteSummary({
                 <div className="flex items-center gap-1 text-amber-900 font-semibold text-[10px] uppercase">
                   <Info className="w-3.5 h-3.5 text-amber-700" /> Note & Disbursement Terms
                 </div>
-                <p>Fuel at Platts-based pricing on request (15% disbursement fee).</p>
-                <p>PSC shown is proposed rate pending CAA committee ratification.</p>
+                <p>All rates are USD, per turnaround, as published on the EAN FBO price list.</p>
+                <p>A 15% disbursement fee applies to any payment EAN makes on your behalf.</p>
               </div>
             </div>
           )}

@@ -43,7 +43,8 @@ export interface QuoteLineItem {
   label:        string
   sub?:         string
   value:        number
-  currency:     'USD' | 'NGN'
+  // The published FBO price list is USD throughout — there is no naira line.
+  currency:     'USD'
   provisional?: boolean        // shows amber — pending confirmation
   pending?:     boolean        // shows TBD
 }
@@ -53,7 +54,6 @@ export interface QuoteResult {
   bandLabel:    string
   items:        QuoteLineItem[]
   usdTotal:     number
-  ngnTotal:     number
   totalDisplay: string
 }
 

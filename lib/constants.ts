@@ -1122,28 +1122,6 @@ export const TEAM_MEMBERS: TeamMember[] = [
     highlights: [{ label: "Client Service Excellence", value: "Premium" }],
   },
   {
-    id: "seye-fasuyi",
-    name: "Seye Fasuyi",
-    role: "Head, Human Resources",
-    department: "Human Resources",
-    departmentLabel: "Human Resources",
-    image: "/images/leadership/seye-nbac.jpg",
-    quote:
-      "Empowering individuals and organizations to reach their fullest potential while delivering tangible value to stakeholders.",
-    bio: [
-      "Seye Fasuyi brings over a decade of experience as a dynamic HR Business Partner, specializing in talent acquisition, organizational development, and change management across sectors such as entertainment, healthcare, communications, and technology. His passion lies in empowering individuals and organizations to reach their fullest potential while delivering tangible value to stakeholders.",
-      "Before joining EAN Aviation, Seye led effective HR initiatives that enhanced performance and organizational effectiveness.",
-      "He holds a B.Sc. in English from the University of Ilorin. Seye’s leadership is characterized by strategic insight, stakeholder collaboration, and an unwavering commitment to cultivating a high-performance culture.",
-    ],
-    credentials: [
-      "10+ Yrs HR Business Partner",
-      "B.Sc. English (University of Ilorin)",
-      "Talent Acquisition & Change Management",
-      "Organizational Development Lead",
-    ],
-    highlights: [{ label: "HR Leadership Experience", value: "10+ Years" }],
-  },
-  {
     id: "bukunola-hundeyin",
     name: "Olubukunola Hundeyin",
     role: "Head of Quality & Safety",
@@ -1294,12 +1272,11 @@ export const TEAM_MEMBERS: TeamMember[] = [
       "Ensuring that EAN's financial engine runs with the same sophistication as our premium aviation services.",
     bio: [
       "Ahmed Kazeem is the financial architect behind EAN Aviation’s operational excellence. He has over 15 years of strategic financial leadership, bringing sharp acumen with refined precision to every balance sheet, investment decision, and fiscal strategy. A certified accountant and tax authority, Ahmed’s expertise ensures that EAN’s financial engine runs with the same sophistication as our premium aviation services.",
-      "His academic pedigree spans top institutions: Ahmadu Bello University, University of Lagos, Harvard Business School, MIT, and the New York Institute of Finance, where he honed world-class financial insight and analytical rigor.",
+      "His academic pedigree spans top institutions: Ahmadu Bello University, University of Lagos,",
       "He is a steward of growth, guiding sustainable expansion with grace and discipline. From strategic planning to meticulous reporting, his stewardship ensures that every naira and dollar is aligned with our commitment to excellence.",
     ],
     credentials: [
       "Certified Accountant & Tax Authority",
-      "Harvard Business School & MIT Alumnus",
       "ABU, Unilag & NYIF Alumnus",
       "15+ Yrs Strategic Financial Leadership",
     ],
@@ -1311,7 +1288,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Manager, Operations Support",
     department: "Operations",
     departmentLabel: "Operations Support",
-    image: "/images/leadership/Okechukwu Umeh Operations Support Manager.jpg",
+    image: "/images/leadership/Okechukwu Umeh Operations Support Manager 2026.jpg",
     quote:
       "Maintaining the highest standards of safety, regulatory compliance, and service excellence across all operational touchpoints.",
     bio: [
