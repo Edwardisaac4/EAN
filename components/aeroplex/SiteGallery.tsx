@@ -153,9 +153,8 @@ export default function SiteGallery() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
             <div
               onClick={() => setOpenIndex(null)}
-              className={`fixed inset-0 bg-ean-black-pure/90 backdrop-blur-lg cursor-pointer ${
-                state === 'open' ? 'ean-enter-fade' : 'ean-exit-fade'
-              }`}
+              className={`fixed inset-0 bg-ean-black-pure/90 backdrop-blur-lg cursor-pointer ${state === 'open' ? 'ean-enter-fade' : 'ean-exit-fade'
+                }`}
             />
 
             <div
@@ -164,13 +163,12 @@ export default function SiteGallery() {
               aria-modal="true"
               aria-labelledby={titleId}
               tabIndex={-1}
-              className={`${
-                state === 'open' ? 'ean-enter-modal' : 'ean-exit-modal'
-              } relative z-10 w-full max-w-5xl bg-ean-black border border-ean-border-dark hover:border-ean-blue/40 shadow-[0_30px_70px_rgba(0,0,0,0.6)] overflow-hidden focus:outline-none`}
+              className={`${state === 'open' ? 'ean-enter-modal' : 'ean-exit-modal'
+                } relative z-10 w-full max-w-5xl bg-ean-black border border-ean-border-dark hover:border-ean-blue/40 shadow-[0_30px_70px_rgba(0,0,0,0.6)] overflow-hidden focus:outline-none`}
             >
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-ean-border-dark bg-ean-navy-mid">
                 <span className="font-mono text-xs uppercase tracking-[0.14em] text-ean-gold">
-                  {activeItem ? `${openIndex! + 1} / ${SITE_GALLERY.length} — ${activeItem.tag}` : ''}
+                  {activeItem ? `${activeIndex + 1} / ${SITE_GALLERY.length} — ${activeItem.tag}` : ''}
                 </span>
                 <button
                   type="button"

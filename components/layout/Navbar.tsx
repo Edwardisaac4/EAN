@@ -89,7 +89,7 @@ export default function Navbar() {
     window.addEventListener('resize', measureIndicator);
 
     // Web fonts can change item widths after first measure.
-    document.fonts?.ready.then(measureIndicator).catch(() => {});
+    document.fonts?.ready.then(measureIndicator).catch(() => { });
 
     return () => {
       cancelAnimationFrame(enableFrame);
@@ -142,19 +142,17 @@ export default function Navbar() {
          */}
         <div
           inert={isScrolled}
-          className={`overflow-hidden transition-[height,opacity] duration-300 ${
-            isScrolled ? 'h-0 opacity-0' : 'h-9 opacity-100'
-          }`}
+          className={`overflow-hidden transition-[height,opacity] duration-300 ${isScrolled ? 'h-0 opacity-0' : 'h-9 opacity-100'
+            }`}
         >
           <OpsStrip />
         </div>
 
         <div
-          className={`h-16.5 border-b transition-colors duration-300 ${
-            isScrolled
-              ? 'bg-[rgba(14,18,20,0.94)] backdrop-blur-md border-ean-border-dark'
+          className={`h-16.5 border-b transition-colors duration-300 ${isScrolled
+              ? 'bg-ean-black/95 backdrop-blur-md border-ean-border-dark'
               : 'bg-transparent border-transparent'
-          }`}
+            }`}
         >
           <div className="max-w-ean mx-auto h-full px-6.5 flex items-center justify-between gap-4">
             {/* Brand */}
@@ -179,9 +177,8 @@ export default function Navbar() {
                   const dropdownItems = item.dropdownItems;
                   const isOpen = activeDropdown === item.name;
 
-                  const linkClasses = `font-ui text-[12.5px] uppercase tracking-[0.06em] leading-none pt-2.5 pb-[3px] transition-colors duration-200 ${
-                    isActive ? 'text-ean-text-light' : 'text-ean-slate hover:text-ean-blue-light'
-                  }`;
+                  const linkClasses = `font-ui text-[12.5px] uppercase tracking-[0.06em] leading-none pt-2.5 pb-[3px] transition-colors duration-200 ${isActive ? 'text-ean-text-light' : 'text-ean-slate hover:text-ean-blue-light'
+                    }`;
 
                   return (
                     <div
@@ -214,18 +211,16 @@ export default function Navbar() {
                             <ChevronDown
                               size={13}
                               aria-hidden="true"
-                              className={`transition-transform duration-200 ${
-                                isOpen ? 'rotate-180 text-ean-gold' : ''
-                              }`}
+                              className={`transition-transform duration-200 ${isOpen ? 'rotate-180 text-ean-gold' : ''
+                                }`}
                             />
                           </Link>
 
                           <Presence show={isOpen} durationMs={200}>
                             {(state) => (
                               <div
-                                className={`absolute top-full -left-4 mt-2 min-w-50 w-max bg-ean-black-accent border border-ean-border-dark py-2 shadow-[0_12px_32px_rgba(0,0,0,0.6)] z-50 flex flex-col ${
-                                  state === 'open' ? 'ean-enter-dropdown' : 'ean-exit-dropdown'
-                                }`}
+                                className={`absolute top-full -left-4 mt-2 min-w-50 w-max bg-ean-black-accent border border-ean-border-dark py-2 shadow-[0_12px_32px_rgba(0,0,0,0.6)] z-50 flex flex-col ${state === 'open' ? 'ean-enter-dropdown' : 'ean-exit-dropdown'
+                                  }`}
                               >
                                 {dropdownItems.map((subItem) => {
                                   const isSubActive = pathname === subItem.href;
@@ -235,11 +230,10 @@ export default function Navbar() {
                                       href={subItem.href}
                                       aria-current={isSubActive ? 'page' : undefined}
                                       onClick={() => setActiveDropdown(null)}
-                                      className={`font-ui text-[13px] px-4.5 py-2 transition-colors duration-150 text-left whitespace-nowrap ${
-                                        isSubActive
+                                      className={`font-ui text-[13px] px-4.5 py-2 transition-colors duration-150 text-left whitespace-nowrap ${isSubActive
                                           ? 'text-ean-text-light bg-ean-text-light/5'
                                           : 'text-ean-slate hover:text-ean-blue-light hover:bg-ean-blue-muted/20'
-                                      }`}
+                                        }`}
                                     >
                                       {subItem.name}
                                     </Link>
@@ -312,9 +306,8 @@ export default function Navbar() {
             // The drawer sits under the header (z-40 to its z-50), so its top
             // padding has to clear whatever the chrome currently measures:
             // 102px with the ops strip open, 66px once it has wiped away.
-            className={`fixed inset-0 z-40 bg-ean-black px-6.5 pb-12 flex flex-col overflow-y-auto min-[1120px]:hidden ${
-              isScrolled ? 'pt-21.5' : 'pt-25.5'
-            } ${state === 'open' ? 'ean-enter-down' : 'ean-exit-down'}`}
+            className={`fixed inset-0 z-40 bg-ean-black px-6.5 pb-12 flex flex-col overflow-y-auto min-[1120px]:hidden ${isScrolled ? 'pt-21.5' : 'pt-25.5'
+              } ${state === 'open' ? 'ean-enter-down' : 'ean-exit-down'}`}
           >
             <nav className="flex flex-col border-t border-ean-border-dark">
               {NAV_ITEMS.map((item) => {
@@ -329,9 +322,8 @@ export default function Navbar() {
                             href={item.href}
                             onClick={() => setIsMobileMenuOpen(false)}
                             aria-current={pathname === item.href ? 'page' : undefined}
-                            className={`font-ui text-sm uppercase tracking-[0.06em] transition-colors py-4 flex-1 text-left ${
-                              isActive ? 'text-ean-text-light' : 'text-ean-slate hover:text-ean-blue-light'
-                            }`}
+                            className={`font-ui text-sm uppercase tracking-[0.06em] transition-colors py-4 flex-1 text-left ${isActive ? 'text-ean-text-light' : 'text-ean-slate hover:text-ean-blue-light'
+                              }`}
                           >
                             {item.name}
                           </Link>
@@ -343,20 +335,18 @@ export default function Navbar() {
                           >
                             <ChevronDown
                               size={16}
-                              className={`transition-transform duration-300 ${
-                                mobileDropdownOpen === item.name ? 'rotate-180 text-ean-gold' : ''
-                              }`}
+                              className={`transition-transform duration-300 ${mobileDropdownOpen === item.name ? 'rotate-180 text-ean-gold' : ''
+                                }`}
                             />
                           </button>
                         </div>
 
                         {/* Grid-rows trick animates to intrinsic height without JS measurement */}
                         <div
-                          className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
-                            mobileDropdownOpen === item.name
+                          className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${mobileDropdownOpen === item.name
                               ? 'grid-rows-[1fr] opacity-100'
                               : 'grid-rows-[0fr] opacity-0'
-                          }`}
+                            }`}
                         >
                           <div className="overflow-hidden">
                             <div className="flex flex-col border-l border-ean-border-dark pl-4 ml-1 mb-4">
@@ -371,9 +361,8 @@ export default function Navbar() {
                                       setMobileDropdownOpen(null);
                                     }}
                                     aria-current={isSubActive ? 'page' : undefined}
-                                    className={`font-ui text-[13px] transition-colors py-2.5 ${
-                                      isSubActive ? 'text-ean-text-light' : 'text-ean-slate hover:text-ean-blue-light'
-                                    }`}
+                                    className={`font-ui text-[13px] transition-colors py-2.5 ${isSubActive ? 'text-ean-text-light' : 'text-ean-slate hover:text-ean-blue-light'
+                                      }`}
                                   >
                                     {subItem.name}
                                   </Link>
@@ -388,9 +377,8 @@ export default function Navbar() {
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
                         aria-current={isActive ? 'page' : undefined}
-                        className={`font-ui text-sm uppercase tracking-[0.06em] transition-colors py-4 ${
-                          isActive ? 'text-ean-text-light' : 'text-ean-slate hover:text-ean-blue-light'
-                        }`}
+                        className={`font-ui text-sm uppercase tracking-[0.06em] transition-colors py-4 ${isActive ? 'text-ean-text-light' : 'text-ean-slate hover:text-ean-blue-light'
+                          }`}
                       >
                         {item.name}
                       </Link>

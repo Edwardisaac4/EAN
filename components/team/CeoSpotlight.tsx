@@ -18,7 +18,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
       <section className="relative bg-linear-to-b from-ean-burgundy-night via-ean-burgundy-dusk to-ean-black py-16 sm:py-24 overflow-hidden border-b border-ean-border-dark">
         {/* Ambient Backlight Blur */}
         <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-128 h-128 rounded-full bg-ean-gold/10 blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 right-10 w-96 h-96 rounded-full bg-blue-950/40 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 right-10 w-96 h-96 rounded-full bg-ean-blue-muted/40 blur-[120px] pointer-events-none" />
 
         <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
           {/* Eyebrow & Badge */}

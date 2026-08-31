@@ -142,6 +142,13 @@
   --color-ean-live: #2e7d5b;
 
   /*
+   * Validation error. Warm red, not Tailwind's red-400, to sit in the same
+   * tonal family as brass. 4.55:1 on ink — AA for the 12–14px sizes it
+   * appears at. Public forms only; admin carries its own red-400 already.
+   */
+  --color-ean-error: #e5716a;
+
+  /*
    * Text.
    *
    * Body copy is ivory, not white, and that is not a small distinction — the
@@ -267,15 +274,24 @@
 .admin-theme {
   --color-ean-gold: #c4952a;
   --color-ean-gold-light: #d4ab50;
+  --color-ean-gold-muted: rgba(196, 149, 42, 0.25);
   --color-ean-muted-light: rgba(255, 255, 255, 0.65);
   --color-ean-white: #ffffff;
   --color-ean-text-light: #ffffff;
+  --color-ean-text-dark: #160939;
+  --color-ean-muted-dark: #5f4c94;
   --color-ean-border-dark: rgba(255, 255, 255, 0.1);
+  --color-ean-border-light: #e1dbf1;
+  --color-ean-surface: #f8f7fd;
   --color-ean-black-pure: #04010a;
   --color-ean-black-accent: #100728;
   --color-ean-black: #0a041b;
   --color-ean-navy: #180a3e;
   --color-ean-navy-mid: #100728;
+  --color-ean-obsidian: #0a041b;
+  --color-ean-obsidian-raised: #180a3e;
+  --color-ean-obsidian-elevated: #1f0c52;
+  --color-ean-obsidian-highlight: #1f0c52;
 
   --font-display: var(--admin-display), serif;
   --font-ui: var(--admin-ui), sans-serif;

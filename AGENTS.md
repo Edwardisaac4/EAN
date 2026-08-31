@@ -133,39 +133,36 @@ fetching into a public page without a reason.
 Defined in `app/globals.css` under `@theme`. Always use the token; never a raw
 hex, never an arbitrary colour value.
 
-The palette is **indigo/gold**, replacing the burgundy/black one in August 2026.
-`--color-ean-navy` is finally an accurate name — it was a legacy misnomer for a
-deep wine (`#2d0710`) for as long as the palette was burgundy.
-
-Every surface is **hue 256.4°, taken from the `ean` wordmark** in
-`public/images/new-logo.png` (`#2a009a`). Each value is the old wine colour's exact
-relative luminance re-hued, so **every text-on-surface contrast ratio on the site
-is unchanged** by the migration. Do not round one of these to a tidier hex; the
-luminance match is what makes the palette contrast-neutral.
+The palette is **ink/brass**, replacing the indigo/gold one in v7. Surfaces are
+near-neutral warm greys (hue ~195° at very low saturation); brass (`#a9895a`) is
+the sole accent. `--color-ean-navy` is three swaps stale — it is not navy, it is
+an ink grey. The names stayed to avoid a 300-site churn.
 
 ```
-Surfaces  ean-black-pure #04010a · ean-black #0a041b · ean-black-accent #100728
-          ean-navy #180a3e · ean-navy-mid #100728
-          ean-white #ffffff · ean-surface #f8f7fd
+Surfaces  ean-black-pure #0a0d0f · ean-black #0e1214 · ean-black-accent #12171a
+          ean-navy #161c1f · ean-navy-mid #111618
+          ean-white #ffffff · ean-surface #f5f2ea
+          ean-obsidian #0e1214 · -raised #161c1f · -elevated/-highlight #1d2529
 Legacy    ean-burgundy · -mid · -deep · -dark · -night · -rich · -accent · -dusk
-          — aliases onto the indigo ramp. Prefer the surfaces above in new code.
-Accent    ean-gold #c4952a · ean-gold-light #d4ab50 · ean-gold-muted
-          ean-blue #9174dc · ean-blue-light #a390d5
-          ean-indigo #2a009a — the mark's own colour; logo and light surfaces only
-Text      ean-text-light · ean-text-dark #160939 · ean-muted-light · ean-muted-dark #5f4c94
-Borders   ean-border-dark · ean-border-light #e1dbf1
-Fonts     font-display (Cormorant Garamond) · font-ui (Inter)
+          — aliases onto the ink ramp. Prefer the surfaces above in new code.
+Accent    ean-gold #a9895a · ean-gold-light #c4a576 · ean-gold-muted
+          ean-blue #9174dc · ean-blue-light #a390d5 · ean-blue-muted · ean-blue-border
+          ean-indigo #2a009a — the mark's own colour; logo lockup and light surfaces only
+Neutral   ean-slate #8a939b · ean-slate-deep #767f8a (ink surfaces only — 4.64:1 on ean-black)
+Status    ean-live #2e7d5b (dot only, never for text)
+Text      ean-text-light #f5f2ea (ivory) · ean-text-dark #0e1214 (ink)
+          ean-muted-light #c9c4b6 · ean-muted-dark rgba(14,18,20,0.85)
+Borders   ean-border-dark rgba(245,242,234,0.13) · ean-border-light rgba(14,18,20,0.14)
+Fonts     font-display (Fraunces) · font-ui (Archivo) · font-mono (IBM Plex Mono)
 ```
 
-Gold is an accent only — CTAs, badges, underlines, icon strokes. Never a large
-surface fill. Gold measures 6.68–7.57:1 on every indigo surface, and 4.91 against
-`ean-indigo` — gold and the brand indigo are a genuine pair. But gold on an
-`ean-blue` fill is 1.43:1: never gold text on an indigo tint.
+Brass is an accent only — CTAs, badges, underlines, icon strokes. Never a large
+surface fill. Brass measures 5.8:1 on ink, and ink measures 5.8:1 on brass, so it
+works as both a type colour and a fill.
 
 **`ean-indigo` (`#2a009a`) is not usable for text or icons on a dark surface.** At
-lightness 30% it measures 1.36:1 on `ean-navy` — the surfaces are its own hue, so
-it reads as one colour at two lightnesses. Use `ean-blue` for accent work on dark;
-`ean-indigo` is for the logo lockup and light surfaces.
+lightness 30% it has no useful contrast on the ink ramp. Use `ean-blue` (`#9174dc`)
+for accent work on dark; `ean-indigo` is for the logo lockup and light surfaces.
 
 The plan behind the migration, the per-file inventory, and the two decisions still
 open are in `docs/specs/2026-08-31-blue-gold-dark-theme.md`. The site is not yet

@@ -219,8 +219,7 @@ export default function CharterRequestForm() {
       setForm(EMPTY_FORM);
       setAircraft(AIRCRAFT_OPTIONS[0]);
       setTrip('one-way');
-    } catch (err) {
-      console.error('Error submitting charter request:', err);
+    } catch {
       setIsSubmitting(false);
       setErrors({
         form: 'Network error sending your request. Please try again, or call the desk on +234 (0) 805 033 3410.',
@@ -262,7 +261,7 @@ export default function CharterRequestForm() {
         {errors.form && (
           <p
             role="alert"
-            className="min-[720px]:col-span-2 font-ui text-sm text-red-400 border border-red-400/40 bg-red-400/5 px-4 py-3"
+            className="min-[720px]:col-span-2 font-ui text-sm text-ean-error border border-ean-error/40 bg-ean-error/5 px-4 py-3"
           >
             {errors.form}
           </p>
@@ -464,11 +463,11 @@ function Field({ id, label, error, className = '', ...props }: FieldProps) {
         id={id}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-error` : undefined}
-        className={`${FIELD} ${error ? 'border-red-400' : 'border-ean-border-dark'}`}
+        className={`${FIELD} ${error ? 'border-ean-error' : 'border-ean-border-dark'}`}
         {...props}
       />
       {error && (
-        <span id={`${id}-error`} className="block font-ui text-xs text-red-400 mt-1.5">
+        <span id={`${id}-error`} className="block font-ui text-xs text-ean-error mt-1.5">
           {error}
         </span>
       )}

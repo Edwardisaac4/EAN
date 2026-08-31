@@ -55,6 +55,7 @@ export default function ImageBlock({
     <div
       className={`group relative overflow-hidden bg-linear-to-b from-ean-obsidian-elevated to-ean-black ${className}`}
       style={{ aspectRatio: ratio }}
+      {...(failed ? { role: 'img', 'aria-label': alt } : {})}
     >
       {!failed && (
         <Image

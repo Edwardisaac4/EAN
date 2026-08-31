@@ -268,7 +268,7 @@ tile/door: 180deg, rgba(14,18,20,.15/.20), rgba(14,18,20,.85/.80)
 
 ### 4.5 Pinning admin — the one piece of work the scope boundary costs us
 
-Admin is out of scope, and that is not the same as leaving it alone. 1,013
+Admin is out of scope, and that is not the same as leaving it alone. 1,019
 references across 26 admin files resolve through the tokens Job T and Job P rewrite:
 
 | Token family | Admin refs | Also changed by |
@@ -696,8 +696,14 @@ Then the checks that actually catch a botched swap:
 - **Font landed:** grep the production CSS chunk for `Fraunces`, `Archivo` and
   `IBM Plex Mono` `@font-face` blocks; confirm the self-hosted woff2 files under
   `.next/static/media`.
-- **Old palette gone:** every value in the §4.2 "Now" column must be **absent** from
-  the built CSS and from prerendered HTML. Cormorant and Inter likewise.
+- **Old palette gone (public only):** every value in the §4.2 "Now" column must be
+  **absent** from the built CSS and prerendered HTML **outside admin-scoped rules
+  and routes** (i.e. not inside `.admin-theme {}` or under `app/admin/`). Cormorant
+  and Inter likewise.
+- **Admin pin retained:** verify that `.admin-theme` in the built CSS still declares
+  its expected values, including `#c4952a` (gold) and `#0a041b` (black). The pin is
+  the mechanism that keeps the old values alive in admin while removing them from
+  the public site.
 - **New palette present:** all 24 new values present in the CSS chunk.
 - **No light surface survives:** zero `bg-white`, `bg-ean-surface`,
   `text-ean-text-dark`, `border-ean-border-light` in non-admin `.tsx` after §6.0.

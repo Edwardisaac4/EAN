@@ -112,14 +112,13 @@ so it needs no per-component accessibility re-check.
 | `ean-border-light` | `#f0d8dc` | `#e1dbf1` | 44% | 1.35 | unchanged |
 
 If these read too purple in place, a **saturation cap of 0.62** pulls them toward
-navy without touching luminance — `ean-navy` `#180d36`, `-mid` `#100823`,
+navy without touching hue — `ean-navy` `#180d36`, `-mid` `#100823`,
 `ean-black` `#0a0516`, `ean-black-pure` `#030207`, `ean-text-dark` `#170c33`,
-`ean-burgundy-rich` `#201148`. Every contrast figure in this document is unchanged
-by that swap, because luminance is identical.
+`ean-burgundy-rich` `#201148`. The cap shifts sRGB channel ratios, so **contrast
+ratios must be re-measured** per pairing rather than assumed unchanged.
 
-**Shipped at full saturation** — the values in the table above. If the surfaces read
-too purple in use, applying the cap is a one-line edit per token in `globals.css`
-and needs no other change anywhere.
+**Superseded.** The site shipped the ink/brass system (v7) instead of the capped
+indigo. The values above were never applied; they are preserved for reference only.
 
 ### Burgundy ramp — alias in Phase 1, retire in Phase 4
 
@@ -204,7 +203,7 @@ saturation is the tidier one. Not blocking; revisit after Phase 1 is on screen.
 
 ### Phase 0 — Decide the two open questions · ⏳ §6 still open
 
-Blocking. Both are in §6 and §7. Nothing below is safe to start until they land.
+Blocking for Phase 3 onward. Both are in §6 and §7. The dark conversion work below is not safe to start until they land. Phases 1 and 2 (token swap and literal stragglers) are complete.
 
 ### Phase 1 — Token swap · 1 file · ✅ DONE
 
@@ -248,7 +247,7 @@ failed, so no stylesheet is guaranteed. Do not "fix" it into classes.
 
 Ordered by markers, which tracks the work. Do these individually, not in a batch.
 
-**Tier 1 — pricing funnel (227 wine refs, the heaviest area)**
+**Tier 1 — pricing funnel (337 wine refs, the heaviest area)**
 
 | File | Wine | Light markers |
 |---|---|---|
