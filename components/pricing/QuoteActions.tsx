@@ -88,9 +88,9 @@ ops@ean.aero | +234 1 291 1000`
       <button
         type="button"
         onClick={handleCopyWhatsApp}
-        className="w-full py-3 px-4 bg-[#25D366] hover:bg-[#20bd5a] text-white font-ui font-semibold text-xs tracking-wide rounded-lg transition-colors shadow-md flex items-center justify-center gap-2"
+        className="w-full py-3 px-4 bg-[#25D366] hover:bg-[#20bd5a] text-ean-text-light font-ui font-semibold text-xs tracking-wide transition-colors shadow-md flex items-center justify-center gap-2"
       >
-        {waCopied ? <Check className="w-4 h-4 text-white" /> : <MessageSquare className="w-4 h-4 fill-white text-[#25D366]" />}
+        {waCopied ? <Check className="w-4 h-4 text-ean-text-light" /> : <MessageSquare className="w-4 h-4 fill-white text-[#25D366]" />}
         {waCopied ? 'Copied to WhatsApp ✓' : 'Copy Quote for WhatsApp'}
       </button>
 
@@ -98,7 +98,7 @@ ops@ean.aero | +234 1 291 1000`
       <button
         type="button"
         onClick={handleCopyEmail}
-        className="w-full py-3 px-4 bg-ean-navy border border-white/20 hover:border-ean-gold text-white font-ui font-semibold text-xs tracking-wide rounded-lg transition-colors shadow-md flex items-center justify-center gap-2"
+        className="w-full py-3 px-4 bg-ean-navy border border-ean-border-dark hover:border-ean-blue hover:text-ean-blue-light text-ean-text-light font-ui font-semibold text-xs tracking-wide transition-colors shadow-md flex items-center justify-center gap-2"
       >
         {emailCopied ? <Check className="w-4 h-4 text-green-400" /> : <Mail className="w-4 h-4 text-ean-gold" />}
         {emailCopied ? 'Email Copied ✓' : 'Copy Quote as Formal Email'}
@@ -109,9 +109,9 @@ ops@ean.aero | +234 1 291 1000`
         <button
           type="button"
           onClick={onOpenRequestOrder}
-          className="w-full py-3 px-4 bg-ean-gold hover:bg-ean-gold-light text-[#581825] font-ui font-bold text-xs tracking-wider uppercase rounded-lg transition-colors shadow-lg flex items-center justify-center gap-2"
+          className="w-full py-3 px-4 bg-ean-gold hover:bg-ean-gold-light text-ean-text-dark font-ui font-bold text-xs tracking-wider uppercase transition-colors shadow-lg flex items-center justify-center gap-2"
         >
-          <FileCheck className="w-4 h-4 text-[#581825]" />
+          <FileCheck className="w-4 h-4 text-ean-text-dark" />
           Generate Request Order
         </button>
       )}

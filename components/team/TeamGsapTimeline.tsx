@@ -148,15 +148,15 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
   };
 
   return (
-    <section id="gsap-team-timeline" className="bg-linear-to-b from-ean-burgundy-dusk via-ean-burgundy-dark to-ean-burgundy-mid text-white py-20 sm:py-24 relative overflow-hidden border-b border-white/10">
+    <section id="gsap-team-timeline" className="bg-linear-to-b from-ean-burgundy-dusk via-ean-burgundy-dark to-ean-burgundy-mid text-ean-text-light py-20 sm:py-24 relative overflow-hidden border-b border-ean-border-dark">
       {/* Background Lighting Gradients */}
       <div className="absolute top-0 right-1/3 w-128 h-128 bg-ean-gold/5 rounded-full blur-[150px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
+      <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
           <div className="space-y-3 max-w-2xl">
-            <h2 className="font-display text-4xl sm:text-5xl font-light text-white leading-tight">
+            <h2 className="font-display text-3xl sm:text-4xl font-light text-ean-text-light leading-tight">
               Department Heads & Bios
             </h2>
             <p className="font-ui text-base text-ean-muted-light leading-relaxed">
@@ -168,14 +168,14 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={handlePrev}
-              className="p-3 bg-ean-navy-mid border border-ean-border-dark hover:bg-ean-gold hover:text-ean-navy text-white rounded-xs transition-colors cursor-pointer"
+              className="p-3 bg-ean-navy-mid border border-ean-border-dark hover:bg-ean-gold hover:text-ean-navy text-ean-text-light transition-colors cursor-pointer"
               aria-label="Previous Department Leader"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={handleNext}
-              className="p-3 bg-ean-navy-mid border border-ean-border-dark hover:bg-ean-gold hover:text-ean-navy text-white rounded-xs transition-colors cursor-pointer"
+              className="p-3 bg-ean-navy-mid border border-ean-border-dark hover:bg-ean-gold hover:text-ean-navy text-ean-text-light transition-colors cursor-pointer"
               aria-label="Next Department Leader"
             >
               <ChevronRight className="w-5 h-5" />
@@ -194,13 +194,13 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
         {/* GSAP Timeline Spotlight Stage */}
         <div
           ref={stageRef}
-          className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-ean-navy-mid/60 border border-ean-gold/20 p-8 sm:p-10 rounded-xs shadow-2xl relative"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-ean-navy-mid/60 border border-ean-gold/20 p-8 sm:p-10 shadow-2xl relative"
         >
           {/* Active Manager Image */}
           <div className="lg:col-span-5 relative">
             <div
               ref={imageRef}
-              className="relative aspect-4/5 rounded-xs overflow-hidden border border-ean-border-dark bg-ean-navy shadow-xl group"
+              className="relative aspect-4/5 overflow-hidden border border-ean-border-dark bg-ean-navy shadow-xl group"
             >
               <Image
                 src={activeMember.image}
@@ -211,7 +211,7 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
                 quality={80}
               />
               <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-transparent to-transparent opacity-60" />
-              <div className="absolute top-4 left-4 px-3 py-1 bg-ean-navy/90 backdrop-blur-md rounded-xs border border-ean-gold/30 font-mono text-[10px] text-ean-gold uppercase tracking-widest">
+              <div className="absolute top-4 left-4 px-3 py-1 bg-ean-navy/90 backdrop-blur-md border border-ean-gold/30 font-mono text-[10px] text-ean-gold uppercase tracking-widest">
                 {activeMember.departmentLabel}
               </div>
               <div className="absolute bottom-4 left-4 right-4 text-xs font-mono text-ean-muted-light uppercase tracking-wider">
@@ -228,7 +228,7 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
               </span>
               <h3
                 ref={nameRef}
-                className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-white"
+                className="font-display text-2xl sm:text-3xl lg:text-4xl font-light text-ean-text-light"
               >
                 {activeMember.name}
               </h3>
@@ -244,7 +244,7 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
             {activeMember.quote && (
               <div
                 ref={quoteRef}
-                className="p-5 bg-ean-navy/70 border-l-2 border-ean-gold rounded-r-xs font-display italic text-sm sm:text-base text-ean-muted-light"
+                className="p-5 bg-ean-navy/70 border-l border-ean-gold font-display italic text-sm sm:text-base text-ean-muted-light"
               >
                 &ldquo;{activeMember.quote}&rdquo;
               </div>
@@ -265,7 +265,7 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
               {activeMember.credentials.map((cred, cIdx) => (
                 <span
                   key={cIdx}
-                  className="px-3 py-1 bg-ean-navy border border-white/10 rounded-xs text-xs text-ean-muted-light font-ui flex items-center gap-1.5"
+                  className="px-3 py-1 bg-ean-navy border border-ean-border-dark text-xs text-ean-muted-light font-ui flex items-center gap-1.5"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 text-ean-gold" />
                   {cred}
@@ -277,7 +277,7 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
             <div className="pt-4 flex items-center gap-4">
               <button
                 onClick={() => setModalMember(activeMember)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-ean-gold text-ean-navy font-ui text-xs font-semibold uppercase tracking-widest rounded-xs hover:bg-ean-gold-light transition-all cursor-pointer shadow-md"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-ean-gold text-ean-navy font-ui text-xs font-semibold uppercase tracking-widest hover:bg-ean-gold-light transition-all cursor-pointer shadow-md"
               >
                 <Sparkles className="w-4 h-4" />
                 Read Full Profile

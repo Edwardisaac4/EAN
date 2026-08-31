@@ -24,6 +24,10 @@ const STATIC_ROUTES: Array<{
   { path: '/', changeFrequency: 'weekly', priority: 1.0 },
   { path: '/services', changeFrequency: 'monthly', priority: 0.9 },
   { path: '/pricing', changeFrequency: 'monthly', priority: 0.9 },
+  // Ranked with /contact rather than below it: charter is the highest-intent
+  // request on the site, and it is deliberately absent from the navigation, so
+  // search is one of the few ways anyone reaches it directly.
+  { path: '/charter', changeFrequency: 'yearly', priority: 0.8 },
   { path: '/contact', changeFrequency: 'yearly', priority: 0.8 },
   { path: '/about', changeFrequency: 'monthly', priority: 0.8 },
   // Monthly because the programme section is updated as milestones complete.

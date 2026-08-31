@@ -92,14 +92,14 @@ export default function SiteGallery() {
   return (
     <section
       id={AEROPLEX_SECTION_IDS.gallery}
-      className="scroll-mt-24 bg-ean-black text-white py-20 sm:py-24"
+      className="scroll-mt-24 bg-ean-black text-ean-text-light py-20 sm:py-24"
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-8">
+      <div className="max-w-ean mx-auto px-6 md:px-8">
         <SectionReveal className="max-w-3xl space-y-4 mb-12">
           <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
             {SITE_GALLERY_INTRO.eyebrow}
           </span>
-          <h2 className="font-display text-4xl sm:text-5xl font-light leading-tight">
+          <h2 className="font-display text-3xl sm:text-4xl font-light leading-tight">
             {SITE_GALLERY_INTRO.title}
           </h2>
           <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
@@ -115,7 +115,7 @@ export default function SiteGallery() {
                 type="button"
                 onClick={() => setOpenIndex(index)}
                 aria-label={`Open larger view: ${item.caption}`}
-                className={`group relative h-60 sm:h-64 lg:h-80 overflow-hidden rounded-xs border border-ean-border-dark hover:border-ean-gold/50 focus-visible:border-ean-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ean-gold transition-colors duration-300 cursor-pointer text-left ${SPAN_CLASSES[item.span]}`}
+                className={`group relative h-60 sm:h-64 lg:h-80 overflow-hidden border border-ean-border-dark hover:border-ean-blue/60 focus-visible:border-ean-blue focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ean-blue transition-colors duration-300 cursor-pointer text-left ${SPAN_CLASSES[item.span]}`}
               >
                 <Image
                   src={item.src}
@@ -131,27 +131,30 @@ export default function SiteGallery() {
                   {item.tag}
                 </span>
 
-                <span className="absolute top-4 right-4 w-8 h-8 rounded-full bg-ean-black/70 border border-white/15 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-300">
-                  <ZoomIn className="w-4 h-4" />
-                </span>
-
-                <span className="absolute inset-x-0 bottom-0 p-4 sm:p-5 block font-ui text-xs sm:text-sm text-white/90 leading-relaxed">
-                  {item.caption}
-                </span>
+                <div className="absolute bottom-0 inset-x-0 p-5 flex items-end justify-between gap-4">
+                  <p className="font-ui text-sm text-ean-text-light font-medium leading-snug line-clamp-2 max-w-[85%]">
+                    {item.caption}
+                  </p>
+                  <span
+                    aria-hidden="true"
+                    className="w-8 h-8 rounded-full border border-ean-border-dark bg-ean-black/70 flex items-center justify-center text-ean-gold group-hover:border-ean-blue group-hover:text-ean-blue-light transition-colors shrink-0"
+                  >
+                    <ZoomIn className="w-3.5 h-3.5" />
+                  </span>
+                </div>
               </button>
             ))}
           </div>
         </SectionReveal>
       </div>
 
-      <Presence show={isOpen} durationMs={EXIT_MS}>
+      <Presence show={openIndex !== null} durationMs={EXIT_MS}>
         {(state) => (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
             <div
-              onClick={close}
-              className={`fixed inset-0 bg-ean-black-pure/90 backdrop-blur-lg cursor-pointer ${
-                state === 'open' ? 'ean-enter-fade' : 'ean-exit-fade'
-              }`}
+              onClick={() => setOpenIndex(null)}
+              className={`fixed inset-0 bg-ean-black-pure/90 backdrop-blur-lg cursor-pointer ${state === 'open' ? 'ean-enter-fade' : 'ean-exit-fade'
+                }`}
             />
 
             <div
@@ -160,49 +163,40 @@ export default function SiteGallery() {
               aria-modal="true"
               aria-labelledby={titleId}
               tabIndex={-1}
-              className={`${
-                state === 'open' ? 'ean-enter-modal' : 'ean-exit-modal'
-              } relative z-10 w-full max-w-5xl bg-ean-black border border-ean-gold/30 rounded-xs shadow-[0_30px_70px_rgba(0,0,0,0.6)] overflow-hidden focus:outline-none`}
+              className={`${state === 'open' ? 'ean-enter-modal' : 'ean-exit-modal'
+                } relative z-10 w-full max-w-5xl bg-ean-black border border-ean-border-dark hover:border-ean-blue/40 shadow-[0_30px_70px_rgba(0,0,0,0.6)] overflow-hidden focus:outline-none`}
             >
-              <div className="flex items-center justify-between gap-4 px-5 py-3.5 border-b border-ean-border-dark bg-ean-navy-mid">
-                <div className="flex items-center gap-3 min-w-0">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ean-gold shrink-0">
-                    {activeItem.tag}
-                  </span>
-                  <span className="font-mono text-[10px] text-ean-muted-light shrink-0">
-                    {activeIndex + 1} / {SITE_GALLERY.length}
-                  </span>
-                </div>
+              <div className="flex items-center justify-between px-5 py-3.5 border-b border-ean-border-dark bg-ean-navy-mid">
+                <span className="font-mono text-xs uppercase tracking-[0.14em] text-ean-gold">
+                  {activeItem ? `${activeIndex + 1} / ${SITE_GALLERY.length} — ${activeItem.tag}` : ''}
+                </span>
                 <button
                   type="button"
-                  onClick={close}
-                  aria-label="Close image viewer"
-                  className="p-2 -mr-2 rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  onClick={() => setOpenIndex(null)}
+                  aria-label="Close modal"
+                  className="p-2 -mr-2 rounded-full text-ean-text-light/80 hover:text-ean-text-light hover:border-ean-blue/50 hover:bg-white/10 transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="relative bg-ean-black-pure">
-                {/* object-contain, not cover: these frames have different aspect
-                    ratios and the viewer is where the whole photograph should be
-                    visible. */}
-                <div className="relative w-full aspect-4/3 sm:aspect-video">
+              <div className="relative aspect-16/10 w-full bg-ean-black">
+                {activeItem && (
                   <Image
                     src={activeItem.src}
                     alt={activeItem.alt}
                     fill
-                    sizes="(max-width: 1024px) 100vw, 1024px"
-                    quality={80}
+                    sizes="(max-width: 1024px) 100vw, 896px"
+                    quality={90}
                     className="object-contain"
                   />
-                </div>
+                )}
 
                 <button
                   type="button"
                   onClick={() => step(-1)}
                   aria-label="Previous image"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-ean-black/70 border border-white/15 hover:border-ean-gold/60 hover:text-ean-gold text-white flex items-center justify-center transition-colors cursor-pointer"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-ean-black/70 border border-ean-border-dark hover:border-ean-blue/60 hover:text-ean-blue-light text-ean-text-light flex items-center justify-center transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -210,7 +204,7 @@ export default function SiteGallery() {
                   type="button"
                   onClick={() => step(1)}
                   aria-label="Next image"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-ean-black/70 border border-white/15 hover:border-ean-gold/60 hover:text-ean-gold text-white flex items-center justify-center transition-colors cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-ean-black/70 border border-ean-border-dark hover:border-ean-blue/60 hover:text-ean-blue-light text-ean-text-light flex items-center justify-center transition-colors cursor-pointer"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -220,7 +214,7 @@ export default function SiteGallery() {
                 id={titleId}
                 className="px-5 py-4 border-t border-ean-border-dark font-ui text-sm text-ean-muted-light leading-relaxed"
               >
-                {activeItem.caption}
+                {activeItem?.caption}
               </p>
             </div>
           </div>

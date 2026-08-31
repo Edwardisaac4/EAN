@@ -20,11 +20,11 @@ export default function PartnerRequest() {
     <>
       <section
         id={AEROPLEX_SECTION_IDS.request}
-        className="scroll-mt-24 bg-ean-navy text-white py-20 sm:py-24 relative overflow-hidden"
+        className="scroll-mt-24 bg-ean-navy text-ean-text-light py-20 sm:py-24 relative overflow-hidden"
       >
         <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/10 blur-[120px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
+        <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             <SectionReveal className="lg:col-span-7 space-y-7">
               <span className="inline-flex items-center gap-2 font-ui text-xs font-semibold tracking-[0.25em] text-ean-gold uppercase">
@@ -32,7 +32,7 @@ export default function PartnerRequest() {
                 {AEROPLEX_PARTNER.eyebrow}
               </span>
 
-              <h2 className="font-display text-4xl sm:text-5xl font-light leading-[1.1]">
+              <h2 className="font-display text-3xl sm:text-4xl font-light leading-[1.1]">
                 {AEROPLEX_PARTNER.title}
               </h2>
 
@@ -64,12 +64,12 @@ export default function PartnerRequest() {
             </SectionReveal>
 
             <SectionReveal className="lg:col-span-5 w-full">
-              <div className="bg-ean-navy-mid/70 border border-ean-gold/25 rounded-xs p-7 sm:p-8 space-y-6 backdrop-blur-sm">
+              <div className="bg-ean-navy-mid/70 border border-ean-gold/25 p-7 sm:p-8 space-y-6 backdrop-blur-sm">
                 <div className="flex items-center gap-3 pb-5 border-b border-ean-border-dark">
-                  <span className="w-10 h-10 rounded-xs bg-ean-gold/10 border border-ean-gold/30 text-ean-gold flex items-center justify-center shrink-0">
+                  <span className="w-10 h-10 bg-ean-gold/10 border border-ean-gold/30 text-ean-gold flex items-center justify-center shrink-0">
                     <FileText className="w-5 h-5" />
                   </span>
-                  <h3 className="font-ui text-sm font-semibold uppercase tracking-[0.15em] text-white">
+                  <h3 className="font-ui text-sm font-semibold uppercase tracking-[0.15em] text-ean-text-light">
                     In the project overview
                   </h3>
                 </div>
@@ -91,10 +91,10 @@ export default function PartnerRequest() {
       </section>
 
       <div className="bg-ean-black-pure border-t border-ean-border-dark">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 py-6 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8">
+        <div className="max-w-ean mx-auto px-6 md:px-8 py-6 grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8">
           <a
             href={`tel:${LAGOS_HQ.phone.replace(/[^+\d]/g, '')}`}
-            className="group flex items-center gap-3 text-ean-muted-light hover:text-white transition-colors"
+            className="group flex items-center gap-3 text-ean-muted-light hover:text-ean-text-light transition-colors"
           >
             <Phone className="w-4 h-4 text-ean-gold shrink-0" />
             <span className="min-w-0">
@@ -107,7 +107,7 @@ export default function PartnerRequest() {
 
           <a
             href={`mailto:${LAGOS_HQ.email}`}
-            className="group flex items-center gap-3 text-ean-muted-light hover:text-white transition-colors sm:border-l sm:border-ean-border-dark sm:pl-8"
+            className="group flex items-center gap-3 text-ean-muted-light hover:text-ean-text-light transition-colors sm:border-l sm:border-ean-border-dark sm:pl-8"
           >
             <Mail className="w-4 h-4 text-ean-gold shrink-0" />
             <span className="min-w-0">

@@ -83,18 +83,18 @@ export default function InfrastructureShowcase() {
   const activeItem = INFRASTRUCTURE_ITEMS.find((item) => item.id === activeTab) || INFRASTRUCTURE_ITEMS[0];
 
   return (
-    <section className="bg-ean-navy-mid text-white py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
+    <section className="bg-ean-navy-mid text-ean-text-light py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
       {/* Ambient Radial Backlight Glow */}
       <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-128 h-128 rounded-full bg-ean-gold/5 blur-[160px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 space-y-12">
+      <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 space-y-12">
         {/* Section Header */}
         <SectionReveal className="text-center max-w-3xl mx-auto space-y-4">
           <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-widest bg-ean-gold/10 text-ean-gold border border-ean-gold/30">
             <MapPin className="w-3.5 h-3.5" />
             DNMM / LOS • Murtala Muhammed Airport Hub
           </span>
-          <h2 className="font-display text-4xl sm:text-5xl font-light text-white leading-tight">
+          <h2 className="font-display text-3xl sm:text-4xl font-light text-ean-text-light leading-tight">
             West Africa’s Premier Aviation Infrastructure
           </h2>
           <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
@@ -103,44 +103,44 @@ export default function InfrastructureShowcase() {
         </SectionReveal>
 
         {/* Real-Time Airport Specs Strip */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-ean-navy/80 border border-ean-border-dark rounded-xs backdrop-blur-md">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-ean-navy/80 border border-ean-border-dark backdrop-blur-md">
           <div className="flex items-center gap-3 p-2">
-            <div className="p-2 bg-ean-gold/10 text-ean-gold rounded-xs border border-ean-gold/20">
+            <div className="p-2 bg-ean-gold/10 text-ean-gold border border-ean-gold/20">
               <MapPin className="w-4 h-4" />
             </div>
             <div>
               <div className="font-mono text-[10px] text-ean-gold uppercase tracking-wider">Airport Coordinates</div>
-              <div className="font-ui text-xs font-semibold text-white">Lagos (ICAO: DNMM)</div>
+              <div className="font-ui text-xs font-semibold text-ean-text-light">Lagos (ICAO: DNMM)</div>
             </div>
           </div>
 
           <div className="flex items-center gap-3 p-2 border-l border-ean-border-dark/60">
-            <div className="p-2 bg-ean-gold/10 text-ean-gold rounded-xs border border-ean-gold/20">
+            <div className="p-2 bg-ean-gold/10 text-ean-gold border border-ean-gold/20">
               <Clock className="w-4 h-4" />
             </div>
             <div>
               <div className="font-mono text-[10px] text-ean-gold uppercase tracking-wider">Flight Dispatch</div>
-              <div className="font-ui text-xs font-semibold text-white">24/7 Ramp Support</div>
+              <div className="font-ui text-xs font-semibold text-ean-text-light">24/7 Ramp Support</div>
             </div>
           </div>
 
           <div className="flex items-center gap-3 p-2 border-l border-ean-border-dark/60">
-            <div className="p-2 bg-ean-gold/10 text-ean-gold rounded-xs border border-ean-gold/20">
+            <div className="p-2 bg-ean-gold/10 text-ean-gold border border-ean-gold/20">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
               <div className="font-mono text-[10px] text-ean-gold uppercase tracking-wider">Authority Status</div>
-              <div className="font-ui text-xs font-semibold text-white">NCAA AMO & IATA</div>
+              <div className="font-ui text-xs font-semibold text-ean-text-light">NCAA AMO & IATA</div>
             </div>
           </div>
 
           <div className="flex items-center gap-3 p-2 border-l border-ean-border-dark/60">
-            <div className="p-2 bg-ean-gold/10 text-ean-gold rounded-xs border border-ean-gold/20">
+            <div className="p-2 bg-ean-gold/10 text-ean-gold border border-ean-gold/20">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
               <div className="font-mono text-[10px] text-ean-gold uppercase tracking-wider">Facility Space</div>
-              <div className="font-ui text-xs font-semibold text-white">20,000+ Sq Ft Hangar</div>
+              <div className="font-ui text-xs font-semibold text-ean-text-light">20,000+ Sq Ft Hangar</div>
             </div>
           </div>
         </div>
@@ -156,14 +156,14 @@ export default function InfrastructureShowcase() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`p-4 rounded-xs border text-left transition-all duration-300 cursor-pointer flex flex-col justify-between space-y-3 ${
+                  className={`p-4 border text-left transition-all duration-300 cursor-pointer flex flex-col justify-between space-y-3 ${
                     isActive
                       ? 'bg-ean-navy border-ean-gold shadow-lg shadow-ean-gold/10'
-                      : 'bg-ean-navy/40 border-white/5 hover:border-ean-gold/30 hover:bg-ean-navy/80'
+                      : 'bg-ean-navy/40 border-ean-border-dark hover:border-ean-gold/30 hover:bg-ean-navy/80'
                   }`}
                 >
                   <div className="flex items-center justify-between w-full">
-                    <div className={`p-2 rounded-xs ${isActive ? 'bg-ean-gold text-ean-navy' : 'bg-ean-navy-mid text-ean-gold'}`}>
+                    <div className={`p-2 ${isActive ? 'bg-ean-gold text-ean-navy' : 'bg-ean-navy-mid text-ean-gold'}`}>
                       <IconComp className="w-4 h-4" />
                     </div>
                     {isActive && (
@@ -171,7 +171,7 @@ export default function InfrastructureShowcase() {
                     )}
                   </div>
                   <div>
-                    <div className={`font-ui text-xs font-semibold tracking-wide ${isActive ? 'text-ean-gold' : 'text-white'}`}>
+                    <div className={`font-ui text-xs font-semibold tracking-wide ${isActive ? 'text-ean-gold' : 'text-ean-text-light'}`}>
                       {item.title}
                     </div>
                     <div className="font-ui text-[10px] text-ean-muted-light mt-0.5">
@@ -187,11 +187,11 @@ export default function InfrastructureShowcase() {
           {/* Keying on the item id replays the CSS enter animation per tab */}
           <div
               key={activeItem.id}
-              className="ean-enter-up grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-ean-navy/70 border border-ean-gold/30 p-8 sm:p-10 rounded-xs shadow-2xl backdrop-blur-md"
+              className="ean-enter-up grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-ean-navy/70 border border-ean-gold/30 p-8 sm:p-10 shadow-2xl backdrop-blur-md"
             >
               {/* Image Display Column */}
               <div className="lg:col-span-6 relative">
-                <div className="relative aspect-16/10 rounded-xs overflow-hidden border border-ean-border-dark bg-ean-navy shadow-xl group">
+                <div className="relative aspect-16/10 overflow-hidden border border-ean-border-dark bg-ean-navy shadow-xl group">
                   <Image
                     src={activeItem.image}
                     alt={activeItem.title}
@@ -203,7 +203,7 @@ export default function InfrastructureShowcase() {
                   <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-transparent to-transparent opacity-60" />
                   
                   {/* Top Badge Overlay */}
-                  <div className="absolute top-4 left-4 px-3 py-1 bg-ean-navy/90 backdrop-blur-md rounded-xs border border-ean-gold/40 text-[10px] uppercase font-mono text-ean-gold tracking-widest flex items-center gap-1.5">
+                  <div className="absolute top-4 left-4 px-3 py-1 bg-ean-navy/90 backdrop-blur-md border border-ean-gold/40 text-[10px] uppercase font-mono text-ean-gold tracking-widest flex items-center gap-1.5">
                     <ShieldCheck className="w-3.5 h-3.5 text-ean-gold" />
                     {activeItem.badge}
                   </div>
@@ -216,7 +216,7 @@ export default function InfrastructureShowcase() {
                   <span className="font-ui text-xs font-semibold uppercase tracking-[0.25em] text-ean-gold">
                     {activeItem.category}
                   </span>
-                  <h3 className="font-display text-3xl sm:text-4xl font-light text-white leading-tight">
+                  <h3 className="font-display text-2xl sm:text-3xl font-light text-ean-text-light leading-tight">
                     {activeItem.title}
                   </h3>
                 </div>
@@ -228,11 +228,11 @@ export default function InfrastructureShowcase() {
                 {/* Specs Grid */}
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t border-ean-border-dark/80">
                   {activeItem.specs.map((spec, sIdx) => (
-                    <div key={sIdx} className="bg-ean-navy-mid/60 p-3 rounded-xs border border-white/5 space-y-1">
+                    <div key={sIdx} className="bg-ean-navy-mid/60 p-3 border border-ean-border-dark space-y-1">
                       <div className="font-ui text-[10px] uppercase tracking-wider text-ean-gold font-semibold">
                         {spec.label}
                       </div>
-                      <div className="font-display text-sm sm:text-base font-semibold text-white">
+                      <div className="font-display text-sm sm:text-base font-semibold text-ean-text-light">
                         {spec.value}
                       </div>
                     </div>

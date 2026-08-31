@@ -84,16 +84,16 @@ export default function Footer() {
       <div className="absolute bottom-0 right-0 w-80 sm:w-120 h-80 sm:h-120 rounded-full bg-ean-gold/5 blur-[140px] pointer-events-none" />
       <div className="absolute top-0 left-10 w-72 h-72 rounded-full bg-blue-950/30 blur-[100px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 md:px-8 relative z-10 space-y-10 sm:space-y-12">
+      <div className="max-w-ean mx-auto px-5 sm:px-6 md:px-8 relative z-10 space-y-10 sm:space-y-12">
 
         {/* Pre-Footer Action Banner */}
-        <div className="p-4 sm:p-6 bg-linear-to-r from-ean-navy via-ean-navy-mid to-ean-navy border border-white/15 rounded-xs backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
+        <div className="p-4 sm:p-6 bg-linear-to-r from-ean-navy via-ean-navy-mid to-ean-navy border border-ean-border-dark backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
           <div className="flex items-center gap-3 text-center md:text-left">
-            <div className="p-2.5 bg-ean-gold/10 text-ean-gold rounded-xs border border-ean-gold/20 shrink-0 hidden sm:block">
+            <div className="p-2.5 bg-ean-gold/10 text-ean-gold border border-ean-gold/20 shrink-0 hidden sm:block">
               <Compass className="w-5 h-5" />
             </div>
             <div>
-              <div className="font-display text-base sm:text-lg font-light text-white">
+              <div className="font-display text-base sm:text-lg font-light text-ean-text-light">
                 Pioneering Business Aviation in West Africa
               </div>
               <p className="font-ui text-xs text-ean-muted-light">
@@ -105,14 +105,14 @@ export default function Footer() {
           <div className="flex items-center gap-3 w-full md:w-auto justify-center md:justify-end">
             <a
               href="tel:+2348050333410"
-              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white/5 border border-white/10 hover:border-ean-gold/40 text-xs text-white rounded-xs transition-colors"
+              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white/5 border border-ean-border-dark hover:border-ean-blue/50 text-xs text-ean-text-light transition-colors"
             >
               <Phone className="w-3.5 h-3.5 text-ean-gold" />
               <span>+234 (0) 805 033 3410</span>
             </a>
             <a
               href="/contact"
-              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-ean-gold text-ean-navy font-semibold text-xs rounded-xs hover:bg-ean-gold-light transition-colors"
+              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-ean-gold text-ean-navy font-semibold text-xs hover:bg-ean-gold-light transition-colors"
             >
               <Mail className="w-3.5 h-3.5" />
               <span>Flight Inquiry</span>
@@ -121,18 +121,18 @@ export default function Footer() {
         </div>
 
         {/* Main Grid: 4 Columns (Brand, Services, Company, Inquiries & Access) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 pb-10 sm:pb-12 border-b border-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 pb-10 sm:pb-12 border-b border-ean-border-dark">
 
           {/* Brand & Overview (Mobile: Full width, iPad: md:col-span-2, Desktop: lg:col-span-4) */}
           <div className="md:col-span-2 lg:col-span-4 space-y-4">
             <div className="space-y-2">
               <Link href="/" className="inline-flex items-center group">
                 <Image
-                  src="/images/EAN-Logo.png"
+                  src="/images/new-logo.png"
                   alt="EAN Aviation Logo"
                   width={180}
                   height={48}
-                  className="h-10 sm:h-11 w-auto object-contain filter brightness-0 invert opacity-95 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105"
+                  className="h-10 sm:h-11 w-auto object-contain opacity-95 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105"
                 />
               </Link>
             </div>
@@ -160,7 +160,7 @@ export default function Footer() {
                     href={soc.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-xs bg-white/5 border border-white/10 flex items-center justify-center text-ean-muted-light hover:border-ean-gold/40 hover:text-ean-gold hover:-translate-y-0.5 transition-[color,border-color,transform] duration-200 cursor-pointer"
+                    className="w-9 h-9 bg-white/5 border border-ean-border-dark flex items-center justify-center text-ean-muted-light hover:border-ean-blue/60 hover:text-ean-blue-light hover:-translate-y-0.5 transition-[color,border-color,transform] duration-200 cursor-pointer"
                     aria-label={soc.label}
                   >
                     <IconComponent className="w-4 h-4" />
@@ -180,7 +180,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="hover:text-white transition-colors flex items-center gap-1.5 group py-0.5"
+                    className="hover:text-ean-text-light transition-colors flex items-center gap-1.5 group py-0.5"
                   >
                     <span>{link.name}</span>
                     <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-ean-gold" />
@@ -200,7 +200,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="hover:text-white transition-colors flex items-center gap-1.5 group py-0.5"
+                    className="hover:text-ean-text-light transition-colors flex items-center gap-1.5 group py-0.5"
                   >
                     <span>{link.name}</span>
                     <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-ean-gold" />
@@ -217,46 +217,46 @@ export default function Footer() {
               Inquiries & Access
             </h4>
 
-            <div className="p-4 bg-ean-navy-mid/60 border border-white/10 rounded-xs space-y-3.5 backdrop-blur-xs font-ui text-xs sm:text-sm text-ean-muted-light">
+            <div className="p-4 bg-ean-navy-mid/60 border border-ean-border-dark space-y-3.5 backdrop-blur-xs font-ui text-xs sm:text-sm text-ean-muted-light">
               <div className="flex gap-3 items-start">
                 <MapPin className="w-4 h-4 text-ean-gold shrink-0 mt-0.5" />
-                <span className="leading-relaxed text-white/90">
+                <span className="leading-relaxed text-ean-text-light/90">
                   EAN Jet Center, FAAN Transit Camp Road, MMIA, Ikeja, Lagos, Nigeria
                 </span>
               </div>
 
-              <div className="flex gap-3 items-center pt-1 border-t border-white/5">
+              <div className="flex gap-3 items-center pt-1 border-t border-ean-border-dark">
                 <Phone className="w-4 h-4 text-ean-gold shrink-0" />
-                <a href="tel:+2348050333410" className="hover:text-white transition-colors text-white/90">
+                <a href="tel:+2348050333410" className="hover:text-ean-text-light transition-colors text-ean-text-light/90">
                   +234 (0) 805 033 3410
                 </a>
               </div>
 
-              <div className="flex gap-3 items-start pt-1 border-t border-white/5">
+              <div className="flex gap-3 items-start pt-1 border-t border-ean-border-dark">
                 <Mail className="w-4 h-4 text-ean-gold shrink-0 mt-0.5" />
                 <div className="flex flex-col gap-1">
-                  <a href="mailto:dispatch@ean.aero" className="hover:text-white transition-colors text-white/90">
+                  <a href="mailto:dispatch@ean.aero" className="hover:text-ean-text-light transition-colors text-ean-text-light/90">
                     dispatch@ean.aero
                   </a>
-                  <a href="mailto:info@ean.aero" className="hover:text-white transition-colors text-ean-muted-light text-xs">
+                  <a href="mailto:info@ean.aero" className="hover:text-ean-text-light transition-colors text-ean-muted-light text-xs">
                     info@ean.aero
                   </a>
                 </div>
               </div>
 
               {/* Badges Row */}
-              <div className="pt-2 flex flex-wrap gap-2 items-center border-t border-white/5">
-                <span className="inline-flex items-center gap-1.5 border border-ean-gold/30 bg-ean-gold/10 text-ean-gold text-[10px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-xs">
+              <div className="pt-2 flex flex-wrap gap-2 items-center border-t border-ean-border-dark">
+                <span className="inline-flex items-center gap-1.5 border border-ean-gold/30 bg-ean-gold/10 text-ean-gold text-[10px] uppercase font-bold tracking-widest px-2.5 py-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-ean-gold animate-pulse" />
                   24/7 Ops Desk
                 </span>
 
-                <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/5 text-white/80 font-mono text-[10px] tracking-wider px-2.5 py-1 rounded-xs">
+                <span className="inline-flex items-center gap-1.5 border border-ean-border-dark bg-white/5 text-ean-text-light/80 font-mono text-[10px] tracking-wider px-2.5 py-1">
                   LOS · DNMM · UTC+1
                 </span>
 
                 {lagosTime && (
-                  <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/5 text-white/80 font-mono text-[10px] tracking-wider px-2.5 py-1 rounded-xs">
+                  <span className="inline-flex items-center gap-1.5 border border-ean-border-dark bg-white/5 text-ean-text-light/80 font-mono text-[10px] tracking-wider px-2.5 py-1">
                     <Clock className="w-3 h-3 text-ean-gold/70" />
                     LOS: {lagosTime}
                   </span>
@@ -278,18 +278,18 @@ export default function Footer() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/privacy-policy" className="hover:text-white transition-colors">
+            <Link href="/privacy-policy" className="hover:text-ean-text-light transition-colors">
               Privacy Policy
             </Link>
             <span>·</span>
-            <Link href="/terms-of-use" className="hover:text-white transition-colors">
+            <Link href="/terms-of-use" className="hover:text-ean-text-light transition-colors">
               Terms of Use
             </Link>
 
             {/* Touch-Friendly Back to Top Button */}
             <button
               onClick={scrollToTop}
-              className="group w-8 h-8 rounded-xs border border-white/10 hover:border-ean-gold/40 flex items-center justify-center relative overflow-hidden transition-colors duration-300 text-ean-muted-light hover:text-ean-gold cursor-pointer bg-white/5 shrink-0 ml-2"
+              className="group w-8 h-8 border border-ean-border-dark hover:border-ean-blue/60 flex items-center justify-center relative overflow-hidden transition-colors duration-300 text-ean-muted-light hover:text-ean-blue-light cursor-pointer bg-white/5 shrink-0 ml-2"
               aria-label="Scroll to top"
             >
               <div className="absolute transition-transform duration-220 ease-in-out group-hover:-translate-y-5.5">

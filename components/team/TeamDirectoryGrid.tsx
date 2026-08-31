@@ -16,13 +16,13 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
   return (
     <>
       <section className="bg-linear-to-b from-ean-surface via-white to-ean-surface text-ean-text-dark py-20 sm:py-24 relative border-b border-ean-border-light">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
+        <div className="max-w-ean mx-auto px-6 md:px-8">
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
             <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
               Management Roster
             </span>
-            <h2 className="font-display text-4xl sm:text-5xl font-medium text-ean-navy leading-tight">
+            <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-navy leading-tight">
               Leadership & Department Directory
             </h2>
             <p className="font-ui text-base sm:text-lg text-ean-muted-dark leading-relaxed">
@@ -36,7 +36,7 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
               <div
                 key={member.id}
                 onClick={() => setSelectedMember(member)}
-                className="bg-ean-white border border-ean-border-light rounded-xs overflow-hidden shadow-xs hover:shadow-xl hover:border-ean-gold/40 hover:-translate-y-1.5 transition-all duration-300 ease-out flex flex-col justify-between cursor-pointer group"
+                className="bg-ean-white border border-ean-border-light overflow-hidden shadow-xs hover:shadow-xl hover:border-ean-blue/50 hover:-translate-y-1.5 transition-all duration-300 ease-out flex flex-col justify-between cursor-pointer group"
               >
                 <div>
                   {/* Card Image */}
@@ -53,13 +53,13 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
                     <div className="absolute inset-0 bg-linear-to-t from-ean-navy/90 via-ean-navy/30 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-300" />
                     
                     {/* Top Department Badge - Glass */}
-                    <div className="absolute top-3 left-3 px-3 py-1 bg-ean-navy/80 backdrop-blur-md rounded-xs border border-ean-gold/30 font-mono text-[9px] text-ean-gold uppercase tracking-widest shadow-md">
+                    <div className="absolute top-3 left-3 px-3 py-1 bg-ean-navy/80 backdrop-blur-md border border-ean-gold/30 font-mono text-[9px] text-ean-gold uppercase tracking-widest shadow-md">
                       {member.departmentLabel}
                     </div>
 
                     {/* Bottom Blur Overlay Strip */}
-                    <div className="absolute bottom-2.5 left-3 right-3 px-3 py-2 bg-ean-navy/70 backdrop-blur-md border border-white/10 rounded-xs flex items-center justify-between shadow-lg opacity-95">
-                      <span className="font-ui text-xs font-medium text-white/90 truncate">{member.role}</span>
+                    <div className="absolute bottom-2.5 left-3 right-3 px-3 py-2 bg-ean-navy/70 backdrop-blur-md border border-ean-border-dark flex items-center justify-between shadow-lg opacity-95">
+                      <span className="font-ui text-xs font-medium text-ean-text-light/90 truncate">{member.role}</span>
                       <span className="font-mono text-[9px] text-ean-gold font-bold uppercase tracking-wider shrink-0 ml-2">EAN</span>
                     </div>
                   </div>
@@ -84,7 +84,7 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
                       {member.credentials.slice(0, 2).map((cred, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-0.5 bg-ean-surface border border-ean-border-light text-[10px] text-ean-muted-dark rounded-xs font-ui"
+                          className="px-2 py-0.5 bg-ean-surface border border-ean-border-light text-[10px] text-ean-muted-dark font-ui"
                         >
                           {cred}
                         </span>
@@ -94,7 +94,7 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
                 </div>
 
                 {/* Card Footer Action */}
-                <div className="px-6 py-4 bg-ean-surface/60 border-t border-ean-border-light/60 flex items-center justify-between group-hover:bg-ean-navy group-hover:text-white transition-colors duration-300">
+                <div className="px-6 py-4 bg-ean-surface/60 border-t border-ean-border-light/60 flex items-center justify-between group-hover:bg-ean-navy group-hover:text-ean-text-light transition-colors duration-300">
                   <span className="font-ui text-xs font-semibold uppercase tracking-wider text-ean-navy group-hover:text-ean-gold transition-colors">
                     View Full Bio
                   </span>

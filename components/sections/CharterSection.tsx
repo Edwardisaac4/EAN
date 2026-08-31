@@ -60,19 +60,19 @@ export default function CharterSection() {
           className="object-cover object-center"
         />
         {/* Luxury Overlay Gradients for Readability */}
-        <div className="absolute inset-0 bg-black/75" />
-        <div className="absolute inset-0 bg-linear-to-r from-black/85 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-ean-black/75" />
+        <div className="absolute inset-0 bg-linear-to-r from-ean-black/85 via-ean-black/40 to-transparent" />
       </div>
 
       {/* Content Area */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 py-20 w-full">
+      <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 py-20 w-full">
         <SectionReveal>
           <div className="max-w-2xl text-left space-y-6 sm:space-y-8">
             <div className="space-y-3">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
                 Bespoke Flight Solutions
               </span>
-              <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-medium text-white leading-[1.15]">
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-ean-text-light leading-[1.15]">
                 Charters Tailored to Your Schedule
               </h2>
             </div>
@@ -84,9 +84,9 @@ export default function CharterSection() {
             </p>
 
             <div className="pt-2">
-              <Link href="/contact?service=charter">
-                <GoldButton className="shadow-[0_4px_15px_rgba(196,149,42,0.3)] hover:shadow-[0_4px_25px_rgba(196,149,42,0.5)]">
-                  Request a Private Charter
+              <Link href="/charter">
+                <GoldButton className="shadow-[0_4px_15px_rgba(169,137,90,0.3)] hover:shadow-[0_4px_25px_rgba(169,137,90,0.5)]">
+                  Request a Charter
                 </GoldButton>
               </Link>
             </div>

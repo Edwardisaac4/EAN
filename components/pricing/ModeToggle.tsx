@@ -39,14 +39,14 @@ export default function ModeToggle({ mode, onChange }: ModeToggleProps) {
   }
 
   return (
-    <div className="inline-flex items-center bg-ean-navy-mid/80 backdrop-blur-md p-1 rounded-full border border-ean-gold/30">
+    <div className="inline-flex items-center bg-ean-navy-mid/80 backdrop-blur-md p-1 border border-ean-gold/30">
       <button
         type="button"
         onClick={() => handleToggle('client')}
-        className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-ui font-medium transition-all duration-200 ${
+        className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-ui font-medium transition-all duration-200 ${
           mode === 'client'
-            ? 'bg-ean-gold text-white shadow-md'
-            : 'text-ean-muted-light hover:text-white'
+            ? 'bg-ean-gold text-ean-text-dark shadow-md'
+            : 'text-ean-muted-light hover:text-ean-text-light'
         }`}
       >
         <User className="w-3.5 h-3.5" />
@@ -57,12 +57,12 @@ export default function ModeToggle({ mode, onChange }: ModeToggleProps) {
         onClick={() => handleToggle('staff')}
         disabled={!isAdmin && mode !== 'staff'}
         title={!isAdmin ? 'Staff Mode requires Admin Login' : 'Switch to Staff Mode'}
-        className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-ui font-medium transition-all duration-200 ${
+        className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-ui font-medium transition-all duration-200 ${
           mode === 'staff'
-            ? 'bg-ean-gold text-white shadow-md'
+            ? 'bg-ean-gold text-ean-text-dark shadow-md'
             : !isAdmin
             ? 'text-ean-muted-light/40 cursor-not-allowed'
-            : 'text-ean-muted-light hover:text-white'
+            : 'text-ean-muted-light hover:text-ean-text-light'
         }`}
       >
         <Shield className="w-3.5 h-3.5" />

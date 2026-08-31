@@ -31,8 +31,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#2d0710',
-          color: '#ffffff',
+          backgroundColor: '#0e1214',
+          color: '#f5f2ea',
           fontFamily:
             'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
           padding: '2rem',
@@ -46,7 +46,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
               fontWeight: 600,
               letterSpacing: '0.25em',
               textTransform: 'uppercase',
-              color: '#c4952a',
+              color: '#a9895a',
             }}
           >
             Service Interruption
@@ -68,12 +68,12 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
               margin: '0 0 2rem',
               fontSize: '1rem',
               lineHeight: 1.7,
-              color: 'rgba(255,255,255,0.72)',
+              color: 'rgba(245,242,234,0.72)',
             }}
           >
             We hit an unexpected fault while loading the site. Our 24/7 operations desk
             is still reachable on{' '}
-            <a href="tel:+2348050333410" style={{ color: '#c4952a' }}>
+            <a href="tel:+2348050333410" style={{ color: '#a9895a' }}>
               +234 (0) 805 033 3410
             </a>
             .
@@ -83,8 +83,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
             type="button"
             onClick={reset}
             style={{
-              backgroundColor: '#c4952a',
-              color: '#2d0710',
+              backgroundColor: '#a9895a',
+              color: '#0e1214',
               border: 'none',
               padding: '0.875rem 1.75rem',
               fontSize: '0.875rem',
@@ -104,7 +104,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                 fontSize: '0.625rem',
                 textTransform: 'uppercase',
                 letterSpacing: '0.15em',
-                color: 'rgba(255,255,255,0.4)',
+                color: 'rgba(245,242,234,0.4)',
               }}
             >
               Reference: {error.digest}

@@ -108,7 +108,7 @@ function renderTiptapNode(node: TiptapNode, key: number | string): React.ReactNo
       node.marks.forEach((mark) => {
         if (mark.type === 'bold') element = <strong>{element}</strong>;
         if (mark.type === 'italic') element = <em>{element}</em>;
-        if (mark.type === 'code') element = <code className="bg-ean-gold/10 px-1 py-0.5 rounded text-sm font-mono">{element}</code>;
+        if (mark.type === 'code') element = <code className="bg-ean-gold/10 px-1 py-0.5 text-sm font-mono">{element}</code>;
         const href = typeof mark.attrs?.href === 'string' ? mark.attrs.href : '';
         if (mark.type === 'link' && href) {
           element = (
@@ -127,14 +127,14 @@ function renderTiptapNode(node: TiptapNode, key: number | string): React.ReactNo
   switch (node.type) {
     case 'heading': {
       const level = typeof node.attrs?.level === 'number' ? node.attrs.level : 2;
-      if (level === 1) return <h1 key={key} className="font-display text-3xl sm:text-4xl text-ean-navy font-semibold pt-4">{children}</h1>;
+      if (level === 1) return <h1 key={key} className="font-display text-2xl sm:text-3xl text-ean-navy font-semibold pt-4">{children}</h1>;
       if (level === 3) return <h3 key={key} className="font-display text-xl sm:text-2xl text-ean-navy font-semibold pt-4">{children}</h3>;
-      return <h2 key={key} className="font-display text-2xl sm:text-3xl text-ean-navy font-semibold pt-4">{children}</h2>;
+      return <h2 key={key} className="font-display text-2xl sm:text-2xl text-ean-navy font-semibold pt-4">{children}</h2>;
     }
     case 'paragraph':
       return <p key={key} className="leading-relaxed my-3">{children}</p>;
     case 'blockquote':
-      return <blockquote key={key} className="border-l-2 border-ean-gold pl-6 py-2 my-6 italic text-ean-navy bg-ean-gold/5 rounded-r-xs">{children}</blockquote>;
+      return <blockquote key={key} className="border-l border-ean-gold pl-6 py-2 my-6 italic text-ean-navy bg-ean-gold/5">{children}</blockquote>;
     case 'bulletList':
       return <ul key={key} className="list-disc list-inside my-4 space-y-2">{children}</ul>;
     case 'orderedList':
@@ -146,7 +146,7 @@ function renderTiptapNode(node: TiptapNode, key: number | string): React.ReactNo
       const imgAlt = typeof node.attrs?.alt === 'string' ? node.attrs.alt : '';
       if (!imgSrc) return null;
       return (
-        <div key={key} className="my-6 relative w-full h-64 sm:h-96 rounded-xs overflow-hidden border border-ean-border-light">
+        <div key={key} className="my-6 relative w-full h-64 sm:h-96 overflow-hidden border border-ean-border-light">
           <Image src={imgSrc} alt={imgAlt} fill className="object-cover" />
         </div>
       );
@@ -276,7 +276,7 @@ function renderArticleBody(article: ResolvedArticle) {
   // rather than rendering an empty column.
   return (
     <div className="space-y-6 font-ui text-ean-text-dark text-base sm:text-lg leading-relaxed">
-      <p className="text-xl font-light text-ean-navy leading-relaxed border-l-2 border-ean-gold pl-6 italic">
+      <p className="text-xl font-light text-ean-navy leading-relaxed border-l border-ean-gold pl-6 italic">
         {article.excerpt}
       </p>
     </div>
@@ -325,7 +325,7 @@ export default async function BlogPostPage({ params }: Props) {
 
       <main className="flex-1 bg-ean-white text-ean-navy">
         {/* SECTION 1: Article Header Hero */}
-        <section className="relative pt-32 pb-16 bg-linear-to-b from-ean-navy to-ean-navy-mid text-white border-b border-ean-border-dark overflow-hidden">
+        <section className="relative pt-32 pb-16 bg-linear-to-b from-ean-navy to-ean-navy-mid text-ean-text-light border-b border-ean-border-dark overflow-hidden">
           {/* Ambient Glow */}
           <div className="absolute top-0 right-0 w-125 h-125 rounded-full bg-ean-gold/5 blur-[120px] pointer-events-none" />
 
@@ -340,21 +340,21 @@ export default async function BlogPostPage({ params }: Props) {
                 <span>Back to Insights</span>
               </Link>
               <span>/</span>
-              <span className="text-white/40 truncate max-w-xs">{article.category}</span>
+              <span className="text-ean-text-light/40 truncate max-w-xs">{article.category}</span>
             </div>
 
             {/* Category Pill */}
-            <span className="inline-block border border-ean-gold/30 bg-ean-gold/5 text-ean-gold text-[10px] sm:text-xs uppercase font-bold tracking-widest px-3 py-1 rounded-xs">
+            <span className="inline-block border border-ean-gold/30 bg-ean-gold/5 text-ean-gold text-[10px] sm:text-xs uppercase font-bold tracking-widest px-3 py-1">
               {article.category}
             </span>
 
             {/* Headline */}
-            <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-light text-white leading-[1.15]">
+            <h1 className="font-display text-2xl sm:text-4xl lg:text-5xl font-light text-ean-text-light leading-[1.15]">
               {article.title}
             </h1>
 
             {/* Metadata Row */}
-            <div className="flex flex-wrap items-center gap-6 text-xs font-ui text-ean-muted-light pt-2 border-t border-white/10">
+            <div className="flex flex-wrap items-center gap-6 text-xs font-ui text-ean-muted-light pt-2 border-t border-ean-border-dark">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-ean-gold" />
                 <span>{article.publishedAt}</span>
@@ -365,7 +365,7 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
               <div className="flex items-center gap-2">
                 <UserCheck className="w-4 h-4 text-ean-gold" />
-                <span className="text-white font-medium">EAN Editorial Team</span>
+                <span className="text-ean-text-light font-medium">EAN Editorial Team</span>
               </div>
             </div>
           </div>
@@ -376,7 +376,7 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="max-w-4xl mx-auto px-6 md:px-8 space-y-12">
             
             {/* Cover Image Container */}
-            <div className="relative w-full h-72 sm:h-105 rounded-xs overflow-hidden border border-ean-border-light shadow-xl bg-black/10">
+            <div className="relative w-full h-72 sm:h-105 overflow-hidden border border-ean-border-light shadow-xl bg-ean-black/10">
               <Image
                 src={article.image}
                 alt={article.title}
@@ -386,7 +386,7 @@ export default async function BlogPostPage({ params }: Props) {
                 className="object-cover"
                 quality={80}
               />
-              <div className="absolute inset-0 border border-white/10 pointer-events-none" />
+              <div className="absolute inset-0 border border-ean-border-dark pointer-events-none" />
             </div>
 
             {/* Article Content Render */}
@@ -409,7 +409,7 @@ export default async function BlogPostPage({ params }: Props) {
               <div className="flex items-center gap-3">
                 <Link
                   href={`/contact?inquiry=editorial&subject=${encodeURIComponent(article.title)}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-ean-surface border border-ean-border-light hover:border-ean-gold text-xs font-ui font-semibold text-ean-navy rounded-xs transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-ean-surface border border-ean-border-light hover:border-ean-gold text-xs font-ui font-semibold text-ean-navy transition-colors"
                 >
                   <Share2 className="w-3.5 h-3.5 text-ean-gold" />
                   <span>Inquire About This Subject</span>
@@ -423,13 +423,13 @@ export default async function BlogPostPage({ params }: Props) {
         {/* SECTION 3: Related Articles Grid */}
         {relatedArticles.length > 0 && (
           <section className="bg-ean-surface border-t border-ean-border-light py-16 sm:py-20">
-            <div className="max-w-7xl mx-auto px-6 md:px-8 space-y-10">
+            <div className="max-w-ean mx-auto px-6 md:px-8 space-y-10">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="font-ui text-xs font-semibold tracking-widest text-ean-gold uppercase block">
                     Further Reading
                   </span>
-                  <h3 className="font-display text-2xl sm:text-3xl font-medium text-ean-navy">
+                  <h3 className="font-display text-2xl sm:text-2xl font-medium text-ean-navy">
                     Related Executive Insights
                   </h3>
                 </div>
@@ -446,8 +446,8 @@ export default async function BlogPostPage({ params }: Props) {
                     href={`/blog/${rel.slug}`} 
                     className="block group h-full"
                   >
-                    <div className="bg-white border border-ean-border-light rounded-xs overflow-hidden h-full flex flex-col hover:border-ean-gold/40 transition-colors shadow-xs">
-                      <div className="relative w-full h-48 overflow-hidden bg-black/10">
+                    <div className="bg-white border border-ean-border-light overflow-hidden h-full flex flex-col hover:border-ean-gold/40 transition-colors shadow-xs">
+                      <div className="relative w-full h-48 overflow-hidden bg-ean-black/10">
                         <Image
                           src={rel.image}
                           alt={rel.title}
@@ -455,7 +455,7 @@ export default async function BlogPostPage({ params }: Props) {
                           sizes="(max-width: 1024px) 100vw, 33vw"
                           className="object-cover transition-transform duration-500 group-hover:scale-103"
                         />
-                        <span className="absolute top-3 left-3 bg-ean-navy/95 border border-ean-gold/30 text-ean-gold text-[9px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-xs">
+                        <span className="absolute top-3 left-3 bg-ean-navy/95 border border-ean-gold/30 text-ean-gold text-[9px] uppercase font-bold tracking-widest px-2.5 py-1">
                           {rel.category}
                         </span>
                       </div>
@@ -483,9 +483,9 @@ export default async function BlogPostPage({ params }: Props) {
         )}
 
         {/* SECTION 4: Inquiry Callout Banner */}
-        <section className="bg-ean-navy text-white py-16 border-t border-ean-border-dark">
+        <section className="bg-ean-navy text-ean-text-light py-16 border-t border-ean-border-dark">
           <div className="max-w-4xl mx-auto px-6 md:px-8 text-center space-y-6">
-            <h3 className="font-display text-3xl sm:text-4xl font-light">
+            <h3 className="font-display text-2xl sm:text-3xl font-light">
               Elevate Your Flight Operations with EAN Aviation
             </h3>
             <p className="font-ui text-sm text-ean-muted-light max-w-xl mx-auto">

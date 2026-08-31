@@ -37,19 +37,19 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
           {/* Dark Backdrop Overlay */}
           <div
             onClick={onClose}
-            className={`fixed inset-0 bg-black/80 backdrop-blur-md cursor-pointer ${
+            className={`fixed inset-0 bg-ean-black/80 backdrop-blur-md cursor-pointer ${
               state === 'open' ? 'ean-enter-fade' : 'ean-exit-fade'
             }`}
           />
 
           {/* Modal Card Window */}
           <div
-            className={`${state === 'open' ? 'ean-enter-modal' : 'ean-exit-modal'} relative w-full max-w-3xl bg-linear-to-b from-ean-burgundy-deep via-ean-burgundy-dark to-ean-black text-white border border-ean-gold/40 rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.7)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col`}
+            className={`${state === 'open' ? 'ean-enter-modal' : 'ean-exit-modal'} relative w-full max-w-3xl bg-linear-to-b from-ean-burgundy-deep via-ean-burgundy-dark to-ean-black text-ean-text-light border border-ean-gold/40 shadow-[0_25px_60px_rgba(0,0,0,0.7)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col`}
           >
             {/* Header Strip */}
-            <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4 bg-linear-to-r from-ean-burgundy-rich via-ean-burgundy-dusk to-ean-burgundy-deep border-b border-white/10 shadow-md">
+            <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4 bg-linear-to-r from-ean-burgundy-rich via-ean-burgundy-dusk to-ean-burgundy-deep border-b border-ean-border-dark shadow-md">
               <div className="flex items-center gap-2.5">
-                <span className="px-2 py-0.5 bg-ean-gold/15 border border-ean-gold/30 rounded-xs text-ean-gold font-mono text-xs font-bold">
+                <span className="px-2 py-0.5 bg-ean-gold/15 border border-ean-gold/30 text-ean-gold font-mono text-xs font-bold">
                   {event.year}
                 </span>
                 <span className="font-ui text-xs font-semibold tracking-widest text-ean-gold uppercase flex items-center gap-1.5">
@@ -59,7 +59,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
               </div>
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-xs text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                className="p-1.5 text-ean-text-light/70 hover:text-ean-text-light hover:bg-white/10 transition-colors cursor-pointer"
                 aria-label="Close milestone detail"
               >
                 <X className="w-5 h-5" />
@@ -70,7 +70,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
             <div className="overflow-y-auto p-6 sm:p-8 space-y-6">
               {/* Optional Visual Image Banner */}
               {event.image && (
-                <div className="relative w-full h-56 sm:h-72 rounded-xs overflow-hidden border border-white/15 shadow-xl group">
+                <div className="relative w-full h-56 sm:h-72 overflow-hidden border border-ean-border-dark shadow-xl group">
                   <Image
                     src={event.image}
                     alt={event.title}
@@ -84,7 +84,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
                     <span className="font-mono text-4xl sm:text-5xl font-extrabold text-ean-gold/90 drop-shadow-md">
                       {event.year}
                     </span>
-                    <span className="px-3 py-1 bg-black/80 backdrop-blur-xs border border-white/20 text-xs font-ui text-white rounded-xs">
+                    <span className="px-3 py-1 bg-ean-black/80 backdrop-blur-xs border border-ean-border-dark text-xs font-ui text-ean-text-light">
                       EAN Aviation Archives
                     </span>
                   </div>
@@ -93,21 +93,21 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
 
               {/* Title & Concise Summary */}
               <div className="space-y-3">
-                <h2 className="font-display text-3xl sm:text-4xl font-light text-white leading-tight">
+                <h2 className="font-display text-2xl sm:text-3xl font-light text-ean-text-light leading-tight">
                   {event.title}
                 </h2>
-                <div className="p-4 bg-[#2A050D]/80 border-l-4 border-ean-gold rounded-r-xs font-ui text-sm sm:text-base text-ean-gold-light leading-relaxed">
+                <div className="p-4 bg-ean-navy/80 border-l border-ean-gold font-ui text-sm sm:text-base text-ean-gold-light leading-relaxed">
                   {event.description}
                 </div>
               </div>
 
               {/* Full Narrative Breakdown */}
               {event.story && event.story.length > 0 && (
-                <div className="space-y-4 border-t border-white/10 pt-6">
-                  <span className="font-ui text-xs font-bold uppercase tracking-[0.2em] text-white/50 block">
+                <div className="space-y-4 border-t border-ean-border-dark pt-6">
+                  <span className="font-ui text-xs font-bold uppercase tracking-[0.2em] text-ean-text-light/50 block">
                     Detailed Narrative & Strategic Impact
                   </span>
-                  <div className="space-y-3 font-ui text-sm sm:text-base text-white/80 leading-relaxed">
+                  <div className="space-y-3 font-ui text-sm sm:text-base text-ean-text-light/80 leading-relaxed">
                     {event.story.map((paragraph, pIdx) => (
                       <p key={pIdx}>{paragraph}</p>
                     ))}
@@ -117,14 +117,14 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
 
               {/* Key Highlights */}
               {event.highlights && event.highlights.length > 0 && (
-                <div className="space-y-3 border-t border-white/10 pt-6">
+                <div className="space-y-3 border-t border-ean-border-dark pt-6">
                   <span className="font-ui text-xs font-bold uppercase tracking-[0.2em] text-ean-gold flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-ean-gold" />
                     Key Milestone Achievements
                   </span>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-ui text-xs sm:text-sm text-white/90">
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-ui text-xs sm:text-sm text-ean-text-light/90">
                     {event.highlights.map((h, hIdx) => (
-                      <li key={hIdx} className="flex items-start gap-2.5 bg-white/5 border border-white/10 p-3 rounded-xs">
+                      <li key={hIdx} className="flex items-start gap-2.5 bg-white/5 border border-ean-border-dark p-3">
                         <CheckCircle2 className="w-4 h-4 text-ean-gold shrink-0 mt-0.5" />
                         <span className="leading-snug">{h}</span>
                       </li>
@@ -135,20 +135,20 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
             </div>
 
             {/* Footer Action Strip */}
-            <div className="px-6 py-4 bg-ean-burgundy-dark border-t border-white/10 flex items-center justify-between">
-              <span className="text-xs text-white/40 hidden sm:inline-block font-ui">
+            <div className="px-6 py-4 bg-ean-burgundy-dark border-t border-ean-border-dark flex items-center justify-between">
+              <span className="text-xs text-ean-text-light/40 hidden sm:inline-block font-ui">
                 EAN Aviation History & Heritage
               </span>
               <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                 <button
                   onClick={onClose}
-                  className="px-5 py-2 border border-white/20 text-white/80 hover:text-white hover:border-white/40 rounded-xs text-xs font-semibold transition-colors cursor-pointer"
+                  className="px-5 py-2 border border-ean-border-dark text-ean-text-light/80 hover:text-ean-blue-light hover:border-ean-blue/50 text-xs font-semibold transition-colors cursor-pointer"
                 >
                   Close Detail
                 </button>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-2 px-5 py-2 bg-ean-gold text-ean-navy hover:bg-ean-gold-light text-xs font-bold uppercase tracking-wider rounded-xs transition-all"
+                  className="inline-flex items-center gap-2 px-5 py-2 bg-ean-gold text-ean-navy hover:bg-ean-gold-light text-xs font-bold uppercase tracking-wider transition-all"
                 >
                   <span>Inquire Operations</span>
                   <ChevronRight className="w-3.5 h-3.5" />

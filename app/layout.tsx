@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Fraunces, Archivo, IBM_Plex_Mono } from "next/font/google";
 import Script from "next/script";
 import PublicShell from "@/components/layout/PublicShell";
 import JsonLd from "@/components/shared/JsonLd";
@@ -13,18 +13,43 @@ import {
 } from "@/lib/seo";
 import "./globals.css";
 
-// Cormorant Garamond exposes a variable wght axis (300–700). Requesting the
-// variable face serves one woff2 covering every weight the design uses instead
-// of five separate static files.
-const cormorant = Cormorant_Garamond({
+/*
+ * Display face. Fraunces replaces Cormorant Garamond.
+ *
+ * The italic is not decorative — the pull-quotes are set in italic 300, so the
+ * italic face has to be requested here or they synthesise into an obliqued
+ * roman. `axes` is likewise load-bearing: Fraunces carries opsz, SOFT and WONK
+ * alongside wght, and next/font ships only wght unless the others are named.
+ * Omit them and the face silently pins at their defaults, which costs the
+ * optical-size compensation that keeps the display sizes from looking coarse.
+ */
+const fraunces = Fraunces({
   variable: "--font-display",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  axes: ["SOFT", "WONK", "opsz"],
+  display: "swap",
+});
+
+const archivo = Archivo({
+  variable: "--font-ui",
   subsets: ["latin"],
   display: "swap",
 });
 
-const inter = Inter({
-  variable: "--font-ui",
+/*
+ * IBM Plex Mono is a static family, so its weights must be enumerated — there
+ * is no variable axis to interpolate them from. 400 and 500 are what the
+ * eyebrows, basis lines, ops strip and stat labels use.
+ *
+ * This is a new token: --font-mono did not exist before, and the 74 public
+ * `font-mono` call sites were falling through to the browser's default
+ * monospace. They pick this up for free.
+ */
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -81,7 +106,7 @@ export default function RootLayout({
     <html
       lang="en-NG"
       data-scroll-behavior="smooth"
-      className={`${cormorant.variable} ${inter.variable} h-full antialiased scroll-smooth`}
+      className={`${fraunces.variable} ${archivo.variable} ${plexMono.variable} h-full antialiased scroll-smooth`}
     >
       {/*
         `select-none` used to sit on <body>, which made every word on the site
@@ -90,7 +115,7 @@ export default function RootLayout({
         copying the contact details. It is now applied only to the specific
         decorative elements that need it.
       */}
-      <body className="min-h-full flex flex-col bg-ean-navy text-white font-ui">
+      <body className="min-h-full flex flex-col bg-ean-navy text-ean-text-light font-ui">
         {/*
           Emitted site-wide so every page carries the entity graph. The @id
           values let per-page schemas reference this one organisation instead of

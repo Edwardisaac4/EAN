@@ -26,12 +26,12 @@ export default function Error({ error, reset }: ErrorProps) {
   }, [error]);
 
   return (
-    <main className="flex-1 flex items-center bg-ean-navy text-white">
+    <main className="flex-1 flex items-center bg-ean-navy text-ean-text-light">
       <section className="relative w-full py-24 sm:py-32 overflow-hidden">
         <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/10 blur-[120px] pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-8 space-y-8">
-          <div className="w-12 h-12 rounded-xs bg-ean-gold/10 border border-ean-gold/20 flex items-center justify-center">
+          <div className="w-12 h-12 bg-ean-gold/10 border border-ean-gold/20 flex items-center justify-center">
             <AlertTriangle className="w-6 h-6 text-ean-gold" />
           </div>
 
@@ -39,7 +39,7 @@ export default function Error({ error, reset }: ErrorProps) {
             <p className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
               Unexpected Error
             </p>
-            <h1 className="font-display text-4xl sm:text-5xl font-light text-white leading-tight">
+            <h1 className="font-display text-3xl sm:text-4xl font-light text-ean-text-light leading-tight">
               Something went wrong on our side
             </h1>
             <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
@@ -53,7 +53,7 @@ export default function Error({ error, reset }: ErrorProps) {
             <button
               type="button"
               onClick={reset}
-              className="bg-ean-gold text-ean-navy font-ui font-semibold text-sm px-7 py-3.5 tracking-wider hover:bg-ean-gold-light transition-all duration-300 inline-flex items-center justify-center gap-2 rounded-xs cursor-pointer"
+              className="bg-ean-gold text-ean-navy font-ui font-semibold text-sm px-7 py-3.5 tracking-wider hover:bg-ean-gold-light transition-all duration-300 inline-flex items-center justify-center gap-2 cursor-pointer"
             >
               <RotateCcw className="w-4 h-4" />
               Try again
@@ -61,7 +61,7 @@ export default function Error({ error, reset }: ErrorProps) {
 
             <a
               href={`tel:${LAGOS_HQ.phone.replace(/[^\d+]/g, '')}`}
-              className="border border-white/20 hover:border-ean-gold/50 text-white font-ui font-semibold text-sm px-7 py-3.5 tracking-wider transition-all duration-300 inline-flex items-center justify-center gap-2 rounded-xs"
+              className="border border-ean-border-dark hover:border-ean-gold/50 text-ean-text-light font-ui font-semibold text-sm px-7 py-3.5 tracking-wider transition-all duration-300 inline-flex items-center justify-center gap-2"
             >
               <Phone className="w-4 h-4 text-ean-gold" />
               {LAGOS_HQ.phone}
@@ -81,7 +81,7 @@ export default function Error({ error, reset }: ErrorProps) {
             it can carry internal detail.
           */}
           {error.digest && (
-            <p className="font-ui text-[10px] uppercase tracking-widest text-ean-muted-light/60 pt-4 border-t border-white/10">
+            <p className="font-ui text-[10px] uppercase tracking-widest text-ean-muted-light/60 pt-4 border-t border-ean-border-dark">
               Reference: {error.digest}
             </p>
           )}

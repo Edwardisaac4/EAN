@@ -156,7 +156,7 @@ export default function BlogPage() {
     <>
       <Navbar />
 
-      <main className="flex-1 flex flex-col bg-ean-navy text-white">
+      <main className="flex-1 flex flex-col bg-ean-navy text-ean-text-light">
         {/* SECTION 1: Featured Post Hero */}
         <section
           ref={heroRef}
@@ -165,18 +165,18 @@ export default function BlogPage() {
           {/* Subtle Ambient Radial Light */}
           <div className="absolute top-0 right-0 w-125 h-125 rounded-full bg-ean-gold/5 blur-[120px] pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
+          <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
               {/* Left Column: Featured Details */}
               <div className="lg:col-span-6 space-y-6">
                 <div className="space-y-3">
-                  <span className="inline-block border border-ean-gold/30 bg-ean-gold/5 text-ean-gold text-[10px] sm:text-xs uppercase font-bold tracking-widest px-3 py-1 rounded-xs">
+                  <span className="inline-block border border-ean-gold/30 bg-ean-gold/5 text-ean-gold text-[10px] sm:text-xs uppercase font-bold tracking-widest px-3 py-1">
                     Featured Article
                   </span>
                   <Link href={`/blog/${featuredArticle.slug}`} className="group block">
                     <h1
                       ref={featuredTitleRef}
-                      className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-white leading-[1.1] group-hover:text-ean-gold transition-colors duration-300"
+                      className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-ean-text-light leading-[1.1] group-hover:text-ean-gold transition-colors duration-300"
                     >
                       {featuredArticle.title}
                     </h1>
@@ -191,7 +191,7 @@ export default function BlogPage() {
                 </p>
 
                 {/* Metadata Row */}
-                <div className="flex items-center gap-6 font-ui text-xs text-ean-muted-light border-y border-white/5 py-3 w-fit">
+                <div className="flex items-center gap-6 font-ui text-xs text-ean-muted-light border-y border-ean-border-dark py-3 w-fit">
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-ean-gold" />
                     <span>{featuredArticle.publishedAt}</span>
@@ -202,7 +202,7 @@ export default function BlogPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <BookOpen className="w-4 h-4 text-ean-gold" />
-                    <span className="text-white font-semibold">{featuredArticle.category}</span>
+                    <span className="text-ean-text-light font-semibold">{featuredArticle.category}</span>
                   </div>
                 </div>
 
@@ -217,7 +217,7 @@ export default function BlogPage() {
               {/* Right Column: Hero Cover Image */}
               <div 
                 ref={featuredImageRef} 
-                className="lg:col-span-6 relative w-full h-65 sm:h-87.5 lg:h-105 rounded-xs overflow-hidden border border-white/10 group shadow-2xl shadow-black/60"
+                className="lg:col-span-6 relative w-full h-65 sm:h-87.5 lg:h-105 overflow-hidden border border-ean-border-dark group shadow-2xl shadow-ean-black/60"
               >
                 <Image
                   src={featuredArticle.image}
@@ -229,7 +229,7 @@ export default function BlogPage() {
                   quality={80}
                 />
                 {/* Visual Gold corner frame border */}
-                <div className="absolute inset-4 border border-white/10 group-hover:border-ean-gold/30 transition-colors duration-500 pointer-events-none" />
+                <div className="absolute inset-4 border border-ean-border-dark group-hover:border-ean-gold/30 transition-colors duration-500 pointer-events-none" />
                 <div className="absolute inset-0 bg-linear-to-t from-ean-navy/60 via-transparent to-transparent pointer-events-none" />
               </div>
             </div>
@@ -238,14 +238,14 @@ export default function BlogPage() {
 
         {/* SECTION 2: Pill Filter Bar */}
         <section className="bg-ean-navy border-b border-ean-border-dark py-6 relative z-20">
-          <div className="max-w-7xl mx-auto px-6 md:px-8">
+          <div className="max-w-ean mx-auto px-6 md:px-8">
             <div className="flex items-center justify-between overflow-x-auto scrollbar-none py-1 gap-8">
               {/* Category Pill Buttons */}
               <div ref={filterBarRef} className="relative flex gap-2">
                 {/* Single gold pill that glides to the active filter */}
                 <span
                   aria-hidden="true"
-                  className={`${isFilterPillAnimated ? 'ean-indicator' : ''} absolute left-0 top-0 bg-ean-gold rounded-full shadow-[0_4px_12px_rgba(196,149,42,0.25)] pointer-events-none`}
+                  className={`${isFilterPillAnimated ? 'ean-indicator' : ''} absolute left-0 top-0 bg-ean-gold rounded-full shadow-[0_4px_12px_rgba(169,137,90,0.25)] pointer-events-none`}
                   style={{
                     width: filterPill?.width ?? 0,
                     height: filterPill?.height ?? 0,
@@ -264,7 +264,7 @@ export default function BlogPage() {
                       }}
                       onClick={() => setActiveCategory(cat)}
                       className={`relative z-10 px-4 py-2 text-xs font-ui font-bold uppercase tracking-wider rounded-full transition-colors duration-300 cursor-pointer ${
-                        isActive ? 'text-ean-navy' : 'text-ean-muted-light hover:text-white hover:bg-white/5'
+                        isActive ? 'text-ean-navy' : 'text-ean-muted-light hover:text-ean-text-light hover:bg-white/5'
                       }`}
                     >
                       <span className="relative z-10">{cat}</span>
@@ -274,7 +274,7 @@ export default function BlogPage() {
               </div>
 
               {/* Editorial label */}
-              <div className="hidden lg:block font-ui text-[10px] uppercase font-bold tracking-widest text-ean-gold border border-ean-gold/30 px-3 py-1 rounded-xs bg-ean-gold/5 shrink-0">
+              <div className="hidden lg:block font-ui text-[10px] uppercase font-bold tracking-widest text-ean-gold border border-ean-gold/30 px-3 py-1 bg-ean-gold/5 shrink-0">
                 EAN Editorial Volume II
               </div>
             </div>
@@ -283,7 +283,7 @@ export default function BlogPage() {
 
         {/* SECTION 3: Staggered Article Cards Grid */}
         <section className="bg-ean-white text-ean-text-dark py-20 sm:py-24 transition-colors duration-500">
-          <div className="max-w-7xl mx-auto px-6 md:px-8">
+          <div className="max-w-ean mx-auto px-6 md:px-8">
             
             {filteredArticles.length > 0 ? (
                 <div
@@ -304,16 +304,16 @@ export default function BlogPage() {
                       <SectionReveal key={art.slug} className={`h-full ${gridClass}`}>
                         <Link href={`/blog/${art.slug}`} className="block h-full group focus:outline-none">
                           <div
-                            className={`bg-ean-surface border border-ean-border-light/60 p-0 rounded-xs shadow-xs overflow-hidden flex flex-col group-hover:-translate-y-1.5 group-hover:border-ean-gold/40 group-hover:shadow-[0_12px_35px_rgba(196,149,42,0.1)] ${
+                            className={`bg-ean-surface border border-ean-border-light/60 p-0 shadow-xs overflow-hidden flex flex-col group-hover:-translate-y-1.5 group-hover:border-ean-gold/40 group-hover:shadow-[0_12px_35px_rgba(169,137,90,0.1)] ${
                               isWide 
                                 ? isImageRight 
                                   ? 'lg:flex-row' 
                                   : 'lg:flex-row-reverse' 
                                 : ''
-                            } h-full transition-[background-color,border-color,color,transform,box-shadow] duration-500 ease-out hover:bg-ean-navy hover:text-white`}
+                            } h-full transition-[background-color,border-color,color,transform,box-shadow] duration-500 ease-out hover:bg-ean-navy hover:text-ean-text-light`}
                           >
                             {/* Image Box */}
-                            <div className={`relative w-full ${isWide ? 'h-52 lg:h-auto lg:w-1/2 min-h-60' : 'h-52'} overflow-hidden bg-black/10 shrink-0`}>
+                            <div className={`relative w-full ${isWide ? 'h-52 lg:h-auto lg:w-1/2 min-h-60' : 'h-52'} overflow-hidden bg-ean-black/10 shrink-0`}>
                               <Image
                                 src={art.image}
                                 alt={art.title}
@@ -323,7 +323,7 @@ export default function BlogPage() {
                                 quality={80}
                               />
                               {/* Floating category tag */}
-                              <span className="absolute top-4 left-4 bg-ean-navy/95 border border-ean-gold/30 text-ean-gold text-[9px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-xs">
+                              <span className="absolute top-4 left-4 bg-ean-navy/95 border border-ean-gold/30 text-ean-gold text-[9px] uppercase font-bold tracking-widest px-2.5 py-1">
                                 {art.category}
                               </span>
                             </div>
@@ -342,17 +342,17 @@ export default function BlogPage() {
                                     <span>{art.readTime}</span>
                                   </div>
                                 </div>
-                                <h3 className="font-ui text-lg font-semibold text-ean-navy group-hover:text-white transition-colors duration-300 leading-snug tracking-wide">
+                                <h3 className="font-ui text-lg font-semibold text-ean-navy group-hover:text-ean-text-light transition-colors duration-300 leading-snug tracking-wide">
                                   {art.title}
                                 </h3>
-                                <p className="font-ui text-xs sm:text-sm text-ean-muted-dark group-hover:text-white/70 leading-relaxed transition-colors duration-300">
+                                <p className="font-ui text-xs sm:text-sm text-ean-muted-dark group-hover:text-ean-text-light/70 leading-relaxed transition-colors duration-300">
                                   {art.excerpt}
                                 </p>
                               </div>
 
                               {/* Action footer */}
-                              <div className="pt-4 border-t border-ean-border-light/40 group-hover:border-white/10 flex justify-between items-center transition-colors duration-300">
-                                <span className="font-ui text-[10px] uppercase tracking-widest text-ean-navy/40 group-hover:text-white/40">
+                              <div className="pt-4 border-t border-ean-border-light/40 group-hover:border-ean-border-dark flex justify-between items-center transition-colors duration-300">
+                                <span className="font-ui text-[10px] uppercase tracking-widest text-ean-navy/40 group-hover:text-ean-text-light/40">
                                   Editorial Link
                                 </span>
                                 <div className="flex items-center gap-1 text-sm font-semibold text-ean-gold">
@@ -392,12 +392,12 @@ export default function BlogPage() {
           {/* Amber glow */}
           <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/5 blur-[120px] pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 text-center">
+          <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center">
             <SectionReveal className="max-w-2xl mx-auto space-y-8">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
                 Executive Insights
               </span>
-              <h2 className="font-display text-3xl sm:text-5xl font-light text-white leading-tight">
+              <h2 className="font-display text-2xl sm:text-4xl font-light text-ean-text-light leading-tight">
                 Subscribe to Aviation Intel
               </h2>
               <p className="font-ui text-sm sm:text-base text-ean-muted-light max-w-lg mx-auto leading-relaxed">
@@ -420,8 +420,8 @@ export default function BlogPage() {
                           if (emailError) setEmailError('');
                         }}
                         placeholder="client@company.com"
-                        className={`w-full bg-white/5 border px-4 py-3.5 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold transition-colors duration-300 ${
-                          emailError ? 'border-red-500' : 'border-white/10'
+                        className={`w-full bg-white/5 border px-4 py-3.5 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 ${
+                          emailError ? 'border-red-500' : 'border-ean-border-dark'
                         }`}
                       />
                       {emailError && (
@@ -434,7 +434,7 @@ export default function BlogPage() {
                       className="px-6 py-3.5 flex items-center justify-center gap-2 shrink-0 h-11.5 sm:h-auto"
                     >
                       {submitting ? (
-                        <span className="w-4 h-4 border-2 border-ean-navy border-t-transparent rounded-full animate-spin" />
+                        <span className="w-4 h-4 border border-ean-navy border-t-transparent rounded-full animate-spin" />
                       ) : (
                         <>
                           <Send className="w-4 h-4" />
@@ -446,10 +446,10 @@ export default function BlogPage() {
                 ) : (
                   <div
                     key="newsletter-success"
-                    className="ean-enter-scale bg-ean-gold/10 border border-ean-gold/20 p-6 rounded-xs max-w-md mx-auto text-center flex items-center justify-center gap-3 py-6"
+                    className="ean-enter-scale bg-ean-gold/10 border border-ean-gold/20 p-6 max-w-md mx-auto text-center flex items-center justify-center gap-3 py-6"
                   >
                     <CheckCircle2 className="w-5 h-5 text-ean-gold shrink-0" />
-                    <span className="font-ui text-sm text-white font-medium">
+                    <span className="font-ui text-sm text-ean-text-light font-medium">
                       Subscription successful. Welcome to Executive Insights.
                     </span>
                   </div>

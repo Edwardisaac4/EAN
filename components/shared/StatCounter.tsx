@@ -102,7 +102,10 @@ export default function StatCounter({
   return (
     <span
       ref={elementRef}
-      className={`inline-block ${className}`}
+      // Fraunces at 300 is the figure treatment throughout this system. Set
+      // here rather than at the call site so a statistic cannot be dropped in
+      // and silently render in Archivo.
+      className={`inline-block font-display font-light ${className}`}
       style={{ transformOrigin: 'center' }}
     >
       {prefix}{targetValue}{suffix}

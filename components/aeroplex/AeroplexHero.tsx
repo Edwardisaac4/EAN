@@ -87,7 +87,7 @@ export default function AeroplexHero() {
     <>
       <section
         ref={heroRef}
-        className="relative w-full h-[76vh] min-h-130 max-h-180 overflow-hidden bg-ean-obsidian flex items-end text-white"
+        className="relative w-full h-[76vh] min-h-130 max-h-180 overflow-hidden bg-ean-obsidian flex items-end text-ean-text-light"
       >
         {/* Background Image Container */}
         <div ref={heroBgRef} className="absolute inset-0 w-full h-[118%] top-[-9%] select-none">
@@ -101,12 +101,12 @@ export default function AeroplexHero() {
             className="object-cover object-center"
           />
           {/* Obsidian black overlays matching reference */}
-          <div className="absolute inset-0 bg-linear-to-t from-ean-obsidian via-ean-obsidian/75 via-40% to-black/35" />
+          <div className="absolute inset-0 bg-linear-to-t from-ean-obsidian via-ean-obsidian/75 via-40% to-ean-black/35" />
           <div className="absolute inset-0 bg-linear-to-r from-ean-obsidian/92 via-ean-obsidian/55 to-transparent" />
         </div>
 
         {/* Hero Title & Lede Content */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-8 pb-12 sm:pb-14">
+        <div className="relative z-10 w-full max-w-ean mx-auto px-6 md:px-8 pb-12 sm:pb-14">
           <div className="max-w-2xl space-y-5">
             {/* Eyebrow */}
             <div ref={eyebrowRef}>
@@ -118,7 +118,7 @@ export default function AeroplexHero() {
             {/* Headline with reduced, refined sizing */}
             <h1
               ref={titleRef}
-              className="font-display text-4xl sm:text-5xl md:text-6xl font-light leading-[1.08] tracking-tight text-white"
+              className="font-display text-3xl sm:text-4xl md:text-5xl font-light leading-[1.08] tracking-tight text-ean-text-light"
             >
               {AEROPLEX_HERO.title}
             </h1>
@@ -128,7 +128,7 @@ export default function AeroplexHero() {
               {AEROPLEX_HERO.lede.map((line) => (
                 <p
                   key={line}
-                  className="font-ui text-sm sm:text-base md:text-lg text-white/80 leading-relaxed max-w-xl"
+                  className="font-ui text-sm sm:text-base md:text-lg text-ean-text-light/80 leading-relaxed max-w-xl"
                 >
                   {line}
                 </p>
@@ -139,8 +139,8 @@ export default function AeroplexHero() {
       </section>
 
       {/* KPI / Spec Bar with Obsidian Black styling */}
-      <div className="relative z-20 bg-ean-obsidian-raised border-y border-white/10">
-        <dl className="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-white/10">
+      <div className="relative z-20 bg-ean-obsidian-raised border-y border-ean-border-dark">
+        <dl className="max-w-ean mx-auto px-6 md:px-8 grid grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-ean-border-dark">
           {AEROPLEX_FACTS.map((fact) => {
             const Icon = fact.iconName ? factIcons[fact.iconName] : undefined;
             return (
@@ -153,10 +153,10 @@ export default function AeroplexHero() {
                   <dt className="font-mono text-[10px] uppercase tracking-[0.2em] text-ean-gold font-medium">
                     {fact.label}
                   </dt>
-                  <dd className="font-ui text-sm sm:text-base font-semibold text-white">
+                  <dd className="font-ui text-sm sm:text-base font-semibold text-ean-text-light">
                     {fact.value}
                   </dd>
-                  <dd className="font-ui text-xs text-white/60 leading-relaxed">
+                  <dd className="font-ui text-xs text-ean-text-light/60 leading-relaxed">
                     {fact.note}
                   </dd>
                 </div>

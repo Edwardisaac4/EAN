@@ -6,7 +6,7 @@
  * version held an opaque full-viewport overlay in the server HTML and only tore
  * it down once GSAP had hydrated, which pushed first paint behind the entire
  * client bundle. Nothing here costs a byte of JavaScript or a network request:
- * the artwork is inline SVG rather than /images/EAN-Logo.png for exactly that
+ * the artwork is inline SVG rather than /images/new-logo.png for exactly that
  * reason. Do not reintroduce a JS-controlled unmount.
  *
  * The veil and the artwork clear on separate timelines (see globals.css). The

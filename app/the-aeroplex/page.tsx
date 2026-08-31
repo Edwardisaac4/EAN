@@ -13,7 +13,7 @@ export default function TheAeroplexPage() {
     <>
       <Navbar />
 
-      <main className="flex-1 flex flex-col bg-[#08080a] text-white">
+      <main className="flex-1 flex flex-col bg-ean-obsidian text-ean-text-light">
         <AeroplexHero />
         <CampusOverview />
       </main>

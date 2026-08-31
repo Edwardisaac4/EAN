@@ -120,7 +120,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
   }
 
   return (
-    <div className="bg-ean-surface border border-ean-border-light rounded-2xl p-6 text-left shadow-xs space-y-4">
+    <div className="bg-ean-surface border border-ean-border-light p-6 text-left shadow-xs space-y-4">
       {/* BADGE PILL */}
       <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-ean-border-light rounded-full text-xs font-ui font-semibold text-ean-burgundy-rich shadow-2xs">
         <span className="w-2 h-2 rounded-full bg-ean-burgundy-rich" />
@@ -143,7 +143,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
         {error && (
           <div
             role="alert"
-            className="text-xs bg-red-50 text-red-600 p-2.5 rounded-xl border border-red-200 font-ui text-center"
+            className="text-xs bg-red-50 text-red-600 p-2.5 border border-red-200 font-ui text-center"
           >
             {error}
           </div>
@@ -157,7 +157,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Full name"
-            className="w-full px-4 py-3 bg-white border border-ean-border-light rounded-xl font-ui text-sm text-ean-text-dark placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-burgundy-rich focus:ring-1 focus:ring-ean-burgundy-rich transition-colors"
+            className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-text-dark placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
           />
         </div>
 
@@ -169,7 +169,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full px-4 py-3 bg-white border border-ean-border-light rounded-xl font-ui text-sm text-ean-text-dark placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-burgundy-rich focus:ring-1 focus:ring-ean-burgundy-rich transition-colors"
+            className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-text-dark placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
           />
           <input
             type="tel"
@@ -177,7 +177,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="Phone / WhatsApp"
-            className="w-full px-4 py-3 bg-white border border-ean-border-light rounded-xl font-ui text-sm text-ean-text-dark placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-burgundy-rich focus:ring-1 focus:ring-ean-burgundy-rich transition-colors"
+            className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-text-dark placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
           />
         </div>
 
@@ -185,11 +185,11 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
         <button
           type="submit"
           disabled={isSubmitting || !hasAircraft}
-          className="w-full mt-2 py-3.5 px-6 bg-ean-burgundy-rich hover:bg-ean-burgundy text-white font-ui font-bold text-sm rounded-xl transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full mt-2 py-3.5 px-6 bg-ean-burgundy-rich hover:bg-ean-burgundy text-ean-text-light font-ui font-bold text-sm transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin text-white" />
+              <Loader2 className="w-4 h-4 animate-spin text-ean-text-light" />
               Unlocking Pricing...
             </>
           ) : (

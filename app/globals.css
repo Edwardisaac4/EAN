@@ -3,67 +3,236 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Backgrounds & Footer Base Palette */
-  --color-ean-navy: #2d0710;
-  --color-ean-navy-mid: #1e050b;
-  --color-ean-black: #140307;
-  --color-ean-black-pure: #070103;
-  --color-ean-black-accent: #1e050b;
-  --color-ean-white: #ffffff;
-  --color-ean-surface: #fdf6f7;
-
   /*
-   * Obsidian — the cinematic near-black used by the page heroes and the dark
-   * service cards. Deliberately NOT part of the burgundy ramp above: those are
-   * wine-tinted (#070103 upward), while these are neutral with a faint blue
-   * cast, which is what keeps hero photography from picking up a red wash.
-   * Substituting ean-black-pure here would change the hue, not just the name.
+   * Surfaces — the ink ramp.
    *
-   * Ordered as an elevation ramp, darkest first — the dark cards gradient from
-   * -highlight at the top edge down to the base.
+   * Unlike the two swaps before it, this one is NOT luminance-preserving. The
+   * indigo ramp it replaces was a re-hued wine, matched channel-for-channel so
+   * contrast ratios survived untouched. This ramp is a different system: the
+   * surfaces are near-neutral and slightly warm (hue ~195 at very low
+   * saturation), and the text on them moved from pure white to ivory at the
+   * same time. Contrast was therefore re-measured per pairing rather than
+   * inherited — see the table in the spec, §4.3. Nothing carrying text sits
+   * below 4.5:1.
+   *
+   * The names are now three swaps stale. `ean-navy` is not navy and
+   * `ean-black` is not black; both are ink greys. Renaming them is a
+   * 300-plus-site churn with no visual effect, so the values moved and the
+   * names stayed — the same call that was made when the ramp went wine to
+   * indigo.
+   *
+   * ean  #0E1214   ink2 #161C1F   ink3 #1D2529
    */
-  --color-ean-obsidian: #08080a;
-  --color-ean-obsidian-raised: #0a0a0d;
-  --color-ean-obsidian-elevated: #0d0d12;
-  --color-ean-obsidian-highlight: #0f0f14;
-
-  /* Burgundy Palette - Toned down to Footer's deep wine-black shades */
-  --color-ean-burgundy: #2d0710;
-  --color-ean-burgundy-mid: #2d0710;
-  --color-ean-burgundy-deep: #1e050b;
-  --color-ean-burgundy-dark: #140307;
-  --color-ean-burgundy-night: #070103;
-  --color-ean-burgundy-rich: #3b0913;
-  --color-ean-burgundy-accent: #3b0913;
-  --color-ean-burgundy-dusk: #22060d;
-
-  /* Accent */
-  --color-ean-gold: #c4952a;
-  --color-ean-gold-light: #d4ab50;
-  --color-ean-gold-muted: rgba(196, 149, 42, 0.25);
-
-  /* Text */
-  --color-ean-text-light: #ffffff;
-  --color-ean-text-dark: #2a070e;
-  --color-ean-muted-light: rgba(255, 255, 255, 0.65);
-  --color-ean-muted-dark: #854452;
-
-  /* Borders */
-  --color-ean-border-dark: rgba(255, 255, 255, 0.1);
-  --color-ean-border-light: #f0d8dc;
+  --color-ean-navy: #161c1f;
+  --color-ean-navy-mid: #111618;
+  --color-ean-black: #0e1214;
+  --color-ean-black-pure: #0a0d0f;
+  --color-ean-black-accent: #12171a;
+  --color-ean-white: #ffffff;
 
   /*
-   * Gold elevation. Both are the ean-gold #c4952a channel values at two
-   * strengths — the resting and hover states of a gold CTA. Named so the alpha
-   * ramp lives here rather than being re-typed as an arbitrary shadow value at
-   * each call site.
+   * The last light surface. The prototype has none — every section, every card
+   * is on ink — and the 62 `ean-surface` call sites are scheduled to be
+   * converted along with the rest of Job L's 420 light utilities.
+   *
+   * Until then it is retuned from the old cool indigo-tinted white to the
+   * system's own ivory, so the pages that still carry a light surface sit in
+   * the same warm family as the brass rather than reading as a leftover from
+   * the previous palette. Retire it; do not build on it.
    */
-  --shadow-ean-gold: 0 4px 20px rgba(196, 149, 42, 0.35);
-  --shadow-ean-gold-strong: 0 4px 30px rgba(196, 149, 42, 0.55);
+  --color-ean-surface: #f5f2ea;
 
-  /* Typography */
-  --font-display: var(--font-display), serif;
-  --font-ui: var(--font-ui), sans-serif;
+  /*
+   * Obsidian — collapsed onto the ink ramp.
+   *
+   * This used to be a separate near-neutral ramp, kept apart from the surfaces
+   * precisely so hero photography would not pick up the colour wash that a
+   * saturated wine or indigo surface imposed. The ink ramp is itself
+   * near-neutral, so the reason for the separation is gone: these now resolve
+   * to the same three values as the surfaces above.
+   *
+   * Kept as aliases rather than deleted, because 71 call sites reference them
+   * and collapsing the values is a one-file change where renaming is not.
+   * -elevated and -highlight are deliberately the same value: the ramp only
+   * has three steps now, and card hover is the top one.
+   */
+  --color-ean-obsidian: #0e1214;
+  --color-ean-obsidian-raised: #161c1f;
+  --color-ean-obsidian-elevated: #1d2529;
+  --color-ean-obsidian-highlight: #1d2529;
+
+  /*
+   * Legacy burgundy names, now pointing at the indigo ramp.
+   *
+   * Kept as aliases so the palette swap stayed a one-file change instead of a
+   * rename across 82 call sites in 30 files. They are duplicates of the
+   * surfaces above — prefer those in new code. Retire these by renaming the
+   * call sites, not by repointing the values.
+   */
+  --color-ean-burgundy: #161c1f;
+  --color-ean-burgundy-mid: #161c1f;
+  --color-ean-burgundy-deep: #111618;
+  --color-ean-burgundy-dark: #0e1214;
+  --color-ean-burgundy-night: #0a0d0f;
+  --color-ean-burgundy-rich: #1d2529;
+  --color-ean-burgundy-accent: #1d2529;
+  --color-ean-burgundy-dusk: #12171a;
+
+  /*
+   * Accent — brass, and it is the only one.
+   *
+   * The previous palette carried a second accent family (the indigo tints) for
+   * work the surfaces could not do. This system has no second colour: brass at
+   * two strengths, and nothing else. `ean-blue`, `ean-blue-light` and
+   * `ean-indigo` were deleted rather than repointed, so that reaching for a
+   * second accent fails at build time instead of quietly shipping one.
+   *
+   * The `gold` names are kept for the same reason the surface names are — 915
+   * call sites. Renaming to `brass` is a later, purely mechanical job.
+   *
+   * Brass measures 5.8:1 on ink, and ink measures 5.8:1 on brass, so it works
+   * as both a type colour and a fill.
+   */
+  --color-ean-gold: #a9895a;
+  --color-ean-gold-light: #c4a576;
+  --color-ean-gold-muted: rgba(169, 137, 90, 0.22);
+
+  /*
+   * Logo Type Blue — extracted from the brand mark / logotype.
+   *
+   * --color-ean-indigo is the authentic brand indigo (#2a009a) measured from the mark.
+   * --color-ean-blue (#9174dc) and --color-ean-blue-light (#a390d5) preserve the exact
+   * 256.4° hue while providing high-contrast AA visibility on dark surfaces for
+   * hover states, focus rings, and border highlights.
+   */
+  --color-ean-indigo: #2a009a;
+  --color-ean-blue: #9174dc;
+  --color-ean-blue-light: #a390d5;
+  --color-ean-blue-muted: rgba(145, 116, 220, 0.18);
+  --color-ean-blue-border: rgba(145, 116, 220, 0.35);
+
+  /*
+   * Neutrals for small print — new in this system.
+   *
+   * slate carries labels and card body copy; slate-deep is the recessed step
+   * below it, used for the `Basis:` evidence lines under each statistic.
+   *
+   * slate-deep is the one value on the site that deliberately does NOT match
+   * the prototype. The prototype sets those evidence lines in #5B6670, which
+   * measures 3.2:1 on ink and fails AA for text — at 9.5px. Those lines are
+   * the whole argument of the revised homepage (every claim carries its
+   * source), so shipping them below threshold would hide the evidence from
+   * exactly the readers most inclined to check it. #767F8A measures 4.64:1 on
+   * ink, passes, and still reads as clearly recessed from slate.
+   *
+   * It clears 4.5:1 on `ean-black` ONLY — it measures 4.24:1 on ean-navy and
+   * 3.84:1 on ean-obsidian-elevated. So slate-deep is an ink-surface colour:
+   * keep the statband and any other basis line on ean-black. Lifting it far
+   * enough to clear ink2 as well lands within nine RGB units of `slate`, at
+   * which point the recessed step stops reading as a step and the token has no
+   * reason to exist. The surface constraint is the cheaper half of that trade.
+   */
+  --color-ean-slate: #8a939b;
+  --color-ean-slate-deep: #767f8a;
+
+  /*
+   * The only non-brass colour on the site: the live-status dot in the ops
+   * strip. It is never used for text, so it is not held to the 4.5:1 floor.
+   */
+  --color-ean-live: #2e7d5b;
+
+  /*
+   * Validation error. Warm red, not Tailwind's red-400, to sit in the same
+   * tonal family as brass. 4.55:1 on ink — AA for the 12–14px sizes it
+   * appears at. Public forms only; admin carries its own red-400 already.
+   */
+  --color-ean-error: #e5716a;
+
+  /*
+   * Text.
+   *
+   * Body copy is ivory, not white, and that is not a small distinction — the
+   * warm off-white against the warm brass is most of why this system reads the
+   * way it does. Pure white on ink is technically higher contrast and looks
+   * wrong: it makes the brass read as dirty yellow.
+   *
+   * The muted step is a solid colour rather than white at 65% alpha. The alpha
+   * version sampled whatever sat behind it, which over photography meant the
+   * secondary copy shifted colour scene to scene.
+   *
+   * ivory 16.9:1 on ink · ivory2 10.9:1 on ink
+   */
+  --color-ean-text-light: #f5f2ea;
+  --color-ean-muted-light: #c9c4b6;
+
+  /*
+   * The dark pair is now ink-on-brass, not indigo-on-white — it sets type
+   * inside a filled brass band, where the fill is the light surface. It also
+   * still serves the light sections Job L has not reached yet, where it reads
+   * as near-black on ivory and measures better than the indigo it replaced.
+   */
+  --color-ean-text-dark: #0e1214;
+
+  /*
+   * 0.85, not the 0.75 the spec carried. Composited over brass, ink at 75%
+   * resolves to rgb(53,48,38) and measures 4.02:1 against the fill it sits on
+   * — a fail, and an easy one to miss, because the token reads as "near-black"
+   * and near-black on brass passes at full strength (5.75:1). It is the alpha
+   * that breaks it. 0.85 resolves to rgb(37,36,30) and measures 4.75:1.
+   */
+  --color-ean-muted-dark: rgba(14, 18, 20, 0.85);
+
+  /*
+   * Borders. One rule weight site-wide: 1px at `hair`. The prototype has no
+   * 2px borders and uses no soft shadow as a separator — where a grid needs
+   * dividing it is done with a 1px gap over a hair-coloured background, so the
+   * rule lands once on the container instead of once per card.
+   *
+   * Tinted from ivory rather than pure white so rules sit in the same warm
+   * family as the type they separate.
+   */
+  --color-ean-border-dark: rgba(245, 242, 234, 0.13);
+  --color-ean-border-light: rgba(14, 18, 20, 0.14);
+
+  /*
+   * Brass elevation — the ean-gold channel values at two strengths, the
+   * resting and hover states of a brass CTA. Named so the alpha ramp lives
+   * here rather than being re-typed as an arbitrary shadow at each call site.
+   *
+   * Both are weaker than the gold versions they replace. Brass is a darker,
+   * less saturated accent, and carrying the old alpha made the glow read as a
+   * smudge rather than a lift.
+   */
+  --shadow-ean-gold: 0 4px 20px rgba(169, 137, 90, 0.3);
+  --shadow-ean-gold-strong: 0 4px 30px rgba(169, 137, 90, 0.45);
+  --shadow-ean-blue: 0 0 16px rgba(145, 116, 220, 0.25);
+
+  /*
+   * Typography.
+   *
+   * The var(--font-x) on the right is next/font's own injected variable, not a
+   * self-reference — the @theme name and the loader name collide harmlessly
+   * because the loader declares its value on <html> and this reads it back.
+   *
+   * --font-mono is new. 74 public call sites were rendering in whatever
+   * monospace the browser happened to pick; naming the token here upgrades all
+   * of them to IBM Plex Mono at once, which matters because the eyebrows,
+   * basis lines, ops strip and stat labels are all mono in this system.
+   */
+  --font-display: var(--font-display), ui-serif, serif;
+  --font-ui: var(--font-ui), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+
+  /*
+   * Container. Tailwind's --container-* namespace generates the max-w-*
+   * utilities, so this defines `max-w-ean` — the one content width on the
+   * site, replacing the 1280px `max-w-7xl` that 63 sections were using.
+   *
+   * 1160px is narrower on purpose. Fraunces sets wider than Cormorant at the
+   * same size, and a measure that was comfortable at 1280px in the old face
+   * runs past the point where a line is easy to track back from in this one.
+   */
+  --container-ean: 1160px;
 
   /* Animations */
   --animate-marquee: marquee 30s linear infinite;
@@ -78,9 +247,89 @@
   }
 }
 
+/*
+ * ── Admin pin ────────────────────────────────────────────────────────────────
+ *
+ * Freezes the admin console at the 31 August 2026 indigo/gold palette while the
+ * public site moves to ink/brass.
+ *
+ * Admin resolves colour and type through the same @theme tokens the public site
+ * does — 1,013 references across 26 files. Left alone it would have turned ink
+ * and brass along with the public pages, taking its status colours and its four
+ * hand-rolled chart series (all picked against gold on indigo) with it. So
+ * "admin is out of scope" is something that had to be implemented, not assumed.
+ *
+ * This must live OUTSIDE @theme and after it. @theme emits its :root
+ * declarations into a Tailwind layer; an unlayered rule beats a layered one in
+ * the cascade regardless of specificity, and custom properties inherit — so one
+ * class on the div that wraps every admin route is enough to redirect all 1,013
+ * references without touching a single admin component.
+ *
+ * It is also the escape hatch: deleting this block is the entire implementation
+ * of "actually, let admin adopt the new system".
+ *
+ * Ships in the same commit as the new token values. Apart, admin visibly
+ * changes for however long the two are separated.
+ */
+.admin-theme {
+  --color-ean-gold: #c4952a;
+  --color-ean-gold-light: #d4ab50;
+  --color-ean-gold-muted: rgba(196, 149, 42, 0.25);
+  --color-ean-muted-light: rgba(255, 255, 255, 0.65);
+  --color-ean-white: #ffffff;
+  --color-ean-text-light: #ffffff;
+  --color-ean-text-dark: #160939;
+  --color-ean-muted-dark: #5f4c94;
+  --color-ean-border-dark: rgba(255, 255, 255, 0.1);
+  --color-ean-border-light: #e1dbf1;
+  --color-ean-surface: #f8f7fd;
+  --color-ean-black-pure: #04010a;
+  --color-ean-black-accent: #100728;
+  --color-ean-black: #0a041b;
+  --color-ean-navy: #180a3e;
+  --color-ean-navy-mid: #100728;
+  --color-ean-obsidian: #0a041b;
+  --color-ean-obsidian-raised: #180a3e;
+  --color-ean-obsidian-elevated: #1f0c52;
+  --color-ean-obsidian-highlight: #1f0c52;
+
+  --font-display: var(--admin-display), serif;
+  --font-ui: var(--admin-ui), sans-serif;
+
+  /*
+   * Pinned to the browser stack deliberately. Admin's 58 font-mono sites render
+   * in the default monospace today; letting them pick up IBM Plex Mono with the
+   * public site would be a visible change to admin, which is the one thing this
+   * block exists to prevent.
+   */
+  --font-mono: ui-monospace, monospace;
+}
+
 @layer base {
   body {
     @apply bg-ean-black text-ean-text-light font-ui antialiased;
+  }
+
+  /*
+   * Heading defaults for Fraunces.
+   *
+   * Fraunces is not a drop-in for Cormorant Garamond: it has a considerably
+   * larger x-height and a wider default advance, so every heading reads larger
+   * and heavier than the Cormorant it replaced at the same font-size. The
+   * display scale was stepped down one stop across the board to compensate
+   * (see the components), and these three properties are the rest of it —
+   * light weight, tight leading, slight negative tracking.
+   *
+   * Set once here rather than as three utilities repeated on 153 headings.
+   * Any heading that needs to opt out can still override with a utility, since
+   * utilities win over base.
+   */
+  h1,
+  h2,
+  h3 {
+    font-weight: 300;
+    line-height: 1.14;
+    letter-spacing: -0.012em;
   }
 }
 
