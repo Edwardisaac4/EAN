@@ -82,7 +82,7 @@ export default function AircraftSelector({
   // ── MANUAL MODE ──
   if (manualMode) {
     return (
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-ean-border-light space-y-4">
+      <div className="bg-white p-6 shadow-sm border border-ean-border-light space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-ui font-semibold text-lg text-ean-navy flex items-center gap-2">
             <Plane className="w-5 h-5 text-ean-gold" />
@@ -111,7 +111,7 @@ export default function AircraftSelector({
               }}
               min={500}
               max={600000}
-              className="w-full px-4 py-3 bg-ean-surface border border-ean-border-light rounded-lg text-ean-navy text-sm font-ui focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold transition-colors"
+              className="w-full px-4 py-3 bg-ean-surface border border-ean-border-light text-ean-navy text-sm font-ui focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
             />
             {manualMtow ? (
               <p className="mt-2 text-sm text-ean-gold font-medium">
@@ -133,7 +133,7 @@ export default function AircraftSelector({
 
   // ── SEARCH & DROPDOWN MODE ──
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-ean-border-light space-y-4" ref={dropRef}>
+    <div className="bg-white p-6 shadow-sm border border-ean-border-light space-y-4" ref={dropRef}>
       <div className="flex items-center justify-between">
         <h3 className="font-ui font-semibold text-lg text-ean-navy flex items-center gap-2">
           <Plane className="w-5 h-5 text-ean-gold" />
@@ -160,7 +160,7 @@ export default function AircraftSelector({
             }}
             onClick={() => setIsOpen(true)}
             onFocus={() => setIsOpen(true)}
-            className="w-full pl-10 pr-12 py-3 bg-ean-surface border border-ean-border-light rounded-lg text-ean-navy text-sm font-ui focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold transition-colors cursor-pointer"
+            className="w-full pl-10 pr-12 py-3 bg-ean-surface border border-ean-border-light text-ean-navy text-sm font-ui focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors cursor-pointer"
           />
 
           {/* Right controls: Loading / Clear / Toggle Arrow */}
@@ -188,7 +188,7 @@ export default function AircraftSelector({
 
         {/* Floating Dropdown menu */}
         {isOpen && (
-          <div className="absolute z-30 left-0 right-0 w-full bg-white border border-ean-border-light rounded-lg shadow-xl mt-1 max-h-72 overflow-y-auto divide-y divide-gray-100">
+          <div className="absolute z-30 left-0 right-0 w-full bg-white border border-ean-border-light shadow-xl mt-1 max-h-72 overflow-y-auto divide-y divide-gray-100">
 
             {/* Sub-header */}
             <div className="px-4 py-2 bg-ean-surface text-[11px] font-ui font-semibold text-ean-muted-dark uppercase tracking-wider sticky top-0 border-b border-ean-border-light flex items-center justify-between">
@@ -274,10 +274,10 @@ export default function AircraftSelector({
 
         {/* Selected aircraft summary card */}
         {value && value.mtow_kg && (
-          <div className="border-l-4 border-ean-gold bg-ean-navy text-white rounded-r-lg px-4 py-3 space-y-1 shadow-inner mt-3">
+          <div className="border-l border-ean-gold bg-ean-navy text-ean-text-light px-4 py-3 space-y-1 shadow-inner mt-3">
             <p className="font-semibold text-ean-gold text-base">{value.name}</p>
             <p className="text-xs text-ean-muted-light">{value.manufacturer}</p>
-            <div className="flex flex-wrap gap-3 mt-2 text-xs text-white/90">
+            <div className="flex flex-wrap gap-3 mt-2 text-xs text-ean-text-light/90">
               <span>MTOW: <strong>{value.mtow_kg.toLocaleString()} kg</strong></span>
               {value.range_nm && <span>Range: <strong>{value.range_nm.toLocaleString()} nm</strong></span>}
               {value.wingspan_m && <span>Wingspan: <strong>{value.wingspan_m} m</strong></span>}

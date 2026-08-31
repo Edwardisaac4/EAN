@@ -15,12 +15,12 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
 
   return (
     <>
-      <section className="relative bg-linear-to-b from-ean-burgundy-night via-ean-burgundy-dusk to-ean-black py-16 sm:py-24 overflow-hidden border-b border-white/10">
+      <section className="relative bg-linear-to-b from-ean-burgundy-night via-ean-burgundy-dusk to-ean-black py-16 sm:py-24 overflow-hidden border-b border-ean-border-dark">
         {/* Ambient Backlight Blur */}
         <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-128 h-128 rounded-full bg-ean-gold/10 blur-[140px] pointer-events-none" />
         <div className="absolute bottom-0 right-10 w-96 h-96 rounded-full bg-blue-950/40 blur-[120px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
+        <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
           {/* Eyebrow & Badge */}
           <div className="flex items-center gap-3 mb-6">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest bg-ean-gold/10 text-ean-gold border border-ean-gold/30">
@@ -33,10 +33,10 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* CEO Portrait Column */}
             <div className="lg:col-span-5 relative">
-              <div className="relative aspect-4/5 rounded-xs overflow-hidden border border-ean-gold/30 shadow-2xl group bg-ean-navy-mid">
+              <div className="relative aspect-4/5 overflow-hidden border border-ean-gold/30 shadow-2xl group bg-ean-navy-mid">
                 {/* Decorative Frame Elements */}
                 <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-transparent to-transparent z-10 opacity-70 group-hover:opacity-50 transition-opacity duration-500" />
-                <div className="absolute top-4 left-4 z-20 px-3 py-1 bg-ean-navy/80 backdrop-blur-md rounded-xs border border-ean-gold/40 text-[10px] uppercase font-mono tracking-widest text-ean-gold">
+                <div className="absolute top-4 left-4 z-20 px-3 py-1 bg-ean-navy/80 backdrop-blur-md border border-ean-gold/40 text-[10px] uppercase font-mono tracking-widest text-ean-gold">
                   Founder & CEO
                 </div>
 
@@ -52,7 +52,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
 
                 {/* Bottom Overlay Info on Mobile */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 z-20 bg-linear-to-t from-ean-navy via-ean-navy/80 to-transparent">
-                  <div className="font-display text-2xl font-light text-white">
+                  <div className="font-display text-2xl font-light text-ean-text-light">
                     {ceoMember.name}
                   </div>
                   <div className="font-ui text-xs font-semibold text-ean-gold uppercase tracking-wider mt-1">
@@ -62,7 +62,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
               </div>
 
               {/* Decorative Accent Ring */}
-              <div className="absolute -bottom-4 -right-4 w-full h-full border border-ean-gold/20 rounded-xs -z-10 pointer-events-none hidden sm:block" />
+              <div className="absolute -bottom-4 -right-4 w-full h-full border border-ean-gold/20 -z-10 pointer-events-none hidden sm:block" />
             </div>
 
             {/* CEO Executive Details Column */}
@@ -71,7 +71,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
                 <span className="font-ui text-xs uppercase tracking-[0.3em] font-semibold text-ean-gold">
                   EAN Aviation Founder & Visionary
                 </span>
-                <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-light text-white leading-tight">
+                <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-ean-text-light leading-tight">
                   {ceoMember.name}
                 </h2>
                 <p className="font-ui text-base sm:text-lg text-ean-gold/90 font-medium">
@@ -81,9 +81,9 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
 
               {/* CEO Signature Quote Box */}
               {ceoMember.quote && (
-                <div className="relative p-6 sm:p-8 bg-linear-to-r from-white/15 via-white/5 to-transparent border-l-4 border-ean-gold rounded-r-2xl backdrop-blur-md space-y-3 shadow-xl">
+                <div className="relative p-6 sm:p-8 bg-linear-to-r from-white/15 via-white/5 to-transparent border-l border-ean-gold backdrop-blur-md space-y-3 shadow-xl">
                   <Quote className="w-8 h-8 text-ean-gold/40 absolute top-4 right-4" />
-                  <p className="font-display italic text-lg sm:text-xl text-white leading-relaxed relative z-10">
+                  <p className="font-display italic text-lg sm:text-xl text-ean-text-light leading-relaxed relative z-10">
                     &ldquo;{ceoMember.quote}&rdquo;
                   </p>
                 </div>
@@ -116,7 +116,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
                 {ceoMember.credentials.map((cred, cIdx) => (
                   <span
                     key={cIdx}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-ean-navy-mid border border-white/10 rounded-xs text-xs text-ean-muted-light font-ui"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-ean-navy-mid border border-ean-border-dark text-xs text-ean-muted-light font-ui"
                   >
                     <ShieldCheck className="w-3.5 h-3.5 text-ean-gold" />
                     {cred}
@@ -127,7 +127,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
               <div className="pt-4">
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="inline-flex items-center gap-3 px-6 py-3.5 bg-linear-to-r from-ean-gold via-ean-gold-light to-ean-gold text-ean-navy font-ui text-xs font-semibold uppercase tracking-widest rounded-xs shadow-lg hover:shadow-ean-gold/20 hover:brightness-110 transition-all duration-300 cursor-pointer"
+                  className="inline-flex items-center gap-3 px-6 py-3.5 bg-linear-to-r from-ean-gold via-ean-gold-light to-ean-gold text-ean-navy font-ui text-xs font-semibold uppercase tracking-widest shadow-lg hover:shadow-ean-gold/20 hover:brightness-110 transition-all duration-300 cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4" />
                   Read Full Executive Profile

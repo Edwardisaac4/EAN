@@ -68,7 +68,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
           {/* Backdrop Blur Overlay */}
           <div
             onClick={onClose}
-            className={`fixed inset-0 bg-black/75 backdrop-blur-xl backdrop-saturate-150 cursor-pointer ${
+            className={`fixed inset-0 bg-ean-black/75 backdrop-blur-xl backdrop-saturate-150 cursor-pointer ${
               state === 'open' ? 'ean-enter-fade' : 'ean-exit-fade'
             }`}
           />
@@ -80,7 +80,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
             aria-modal="true"
             aria-labelledby={titleId}
             tabIndex={-1}
-            className={`${state === 'open' ? 'ean-enter-modal' : 'ean-exit-modal'} relative w-full max-w-4xl bg-linear-to-b from-white via-ean-surface to-ean-surface border border-ean-gold/40 rounded-2xl md:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.5)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col focus:outline-none`}
+            className={`${state === 'open' ? 'ean-enter-modal' : 'ean-exit-modal'} relative w-full max-w-4xl bg-linear-to-b from-white via-ean-surface to-ean-surface border border-ean-gold/40 md: shadow-[0_25px_60px_rgba(0,0,0,0.5)] overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col focus:outline-none`}
           >
             {/* Executive Close Button Header */}
             <div className="sticky top-0 z-30 flex items-center justify-between px-6 py-4.5 bg-linear-to-r from-ean-burgundy via-ean-burgundy-accent to-ean-burgundy-rich border-b border-ean-gold/30 shadow-md">
@@ -90,7 +90,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/20 transition-all cursor-pointer"
+                className="p-2 rounded-full text-ean-text-light/80 hover:text-ean-text-light hover:bg-white/20 transition-all cursor-pointer"
                 aria-label="Close bio profile"
               >
                 <X className="w-5 h-5" />
@@ -102,7 +102,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
                 {/* Member Portrait Column */}
                 <div className="md:col-span-4 space-y-4">
-                  <div className="relative aspect-4/5 rounded-xl overflow-hidden border border-ean-gold/30 shadow-lg bg-ean-navy">
+                  <div className="relative aspect-4/5 overflow-hidden border border-ean-gold/30 shadow-lg bg-ean-navy">
                     <Image
                       src={activeMember.image}
                       alt={activeMember.name}
@@ -111,10 +111,10 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                       className="object-cover object-top"
                       quality={80}
                     />
-                    <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-60" />
+                    <div className="absolute inset-0 bg-linear-to-t from-ean-black/40 via-transparent to-transparent opacity-60" />
                   </div>
 
-                  <div className="p-4 bg-white border border-ean-gold/25 rounded-xl shadow-xs space-y-1">
+                  <div className="p-4 bg-white border border-ean-gold/25 shadow-xs space-y-1">
                     <div className="text-[10px] uppercase tracking-widest text-ean-gold font-bold">
                       Department
                     </div>
@@ -130,7 +130,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                     <span className="font-ui text-xs font-bold uppercase tracking-[0.25em] text-ean-gold">
                       {activeMember.departmentLabel}
                     </span>
-                    <h2 id={titleId} className="font-display text-3xl sm:text-4xl font-light text-ean-text-dark mt-1">
+                    <h2 id={titleId} className="font-display text-2xl sm:text-3xl font-light text-ean-text-dark mt-1">
                       {activeMember.name}
                     </h2>
                     <p className="font-ui text-base text-ean-navy font-semibold mt-1">
@@ -140,7 +140,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
 
                   {/* Signature Quote */}
                   {activeMember.quote && (
-                    <div className="p-5 bg-linear-to-r from-ean-gold/15 via-white to-white border-l-4 border-ean-gold rounded-r-xl shadow-xs font-display italic text-sm sm:text-base text-ean-text-dark relative overflow-hidden">
+                    <div className="p-5 bg-linear-to-r from-ean-gold/15 via-white to-white border-l border-ean-gold shadow-xs font-display italic text-sm sm:text-base text-ean-text-dark relative overflow-hidden">
                       <Quote className="w-6 h-6 text-ean-gold/30 absolute top-3 right-3" />
                       &ldquo;{activeMember.quote}&rdquo;
                     </div>
@@ -162,7 +162,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                       {activeMember.credentials.map((cred, cIdx) => (
                         <span
                           key={cIdx}
-                          className="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-800 rounded-full font-ui text-xs font-medium shadow-xs hover:border-ean-gold/60 transition-colors"
+                          className="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-800 rounded-full font-ui text-xs font-medium shadow-xs hover:border-ean-blue/60 transition-colors"
                         >
                           {cred}
                         </span>
@@ -174,7 +174,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                   {activeMember.highlights && activeMember.highlights.length > 0 && (
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
                       {activeMember.highlights.map((h, hIdx) => (
-                        <div key={hIdx} className="bg-linear-to-br from-white to-ean-surface p-4 rounded-xl border border-ean-gold/30 shadow-xs">
+                        <div key={hIdx} className="bg-linear-to-br from-white to-ean-surface p-4 border border-ean-gold/30 shadow-xs">
                           <div className="font-display text-2xl font-bold text-ean-burgundy-accent">{h.value}</div>
                           <div className="font-ui text-[10px] uppercase tracking-wider text-slate-600 font-semibold">{h.label}</div>
                         </div>
@@ -193,13 +193,13 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
               <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                 <button
                   onClick={onClose}
-                  className="px-5 py-2.5 border border-slate-300 text-slate-700 hover:bg-slate-100 rounded-full text-xs font-semibold transition-colors cursor-pointer"
+                  className="px-5 py-2.5 border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition-colors cursor-pointer"
                 >
                   Close
                 </button>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-linear-to-r from-ean-gold via-ean-gold-light to-ean-gold text-ean-navy text-xs font-bold uppercase tracking-wider rounded-full hover:shadow-lg transition-all"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-ean-gold hover:bg-ean-gold-light text-ean-text-dark text-xs font-bold uppercase tracking-wider transition-colors"
                 >
                   <Mail className="w-3.5 h-3.5" />
                   Contact Leadership

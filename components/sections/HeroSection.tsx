@@ -21,9 +21,15 @@ const SLIDE_INTERVAL_MS = 6500;
 
 // Written out as whole class strings, not composed from fragments — Tailwind
 // scans source text, so a class it cannot read literally never reaches the CSS.
+//
+// A single clamp() replaces the five-stop responsive ramp these used to carry.
+// Fraunces runs much larger than the Cormorant it replaced at an identical
+// font-size, so the old ramp topped out far too big; clamp also tracks the
+// viewport continuously instead of jumping at five breakpoints, which is what
+// the prototype does.
 const TITLE_SCALES = {
-  default: 'text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl',
-  compact: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl',
+  default: 'text-[clamp(36px,5.6vw,68px)]',
+  compact: 'text-[clamp(30px,4.4vw,52px)]',
 } as const;
 
 export default function HeroSection() {
@@ -146,12 +152,12 @@ export default function HeroSection() {
         })}
 
         {/* Overlays for high readability — shared across every slide */}
-        <div className="absolute inset-0 z-2 bg-linear-to-r from-black/85 via-black/45 to-transparent" />
-        <div className="absolute inset-0 z-2 bg-linear-to-t from-black/90 via-black/25 to-black/65" />
+        <div className="absolute inset-0 z-2 bg-linear-to-r from-ean-black/85 via-ean-black/45 to-transparent" />
+        <div className="absolute inset-0 z-2 bg-linear-to-t from-ean-black/90 via-ean-black/25 to-ean-black/65" />
       </div>
 
       {/* Main Content (Text Layer) */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 lg:px-12 w-full pt-20 sm:pt-22 md:pt-24 lg:pt-20 pb-12">
+      <div className="relative z-10 max-w-ean mx-auto px-6 md:px-10 lg:px-12 w-full pt-20 sm:pt-22 md:pt-24 lg:pt-20 pb-12">
         {/* Keyed on the slide index so the CSS entrance replays on each change */}
         <div
           key={currentSlide}
@@ -166,7 +172,7 @@ export default function HeroSection() {
           <h1
             className={`ean-rise ean-rise-delay-1 font-display ${
               TITLE_SCALES[slide.titleScale ?? 'default']
-            } text-white font-medium leading-[1.1] mb-4 sm:mb-5`}
+            } text-ean-text-light font-medium leading-[1.1] mb-4 sm:mb-5`}
           >
             {slide.title.split('\n').map((line, i) => (
               <React.Fragment key={i}>
@@ -231,7 +237,7 @@ export default function HeroSection() {
         className="ean-rise ean-rise-delay-4 absolute bottom-10 right-6 md:right-8 z-20 flex flex-col items-center cursor-pointer"
         onClick={() => scrollToHash('#services-section')}
       >
-        <div className="w-8 h-13 rounded-full border border-ean-gold/30 flex items-center justify-center backdrop-blur-sm bg-black/10 hover:border-ean-gold transition-colors duration-300 shadow-[0_0_15px_rgba(196,149,42,0.1)]">
+        <div className="w-8 h-13 rounded-full border border-ean-gold/30 flex items-center justify-center backdrop-blur-sm bg-ean-black/10 hover:border-ean-gold transition-colors duration-300 shadow-[0_0_15px_rgba(169,137,90,0.1)]">
           <svg
             className="w-4 h-4 text-ean-gold animate-bounce"
             fill="none"

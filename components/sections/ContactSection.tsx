@@ -60,19 +60,19 @@ export default function ContactSection() {
           className="object-cover object-center"
         />
         {/* Luxury overlays for text visibility */}
-        <div className="absolute inset-0 bg-black/70" />
-        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/40 to-black/75" />
+        <div className="absolute inset-0 bg-ean-black/70" />
+        <div className="absolute inset-0 bg-linear-to-t from-ean-black/85 via-ean-black/40 to-ean-black/75" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 py-20 text-center w-full">
+      <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 py-20 text-center w-full">
         <SectionReveal>
           <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8 flex flex-col items-center">
             <div className="space-y-3">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
                 Elevate Your Journey
               </span>
-              <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-medium text-white leading-[1.15]">
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-ean-text-light leading-[1.15]">
                 Experience the Pinnacle of Business Aviation
               </h2>
             </div>
@@ -84,7 +84,7 @@ export default function ContactSection() {
 
             <div className="pt-4">
               <Link href="/contact">
-                <GoldButton className="px-10 py-4 shadow-[0_4px_20px_rgba(196,149,42,0.35)] hover:shadow-[0_4px_30px_rgba(196,149,42,0.55)]">
+                <GoldButton className="px-10 py-4 shadow-[0_4px_20px_rgba(169,137,90,0.35)] hover:shadow-[0_4px_30px_rgba(169,137,90,0.55)]">
                   Get in Touch
                 </GoldButton>
               </Link>

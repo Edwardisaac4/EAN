@@ -42,7 +42,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* HEADER CONTROLS BAR */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-ean-border-light flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white p-6 shadow-sm border border-ean-border-light flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="font-display font-bold text-2xl text-ean-navy flex items-center gap-2">
             <FileSpreadsheet className="w-6 h-6 text-ean-gold" />
@@ -55,13 +55,13 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
 
         <div className="flex flex-wrap items-center gap-3 shrink-0">
           {/* AIRPORT LOCATION FILTER */}
-          <div className="flex bg-ean-surface p-1 rounded-lg border border-ean-border-light">
+          <div className="flex bg-ean-surface p-1 border border-ean-border-light">
             <button
               type="button"
               onClick={() => setSelectedLocation('ALL')}
-              className={`px-3 py-1.5 rounded-md text-xs font-ui font-medium transition-colors ${
+              className={`px-3 py-1.5 text-xs font-ui font-medium transition-colors ${
                 selectedLocation === 'ALL'
-                  ? 'bg-ean-navy text-white shadow-sm'
+                  ? 'bg-ean-navy text-ean-text-light shadow-sm'
                   : 'text-ean-muted-dark hover:text-ean-navy'
               }`}
             >
@@ -70,9 +70,9 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
             <button
               type="button"
               onClick={() => setSelectedLocation('LOS')}
-              className={`px-3 py-1.5 rounded-md text-xs font-ui font-medium transition-colors ${
+              className={`px-3 py-1.5 text-xs font-ui font-medium transition-colors ${
                 selectedLocation === 'LOS'
-                  ? 'bg-ean-navy text-white shadow-sm'
+                  ? 'bg-ean-navy text-ean-text-light shadow-sm'
                   : 'text-ean-muted-dark hover:text-ean-navy'
               }`}
             >
@@ -81,9 +81,9 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
             <button
               type="button"
               onClick={() => setSelectedLocation('ABV')}
-              className={`px-3 py-1.5 rounded-md text-xs font-ui font-medium transition-colors ${
+              className={`px-3 py-1.5 text-xs font-ui font-medium transition-colors ${
                 selectedLocation === 'ABV'
-                  ? 'bg-ean-navy text-white shadow-sm'
+                  ? 'bg-ean-navy text-ean-text-light shadow-sm'
                   : 'text-ean-muted-dark hover:text-ean-navy'
               }`}
             >
@@ -95,7 +95,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
           <button
             type="button"
             onClick={handlePrint}
-            className="px-4 py-2 bg-ean-navy border border-white/20 hover:border-ean-gold text-white text-xs font-ui font-semibold rounded-lg flex items-center gap-2 transition-colors shadow-sm"
+            className="px-4 py-2 bg-ean-navy border border-ean-border-dark hover:border-ean-blue hover:text-ean-blue-light text-ean-text-light text-xs font-ui font-semibold flex items-center gap-2 transition-colors shadow-sm"
           >
             <Printer className="w-3.5 h-3.5 text-ean-gold" />
             Print Rate Card
@@ -104,13 +104,13 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
       </div>
 
       {/* SECTION 1: GROUND HANDLING RATES BY MTOW WEIGHT BAND */}
-      <div className="bg-white rounded-xl shadow-sm border border-ean-border-light overflow-hidden">
-        <div className="p-6 bg-ean-navy text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10">
+      <div className="bg-white shadow-sm border border-ean-border-light overflow-hidden">
+        <div className="p-6 bg-ean-navy text-ean-text-light flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-ean-border-dark">
           <div>
             <span className="text-[11px] font-ui uppercase tracking-widest text-ean-gold font-semibold">
               Category 01
             </span>
-            <h3 className="font-display font-bold text-xl text-white mt-0.5">
+            <h3 className="font-display font-bold text-xl text-ean-text-light mt-0.5">
               Ground Handling Base Tariffs (By Aircraft MTOW Weight Class)
             </h3>
           </div>
@@ -184,17 +184,17 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
 
       {/* SECTION 2: STATUTORY PASSENGER & FACILITATION FEES */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-ean-border-light overflow-hidden flex flex-col">
-          <div className="p-5 bg-ean-navy-mid border-b border-white/10 text-white">
+        <div className="bg-white shadow-sm border border-ean-border-light overflow-hidden flex flex-col">
+          <div className="p-5 bg-ean-navy-mid border-b border-ean-border-dark text-ean-text-light">
             <span className="text-[11px] font-ui uppercase tracking-widest text-ean-gold font-semibold">
               Category 02
             </span>
-            <h3 className="font-display font-bold text-lg text-white mt-0.5">
+            <h3 className="font-display font-bold text-lg text-ean-text-light mt-0.5">
               Passenger & Regulatory Facilitation Fees
             </h3>
           </div>
           <div className="p-5 space-y-4 flex-1">
-            <div className="flex items-center justify-between p-3 bg-ean-surface rounded-lg border border-ean-border-light">
+            <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
                 <div className="font-ui font-semibold text-xs text-ean-navy">
                   International Terminal / VIP Terminal Fee
@@ -208,7 +208,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-ean-surface rounded-lg border border-ean-border-light">
+            <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
                 <div className="font-ui font-semibold text-xs text-ean-navy">
                   CIQ Facilitation (Customs, Immigration, Quarantine)
@@ -222,7 +222,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-ean-surface rounded-lg border border-ean-border-light">
+            <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
                 <div className="font-ui font-semibold text-xs text-ean-navy">
                   Passenger Service Charge (International)
@@ -236,7 +236,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-ean-surface rounded-lg border border-ean-border-light">
+            <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
                 <div className="font-ui font-semibold text-xs text-ean-navy">
                   Passenger Service Charge (Domestic)
@@ -252,17 +252,17 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-ean-border-light overflow-hidden flex flex-col">
-          <div className="p-5 bg-ean-navy-mid border-b border-white/10 text-white">
+        <div className="bg-white shadow-sm border border-ean-border-light overflow-hidden flex flex-col">
+          <div className="p-5 bg-ean-navy-mid border-b border-ean-border-dark text-ean-text-light">
             <span className="text-[11px] font-ui uppercase tracking-widest text-ean-gold font-semibold">
               Category 03
             </span>
-            <h3 className="font-display font-bold text-lg text-white mt-0.5">
+            <h3 className="font-display font-bold text-lg text-ean-text-light mt-0.5">
               Lounge Access & Ramp Overnight Parking
             </h3>
           </div>
           <div className="p-5 space-y-4 flex-1">
-            <div className="flex items-center justify-between p-3 bg-ean-surface rounded-lg border border-ean-border-light">
+            <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
                 <div className="font-ui font-semibold text-xs text-ean-navy">
                   Overnight Ramp Parking
@@ -276,7 +276,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-ean-surface rounded-lg border border-ean-border-light">
+            <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
                 <div className="font-ui font-semibold text-xs text-ean-navy">
                   VIP Lounge Access (Domestic Flight Operators)
@@ -290,7 +290,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-ean-surface rounded-lg border border-ean-border-light">
+            <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
                 <div className="font-ui font-semibold text-xs text-ean-navy">
                   Aviation Fuel (Jet A-1)
@@ -299,12 +299,12 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
                   Onsite direct refueling · 15% disbursement fee applies
                 </div>
               </div>
-              <div className="font-mono font-semibold text-xs text-amber-700 bg-amber-50 px-2 py-1 rounded">
+              <div className="font-mono font-semibold text-xs text-amber-700 bg-amber-50 px-2 py-1">
                 Platts-Based Daily Rate
               </div>
             </div>
 
-            <div className="p-3 bg-ean-gold/10 rounded-lg border border-ean-gold/30 text-xs font-ui text-ean-navy flex items-start gap-2">
+            <div className="p-3 bg-ean-gold/10 border border-ean-gold/30 text-xs font-ui text-ean-navy flex items-start gap-2">
               <Sparkles className="w-4 h-4 text-ean-gold shrink-0 mt-0.5" />
               <span>Complimentary high-speed Wi-Fi, executive refreshments, and dedicated CRO ushering included with all handling.</span>
             </div>
@@ -313,13 +313,13 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
       </div>
 
       {/* SECTION 3: AIRSIDE SUPPORT & ADD-ON SERVICES TARIFF */}
-      <div className="bg-white rounded-xl shadow-sm border border-ean-border-light overflow-hidden">
-        <div className="p-6 bg-ean-navy text-white flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10">
+      <div className="bg-white shadow-sm border border-ean-border-light overflow-hidden">
+        <div className="p-6 bg-ean-navy text-ean-text-light flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-ean-border-dark">
           <div>
             <span className="text-[11px] font-ui uppercase tracking-widest text-ean-gold font-semibold">
               Category 04
             </span>
-            <h3 className="font-display font-bold text-xl text-white mt-0.5">
+            <h3 className="font-display font-bold text-xl text-ean-text-light mt-0.5">
               Airside Ground Equipment & Service Rate Card
             </h3>
           </div>
@@ -332,7 +332,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search airside service..."
-              className="w-full pl-9 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 text-xs font-ui focus:outline-none focus:border-ean-gold transition-colors"
+              className="w-full pl-9 pr-4 py-2 bg-white/10 border border-ean-border-dark text-ean-text-light placeholder-white/50 text-xs font-ui focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
             />
           </div>
         </div>
@@ -344,7 +344,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
             return (
               <div
                 key={addon.id}
-                className="bg-white p-4 rounded-xl border border-ean-border-light shadow-xs hover:border-ean-gold/50 transition-all flex flex-col justify-between"
+                className="bg-white p-4 border border-ean-border-light shadow-xs hover:border-ean-blue/50 transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="font-ui font-semibold text-sm text-ean-navy mb-1">
@@ -369,9 +369,9 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
       </div>
 
       {/* FOOTER CTA STRIP — SWITCH TO CALCULATOR */}
-      <div className="bg-linear-to-r from-ean-navy to-ean-navy-mid text-white rounded-xl p-8 shadow-xl border border-ean-gold/30 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="bg-linear-to-r from-ean-navy to-ean-navy-mid text-ean-text-light p-8 shadow-xl border border-ean-gold/30 flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
-          <h3 className="font-display font-bold text-2xl text-white">
+          <h3 className="font-display font-bold text-2xl text-ean-text-light">
             Need an Exact Tailored Quote for Your Flight?
           </h3>
           <p className="font-ui text-ean-muted-light text-sm mt-1 max-w-xl">
@@ -382,7 +382,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
         <button
           type="button"
           onClick={onSwitchToQuote}
-          className="px-6 py-3.5 bg-ean-gold hover:bg-ean-gold-light text-white font-ui font-bold text-sm tracking-wide rounded-lg shadow-lg flex items-center gap-2 shrink-0 transition-colors"
+          className="px-6 py-3.5 bg-ean-gold hover:bg-ean-gold-light text-ean-text-dark font-ui font-bold text-sm tracking-wide shadow-lg flex items-center gap-2 shrink-0 transition-colors"
         >
           <Calculator className="w-4 h-4" />
           Switch to Quote Calculator

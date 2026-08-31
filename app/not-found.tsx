@@ -27,7 +27,7 @@ export default function NotFound() {
     <>
       <Navbar />
 
-      <main className="flex-1 flex flex-col bg-ean-navy text-white">
+      <main className="flex-1 flex flex-col bg-ean-navy text-ean-text-light">
         <section className="relative flex-1 flex items-center py-24 sm:py-32 overflow-hidden">
           {/* Ambient gold light source, consistent with the CTA sections */}
           <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/10 blur-[120px] pointer-events-none" />
@@ -37,7 +37,7 @@ export default function NotFound() {
               <p className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
                 Error 404
               </p>
-              <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-light text-white leading-[1.1]">
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-ean-text-light leading-[1.1]">
                 This route doesn’t exist
               </h1>
               <p className="font-ui text-base sm:text-lg text-ean-muted-light max-w-2xl leading-relaxed">
@@ -51,11 +51,11 @@ export default function NotFound() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="group border border-white/10 hover:border-ean-gold/40 bg-ean-navy-mid/40 hover:bg-ean-navy-mid/70 p-5 rounded-xs transition-all duration-300 flex items-start gap-4"
+                  className="group border border-ean-border-dark hover:border-ean-gold/40 bg-ean-navy-mid/40 hover:bg-ean-navy-mid/70 p-5 transition-all duration-300 flex items-start gap-4"
                 >
                   <Plane className="w-5 h-5 text-ean-gold shrink-0 mt-0.5" />
                   <span className="space-y-1">
-                    <span className="block font-ui text-sm font-semibold text-white group-hover:text-ean-gold transition-colors">
+                    <span className="block font-ui text-sm font-semibold text-ean-text-light group-hover:text-ean-gold transition-colors">
                       {link.label}
                     </span>
                     <span className="block font-ui text-xs text-ean-muted-light leading-relaxed">

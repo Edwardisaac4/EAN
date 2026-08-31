@@ -11,6 +11,25 @@ import { SERVICE_LABELS, PRIORITY_LABELS } from '@/types/database'
 const MARKETING_EMAIL = 'marketing@ean.aero'
 const FROM_EMAIL = 'EAN Aviation Leads <noreply@ean.aero>'
 
+/**
+ * Every value below arrives from an unauthenticated public form and is dropped
+ * straight into an HTML template, so it is escaped here rather than trusted.
+ *
+ * The risk is not the usual one: this email is only ever delivered to the desk,
+ * so there is no visitor to attack. It is that a submitter can put working
+ * markup — a link, a styled block — into an internal email the desk reads as
+ * EAN's own, which is the shape of the impersonated-FBO fraud the security page
+ * already calls out as a known pattern in this region.
+ */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 // ---------------------------------------------------------------------------
 // Send new lead alert to marketing desk
 // ---------------------------------------------------------------------------
@@ -40,7 +59,7 @@ export async function sendNewLeadAlert(lead: LeadRow): Promise<void> {
   const htmlBody = `
     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0a; color: #e5e5e5; border-radius: 12px; overflow: hidden;">
       <!-- Header -->
-      <div style="background: ${isUrgent ? 'linear-gradient(135deg, #dc2626, #991b1b)' : 'linear-gradient(135deg, #c9a84c, #8b6914)'}; padding: 24px 32px;">
+      <div style="background: ${isUrgent ? 'linear-gradient(135deg, #dc2626, #991b1b)' : 'linear-gradient(135deg, #c4a576, #6f5a3c)'}; padding: 24px 32px;">
         <h1 style="margin: 0; font-size: 20px; color: #ffffff; font-weight: 700;">
           ${isUrgent ? '🚨 Urgent Lead Alert' : '📋 New Lead Alert'}
         </h1>
@@ -58,22 +77,22 @@ export async function sendNewLeadAlert(lead: LeadRow): Promise<void> {
           </tr>
           <tr>
             <td style="padding: 8px 0; color: #a3a3a3; font-size: 13px;">Full Name</td>
-            <td style="padding: 8px 0; color: #ffffff; font-size: 14px; font-weight: 600;">${lead.full_name}</td>
+            <td style="padding: 8px 0; color: #ffffff; font-size: 14px; font-weight: 600;">${escapeHtml(lead.full_name)}</td>
           </tr>
           <tr>
             <td style="padding: 8px 0; color: #a3a3a3; font-size: 13px;">Email</td>
-            <td style="padding: 8px 0; color: #c9a84c; font-size: 14px;">
-              <a href="mailto:${lead.email}" style="color: #c9a84c; text-decoration: none;">${lead.email}</a>
+            <td style="padding: 8px 0; color: #c4a576; font-size: 14px;">
+              <a href="mailto:${escapeHtml(lead.email)}" style="color: #c4a576; text-decoration: none;">${escapeHtml(lead.email)}</a>
             </td>
           </tr>
           <tr>
             <td style="padding: 8px 0; color: #a3a3a3; font-size: 13px;">Phone</td>
-            <td style="padding: 8px 0; color: #ffffff; font-size: 14px;">${lead.phone || 'Not provided'}</td>
+            <td style="padding: 8px 0; color: #ffffff; font-size: 14px;">${escapeHtml(lead.phone || 'Not provided')}</td>
           </tr>
           ${lead.company ? `
           <tr>
             <td style="padding: 8px 0; color: #a3a3a3; font-size: 13px;">Company</td>
-            <td style="padding: 8px 0; color: #ffffff; font-size: 14px;">${lead.company}</td>
+            <td style="padding: 8px 0; color: #ffffff; font-size: 14px;">${escapeHtml(lead.company ?? "")}</td>
           </tr>
           ` : ''}
           <tr>
@@ -99,9 +118,9 @@ export async function sendNewLeadAlert(lead: LeadRow): Promise<void> {
         </table>
 
         <!-- Message -->
-        <div style="margin-top: 20px; padding: 16px; background: #171717; border-radius: 8px; border-left: 3px solid #c9a84c;">
+        <div style="margin-top: 20px; padding: 16px; background: #171717; border-radius: 8px; border-left: 3px solid #c4a576;">
           <p style="margin: 0 0 6px; font-size: 12px; color: #a3a3a3; text-transform: uppercase; letter-spacing: 0.5px;">Client Message</p>
-          <p style="margin: 0; font-size: 14px; color: #e5e5e5; line-height: 1.6;">${lead.message}</p>
+          <p style="margin: 0; font-size: 14px; color: #e5e5e5; line-height: 1.6; white-space: pre-line;">${escapeHtml(lead.message)}</p>
         </div>
 
         ${isUrgent ? `

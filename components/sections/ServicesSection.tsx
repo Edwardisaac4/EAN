@@ -88,12 +88,12 @@ export default function ServicesSection() {
     <section
       ref={containerRef}
       id="services-section"
-      className="bg-linear-to-b from-ean-obsidian-raised via-ean-obsidian to-ean-obsidian-elevated text-white py-20 sm:py-24 relative overflow-hidden border-y border-white/10 select-none"
+      className="bg-linear-to-b from-ean-obsidian-raised via-ean-obsidian to-ean-obsidian-elevated text-ean-text-light py-20 sm:py-24 relative overflow-hidden border-y border-ean-border-dark select-none"
     >
       {/* Subtle Ambient Radial Gold Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-180 h-180 rounded-full bg-ean-gold/5 blur-[140px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
+      <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
         {/* Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 sm:mb-16 gap-6">
           <div className="space-y-3 max-w-2xl">
@@ -103,7 +103,7 @@ export default function ServicesSection() {
               </span>
               <span className="inline-block w-8 h-px bg-ean-gold/40" />
             </div>
-            <h2 className="font-display text-4xl sm:text-5xl font-light text-white leading-[1.15]">
+            <h2 className="font-display text-3xl sm:text-4xl font-light text-ean-text-light leading-[1.15]">
               Six Service Lines from One Lagos Base
             </h2>
           </div>
@@ -127,12 +127,12 @@ export default function ServicesSection() {
           {/* Horizontal Service Tabs Bar */}
           <div
             ref={tabsRef}
-            className="relative flex items-center gap-2 overflow-x-auto pb-3 pt-1 scrollbar-none border-b border-white/10"
+            className="relative flex items-center gap-2 overflow-x-auto pb-3 pt-1 scrollbar-none border-b border-ean-border-dark"
           >
             {/* Single gold pill that glides to whichever tab is active */}
             <span
               aria-hidden="true"
-              className={`${isPillAnimated ? 'ean-indicator' : ''} absolute left-0 top-0 bg-ean-gold rounded-xs shadow-lg pointer-events-none`}
+              className={`${isPillAnimated ? 'ean-indicator' : ''} absolute left-0 top-0 bg-ean-gold shadow-lg pointer-events-none`}
               style={{
                 width: pill?.width ?? 0,
                 height: pill?.height ?? 0,
@@ -152,10 +152,10 @@ export default function ServicesSection() {
                     tabRefs.current[idx] = el;
                   }}
                   onClick={() => setActiveTab(idx)}
-                  className={`relative z-10 flex items-center gap-2.5 px-5 py-3 rounded-xs font-ui text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap transition-all duration-300 cursor-pointer ${
+                  className={`relative z-10 flex items-center gap-2.5 px-5 py-3 font-ui text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap transition-all duration-300 cursor-pointer ${
                     isActive
                       ? 'text-ean-obsidian font-semibold'
-                      : 'text-zinc-400 hover:text-white bg-ean-obsidian-elevated/80 border border-white/10 hover:border-white/25'
+                      : 'text-zinc-400 hover:text-ean-blue-light bg-ean-obsidian-elevated/80 border border-ean-border-dark hover:border-ean-blue/50'
                   }`}
                 >
                   <span className="relative z-10 flex items-center gap-2">
@@ -168,7 +168,7 @@ export default function ServicesSection() {
           </div>
 
           {/* Active Service Showcase Spotlight (White Container Box) */}
-          <div className="bg-white border-t-4 border-t-ean-obsidian border-x border-b border-slate-200 rounded-xs overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-12 relative text-slate-900">
+          <div className="bg-white border-t border-t-ean-obsidian border-x border-b border-slate-200 overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-12 relative text-slate-900">
             {/* Keying on the slug replays the CSS enter animation per service */}
             <div
               key={activeService.slug}
@@ -177,11 +177,11 @@ export default function ServicesSection() {
               {/* Left Column: Details & Capabilities */}
               <div className="lg:col-span-7 space-y-6">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="font-mono text-xs font-bold tracking-widest text-ean-obsidian bg-ean-obsidian/5 border border-ean-obsidian/15 px-3 py-1 rounded-xs uppercase">
+                  <span className="font-mono text-xs font-bold tracking-widest text-ean-obsidian bg-ean-obsidian/5 border border-ean-obsidian/15 px-3 py-1 uppercase">
                     {activeService.eyebrow || `0${activeTab + 1} / 0${SERVICES_DATA.length}`}
                   </span>
                   {activeService.stats?.[0] && (
-                    <span className="font-ui text-xs font-medium text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-xs flex items-center gap-1.5">
+                    <span className="font-ui text-xs font-medium text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 flex items-center gap-1.5">
                       <Sparkles size={12} className="text-ean-gold" />
                       <span>{activeService.stats[0]}</span>
                     </span>
@@ -189,7 +189,7 @@ export default function ServicesSection() {
                 </div>
 
                 <div className="space-y-3">
-                  <h3 className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 leading-tight">
+                  <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-light text-slate-900 leading-tight">
                     {activeService.name}
                   </h3>
                   <p className="font-ui text-base sm:text-lg text-slate-600 leading-relaxed">
@@ -238,7 +238,7 @@ export default function ServicesSection() {
 
               {/* Right Column: Visual Showcase */}
               <div className="lg:col-span-5 relative">
-                <div className="relative h-72 sm:h-96 lg:h-112 w-full rounded-xs overflow-hidden border border-slate-200 shadow-xl group">
+                <div className="relative h-72 sm:h-96 lg:h-112 w-full overflow-hidden border border-slate-200 shadow-xl group">
                   <Image
                     src={activeService.image}
                     alt={`${activeService.name} visual`}
@@ -249,15 +249,15 @@ export default function ServicesSection() {
                     loading="lazy"
                   />
                   {/* Soft Shadow Gradient Overlay */}
-                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-ean-black/80 via-ean-black/20 to-transparent" />
 
                   {/* Top Icon Badge - Crisp White Glass */}
-                  <div className="absolute top-4 left-4 p-3.5 bg-white/95 border border-slate-200 text-ean-obsidian rounded-xs shadow-md backdrop-blur-xs">
+                  <div className="absolute top-4 left-4 p-3.5 bg-white/95 border border-slate-200 text-ean-obsidian shadow-md backdrop-blur-xs">
                     <ActiveIcon size={24} />
                   </div>
 
                   {/* Bottom Status Pill - Crisp White Glass */}
-                  <div className="absolute bottom-4 left-4 right-4 bg-white/95 border border-slate-200 backdrop-blur-xs p-3 rounded-xs flex items-center justify-between text-xs font-ui shadow-lg">
+                  <div className="absolute bottom-4 left-4 right-4 bg-white/95 border border-slate-200 backdrop-blur-xs p-3 flex items-center justify-between text-xs font-ui shadow-lg">
                     <span className="text-slate-900 font-semibold truncate">{activeService.name}</span>
                     <span className="flex items-center gap-1.5 text-ean-obsidian shrink-0 font-mono text-[10px] uppercase font-bold tracking-wider">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />

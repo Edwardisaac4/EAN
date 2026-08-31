@@ -16,7 +16,7 @@ export default function AddonsGrid({ addons, onToggleAddon }: AddonsGridProps) {
   const remainingAddons = ADDONS.filter(a => a.id !== 'ciq')
 
   return (
-    <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-ean-border-light space-y-6">
+    <div className="bg-white p-6 md:p-8 shadow-sm border border-ean-border-light space-y-6">
       {/* HEADER SECTION */}
       <div>
         <h2 className="font-ui font-bold text-lg md:text-xl text-ean-burgundy-rich tracking-tight">
@@ -32,14 +32,14 @@ export default function AddonsGrid({ addons, onToggleAddon }: AddonsGridProps) {
         {ciqAddon && (
           <label
             key={ciqAddon.id}
-            className="flex items-center justify-between gap-4 p-1 rounded-lg hover:bg-ean-surface transition-colors cursor-pointer select-none"
+            className="flex items-center justify-between gap-4 p-1 hover:bg-ean-surface transition-colors cursor-pointer select-none"
           >
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
                 checked={Boolean(addons[ciqAddon.id])}
                 onChange={() => onToggleAddon(ciqAddon.id)}
-                className="w-4 h-4 rounded border-ean-border-light text-ean-burgundy-rich focus:ring-ean-burgundy-rich accent-ean-burgundy-rich cursor-pointer"
+                className="w-4 h-4 border-ean-border-light text-ean-burgundy-rich focus:ring-ean-burgundy-rich accent-ean-burgundy-rich cursor-pointer"
               />
               <span className="font-ui text-sm font-medium text-ean-text-dark">
                 {ciqAddon.label}
@@ -60,14 +60,14 @@ export default function AddonsGrid({ addons, onToggleAddon }: AddonsGridProps) {
             return (
               <label
                 key={addon.id}
-                className="flex items-center justify-between gap-4 p-1 rounded-lg hover:bg-ean-surface transition-colors cursor-pointer select-none"
+                className="flex items-center justify-between gap-4 p-1 hover:bg-ean-surface transition-colors cursor-pointer select-none"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <input
                     type="checkbox"
                     checked={isChecked}
                     onChange={() => onToggleAddon(addon.id)}
-                    className="w-4 h-4 rounded border-ean-border-light text-ean-burgundy-rich focus:ring-ean-burgundy-rich accent-ean-burgundy-rich cursor-pointer shrink-0"
+                    className="w-4 h-4 border-ean-border-light text-ean-burgundy-rich focus:ring-ean-burgundy-rich accent-ean-burgundy-rich cursor-pointer shrink-0"
                   />
                   <span className="font-ui text-sm font-medium text-ean-text-dark truncate">
                     {addon.label}

@@ -30,7 +30,7 @@ function Block({ block }: { block: ArticleBlock }) {
   switch (block.type) {
     case 'lead':
       return (
-        <p className="text-xl font-light text-ean-navy leading-relaxed border-l-2 border-ean-gold pl-6 italic">
+        <p className="text-xl font-light text-ean-navy leading-relaxed border-l border-ean-gold pl-6 italic">
           {block.text}
         </p>
       );
@@ -39,7 +39,7 @@ function Block({ block }: { block: ArticleBlock }) {
       // Rendered as real h2/h3 so the document outline is navigable by assistive
       // technology and legible to a crawler, not just visually distinct.
       return block.level === 2 ? (
-        <h2 className="font-display text-2xl sm:text-3xl text-ean-navy font-medium pt-6">
+        <h2 className="font-display text-2xl sm:text-2xl text-ean-navy font-medium pt-6">
           {block.text}
         </h2>
       ) : (
@@ -84,7 +84,7 @@ function Block({ block }: { block: ArticleBlock }) {
 
     case 'callout':
       return (
-        <div className="bg-ean-surface border border-ean-border-light p-6 rounded-xs my-8 space-y-4">
+        <div className="bg-ean-surface border border-ean-border-light p-6 my-8 space-y-4">
           <h3 className="font-ui text-sm font-bold uppercase tracking-wider text-ean-gold">
             {block.title}
           </h3>
@@ -107,9 +107,9 @@ function Block({ block }: { block: ArticleBlock }) {
           {block.items.map((item, idx) => (
             <div
               key={idx}
-              className="bg-ean-surface border border-ean-border-light rounded-xs p-6 space-y-2"
+              className="bg-ean-surface border border-ean-border-light p-6 space-y-2"
             >
-              <div className="font-display text-3xl sm:text-4xl font-light text-ean-gold tracking-tight">
+              <div className="font-display text-2xl sm:text-3xl font-light text-ean-gold tracking-tight">
                 {item.value}
               </div>
               <p className="font-ui text-xs text-ean-muted-dark leading-relaxed">{item.label}</p>
@@ -126,7 +126,7 @@ function Block({ block }: { block: ArticleBlock }) {
             three-column comparison table cannot fit a phone viewport, and without
             it the table would force the whole page to scroll sideways.
           */}
-          <div className="overflow-x-auto border border-ean-border-light rounded-xs">
+          <div className="overflow-x-auto border border-ean-border-light">
             <table className="w-full min-w-[36rem] border-collapse text-left">
               <thead>
                 <tr className="bg-ean-surface">
@@ -189,7 +189,7 @@ function Block({ block }: { block: ArticleBlock }) {
             height={block.height}
             sizes="(max-width: 896px) 100vw, 896px"
             quality={80}
-            className="w-full h-auto rounded-xs border border-ean-border-light bg-black/5"
+            className="w-full h-auto border border-ean-border-light bg-ean-black/5"
           />
           {block.caption && (
             <figcaption className="font-ui text-xs text-ean-muted-dark italic">
@@ -201,7 +201,7 @@ function Block({ block }: { block: ArticleBlock }) {
 
     case 'cta':
       return (
-        <div className="bg-ean-navy text-white p-8 rounded-xs my-8 relative overflow-hidden">
+        <div className="bg-ean-navy text-ean-text-light p-8 my-8 relative overflow-hidden">
           <div className="absolute -bottom-24 -right-24 w-48 h-48 rounded-full bg-ean-gold/10 blur-[80px] pointer-events-none" />
           <p className="relative z-10 font-ui text-base sm:text-lg leading-relaxed text-ean-muted-light">
             {block.text}

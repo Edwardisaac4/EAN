@@ -104,7 +104,7 @@ export default function PricingSection(): React.JSX.Element {
   return (
     <section
       id="pricing-section"
-      className="bg-ean-navy text-white py-20 sm:py-28 relative overflow-hidden border-b border-ean-gold/20"
+      className="bg-ean-navy text-ean-text-light py-20 sm:py-28 relative overflow-hidden border-b border-ean-gold/20"
     >
       {/* Background Accent Elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-ean-gold/5 rounded-full blur-3xl pointer-events-none" />
@@ -120,7 +120,7 @@ export default function PricingSection(): React.JSX.Element {
         }}
       />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
+      <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
         {/* Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8">
           <div className="space-y-4 max-w-3xl">
@@ -129,7 +129,7 @@ export default function PricingSection(): React.JSX.Element {
               <span>Transparent FBO Tariffs & Quoting</span>
             </div>
 
-            <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-normal text-white leading-[1.12]">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-normal text-ean-text-light leading-[1.12]">
               Instant FBO Ground Handling & Tariff Calculator
             </h2>
 
@@ -150,7 +150,7 @@ export default function PricingSection(): React.JSX.Element {
         </div>
 
         {/* INTERACTIVE PRICING ESTIMATOR BOARD */}
-        <div className="bg-ean-navy-mid/90 rounded-2xl border border-ean-gold/30 p-6 sm:p-8 lg:p-10 shadow-2xl backdrop-blur-md grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div className="bg-ean-navy-mid/90 border border-ean-gold/30 p-6 sm:p-8 lg:p-10 shadow-2xl backdrop-blur-md grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
           {/* LEFT CONFIGURATION PANEL (7 Columns) */}
           <div className="lg:col-span-7 space-y-8">
@@ -163,13 +163,13 @@ export default function PricingSection(): React.JSX.Element {
                 <button
                   type="button"
                   onClick={() => setSelectedLocation('LOS')}
-                  className={`p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer flex items-center justify-between ${selectedLocation === 'LOS'
-                      ? 'bg-ean-gold/15 border-ean-gold text-white shadow-md'
-                      : 'bg-ean-navy/60 border-white/10 text-ean-muted-light hover:border-white/20 hover:text-white'
+                  className={`p-4 border text-left transition-all duration-200 cursor-pointer flex items-center justify-between ${selectedLocation === 'LOS'
+                      ? 'bg-ean-gold/15 border-ean-gold text-ean-text-light shadow-md'
+                      : 'bg-ean-navy/60 border-ean-border-dark text-ean-muted-light hover:border-ean-border-dark hover:text-ean-text-light'
                     }`}
                 >
                   <div>
-                    <div className="font-display font-semibold text-lg text-white">Lagos (LOS / DNMM)</div>
+                    <div className="font-display font-semibold text-lg text-ean-text-light">Lagos (LOS / DNMM)</div>
                     <div className="font-ui text-xs text-ean-muted-light mt-0.5">EAN Private Hangar & VIP Terminal</div>
                   </div>
                   {selectedLocation === 'LOS' && <BadgeCheck className="w-5 h-5 text-ean-gold shrink-0" />}
@@ -178,13 +178,13 @@ export default function PricingSection(): React.JSX.Element {
                 <button
                   type="button"
                   onClick={() => setSelectedLocation('ABV')}
-                  className={`p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer flex items-center justify-between ${selectedLocation === 'ABV'
-                      ? 'bg-ean-gold/15 border-ean-gold text-white shadow-md'
-                      : 'bg-ean-navy/60 border-white/10 text-ean-muted-light hover:border-white/20 hover:text-white'
+                  className={`p-4 border text-left transition-all duration-200 cursor-pointer flex items-center justify-between ${selectedLocation === 'ABV'
+                      ? 'bg-ean-gold/15 border-ean-gold text-ean-text-light shadow-md'
+                      : 'bg-ean-navy/60 border-ean-border-dark text-ean-muted-light hover:border-ean-border-dark hover:text-ean-text-light'
                     }`}
                 >
                   <div>
-                    <div className="font-display font-semibold text-lg text-white">Abuja (ABV / DNAA)</div>
+                    <div className="font-display font-semibold text-lg text-ean-text-light">Abuja (ABV / DNAA)</div>
                     <div className="font-ui text-xs text-ean-muted-light mt-0.5">Nnamdi Azikiwe Int. Airport</div>
                   </div>
                   {selectedLocation === 'ABV' && <BadgeCheck className="w-5 h-5 text-ean-gold shrink-0" />}
@@ -199,7 +199,7 @@ export default function PricingSection(): React.JSX.Element {
                   2. Aircraft Weight Category (MTOW)
                 </label>
                 <span className="font-ui text-xs text-ean-muted-light">
-                  MTOW Range: <span className="text-white font-medium">{selectedBand.mtowRange}</span>
+                  MTOW Range: <span className="text-ean-text-light font-medium">{selectedBand.mtowRange}</span>
                 </span>
               </div>
 
@@ -212,9 +212,9 @@ export default function PricingSection(): React.JSX.Element {
                       key={band.id}
                       type="button"
                       onClick={() => setSelectedBand(band)}
-                      className={`py-3 px-2 rounded-lg text-center font-ui transition-all duration-200 cursor-pointer ${isSelected
+                      className={`py-3 px-2 text-center font-ui transition-all duration-200 cursor-pointer ${isSelected
                           ? 'bg-ean-gold text-ean-navy font-bold shadow-lg scale-102'
-                          : 'bg-ean-navy/80 border border-white/10 text-ean-muted-light hover:border-ean-gold/40 hover:text-white'
+                          : 'bg-ean-navy/80 border border-ean-border-dark text-ean-muted-light hover:border-ean-gold/40 hover:text-ean-text-light'
                         }`}
                     >
                       <div className="text-xs font-semibold">{band.id}</div>
@@ -227,11 +227,11 @@ export default function PricingSection(): React.JSX.Element {
               </div>
 
               {/* Selected Aircraft Category Info Banner */}
-              <div className="p-3.5 rounded-lg bg-ean-navy/80 border border-white/10 flex items-center justify-between text-xs font-ui">
+              <div className="p-3.5 bg-ean-navy/80 border border-ean-border-dark flex items-center justify-between text-xs font-ui">
                 <div className="flex items-center gap-2.5">
                   <Plane className="w-4 h-4 text-ean-gold" />
                   <span className="text-ean-muted-light">
-                    Example Type: <strong className="text-white">{selectedBand.sampleAircraft}</strong>
+                    Example Type: <strong className="text-ean-text-light">{selectedBand.sampleAircraft}</strong>
                   </span>
                 </div>
                 <span className="text-ean-gold font-mono font-semibold">${selectedBand.baseHandlingUsd.toLocaleString()} Base</span>
@@ -244,13 +244,13 @@ export default function PricingSection(): React.JSX.Element {
                 <label className="block font-ui text-xs font-semibold uppercase tracking-wider text-ean-gold">
                   3. Flight Operation
                 </label>
-                <div className="grid grid-cols-2 gap-2 bg-ean-navy p-1 rounded-lg border border-white/10">
+                <div className="grid grid-cols-2 gap-2 bg-ean-navy p-1 border border-ean-border-dark">
                   <button
                     type="button"
                     onClick={() => setSelectedOperation('international')}
-                    className={`py-2 px-3 rounded-md font-ui text-xs font-medium transition-all cursor-pointer ${selectedOperation === 'international'
+                    className={`py-2 px-3 font-ui text-xs font-medium transition-all cursor-pointer ${selectedOperation === 'international'
                         ? 'bg-ean-gold text-ean-navy font-semibold'
-                        : 'text-ean-muted-light hover:text-white'
+                        : 'text-ean-muted-light hover:text-ean-text-light'
                       }`}
                   >
                     International
@@ -258,9 +258,9 @@ export default function PricingSection(): React.JSX.Element {
                   <button
                     type="button"
                     onClick={() => setSelectedOperation('domestic')}
-                    className={`py-2 px-3 rounded-md font-ui text-xs font-medium transition-all cursor-pointer ${selectedOperation === 'domestic'
+                    className={`py-2 px-3 font-ui text-xs font-medium transition-all cursor-pointer ${selectedOperation === 'domestic'
                         ? 'bg-ean-gold text-ean-navy font-semibold'
-                        : 'text-ean-muted-light hover:text-white'
+                        : 'text-ean-muted-light hover:text-ean-text-light'
                       }`}
                   >
                     Domestic
@@ -273,9 +273,9 @@ export default function PricingSection(): React.JSX.Element {
                   <label htmlFor={paxId} className="block font-ui text-xs font-semibold uppercase tracking-wider text-ean-gold">
                     4. Passengers
                   </label>
-                  <span className="font-mono text-xs font-semibold text-white">{passengers} Pax</span>
+                  <span className="font-mono text-xs font-semibold text-ean-text-light">{passengers} Pax</span>
                 </div>
-                <div className="flex items-center gap-3 bg-ean-navy px-3 py-1.5 rounded-lg border border-white/10">
+                <div className="flex items-center gap-3 bg-ean-navy px-3 py-1.5 border border-ean-border-dark">
                   <input
                     id={paxId}
                     type="range"
@@ -298,9 +298,9 @@ export default function PricingSection(): React.JSX.Element {
                 <button
                   type="button"
                   onClick={() => setIncludeVipLounge(!includeVipLounge)}
-                  className={`p-3 rounded-lg border text-left transition-all cursor-pointer flex items-center justify-between ${includeVipLounge
-                      ? 'bg-ean-gold/10 border-ean-gold/60 text-white'
-                      : 'bg-ean-navy/60 border-white/10 text-ean-muted-light'
+                  className={`p-3 border text-left transition-all cursor-pointer flex items-center justify-between ${includeVipLounge
+                      ? 'bg-ean-gold/10 border-ean-gold/60 text-ean-text-light'
+                      : 'bg-ean-navy/60 border-ean-border-dark text-ean-muted-light'
                     }`}
                 >
                   <span className="font-ui text-xs font-medium">VIP Terminal Lounge Access</span>
@@ -310,9 +310,9 @@ export default function PricingSection(): React.JSX.Element {
                 <button
                   type="button"
                   onClick={() => setIncludeGpu(!includeGpu)}
-                  className={`p-3 rounded-lg border text-left transition-all cursor-pointer flex items-center justify-between ${includeGpu
-                      ? 'bg-ean-gold/10 border-ean-gold/60 text-white'
-                      : 'bg-ean-navy/60 border-white/10 text-ean-muted-light'
+                  className={`p-3 border text-left transition-all cursor-pointer flex items-center justify-between ${includeGpu
+                      ? 'bg-ean-gold/10 border-ean-gold/60 text-ean-text-light'
+                      : 'bg-ean-navy/60 border-ean-border-dark text-ean-muted-light'
                     }`}
                 >
                   <span className="font-ui text-xs font-medium">GPU 28V Ground Power Unit</span>
@@ -324,44 +324,44 @@ export default function PricingSection(): React.JSX.Element {
           </div>
 
           {/* RIGHT SUMMARY & QUOTE DISPLAY PANEL (5 Columns) */}
-          <div className="lg:col-span-5 bg-ean-navy/90 rounded-xl border border-ean-gold/40 p-6 sm:p-8 space-y-6 relative overflow-hidden flex flex-col justify-between h-full">
+          <div className="lg:col-span-5 bg-ean-navy/90 border border-ean-gold/40 p-6 sm:p-8 space-y-6 relative overflow-hidden flex flex-col justify-between h-full">
 
             {/* Top Badge */}
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <div className="flex items-center justify-between border-b border-ean-border-dark pb-4">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-ean-gold" />
                 <span className="font-ui text-xs font-semibold uppercase tracking-widest text-ean-gold">
                   Instant Rate Estimate
                 </span>
               </div>
-              <span className="text-[10px] font-ui uppercase tracking-wider bg-ean-gold/20 text-ean-gold px-2 py-0.5 rounded font-semibold">
+              <span className="text-[10px] font-ui uppercase tracking-wider bg-ean-gold/20 text-ean-gold px-2 py-0.5 font-semibold">
                 Official Tariff
               </span>
             </div>
 
             {/* Fee Breakdown Stack */}
             <div className="space-y-3 font-ui text-xs">
-              <div className="flex justify-between py-1.5 border-b border-white/5">
+              <div className="flex justify-between py-1.5 border-b border-ean-border-dark">
                 <span className="text-ean-muted-light">Handling Floor ({selectedBand.label}):</span>
-                <span className="font-mono text-white font-medium">${baseHandling.toLocaleString()} USD</span>
+                <span className="font-mono text-ean-text-light font-medium">${baseHandling.toLocaleString()} USD</span>
               </div>
 
-              <div className="flex justify-between py-1.5 border-b border-white/5">
+              <div className="flex justify-between py-1.5 border-b border-ean-border-dark">
                 <span className="text-ean-muted-light">Passenger Facilitation ({passengers} Pax):</span>
-                <span className="font-mono text-white font-medium">${totalPaxFee.toLocaleString()} USD</span>
+                <span className="font-mono text-ean-text-light font-medium">${totalPaxFee.toLocaleString()} USD</span>
               </div>
 
               {includeVipLounge && (
-                <div className="flex justify-between py-1.5 border-b border-white/5">
+                <div className="flex justify-between py-1.5 border-b border-ean-border-dark">
                   <span className="text-ean-muted-light">EAN VIP Lounge Service:</span>
-                  <span className="font-mono text-white font-medium">$250 USD</span>
+                  <span className="font-mono text-ean-text-light font-medium">$250 USD</span>
                 </div>
               )}
 
               {includeGpu && (
-                <div className="flex justify-between py-1.5 border-b border-white/5">
+                <div className="flex justify-between py-1.5 border-b border-ean-border-dark">
                   <span className="text-ean-muted-light">GPU Ground Power Service:</span>
-                  <span className="font-mono text-white font-medium">$180 USD</span>
+                  <span className="font-mono text-ean-text-light font-medium">$180 USD</span>
                 </div>
               )}
 
@@ -372,13 +372,13 @@ export default function PricingSection(): React.JSX.Element {
             </div>
 
             {/* Prominent Estimated Price Box */}
-            <div className="bg-ean-navy p-5 rounded-xl border border-ean-gold/40 text-center space-y-1">
+            <div className="bg-ean-navy p-5 border border-ean-gold/40 text-center space-y-1">
               <div className="text-[11px] font-ui uppercase tracking-widest text-ean-muted-light">
                 Estimated Total FBO Fee
               </div>
-              <div className="font-display text-3xl sm:text-4xl font-bold text-ean-gold tracking-tight">
+              <div className="font-display text-2xl sm:text-3xl font-bold text-ean-gold tracking-tight">
                 ${estimatedTotalUsd.toLocaleString()}{' '}
-                <span className="text-sm font-ui text-white font-normal">USD</span>
+                <span className="text-sm font-ui text-ean-text-light font-normal">USD</span>
               </div>
               <div className="text-xs font-mono text-ean-muted-light">
                 ≈ ₦{estimatedTotalNgn.toLocaleString()} NGN
@@ -395,7 +395,7 @@ export default function PricingSection(): React.JSX.Element {
               </Link>
 
               <Link href="/contact" className="block w-full">
-                <OutlineButton className="w-full justify-center py-3 font-ui text-xs font-medium border-white/20 text-white hover:border-ean-gold hover:text-ean-gold">
+                <OutlineButton className="w-full justify-center py-3 font-ui text-xs font-medium border-ean-border-dark text-ean-text-light hover:border-ean-blue hover:text-ean-blue-light">
                   Contact Dispatch & Flight Operations
                 </OutlineButton>
               </Link>
@@ -413,41 +413,41 @@ export default function PricingSection(): React.JSX.Element {
 
         {/* 4 FEATURE PILLARS BELOW CALCULATOR */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-          <div className="p-6 rounded-xl bg-ean-navy-mid/60 border border-white/10 hover:border-ean-gold/40 transition-colors duration-300 space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-ean-gold/10 border border-ean-gold/30 flex items-center justify-center text-ean-gold">
+          <div className="p-6 bg-ean-navy-mid/60 border border-ean-border-dark hover:border-ean-blue/50 transition-colors duration-300 space-y-3">
+            <div className="w-10 h-10 bg-ean-gold/10 border border-ean-gold/30 flex items-center justify-center text-ean-gold">
               <ShieldCheck size={20} />
             </div>
-            <h3 className="font-display font-semibold text-lg text-white">NCAA Approved Tariffs</h3>
+            <h3 className="font-display font-semibold text-lg text-ean-text-light">NCAA Approved Tariffs</h3>
             <p className="font-ui text-xs text-ean-muted-light leading-relaxed">
               Fully compliant ground handling and landing rates aligned with NCAA regulatory guidelines.
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-ean-navy-mid/60 border border-white/10 hover:border-ean-gold/40 transition-colors duration-300 space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-ean-gold/10 border border-ean-gold/30 flex items-center justify-center text-ean-gold">
+          <div className="p-6 bg-ean-navy-mid/60 border border-ean-border-dark hover:border-ean-blue/50 transition-colors duration-300 space-y-3">
+            <div className="w-10 h-10 bg-ean-gold/10 border border-ean-gold/30 flex items-center justify-center text-ean-gold">
               <Building2 size={20} />
             </div>
-            <h3 className="font-display font-semibold text-lg text-white">Lagos & Abuja Aprons</h3>
+            <h3 className="font-display font-semibold text-lg text-ean-text-light">Lagos & Abuja Aprons</h3>
             <p className="font-ui text-xs text-ean-muted-light leading-relaxed">
               Dedicated handling services at Lagos Murtala Muhammed & Abuja Nnamdi Azikiwe International.
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-ean-navy-mid/60 border border-white/10 hover:border-ean-gold/40 transition-colors duration-300 space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-ean-gold/10 border border-ean-gold/30 flex items-center justify-center text-ean-gold">
+          <div className="p-6 bg-ean-navy-mid/60 border border-ean-border-dark hover:border-ean-blue/50 transition-colors duration-300 space-y-3">
+            <div className="w-10 h-10 bg-ean-gold/10 border border-ean-gold/30 flex items-center justify-center text-ean-gold">
               <Zap size={20} />
             </div>
-            <h3 className="font-display font-semibold text-lg text-white">Custom Executive Add-ons</h3>
+            <h3 className="font-display font-semibold text-lg text-ean-text-light">Custom Executive Add-ons</h3>
             <p className="font-ui text-xs text-ean-muted-light leading-relaxed">
               Select Wings™ in-flight luxury catering, VIP lounge passes, GPU power, and fuel uplift.
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-ean-navy-mid/60 border border-white/10 hover:border-ean-gold/40 transition-colors duration-300 space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-ean-gold/10 border border-ean-gold/30 flex items-center justify-center text-ean-gold">
+          <div className="p-6 bg-ean-navy-mid/60 border border-ean-border-dark hover:border-ean-blue/50 transition-colors duration-300 space-y-3">
+            <div className="w-10 h-10 bg-ean-gold/10 border border-ean-gold/30 flex items-center justify-center text-ean-gold">
               <FileSpreadsheet size={20} />
             </div>
-            <h3 className="font-display font-semibold text-lg text-white">Instant Reference Code</h3>
+            <h3 className="font-display font-semibold text-lg text-ean-text-light">Instant Reference Code</h3>
             <p className="font-ui text-xs text-ean-muted-light leading-relaxed">
               Export generated quotes directly for immediate dispatch reservation and payment processing.
             </p>

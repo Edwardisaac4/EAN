@@ -133,22 +133,43 @@ fetching into a public page without a reason.
 Defined in `app/globals.css` under `@theme`. Always use the token; never a raw
 hex, never an arbitrary colour value.
 
-The palette is **burgundy/black**, not navy. `--color-ean-navy` is a legacy
-name whose value is `#2d0710` — a deep wine. Read the value, not the name.
+The palette is **indigo/gold**, replacing the burgundy/black one in August 2026.
+`--color-ean-navy` is finally an accurate name — it was a legacy misnomer for a
+deep wine (`#2d0710`) for as long as the palette was burgundy.
+
+Every surface is **hue 256.4°, taken from the `ean` wordmark** in
+`public/images/new-logo.png` (`#2a009a`). Each value is the old wine colour's exact
+relative luminance re-hued, so **every text-on-surface contrast ratio on the site
+is unchanged** by the migration. Do not round one of these to a tidier hex; the
+luminance match is what makes the palette contrast-neutral.
 
 ```
-Surfaces  ean-black-pure #070103 · ean-black #140307 · ean-black-accent #1e050b
-          ean-navy #2d0710 · ean-navy-mid #1e050b
-          ean-white #ffffff · ean-surface #fdf6f7
-Burgundy  ean-burgundy · -mid · -deep · -dark · -night · -rich · -accent · -dusk
+Surfaces  ean-black-pure #04010a · ean-black #0a041b · ean-black-accent #100728
+          ean-navy #180a3e · ean-navy-mid #100728
+          ean-white #ffffff · ean-surface #f8f7fd
+Legacy    ean-burgundy · -mid · -deep · -dark · -night · -rich · -accent · -dusk
+          — aliases onto the indigo ramp. Prefer the surfaces above in new code.
 Accent    ean-gold #c4952a · ean-gold-light #d4ab50 · ean-gold-muted
-Text      ean-text-light · ean-text-dark · ean-muted-light · ean-muted-dark
-Borders   ean-border-dark · ean-border-light
+          ean-blue #9174dc · ean-blue-light #a390d5
+          ean-indigo #2a009a — the mark's own colour; logo and light surfaces only
+Text      ean-text-light · ean-text-dark #160939 · ean-muted-light · ean-muted-dark #5f4c94
+Borders   ean-border-dark · ean-border-light #e1dbf1
 Fonts     font-display (Cormorant Garamond) · font-ui (Inter)
 ```
 
 Gold is an accent only — CTAs, badges, underlines, icon strokes. Never a large
-surface fill.
+surface fill. Gold measures 6.68–7.57:1 on every indigo surface, and 4.91 against
+`ean-indigo` — gold and the brand indigo are a genuine pair. But gold on an
+`ean-blue` fill is 1.43:1: never gold text on an indigo tint.
+
+**`ean-indigo` (`#2a009a`) is not usable for text or icons on a dark surface.** At
+lightness 30% it measures 1.36:1 on `ean-navy` — the surfaces are its own hue, so
+it reads as one colour at two lightnesses. Use `ean-blue` for accent work on dark;
+`ean-indigo` is for the logo lockup and light surfaces.
+
+The plan behind the migration, the per-file inventory, and the two decisions still
+open are in `docs/specs/2026-08-31-blue-gold-dark-theme.md`. The site is not yet
+dark-themed — the light sections listed there are unconverted.
 
 `font-display` is for headlines. Body copy, labels and UI text are `font-ui`.
 

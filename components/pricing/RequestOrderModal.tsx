@@ -90,14 +90,14 @@ Status: NEW — route to Operations (ABO One / RPS)`
       role="dialog"
       aria-modal="true"
       aria-labelledby="request-order-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ean-black/70 backdrop-blur-sm animate-in fade-in duration-200"
     >
-      <div className="bg-ean-navy border border-ean-gold/40 rounded-xl shadow-2xl w-full max-w-lg overflow-hidden text-white flex flex-col max-h-[90vh]">
+      <div className="bg-ean-navy border border-ean-gold/40 shadow-2xl w-full max-w-lg overflow-hidden text-ean-text-light flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="px-6 py-4 border-b border-ean-border-dark flex items-center justify-between bg-ean-navy-mid">
           <div className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-ean-gold" />
-            <h3 id="request-order-title" className="font-display font-medium text-lg text-white tracking-wide">
+            <h3 id="request-order-title" className="font-display font-medium text-lg text-ean-text-light tracking-wide">
               EAN Formal Request Order
             </h3>
           </div>
@@ -105,7 +105,7 @@ Status: NEW — route to Operations (ABO One / RPS)`
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className="text-ean-muted-light hover:text-white transition-colors p-1"
+            className="text-ean-muted-light hover:text-ean-text-light transition-colors p-1"
           >
             <X className="w-5 h-5" />
           </button>
@@ -113,7 +113,7 @@ Status: NEW — route to Operations (ABO One / RPS)`
 
         {/* Modal Body */}
         <div className="p-6 overflow-y-auto font-mono text-xs leading-relaxed space-y-4 bg-ean-navy text-ean-text-light">
-          <div className="p-4 bg-black/40 border border-ean-gold/30 rounded-lg whitespace-pre-wrap selection:bg-ean-gold selection:text-black">
+          <div className="p-4 bg-ean-black/40 border border-ean-gold/30 whitespace-pre-wrap selection:bg-ean-gold selection:text-black">
             {orderText}
           </div>
         </div>
@@ -123,7 +123,7 @@ Status: NEW — route to Operations (ABO One / RPS)`
           <button
             type="button"
             onClick={handleCopy}
-            className="flex-1 py-2.5 px-4 bg-ean-navy border border-white/20 hover:border-ean-gold text-white font-ui font-medium text-xs rounded transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 px-4 bg-ean-navy border border-ean-border-dark hover:border-ean-blue hover:text-ean-blue-light text-ean-text-light font-ui font-medium text-xs transition-colors flex items-center justify-center gap-2"
           >
             {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-ean-gold" />}
             {copied ? 'Copied ✓' : 'Copy Order'}
@@ -132,7 +132,7 @@ Status: NEW — route to Operations (ABO One / RPS)`
           <button
             type="button"
             onClick={handleEmailOps}
-            className="flex-1 py-2.5 px-4 bg-ean-gold hover:bg-ean-gold-light text-white font-ui font-semibold text-xs rounded transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 px-4 bg-ean-gold hover:bg-ean-gold-light text-ean-text-dark font-ui font-semibold text-xs transition-colors flex items-center justify-center gap-2"
           >
             <Mail className="w-4 h-4" />
             Send via Email
@@ -141,7 +141,7 @@ Status: NEW — route to Operations (ABO One / RPS)`
           <button
             type="button"
             onClick={onClose}
-            className="py-2.5 px-4 bg-transparent text-ean-muted-light hover:text-white font-ui text-xs rounded transition-colors"
+            className="py-2.5 px-4 bg-transparent text-ean-muted-light hover:text-ean-text-light font-ui text-xs transition-colors"
           >
             Close
           </button>

@@ -291,11 +291,11 @@ export default function ContactPage() {
     <>
       <Navbar />
 
-      <main className="flex-1 flex flex-col bg-ean-navy text-white">
+      <main className="flex-1 flex flex-col bg-ean-navy text-ean-text-light">
         {/* SECTION 1: Contact Hero */}
         <section
           ref={heroRef}
-          className="relative min-h-105 sm:min-h-120 lg:min-h-130 flex items-center pt-36 pb-20 sm:pt-44 sm:pb-28 overflow-hidden bg-ean-obsidian border-b border-white/10"
+          className="relative min-h-105 sm:min-h-120 lg:min-h-130 flex items-center pt-36 pb-20 sm:pt-44 sm:pb-28 overflow-hidden bg-ean-obsidian border-b border-ean-border-dark"
         >
           {/* Parallax Background with Runway Jet */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
@@ -309,12 +309,12 @@ export default function ContactPage() {
               className="object-cover object-center"
             />
             {/* Cinematic Obsidian Black luxury overlays — evenly balanced across the image */}
-            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-ean-black/60" />
             <div className="absolute inset-0 bg-linear-to-b from-ean-obsidian/80 via-transparent to-ean-obsidian/90" />
-            <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
+            <div className="absolute inset-0 bg-radial-at-c from-transparent via-ean-black/20 to-ean-black/60" />
           </div>
 
-          <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 w-full">
+          <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 w-full">
             <div className="max-w-3xl space-y-4 sm:space-y-5 text-left">
               <span
                 ref={heroEyebrowRef}
@@ -324,13 +324,13 @@ export default function ContactPage() {
               </span>
               <h1
                 ref={heroTitleRef}
-                className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white leading-[1.1] tracking-tight"
+                className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-ean-text-light leading-[1.1] tracking-tight"
               >
                 Every inquiry answered by a person.
               </h1>
               <p
                 ref={heroSubtitleRef}
-                className="font-ui text-base sm:text-lg md:text-xl text-white/80 max-w-xl leading-relaxed"
+                className="font-ui text-base sm:text-lg md:text-xl text-ean-text-light/80 max-w-xl leading-relaxed"
               >
                 Our operations desk runs 24 hours a day. For anything time-critical, call or email dispatch directly.
               </p>
@@ -340,7 +340,7 @@ export default function ContactPage() {
 
         {/* SECTION 2: 2-Column Main Contact Block */}
         <section className="bg-ean-white text-ean-text-dark py-20 sm:py-24">
-          <div className="max-w-7xl mx-auto px-6 md:px-8">
+          <div className="max-w-ean mx-auto px-6 md:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
               {/* Left Column: Office & Hangar Info */}
               <div className="lg:col-span-5 space-y-10 lg:sticky lg:top-32">
@@ -348,7 +348,7 @@ export default function ContactPage() {
                   <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
                     Our Location
                   </span>
-                  <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-navy leading-tight">
+                  <h2 className="font-display text-2xl sm:text-3xl font-medium text-ean-navy leading-tight">
                     Murtala Muhammed International Airport
                   </h2>
                   <p className="font-ui text-base text-ean-muted-dark leading-relaxed">
@@ -358,7 +358,7 @@ export default function ContactPage() {
 
                 {/* HQ Detail Card */}
                 <SectionReveal>
-                  <div className="bg-ean-surface border border-ean-border-light/60 p-8 rounded-xs space-y-6 shadow-xs">
+                  <div className="bg-ean-surface border border-ean-border-light/60 p-8 space-y-6 shadow-xs">
                     <h3 className="font-ui text-lg font-bold text-ean-navy border-b border-ean-border-light/60 pb-3">
                       {LAGOS_HQ.title}
                     </h3>
@@ -393,13 +393,13 @@ export default function ContactPage() {
               {/* Right Column: Inquiry Form */}
               <div className="lg:col-span-7">
                 <SectionReveal>
-                  <div className="bg-ean-navy text-white p-8 sm:p-10 rounded-xs shadow-lg border border-white/5 relative overflow-hidden">
+                  <div className="bg-ean-navy text-ean-text-light p-8 sm:p-10 shadow-lg border border-ean-border-dark relative overflow-hidden">
                     {/* Visual Gold glow light source on top corner */}
                     <div className="absolute -top-36 -right-36 w-72 h-72 rounded-full bg-ean-gold/5 blur-3xl pointer-events-none" />
 
                     <div className="relative z-10 space-y-6">
                       <div className="space-y-2">
-                        <h3 className="font-display text-2xl sm:text-3xl font-light text-white">
+                        <h3 className="font-display text-2xl sm:text-2xl font-light text-ean-text-light">
                           Inquiry Concierge
                         </h3>
                         <p className="font-ui text-xs sm:text-sm text-ean-muted-light">
@@ -421,7 +421,7 @@ export default function ContactPage() {
                           {errors.form && (
                             <div
                               role="alert"
-                              className="bg-red-500/10 border border-red-500/40 text-red-300 px-4 py-3 rounded-xs text-xs sm:text-sm"
+                              className="bg-red-500/10 border border-red-500/40 text-red-300 px-4 py-3 text-xs sm:text-sm"
                             >
                               {errors.form}
                             </div>
@@ -439,7 +439,7 @@ export default function ContactPage() {
                               value={formData.name}
                               onChange={handleChange}
                               placeholder="Segun Demuren"
-                              className={`bg-white/5 border px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 ${errors.name ? 'border-red-500' : 'border-white/10'
+                              className={`bg-white/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 ${errors.name ? 'border-red-500' : 'border-ean-border-dark'
                                 }`}
                             />
                             {errors.name && (
@@ -460,7 +460,7 @@ export default function ContactPage() {
                                 value={formData.email}
                                 onChange={handleChange}
                                 placeholder="client@company.com"
-                                className={`bg-white/5 border px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 ${errors.email ? 'border-red-500' : 'border-white/10'
+                                className={`bg-white/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 ${errors.email ? 'border-red-500' : 'border-ean-border-dark'
                                   }`}
                               />
                               {errors.email && (
@@ -479,7 +479,7 @@ export default function ContactPage() {
                                 value={formData.phone}
                                 onChange={handleChange}
                                 placeholder="+234 (0) 800..."
-                                className={`bg-white/5 border px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 ${errors.phone ? 'border-red-500' : 'border-white/10'
+                                className={`bg-white/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 ${errors.phone ? 'border-red-500' : 'border-ean-border-dark'
                                   }`}
                               />
                               {errors.phone && (
@@ -501,14 +501,14 @@ export default function ContactPage() {
                                 value={formData.company}
                                 onChange={handleChange}
                                 placeholder="Corporate Aviation Ltd"
-                                className="bg-white/5 border border-white/10 px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300"
+                                className="bg-white/5 border border-ean-border-dark px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300"
                               />
                             </div>
 
                             <div className="flex flex-col gap-2 pt-2">
                               <label className="text-xs uppercase tracking-wider text-ean-muted-light font-medium flex items-center justify-between">
                                 <span>Services Required (Select all that apply)</span>
-                                <span className="text-[10px] text-ean-gold font-normal">Tick boxes</span>
+                                <span className="text-[10px] text-ean-blue-light font-normal">Tick boxes</span>
                               </label>
 
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
@@ -521,9 +521,9 @@ export default function ContactPage() {
                                       // The checkbox itself is sr-only, so keyboard focus has
                                       // nothing visible to land on. `has-focus-visible`
                                       // moves the focus ring onto the label it belongs to.
-                                      className={`flex items-center gap-3 p-3 rounded-xs border cursor-pointer transition-all duration-200 has-focus-visible:ring-2 has-focus-visible:ring-ean-gold has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-ean-navy ${isChecked
-                                        ? 'bg-ean-gold/15 border-ean-gold text-white shadow-[0_0_12px_rgba(196,149,42,0.2)]'
-                                        : 'bg-white/5 border-white/10 text-ean-muted-light hover:border-white/25 hover:text-white'
+                                      className={`flex items-center gap-3 p-3 border cursor-pointer transition-all duration-200 has-focus-visible:ring-2 has-focus-visible:ring-ean-blue has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-ean-navy ${isChecked
+                                        ? 'bg-ean-blue-muted/30 border-ean-blue text-ean-text-light shadow-[0_0_12px_rgba(145,116,220,0.2)]'
+                                        : 'bg-white/5 border-ean-border-dark text-ean-muted-light hover:border-ean-blue/50 hover:text-ean-text-light'
                                         }`}
                                     >
                                       <input
@@ -536,9 +536,9 @@ export default function ContactPage() {
                                         className="sr-only"
                                       />
                                       <div
-                                        className={`w-4 h-4 rounded-xs border flex items-center justify-center transition-all ${isChecked
-                                          ? 'bg-ean-gold border-ean-gold text-ean-black'
-                                          : 'border-white/30 bg-black/20'
+                                        className={`w-4 h-4 border flex items-center justify-center transition-all ${isChecked
+                                          ? 'bg-ean-blue border-ean-blue text-ean-black'
+                                          : 'border-ean-border-dark bg-ean-black/20'
                                           }`}
                                       >
                                         {isChecked && <CheckCircle className="w-3.5 h-3.5 stroke-3" />}
@@ -563,7 +563,7 @@ export default function ContactPage() {
                               value={formData.message}
                               onChange={handleChange}
                               placeholder="Describe your flight routing, date, passenger size, or hangar support requirements..."
-                              className={`bg-white/5 border px-4 py-3 text-sm rounded-xs placeholder:text-white/20 focus:outline-none focus:border-ean-gold focus:ring-1 focus:ring-ean-gold/30 transition-colors duration-300 resize-none ${errors.message ? 'border-red-500' : 'border-white/10'
+                              className={`bg-white/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 resize-none ${errors.message ? 'border-red-500' : 'border-ean-border-dark'
                                 }`}
                             />
                             {errors.message && (
@@ -580,7 +580,7 @@ export default function ContactPage() {
                             >
                               {isSubmitting ? (
                                 <>
-                                  <span className="w-4 h-4 border-2 border-ean-navy border-t-transparent rounded-full animate-spin" />
+                                  <span className="w-4 h-4 border border-ean-navy border-t-transparent rounded-full animate-spin" />
                                   <span>Processing Inquiry...</span>
                                 </>
                               ) : (
@@ -595,12 +595,12 @@ export default function ContactPage() {
                       ) : (
                         <div
                           key="success-message"
-                          className="ean-enter-scale bg-ean-gold/10 border border-ean-gold/20 p-8 rounded-xs text-center flex flex-col items-center gap-4 py-16"
+                          className="ean-enter-scale bg-ean-gold/10 border border-ean-gold/20 p-8 text-center flex flex-col items-center gap-4 py-16"
                         >
                           <div className="w-16 h-16 rounded-full bg-ean-gold/20 flex items-center justify-center text-ean-gold mb-2 border border-ean-gold/30">
                             <CheckCircle className="w-8 h-8" />
                           </div>
-                          <h4 className="font-display text-2xl font-light text-white">
+                          <h4 className="font-display text-2xl font-light text-ean-text-light">
                             Thank You
                           </h4>
                           <p className="font-ui text-sm text-ean-muted-light leading-relaxed max-w-sm">
@@ -624,12 +624,12 @@ export default function ContactPage() {
 
         {/* SECTION 3: FAQ Accordion */}
         <section className="bg-ean-surface text-ean-text-dark py-20 sm:py-24 border-t border-ean-border-light/60">
-          <div className="max-w-7xl mx-auto px-6 md:px-8">
+          <div className="max-w-ean mx-auto px-6 md:px-8">
             <SectionReveal className="text-center max-w-2xl mx-auto mb-16 space-y-4">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
                 Information
               </span>
-              <h2 className="font-display text-4xl sm:text-5xl font-medium text-ean-navy leading-tight">
+              <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-navy leading-tight">
                 Frequently Asked Questions
               </h2>
               <p className="font-ui text-base text-ean-muted-dark leading-relaxed">
@@ -643,7 +643,7 @@ export default function ContactPage() {
                 const isOpen = openFAQIndex === idx;
                 return (
                   <SectionReveal key={idx}>
-                    <div className="bg-ean-white border border-ean-border-light/60 rounded-xs overflow-hidden shadow-xs hover:border-ean-gold/30 transition-all duration-300">
+                    <div className="bg-ean-white border border-ean-border-light/60 overflow-hidden shadow-xs hover:border-ean-gold/30 transition-all duration-300">
                       <button
                         id={`faq-trigger-${idx}`}
                         aria-expanded={isOpen}
@@ -706,11 +706,11 @@ export default function ContactPage() {
           <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-ean-navy/40 to-transparent" />
 
           {/* Subtle location card */}
-          <div className="relative z-10 max-w-md bg-ean-navy/90 backdrop-blur-md border border-white/10 p-8 rounded-xs text-center space-y-4 shadow-2xl mx-4 sm:mx-auto">
+          <div className="relative z-10 max-w-md bg-ean-navy/90 backdrop-blur-md border border-ean-border-dark p-8 text-center space-y-4 shadow-2xl mx-4 sm:mx-auto">
             <span className="font-ui text-[10px] uppercase tracking-widest text-ean-gold font-bold">
               Coordinates & Access
             </span>
-            <h3 className="font-display text-xl sm:text-2xl font-light text-white leading-tight">
+            <h3 className="font-display text-xl sm:text-2xl font-light text-ean-text-light leading-tight">
               Direct Airside Support
             </h3>
             <p className="font-ui text-xs sm:text-sm text-ean-muted-light leading-relaxed">

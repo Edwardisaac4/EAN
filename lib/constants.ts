@@ -259,11 +259,11 @@ export const HERO_SLIDES: HeroSlide[] = [
     image: "/images/charter-cabin.jpg",
     primaryCta: {
       text: "Request a Charter",
-      // /charter has no page. The contact form reads ?service= and preselects
-      // the matching checkbox, so this lands on a charter-scoped inquiry.
-      // "Request" over "Book" because that destination is an inquiry form, not
-      // a booking engine — the label has to match what the click actually does.
-      href: "/contact?service=charter",
+      // /charter now exists and takes the route, date and passenger count the
+      // desk cannot quote without — none of which the contact form asks for.
+      // "Request" over "Book" because the destination is still an inquiry form,
+      // not a booking engine: the label has to match what the click does.
+      href: "/charter",
     },
     secondaryCta: {
       text: "Our Services",

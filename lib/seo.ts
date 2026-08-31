@@ -142,6 +142,13 @@ export const PAGE_SEO = {
     path: "/services",
     image: "/images/vip-lounge.jpg",
   },
+  charter: {
+    title: "Request a Charter | Private Jet & Helicopter Charter — EAN Aviation",
+    description:
+      "Request an on-demand jet or helicopter charter from Lagos MMIA. Give our charter desk the route, date and passenger count and receive aircraft options with an all-in price.",
+    path: "/charter",
+    image: "/images/charter-cabin.jpg",
+  },
   pricing: {
     title: "FBO Pricing & Instant Quote Calculator | EAN Aviation Lagos",
     description:
@@ -206,7 +213,7 @@ export function organizationSchema(): JsonLd {
     url: SITE_URL,
     logo: {
       "@type": "ImageObject",
-      url: `${SITE_URL}/images/EAN-Logo.png`,
+      url: `${SITE_URL}/images/new-logo.png`,
     },
     description: SITE_TAGLINE,
     foundingDate: "2011",

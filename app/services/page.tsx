@@ -116,24 +116,24 @@ export default function ServicesPage() {
         {/* SECTION 1: Cinematic Header */}
         <section
           ref={heroRef}
-          className="relative pt-32 pb-20 bg-ean-obsidian border-b border-ean-border-dark overflow-hidden text-white"
+          className="relative pt-32 pb-20 bg-ean-obsidian border-b border-ean-border-dark overflow-hidden text-ean-text-light"
         >
           {/* Ambient Glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-175 h-175 rounded-full bg-ean-gold/5 blur-[130px] pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 text-center space-y-4">
+          <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center space-y-4">
             <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
               What We Do
             </span>
             <h1
               ref={titleRef}
-              className="font-display text-4xl sm:text-5xl md:text-6xl font-light text-white leading-tight"
+              className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-ean-text-light leading-tight"
             >
               Six Aviation Service Lines at Lagos MMIA
             </h1>
             <p
               ref={subtitleRef}
-              className="font-ui text-base sm:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed"
+              className="font-ui text-base sm:text-lg text-ean-text-light/80 max-w-2xl mx-auto leading-relaxed"
             >
               From direct airport tarmac handling and certified engineering to exclusive distributor operations, EAN Aviation delivers precision at every flight level.
             </p>
@@ -145,12 +145,12 @@ export default function ServicesPage() {
           {/* Subtle Ambient Radial Glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 rounded-full bg-ean-gold/10 blur-[120px] pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
+          <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
             <SectionReveal className="text-center max-w-3xl mx-auto mb-16 sm:mb-20 space-y-4">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
                 Service Lines
               </span>
-              <h2 className="font-display text-4xl sm:text-5xl font-light text-ean-navy leading-tight">
+              <h2 className="font-display text-3xl sm:text-4xl font-light text-ean-navy leading-tight">
                 Our Services at a Glance
               </h2>
               <p className="font-ui text-base sm:text-lg text-ean-muted-dark leading-relaxed">
@@ -171,8 +171,8 @@ export default function ServicesPage() {
                   <SectionReveal key={srv.slug} id={srv.slug} className={`h-full scroll-mt-28 ${config.gridClass}`}>
                     {config.cardType === 'wide' && (
                       <div
-                        className={`relative bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-white/10 hover:border-ean-gold/60 rounded-xs flex flex-col ${isImageRight ? 'lg:flex-row-reverse' : 'lg:flex-row'
-                          } h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-black/50 overflow-hidden`}
+                        className={`relative bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-ean-border-dark hover:border-ean-gold/60 flex flex-col ${isImageRight ? 'lg:flex-row-reverse' : 'lg:flex-row'
+                          } h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-ean-black/50 overflow-hidden`}
                       >
                         {/* Image Section */}
                         <div className="relative h-52 sm:h-60 lg:h-auto lg:w-1/2 overflow-hidden shrink-0 min-h-55">
@@ -196,31 +196,31 @@ export default function ServicesPage() {
                         <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between space-y-6 lg:w-1/2 relative z-10">
                           {/* Header row: Icon & Number Badge */}
                           <div className="flex items-center justify-between">
-                            <div className="p-3 bg-ean-obsidian/90 border border-white/20 text-ean-gold rounded-xs shadow-md transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold group-hover:bg-ean-gold/10">
+                            <div className="p-3 bg-ean-obsidian/90 border border-ean-border-dark text-ean-gold shadow-md transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold group-hover:bg-ean-gold/10">
                               <Icon className="w-5 h-5" />
                             </div>
-                            <span className="font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-obsidian/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
+                            <span className="font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-obsidian/90 border border-ean-border-dark px-3 py-1 uppercase backdrop-blur-xs">
                               0{idx + 1}
                             </span>
                           </div>
 
                           <div className="space-y-3">
                             {srv.stats?.[0] && (
-                              <div className="inline-flex items-center gap-1.5 font-ui text-[11px] font-medium text-ean-gold bg-ean-gold/10 border border-ean-gold/25 px-2.5 py-0.5 rounded-xs">
+                              <div className="inline-flex items-center gap-1.5 font-ui text-[11px] font-medium text-ean-gold bg-ean-gold/10 border border-ean-gold/25 px-2.5 py-0.5">
                                 <Sparkles size={12} className="shrink-0" />
                                 <span>{srv.stats[0]}</span>
                               </div>
                             )}
                             <Link href={`/services/${srv.slug}`} className="block">
-                              <h3 className="font-display text-2xl sm:text-3xl font-light text-white hover:text-ean-gold transition-colors duration-300 tracking-wide">
+                              <h3 className="font-display text-2xl sm:text-2xl font-light text-ean-text-light hover:text-ean-gold transition-colors duration-300 tracking-wide">
                                 {srv.name}
                               </h3>
                             </Link>
-                            <p className="font-ui text-sm text-white/70 leading-relaxed">
+                            <p className="font-ui text-sm text-ean-text-light/70 leading-relaxed">
                               {srv.extendedDescription || srv.short}
                             </p>
 
-                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 border-t border-white/10 pt-4 font-ui text-xs text-white/70">
+                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 border-t border-ean-border-dark pt-4 font-ui text-xs text-ean-text-light/70">
                               {srv.features.map((feat, fIdx) => (
                                 <li key={fIdx} className="flex gap-2 items-center">
                                   <CheckCircle2 className="w-3.5 h-3.5 text-ean-gold shrink-0" />
@@ -230,10 +230,10 @@ export default function ServicesPage() {
                             </ul>
                           </div>
 
-                          <div className="pt-4 border-t border-white/10 flex justify-between items-center">
+                          <div className="pt-4 border-t border-ean-border-dark flex justify-between items-center">
                             <Link
                               href={`/services/${srv.slug}`}
-                              className="text-xs font-semibold uppercase tracking-wider text-white/70 hover:text-white transition-colors"
+                              className="text-xs font-semibold uppercase tracking-wider text-ean-text-light/70 hover:text-ean-text-light transition-colors"
                             >
                               <span>View Details</span>
                             </Link>
@@ -251,7 +251,7 @@ export default function ServicesPage() {
 
                     {config.cardType === 'tall' && (
                       <div
-                        className="relative bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-white/10 hover:border-ean-gold/60 rounded-xs flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-black/50 overflow-hidden min-h-125 lg:min-h-full"
+                        className="relative bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-ean-border-dark hover:border-ean-gold/60 flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-ean-black/50 overflow-hidden min-h-125 lg:min-h-full"
                       >
                         {/* Background Image */}
                         <div className="absolute inset-0 w-full h-full overflow-hidden">
@@ -269,10 +269,10 @@ export default function ServicesPage() {
                         {/* Card Content */}
                         <div className="relative z-10 p-6 sm:p-8 flex-1 flex flex-col justify-between h-full space-y-8">
                           <div className="flex justify-between items-center">
-                            <div className="p-3 bg-ean-obsidian/90 border border-white/20 text-ean-gold rounded-xs shadow-md backdrop-blur-xs transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold">
+                            <div className="p-3 bg-ean-obsidian/90 border border-ean-border-dark text-ean-gold shadow-md backdrop-blur-xs transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold">
                               <Icon className="w-5 h-5" />
                             </div>
-                            <span className="font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-obsidian/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
+                            <span className="font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-obsidian/90 border border-ean-border-dark px-3 py-1 uppercase backdrop-blur-xs">
                               0{idx + 1}
                             </span>
                           </div>
@@ -283,16 +283,16 @@ export default function ServicesPage() {
                                 Featured Acquisition & Charter
                               </span>
                               <Link href={`/services/${srv.slug}`} className="block">
-                                <h3 className="font-display text-2xl sm:text-3xl font-light text-white hover:text-ean-gold transition-colors duration-300 tracking-wide leading-tight">
+                                <h3 className="font-display text-2xl sm:text-2xl font-light text-ean-text-light hover:text-ean-gold transition-colors duration-300 tracking-wide leading-tight">
                                   {srv.name}
                                 </h3>
                               </Link>
                             </div>
-                            <p className="font-ui text-sm text-white/70 leading-relaxed">
+                            <p className="font-ui text-sm text-ean-text-light/70 leading-relaxed">
                               {srv.extendedDescription || srv.short}
                             </p>
 
-                            <ul className="space-y-2.5 border-t border-white/10 pt-4 font-ui text-xs text-white/70">
+                            <ul className="space-y-2.5 border-t border-ean-border-dark pt-4 font-ui text-xs text-ean-text-light/70">
                               {srv.features.map((feat, fIdx) => (
                                 <li key={fIdx} className="flex gap-2.5 items-center">
                                   <CheckCircle2 className="w-3.5 h-3.5 text-ean-gold shrink-0" />
@@ -302,10 +302,10 @@ export default function ServicesPage() {
                             </ul>
                           </div>
 
-                          <div className="pt-4 border-t border-white/10 flex justify-between items-center">
+                          <div className="pt-4 border-t border-ean-border-dark flex justify-between items-center">
                             <Link
                               href={`/services/${srv.slug}`}
-                              className="text-xs font-semibold uppercase tracking-wider text-white/70 hover:text-white transition-colors"
+                              className="text-xs font-semibold uppercase tracking-wider text-ean-text-light/70 hover:text-ean-text-light transition-colors"
                             >
                               <span>View Details</span>
                             </Link>
@@ -323,7 +323,7 @@ export default function ServicesPage() {
 
                     {config.cardType === 'square' && (
                       <div
-                        className="bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-white/10 hover:border-ean-gold/60 rounded-xs flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-black/50 overflow-hidden"
+                        className="bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-ean-border-dark hover:border-ean-gold/60 flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-ean-black/50 overflow-hidden"
                       >
                         {/* Card Image */}
                         <div className="relative h-48 w-full overflow-hidden shrink-0">
@@ -336,7 +336,7 @@ export default function ServicesPage() {
                             quality={80}
                           />
                           <div className="absolute inset-0 bg-linear-to-t from-ean-obsidian via-ean-obsidian/40 to-transparent" />
-                          <div className="absolute top-4 right-4 font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-obsidian/90 border border-white/20 px-3 py-1 rounded-xs uppercase backdrop-blur-xs">
+                          <div className="absolute top-4 right-4 font-mono text-xs font-bold tracking-widest text-ean-gold bg-ean-obsidian/90 border border-ean-border-dark px-3 py-1 uppercase backdrop-blur-xs">
                             0{idx + 1}
                           </div>
                         </div>
@@ -344,21 +344,21 @@ export default function ServicesPage() {
                         {/* Card Body */}
                         <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between space-y-6 relative">
                           {/* Floating Icon Container */}
-                          <div className="absolute -top-5 left-6 p-3 bg-black/85 border border-white/20 text-ean-gold rounded-xs shadow-md z-10 transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold group-hover:bg-ean-gold/10">
+                          <div className="absolute -top-5 left-6 p-3 bg-ean-black/85 border border-ean-border-dark text-ean-gold shadow-md z-10 transition-all duration-300 group-hover:scale-105 group-hover:border-ean-gold group-hover:bg-ean-gold/10">
                             <Icon className="w-5 h-5" />
                           </div>
 
                           <div className="space-y-4 pt-2">
                             <Link href={`/services/${srv.slug}`} className="block">
-                              <h3 className="font-display text-xl sm:text-2xl font-medium text-white hover:text-ean-gold transition-colors duration-300 tracking-wide">
+                              <h3 className="font-display text-xl sm:text-2xl font-medium text-ean-text-light hover:text-ean-gold transition-colors duration-300 tracking-wide">
                                 {srv.name}
                               </h3>
                             </Link>
-                            <p className="font-ui text-sm text-white/70 leading-relaxed">
+                            <p className="font-ui text-sm text-ean-text-light/70 leading-relaxed">
                               {srv.extendedDescription || srv.short}
                             </p>
 
-                            <ul className="space-y-2 border-t border-white/10 pt-4 font-ui text-xs text-white/70">
+                            <ul className="space-y-2 border-t border-ean-border-dark pt-4 font-ui text-xs text-ean-text-light/70">
                               {srv.features.map((feat, fIdx) => (
                                 <li key={fIdx} className="flex gap-2 items-center">
                                   <CheckCircle2 className="w-3.5 h-3.5 text-ean-gold shrink-0" />
@@ -368,10 +368,10 @@ export default function ServicesPage() {
                             </ul>
                           </div>
 
-                          <div className="pt-4 border-t border-white/10 flex justify-between items-center">
+                          <div className="pt-4 border-t border-ean-border-dark flex justify-between items-center">
                             <Link
                               href={`/services/${srv.slug}`}
-                              className="text-xs font-semibold uppercase tracking-wider text-white/70 hover:text-white transition-colors"
+                              className="text-xs font-semibold uppercase tracking-wider text-ean-text-light/70 hover:text-ean-text-light transition-colors"
                             >
                               <span>View Details</span>
                             </Link>
@@ -397,25 +397,25 @@ export default function ServicesPage() {
         <div className="h-16 lg:h-24 bg-ean-surface" />
 
         {/* SECTION 4: Charter & Hangar CTA Banner */}
-        <section className="bg-linear-to-r from-ean-obsidian via-ean-obsidian-elevated to-ean-obsidian py-20 sm:py-24 relative overflow-hidden border-t border-white/10">
+        <section className="bg-linear-to-r from-ean-obsidian via-ean-obsidian-elevated to-ean-obsidian py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
           {/* Golden glow */}
           <div className="absolute -bottom-48 -left-48 w-96 h-96 rounded-full bg-ean-gold/5 blur-[120px] pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 text-center">
+          <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center">
             <SectionReveal className="max-w-3xl mx-auto space-y-8">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
                 Custom Flight Solutions
               </span>
-              <h2 className="font-display text-4xl sm:text-6xl font-light text-white leading-tight">
+              <h2 className="font-display text-3xl sm:text-5xl font-light text-ean-text-light leading-tight">
                 Design Your Flight Parameters
               </h2>
-              <p className="font-ui text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+              <p className="font-ui text-base sm:text-lg md:text-xl text-ean-text-light/80 max-w-2xl mx-auto leading-relaxed">
                 Connect directly with our corporate operations team to draft custom flight schedules, secure airport ground clearances, or inspect MMIA hangar leases.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                <Link href="/contact?service=charter">
+                <Link href="/charter">
                   <GoldButton className="w-full sm:w-auto">
-                    Submit Charter Brief
+                    Request a Charter
                   </GoldButton>
                 </Link>
                 <Link href="/contact">

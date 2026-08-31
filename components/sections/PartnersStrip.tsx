@@ -7,7 +7,7 @@ export default function PartnersStrip() {
 
   return (
     <section className="bg-ean-surface dark:bg-ean-navy border-y border-ean-border-light dark:border-ean-border-dark py-10 transition-colors duration-500 overflow-hidden select-none">
-      <div className="max-w-7xl mx-auto px-6 md:px-8 mb-6">
+      <div className="max-w-ean mx-auto px-6 md:px-8 mb-6">
         <p className="font-ui text-[10px] sm:text-xs uppercase tracking-[0.25em] text-ean-muted-dark dark:text-ean-muted-light text-center font-bold">
           Trusted By Industry Leaders & Global Aviation Partners
         </p>
@@ -23,7 +23,7 @@ export default function PartnersStrip() {
           {doublePartners.map((partner, idx) => (
             <div
               key={idx}
-              className="bg-white dark:bg-white/95 px-4 sm:px-6 py-3 rounded-xs border border-ean-border-light/80 dark:border-white/10 shadow-2xs hover:shadow-md hover:border-ean-gold/60 transition-all duration-300 shrink-0 flex items-center justify-center h-16 sm:h-20 w-36 sm:w-44"
+              className="bg-white dark:bg-white/95 px-4 sm:px-6 py-3 border border-ean-border-light/80 dark:border-ean-border-dark shadow-2xs hover:shadow-md hover:border-ean-blue/60 transition-all duration-300 shrink-0 flex items-center justify-center h-16 sm:h-20 w-36 sm:w-44"
             >
               <Image
                 src={partner.logo}

@@ -103,11 +103,11 @@ export default function TeamPage() {
     <>
       <Navbar />
 
-      <main className="flex-1 flex flex-col bg-ean-black text-white">
+      <main className="flex-1 flex flex-col bg-ean-black text-ean-text-light">
         {/* SECTION 1: Obsidian Black Cinematic Hero */}
         <section
           ref={heroRef}
-          className="relative w-full h-[75vh] min-h-125 overflow-hidden bg-ean-obsidian flex items-center text-white border-b border-white/10"
+          className="relative w-full h-[75vh] min-h-125 overflow-hidden bg-ean-obsidian flex items-center text-ean-text-light border-b border-ean-border-dark"
         >
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
@@ -121,12 +121,12 @@ export default function TeamPage() {
               quality={80}
             />
             {/* Cinematic Obsidian Black luxury overlays */}
-            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-ean-black/60" />
             <div className="absolute inset-0 bg-linear-to-b from-ean-obsidian/80 via-transparent to-ean-obsidian/90" />
-            <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
+            <div className="absolute inset-0 bg-radial-at-c from-transparent via-ean-black/20 to-ean-black/60" />
           </div>
 
-          <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 w-full pt-20">
+          <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 w-full pt-20">
             <div className="max-w-3xl space-y-6">
               <p
                 ref={eyebrowRef}
@@ -137,13 +137,13 @@ export default function TeamPage() {
               </p>
               <h1
                 ref={titleRef}
-                className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white leading-[1.1]"
+                className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-ean-text-light leading-[1.1]"
               >
                 The Minds Behind the Mission
               </h1>
               <p
                 ref={subtitleRef}
-                className="font-ui text-base sm:text-lg md:text-xl text-white/80 max-w-2xl leading-relaxed"
+                className="font-ui text-base sm:text-lg md:text-xl text-ean-text-light/80 max-w-2xl leading-relaxed"
               >
                 Meet the seasoned aviation executives, captains, and engineers steering EAN Aviation toward new frontiers of growth, safety, and operational precision in West Africa.
               </p>
@@ -159,7 +159,7 @@ export default function TeamPage() {
               ceoSection?.scrollIntoView({ behavior: 'smooth' });
             }}
           >
-            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-white/60">
+            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-ean-text-light/60">
               Meet Leadership
             </span>
             <ChevronDown className="w-5 h-5 text-ean-gold" />
@@ -175,24 +175,24 @@ export default function TeamPage() {
         <TeamDirectoryGrid members={TEAM_MEMBERS} />
 
         {/* SECTION 4: Gold & Onyx Executive Call to Action */}
-        <section className="bg-linear-to-r from-ean-burgundy-night via-ean-burgundy-dusk to-ean-black py-20 sm:py-24 relative overflow-hidden border-t border-white/10">
+        <section className="bg-linear-to-r from-ean-burgundy-night via-ean-burgundy-dusk to-ean-black py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
           <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/10 blur-[120px] pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10 text-center">
+          <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center">
             <SectionReveal className="max-w-3xl mx-auto space-y-8">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
                 Work With EAN Leadership
               </span>
-              <h2 className="font-display text-4xl sm:text-6xl font-light text-white leading-tight">
+              <h2 className="font-display text-3xl sm:text-5xl font-light text-ean-text-light leading-tight">
                 Designed for Distinction
               </h2>
               <p className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-light max-w-2xl mx-auto leading-relaxed">
                 Connect directly with our department heads to coordinate jet charters, hangar space, aircraft maintenance, or corporate travel logistics.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                <Link href="/contact?service=charter">
+                <Link href="/charter">
                   <GoldButton className="w-full sm:w-auto">
-                    Request a Charter Quote
+                    Request a Charter
                   </GoldButton>
                 </Link>
                 <Link href="/contact">

@@ -41,16 +41,16 @@ export default function QuoteSummary({
 
   return (
     <div className="w-full lg:w-100 shrink-0 sticky top-24 space-y-4">
-      <div className="relative bg-white rounded-2xl shadow-sm border border-ean-border-light overflow-hidden">
+      <div className="relative bg-white shadow-sm border border-ean-border-light overflow-hidden">
         {/* HEADER (DARK BURGUNDY BANNER) */}
-        <div className="p-6 bg-ean-burgundy-rich text-white space-y-1">
-          <h2 className="font-display font-medium text-xl md:text-2xl text-white tracking-wide truncate">
+        <div className="p-6 bg-ean-burgundy-rich text-ean-text-light space-y-1">
+          <h2 className="font-display font-medium text-xl md:text-2xl text-ean-text-light tracking-wide truncate">
             {aircraftName}
           </h2>
-          <div className="text-xs font-ui text-white/80">
+          <div className="text-xs font-ui text-ean-text-light/80">
             {[bandRangeText, locationLabel, opLabel].filter(Boolean).join(' · ')}
           </div>
-          <div className="text-xs font-ui text-white/70">
+          <div className="text-xs font-ui text-ean-text-light/70">
             {stayLabel} · {state.pax} pax
           </div>
         </div>
@@ -115,7 +115,7 @@ export default function QuoteSummary({
               </div>
 
               {/* DISBURSEMENT & REGULATORY NOTES */}
-              <div className="p-3 bg-amber-500/10 rounded-xl border-l-3 border-amber-500 text-[11px] font-ui text-amber-900 leading-relaxed space-y-1">
+              <div className="p-3 bg-amber-500/10 border-l-3 border-amber-500 text-[11px] font-ui text-amber-900 leading-relaxed space-y-1">
                 <div className="flex items-center gap-1 text-amber-900 font-semibold text-[10px] uppercase">
                   <Info className="w-3.5 h-3.5 text-amber-700" /> Note & Disbursement Terms
                 </div>
