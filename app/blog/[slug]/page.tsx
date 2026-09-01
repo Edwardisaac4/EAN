@@ -127,20 +127,20 @@ function renderTiptapNode(node: TiptapNode, key: number | string): React.ReactNo
   switch (node.type) {
     case 'heading': {
       const level = typeof node.attrs?.level === 'number' ? node.attrs.level : 2;
-      if (level === 1) return <h1 key={key} className="font-display text-2xl sm:text-3xl text-ean-navy font-semibold pt-4">{children}</h1>;
-      if (level === 3) return <h3 key={key} className="font-display text-xl sm:text-2xl text-ean-navy font-semibold pt-4">{children}</h3>;
-      return <h2 key={key} className="font-display text-2xl sm:text-2xl text-ean-navy font-semibold pt-4">{children}</h2>;
+      if (level === 1) return <h1 key={key} className="font-display text-2xl sm:text-3xl text-ean-text-light font-semibold pt-4">{children}</h1>;
+      if (level === 3) return <h3 key={key} className="font-display text-xl sm:text-2xl text-ean-text-light font-semibold pt-4">{children}</h3>;
+      return <h2 key={key} className="font-display text-2xl sm:text-2xl text-ean-text-light font-semibold pt-4">{children}</h2>;
     }
     case 'paragraph':
       return <p key={key} className="leading-relaxed my-3">{children}</p>;
     case 'blockquote':
-      return <blockquote key={key} className="border-l border-ean-gold pl-6 py-2 my-6 italic text-ean-navy bg-ean-gold/5">{children}</blockquote>;
+      return <blockquote key={key} className="border-l border-ean-gold pl-6 py-2 my-6 italic text-ean-text-light bg-ean-gold/5">{children}</blockquote>;
     case 'bulletList':
       return <ul key={key} className="list-disc list-inside my-4 space-y-2">{children}</ul>;
     case 'orderedList':
       return <ol key={key} className="list-decimal list-inside my-4 space-y-2">{children}</ol>;
     case 'listItem':
-      return <li key={key} className="text-ean-text-dark">{children}</li>;
+      return <li key={key} className="text-ean-text-light">{children}</li>;
     case 'image': {
       const imgSrc = typeof node.attrs?.src === 'string' ? node.attrs.src : '';
       const imgAlt = typeof node.attrs?.alt === 'string' ? node.attrs.alt : '';
@@ -254,7 +254,7 @@ function renderArticleBody(article: ResolvedArticle) {
       const doc = (article.content as unknown) as TiptapNode;
       if (doc.content) {
         return (
-          <div className="space-y-6 font-ui text-ean-text-dark text-base sm:text-lg leading-relaxed">
+          <div className="space-y-6 font-ui text-ean-text-light text-base sm:text-lg leading-relaxed">
             {doc.content.map((child, idx) => renderTiptapNode(child, idx))}
           </div>
         );
@@ -275,8 +275,8 @@ function renderArticleBody(article: ResolvedArticle) {
   // before its content saved, or a seed entry awaiting copy. Lead with the excerpt
   // rather than rendering an empty column.
   return (
-    <div className="space-y-6 font-ui text-ean-text-dark text-base sm:text-lg leading-relaxed">
-      <p className="text-xl font-light text-ean-navy leading-relaxed border-l border-ean-gold pl-6 italic">
+    <div className="space-y-6 font-ui text-ean-text-light text-base sm:text-lg leading-relaxed">
+      <p className="text-xl font-light text-ean-text-light leading-relaxed border-l border-ean-gold pl-6 italic">
         {article.excerpt}
       </p>
     </div>
@@ -323,11 +323,9 @@ export default async function BlogPostPage({ params }: Props) {
 
       <Navbar />
 
-      <main className="flex-1 bg-ean-white text-ean-navy">
+      <main className="flex-1 bg-ean-white text-ean-text-light">
         {/* SECTION 1: Article Header Hero */}
         <section className="relative pt-32 pb-16 bg-linear-to-b from-ean-navy to-ean-navy-mid text-ean-text-light border-b border-ean-border-dark overflow-hidden">
-          {/* Ambient Glow */}
-          <div className="absolute top-0 right-0 w-125 h-125 rounded-full bg-ean-gold/5 blur-[120px] pointer-events-none" />
 
           <div className="max-w-4xl mx-auto px-6 md:px-8 relative z-10 space-y-6">
             {/* Breadcrumb / Back button */}
@@ -376,7 +374,7 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="max-w-4xl mx-auto px-6 md:px-8 space-y-12">
             
             {/* Cover Image Container */}
-            <div className="relative w-full h-72 sm:h-105 overflow-hidden border border-ean-border-light shadow-xl bg-ean-black/10">
+            <div className="relative w-full h-72 sm:h-105 overflow-hidden border border-ean-border-light bg-black/10">
               <Image
                 src={article.image}
                 alt={article.title}
@@ -401,15 +399,15 @@ export default async function BlogPostPage({ params }: Props) {
                   EAN
                 </div>
                 <div>
-                  <h4 className="font-ui text-sm font-semibold text-ean-navy">EAN Aviation Editorial Desk</h4>
-                  <p className="font-ui text-xs text-ean-muted-dark">West Africa&apos;s Leader in Executive Aviation Services</p>
+                  <h4 className="font-ui text-sm font-semibold text-ean-text-light">EAN Aviation Editorial Desk</h4>
+                  <p className="font-ui text-xs text-ean-muted-light">West Africa&apos;s Leader in Executive Aviation Services</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <Link
                   href={`/contact?inquiry=editorial&subject=${encodeURIComponent(article.title)}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-ean-surface border border-ean-border-light hover:border-ean-gold text-xs font-ui font-semibold text-ean-navy transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-ean-surface border border-ean-border-light hover:border-ean-gold text-xs font-ui font-semibold text-ean-text-light transition-colors"
                 >
                   <Share2 className="w-3.5 h-3.5 text-ean-gold" />
                   <span>Inquire About This Subject</span>
@@ -429,7 +427,7 @@ export default async function BlogPostPage({ params }: Props) {
                   <span className="font-ui text-xs font-semibold tracking-widest text-ean-gold uppercase block">
                     Further Reading
                   </span>
-                  <h3 className="font-display text-2xl sm:text-2xl font-medium text-ean-navy">
+                  <h3 className="font-display text-2xl sm:text-2xl font-medium text-ean-text-light">
                     Related Executive Insights
                   </h3>
                 </div>
@@ -447,7 +445,7 @@ export default async function BlogPostPage({ params }: Props) {
                     className="block group h-full"
                   >
                     <div className="bg-white border border-ean-border-light overflow-hidden h-full flex flex-col hover:border-ean-gold/40 transition-colors shadow-xs">
-                      <div className="relative w-full h-48 overflow-hidden bg-ean-black/10">
+                      <div className="relative w-full h-48 overflow-hidden bg-black/10">
                         <Image
                           src={rel.image}
                           alt={rel.title}
@@ -461,11 +459,11 @@ export default async function BlogPostPage({ params }: Props) {
                       </div>
                       <div className="p-6 flex flex-col justify-between flex-1 space-y-4">
                         <div className="space-y-2">
-                          <span className="text-[11px] text-ean-muted-dark font-ui">{rel.publishedAt}</span>
-                          <h4 className="font-ui text-base font-semibold text-ean-navy group-hover:text-ean-gold transition-colors leading-snug">
+                          <span className="text-[11px] text-ean-muted-light font-ui">{rel.publishedAt}</span>
+                          <h4 className="font-ui text-base font-semibold text-ean-text-light group-hover:text-ean-gold transition-colors leading-snug">
                             {rel.title}
                           </h4>
-                          <p className="font-ui text-xs text-ean-muted-dark line-clamp-2 leading-relaxed">
+                          <p className="font-ui text-xs text-ean-muted-light line-clamp-2 leading-relaxed">
                             {rel.excerpt}
                           </p>
                         </div>

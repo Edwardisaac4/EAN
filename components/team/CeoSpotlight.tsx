@@ -16,9 +16,6 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
   return (
     <>
       <section className="relative bg-linear-to-b from-ean-burgundy-night via-ean-burgundy-dusk to-ean-black py-16 sm:py-24 overflow-hidden border-b border-ean-border-dark">
-        {/* Ambient Backlight Blur */}
-        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-128 h-128 rounded-full bg-ean-gold/10 blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 right-10 w-96 h-96 rounded-full bg-ean-blue-muted/40 blur-[120px] pointer-events-none" />
 
         <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
           {/* Eyebrow & Badge */}
@@ -33,7 +30,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* CEO Portrait Column */}
             <div className="lg:col-span-5 relative">
-              <div className="relative aspect-4/5 overflow-hidden border border-ean-gold/30 shadow-2xl group bg-ean-navy-mid">
+              <div className="relative aspect-4/5 overflow-hidden border border-ean-gold/30 group bg-ean-navy-mid">
                 {/* Decorative Frame Elements */}
                 <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-transparent to-transparent z-10 opacity-70 group-hover:opacity-50 transition-opacity duration-500" />
                 <div className="absolute top-4 left-4 z-20 px-3 py-1 bg-ean-navy/80 backdrop-blur-md border border-ean-gold/40 text-[10px] uppercase font-mono tracking-widest text-ean-gold">
@@ -81,7 +78,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
 
               {/* CEO Signature Quote Box */}
               {ceoMember.quote && (
-                <div className="relative p-6 sm:p-8 bg-linear-to-r from-white/15 via-white/5 to-transparent border-l border-ean-gold backdrop-blur-md space-y-3 shadow-xl">
+                <div className="relative p-6 sm:p-8 bg-linear-to-r from-black/15 via-black/5 to-transparent border-l border-ean-gold backdrop-blur-md space-y-3">
                   <Quote className="w-8 h-8 text-ean-gold/40 absolute top-4 right-4" />
                   <p className="font-display italic text-lg sm:text-xl text-ean-text-light leading-relaxed relative z-10">
                     &ldquo;{ceoMember.quote}&rdquo;
@@ -127,7 +124,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
               <div className="pt-4">
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="inline-flex items-center gap-3 px-6 py-3.5 bg-linear-to-r from-ean-gold via-ean-gold-light to-ean-gold text-ean-navy font-ui text-xs font-semibold uppercase tracking-widest shadow-lg hover:shadow-ean-gold/20 hover:brightness-110 transition-all duration-300 cursor-pointer"
+                  className="inline-flex items-center gap-3 px-6 py-3.5 bg-linear-to-r from-ean-gold via-ean-gold-light to-ean-gold text-ean-text-light font-ui text-xs font-semibold uppercase tracking-widest shadow-lg hover:shadow-ean-gold/20 hover:brightness-110 transition-all duration-300 cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4" />
                   Read Full Executive Profile

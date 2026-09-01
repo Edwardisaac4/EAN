@@ -11,8 +11,8 @@ interface EyebrowProps {
  *
  * Mono is doing real work here rather than decorating: it is the site's
  * signal for machine-ish text — eyebrows, basis lines, the ops strip, stat
- * labels, department tags — and it separates that register from Fraunces
- * headings and Archivo body copy at a glance.
+ * labels, department tags — and now that headings and body copy are both
+ * Archivo it is the only family contrast left in the system.
  */
 export default function Eyebrow({ children, className = '', as: Tag = 'span' }: EyebrowProps) {
   return (

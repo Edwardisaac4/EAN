@@ -37,7 +37,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
           {/* Dark Backdrop Overlay */}
           <div
             onClick={onClose}
-            className={`fixed inset-0 bg-ean-black/80 backdrop-blur-md cursor-pointer ${
+            className={`fixed inset-0 bg-black/80 backdrop-blur-md cursor-pointer ${
               state === 'open' ? 'ean-enter-fade' : 'ean-exit-fade'
             }`}
           />
@@ -59,7 +59,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
               </div>
               <button
                 onClick={onClose}
-                className="p-1.5 text-ean-text-light/70 hover:text-ean-text-light hover:bg-white/10 transition-colors cursor-pointer"
+                className="p-1.5 text-ean-text-light/70 hover:text-ean-text-light hover:bg-black/10 transition-colors cursor-pointer"
                 aria-label="Close milestone detail"
               >
                 <X className="w-5 h-5" />
@@ -70,7 +70,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
             <div className="overflow-y-auto p-6 sm:p-8 space-y-6">
               {/* Optional Visual Image Banner */}
               {event.image && (
-                <div className="relative w-full h-56 sm:h-72 overflow-hidden border border-ean-border-dark shadow-xl group">
+                <div className="relative w-full h-56 sm:h-72 overflow-hidden border border-ean-border-dark group">
                   <Image
                     src={event.image}
                     alt={event.title}
@@ -124,7 +124,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
                   </span>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-ui text-xs sm:text-sm text-ean-text-light/90">
                     {event.highlights.map((h, hIdx) => (
-                      <li key={hIdx} className="flex items-start gap-2.5 bg-white/5 border border-ean-border-dark p-3">
+                      <li key={hIdx} className="flex items-start gap-2.5 bg-black/5 border border-ean-border-dark p-3">
                         <CheckCircle2 className="w-4 h-4 text-ean-gold shrink-0 mt-0.5" />
                         <span className="leading-snug">{h}</span>
                       </li>
@@ -148,7 +148,7 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
                 </button>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-2 px-5 py-2 bg-ean-gold text-ean-navy hover:bg-ean-gold-light text-xs font-bold uppercase tracking-wider transition-all"
+                  className="inline-flex items-center gap-2 px-5 py-2 bg-ean-gold text-ean-text-dark hover:bg-ean-gold-light text-xs font-bold uppercase tracking-wider transition-all"
                 >
                   <span>Inquire Operations</span>
                   <ChevronRight className="w-3.5 h-3.5" />

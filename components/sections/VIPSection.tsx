@@ -6,12 +6,12 @@ import SectionReveal from '@/components/shared/SectionReveal';
 
 export default function VIPSection() {
   return (
-    <section className="bg-ean-white dark:bg-ean-navy-mid text-ean-text-dark dark:text-ean-text-light py-20 sm:py-24 transition-colors duration-500 overflow-hidden relative">
+    <section className="bg-ean-white text-ean-text-light py-20 sm:py-24 transition-colors duration-500 overflow-hidden relative">
       <div className="max-w-ean mx-auto px-6 md:px-8">
         <SectionReveal>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: Large Lounge Visual */}
-            <div className="lg:col-span-5 relative w-full h-80 sm:h-100 lg:h-125 overflow-hidden shadow-xl border border-ean-border-light dark:border-ean-border-dark group lg:order-1">
+            <div className="lg:col-span-5 relative w-full h-80 sm:h-100 lg:h-125 overflow-hidden border border-ean-border-light group lg:order-1">
               <Image
                 src="/images/vip-lounge.jpg"
                 alt="EAN Aviation premium airport terminal VIP lounge"
@@ -20,7 +20,7 @@ export default function VIPSection() {
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 quality={80}
               />
-              <div className="absolute inset-0 bg-linear-to-t from-ean-black/45 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/45 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
 
             {/* Right Column: Copy & Highlights */}
@@ -29,19 +29,19 @@ export default function VIPSection() {
                 <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
                   VIP Terminal Experience
                 </span>
-                <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-navy dark:text-ean-text-light leading-[1.15]">
+                <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-text-light leading-[1.15]">
                   {"Lagos Airport's"} Premier Dedicated VIP Terminal
                 </h2>
               </div>
 
-              <p className="font-ui text-base sm:text-lg text-ean-muted-dark dark:text-ean-muted-light leading-relaxed">
+              <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
                 Step away from the bustle of Lagos Murtala Mohammed International Airport. {"EAN's"} VIP Lounge
                 offers direct check-in, quiet comfort, and dedicated passenger assistance clear of the
                 commercial terminal.
               </p>
 
               {/* Highlights Bullet List */}
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-ui text-sm sm:text-base text-ean-text-dark dark:text-ean-text-light font-medium">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-ui text-sm sm:text-base text-ean-text-light font-medium">
                 <li className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-ean-gold" />
                   Private VIP Terminal Access
@@ -64,7 +64,6 @@ export default function VIPSection() {
                 <Link href="/services/vip-lounge">
                   <OutlineButton
                     variant="light"
-                    className="dark:border-white dark:text-ean-text-light dark:hover:bg-ean-gold dark:hover:border-ean-gold dark:hover:text-ean-navy"
                   >
                     Explore VIP Experience
                   </OutlineButton>

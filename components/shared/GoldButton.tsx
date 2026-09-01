@@ -5,11 +5,11 @@ interface GoldButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 }
 
 /**
- * The solid call to action: a brass fill carrying ink type.
+ * The solid call to action: a brand-blue fill carrying white type.
  *
- * Ink on brass measures 5.75:1. The obvious-looking alternative — ivory or
- * white type on the fill — is about 1.5:1 and unreadable, so the dark
- * foreground is a requirement here, not a stylistic preference.
+ * White on #2b0098 measures 13.50:1 — AAA at every size. `text-ean-text-dark`
+ * is the token for "type on the accent fill", and on the paper ramp that
+ * token IS white; the name is one swap stale, like the surface names.
  *
  * Square by system: this palette carries radius in exactly three places (form
  * inputs, pill chips, the status dot) and a button is none of them.

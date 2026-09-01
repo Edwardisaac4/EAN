@@ -84,8 +84,6 @@ export default function InfrastructureShowcase() {
 
   return (
     <section className="bg-ean-navy-mid text-ean-text-light py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
-      {/* Ambient Radial Backlight Glow */}
-      <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-128 h-128 rounded-full bg-ean-gold/5 blur-[160px] pointer-events-none" />
 
       <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 space-y-12">
         {/* Section Header */}
@@ -163,7 +161,7 @@ export default function InfrastructureShowcase() {
                   }`}
                 >
                   <div className="flex items-center justify-between w-full">
-                    <div className={`p-2 ${isActive ? 'bg-ean-gold text-ean-navy' : 'bg-ean-navy-mid text-ean-gold'}`}>
+                    <div className={`p-2 ${isActive ? 'bg-ean-gold text-ean-text-dark' : 'bg-ean-navy-mid text-ean-gold'}`}>
                       <IconComp className="w-4 h-4" />
                     </div>
                     {isActive && (
@@ -187,11 +185,11 @@ export default function InfrastructureShowcase() {
           {/* Keying on the item id replays the CSS enter animation per tab */}
           <div
               key={activeItem.id}
-              className="ean-enter-up grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-ean-navy/70 border border-ean-gold/30 p-8 sm:p-10 shadow-2xl backdrop-blur-md"
+              className="ean-enter-up grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-ean-navy/70 border border-ean-gold/30 p-8 sm:p-10 backdrop-blur-md"
             >
               {/* Image Display Column */}
               <div className="lg:col-span-6 relative">
-                <div className="relative aspect-16/10 overflow-hidden border border-ean-border-dark bg-ean-navy shadow-xl group">
+                <div className="relative aspect-16/10 overflow-hidden border border-ean-border-dark bg-ean-navy group">
                   <Image
                     src={activeItem.image}
                     alt={activeItem.title}

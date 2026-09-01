@@ -23,8 +23,8 @@ const SLIDE_INTERVAL_MS = 6500;
 // scans source text, so a class it cannot read literally never reaches the CSS.
 //
 // A single clamp() replaces the five-stop responsive ramp these used to carry.
-// Fraunces runs much larger than the Cormorant it replaced at an identical
-// font-size, so the old ramp topped out far too big; clamp also tracks the
+// The ceiling is deliberately low — the display face sets large for its
+// nominal size, so the old ramp topped out far too big; clamp also tracks the
 // viewport continuously instead of jumping at five breakpoints, which is what
 // the prototype does.
 const TITLE_SCALES = {
@@ -152,8 +152,8 @@ export default function HeroSection() {
         })}
 
         {/* Overlays for high readability — shared across every slide */}
-        <div className="absolute inset-0 z-2 bg-linear-to-r from-ean-black/85 via-ean-black/45 to-transparent" />
-        <div className="absolute inset-0 z-2 bg-linear-to-t from-ean-black/90 via-ean-black/25 to-ean-black/65" />
+        <div className="absolute inset-0 z-2 bg-linear-to-r from-black/85 via-black/45 to-transparent" />
+        <div className="absolute inset-0 z-2 bg-linear-to-t from-black/90 via-black/25 to-black/65" />
       </div>
 
       {/* Main Content (Text Layer) */}
@@ -164,7 +164,7 @@ export default function HeroSection() {
           className="max-w-2xl lg:max-w-3xl flex flex-col items-start text-left"
         >
           {/* Eyebrow */}
-          <p className="ean-rise font-ui text-[11px] sm:text-xs md:text-sm font-semibold tracking-[0.25em] text-ean-gold mb-3 sm:mb-4 uppercase">
+          <p className="ean-rise font-ui text-[11px] sm:text-xs md:text-sm font-semibold tracking-[0.25em] text-white/70 mb-3 sm:mb-4 uppercase">
             {slide.eyebrow}
           </p>
 
@@ -172,7 +172,7 @@ export default function HeroSection() {
           <h1
             className={`ean-rise ean-rise-delay-1 font-display ${
               TITLE_SCALES[slide.titleScale ?? 'default']
-            } text-ean-text-light font-medium leading-[1.1] mb-4 sm:mb-5`}
+            } text-white font-medium leading-[1.1] mb-4 sm:mb-5`}
           >
             {slide.title.split('\n').map((line, i) => (
               <React.Fragment key={i}>
@@ -183,7 +183,7 @@ export default function HeroSection() {
           </h1>
 
           {/* Subtitle */}
-          <p className="ean-rise ean-rise-delay-2 font-ui text-xs sm:text-sm md:text-base lg:text-lg text-ean-muted-light leading-relaxed mb-6 sm:mb-8 md:mb-9 max-w-xl">
+          <p className="ean-rise ean-rise-delay-2 font-ui text-xs sm:text-sm md:text-base lg:text-lg text-white/70 leading-relaxed mb-6 sm:mb-8 md:mb-9 max-w-xl">
             {slide.subtitle.split('\n').map((line, i) => (
               <React.Fragment key={i}>
                 {line}
@@ -224,7 +224,7 @@ export default function HeroSection() {
             onClick={() => handleDotClick(idx)}
             className={`transition-all duration-500 rounded-full cursor-pointer ${
               idx === currentSlide
-                ? 'w-8 h-2 bg-ean-gold'
+                ? 'w-8 h-2 bg-white'
                 : 'w-2 h-2 bg-white/40 hover:bg-white/75'
             }`}
             aria-label={`Go to slide ${idx + 1}`}
@@ -237,9 +237,9 @@ export default function HeroSection() {
         className="ean-rise ean-rise-delay-4 absolute bottom-10 right-6 md:right-8 z-20 flex flex-col items-center cursor-pointer"
         onClick={() => scrollToHash('#services-section')}
       >
-        <div className="w-8 h-13 rounded-full border border-ean-gold/30 flex items-center justify-center backdrop-blur-sm bg-ean-black/10 hover:border-ean-gold transition-colors duration-300 shadow-[0_0_15px_rgba(169,137,90,0.1)]">
+        <div className="w-8 h-13 rounded-full border border-white/30 flex items-center justify-center backdrop-blur-sm bg-black/10 hover:border-white transition-colors duration-300 shadow-[0_0_15px_rgba(43,0,152,0.1)]">
           <svg
-            className="w-4 h-4 text-ean-gold animate-bounce"
+            className="w-4 h-4 text-white/70 animate-bounce"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

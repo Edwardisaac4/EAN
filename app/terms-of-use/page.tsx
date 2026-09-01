@@ -245,8 +245,6 @@ export default function TermsOfUsePage() {
       <main className="flex-1 flex flex-col bg-ean-navy text-ean-text-light min-h-screen">
         {/* HERO SECTION */}
         <section className="relative pt-32 pb-20 bg-linear-to-b from-ean-navy via-ean-navy-mid to-ean-navy border-b border-ean-border-dark overflow-hidden print:hidden">
-          {/* Ambient Gold Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-160 h-160 rounded-full bg-ean-gold/5 blur-[140px] pointer-events-none" />
 
           <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center space-y-6">
             <div className="inline-flex items-center gap-2 border border-ean-gold/30 bg-ean-gold/10 text-ean-gold text-xs font-semibold uppercase tracking-[0.25em] px-4 py-1.5">
@@ -264,15 +262,15 @@ export default function TermsOfUsePage() {
 
             {/* Quick Metadata Bar */}
             <div className="pt-4 flex flex-wrap items-center justify-center gap-4 text-xs font-ui text-ean-muted-light">
-              <span className="inline-flex items-center gap-1.5 bg-white/5 border border-ean-border-dark px-3.5 py-1.5">
+              <span className="inline-flex items-center gap-1.5 bg-black/5 border border-ean-border-dark px-3.5 py-1.5">
                 <Clock className="w-3.5 h-3.5 text-ean-gold" />
                 Last Updated: <strong className="text-ean-text-light">16 October 2025</strong>
               </span>
-              <span className="inline-flex items-center gap-1.5 bg-white/5 border border-ean-border-dark px-3.5 py-1.5">
+              <span className="inline-flex items-center gap-1.5 bg-black/5 border border-ean-border-dark px-3.5 py-1.5">
                 <Globe className="w-3.5 h-3.5 text-ean-gold" />
                 Jurisdiction: <strong className="text-ean-text-light">Federal Republic of Nigeria</strong>
               </span>
-              <span className="inline-flex items-center gap-1.5 bg-white/5 border border-ean-border-dark px-3.5 py-1.5">
+              <span className="inline-flex items-center gap-1.5 bg-black/5 border border-ean-border-dark px-3.5 py-1.5">
                 <Building2 className="w-3.5 h-3.5 text-ean-gold" />
                 Entity: <strong className="text-ean-text-light">EAN Aviation Limited</strong>
               </span>
@@ -282,15 +280,15 @@ export default function TermsOfUsePage() {
             <div className="pt-6 flex flex-wrap items-center justify-center gap-4">
               <button
                 onClick={() => setIsReportOpen(true)}
-                className="inline-flex items-center gap-2 bg-ean-gold hover:bg-ean-gold-light text-ean-navy border border-ean-gold text-xs uppercase tracking-wider font-bold px-6 py-3.5 transition-colors shadow-xs cursor-pointer"
+                className="inline-flex items-center gap-2 bg-ean-gold hover:bg-ean-gold-light text-ean-text-dark border border-ean-gold text-xs uppercase tracking-wider font-bold px-6 py-3.5 transition-colors shadow-xs cursor-pointer"
               >
-                <ShieldAlert className="w-4 h-4 text-ean-navy" />
+                <ShieldAlert className="w-4 h-4 text-ean-text-light" />
                 <span>Submit Legal Inquiry / Report</span>
               </button>
 
               <button
                 onClick={handlePrint}
-                className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-ean-text-light border border-ean-border-dark text-xs uppercase tracking-wider font-semibold px-6 py-3.5 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 bg-black/5 hover:bg-black/10 text-ean-text-light border border-ean-border-dark text-xs uppercase tracking-wider font-semibold px-6 py-3.5 transition-colors cursor-pointer"
               >
                 <Printer className="w-4 h-4 text-ean-gold" />
                 <span>Print / Save PDF</span>
@@ -300,7 +298,7 @@ export default function TermsOfUsePage() {
         </section>
 
         {/* MAIN BODY CONTENT */}
-        <section className="bg-ean-white text-ean-text-dark py-16 sm:py-20 flex-1">
+        <section className="bg-ean-white text-ean-text-light py-16 sm:py-20 flex-1">
           <div className="max-w-ean mx-auto px-6 md:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
               
@@ -309,7 +307,7 @@ export default function TermsOfUsePage() {
                 <div className="bg-ean-surface border border-ean-border-light/60 p-6 space-y-4 shadow-xs">
                   <div className="flex items-center gap-2 border-b border-ean-border-light pb-3">
                     <FileCode className="w-4 h-4 text-ean-gold" />
-                    <h3 className="font-ui text-sm font-bold uppercase tracking-wider text-ean-navy">
+                    <h3 className="font-ui text-sm font-bold uppercase tracking-wider text-ean-text-light">
                       Terms Clause Index
                     </h3>
                   </div>
@@ -322,12 +320,12 @@ export default function TermsOfUsePage() {
                       placeholder="Filter clauses (e.g. arbitration, IP)..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-ean-white border border-ean-border-light pl-8 pr-7 py-2 text-xs text-ean-navy placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
+                      className="w-full bg-ean-white border border-ean-border-light pl-8 pr-7 py-2 text-xs text-ean-text-light placeholder:text-ean-muted-light/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
                     />
                     {searchQuery && (
                       <button
                         onClick={() => setSearchQuery('')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ean-muted-dark hover:text-ean-navy text-xs font-bold"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ean-muted-light hover:text-ean-text-light text-xs font-bold"
                       >
                         ×
                       </button>
@@ -345,11 +343,11 @@ export default function TermsOfUsePage() {
                           className={`w-full text-left flex items-center justify-between gap-3 p-2.5 text-xs font-ui transition-all duration-200 cursor-pointer relative ${
                             isActive
                               ? 'bg-ean-navy text-ean-text-light font-semibold shadow-xs border-l border-ean-gold pl-3'
-                              : 'text-ean-muted-dark hover:bg-ean-black/5 hover:text-ean-navy'
+                              : 'text-ean-muted-light hover:bg-black/5 hover:text-ean-text-light'
                           }`}
                         >
                           <div className="flex items-start gap-2.5 min-w-0">
-                            <span className={`font-mono text-[10px] font-bold ${isActive ? 'text-ean-gold' : 'text-ean-muted-dark'}`}>
+                            <span className={`font-mono text-[10px] font-bold ${isActive ? 'text-ean-gold' : 'text-ean-muted-light'}`}>
                               {sec.num}
                             </span>
                             <span className="line-clamp-1">{sec.title}</span>
@@ -400,7 +398,7 @@ export default function TermsOfUsePage() {
                         https://ean.aero/privacy-policy/
                       </Link>.
                     </p>
-                    <div className="p-4 bg-white/5 border border-ean-border-dark space-y-2 font-ui text-xs text-ean-muted-light">
+                    <div className="p-4 bg-black/5 border border-ean-border-dark space-y-2 font-ui text-xs text-ean-muted-light">
                       <div className="flex items-center gap-2 text-ean-gold font-bold uppercase tracking-wider">
                         <CheckCircle2 className="w-4 h-4" />
                         <span>Representation of Age & Authority</span>
@@ -416,8 +414,8 @@ export default function TermsOfUsePage() {
                 {filteredSections.length === 0 ? (
                   <div className="text-center py-16 bg-ean-surface border border-ean-border-light space-y-3">
                     <AlertCircle className="w-8 h-8 text-ean-gold mx-auto" />
-                    <h3 className="font-display text-xl font-medium text-ean-navy">No matching terms clauses found</h3>
-                    <p className="font-ui text-sm text-ean-muted-dark">Try searching with a different term like &quot;arbitration&quot;, &quot;indemnity&quot;, &quot;trademarks&quot;, or &quot;limitation&quot;.</p>
+                    <h3 className="font-display text-xl font-medium text-ean-text-light">No matching terms clauses found</h3>
+                    <p className="font-ui text-sm text-ean-muted-light">Try searching with a different term like &quot;arbitration&quot;, &quot;indemnity&quot;, &quot;trademarks&quot;, or &quot;limitation&quot;.</p>
                   </div>
                 ) : (
                   filteredSections.map((section) => {
@@ -435,33 +433,33 @@ export default function TermsOfUsePage() {
                                 <span className="font-mono text-xs font-bold text-ean-gold bg-ean-gold/10 px-2.5 py-1 border border-ean-gold/20">
                                   CLAUSE {section.num}
                                 </span>
-                                <span className="font-ui text-xs font-semibold tracking-widest text-ean-muted-dark uppercase">
+                                <span className="font-ui text-xs font-semibold tracking-widest text-ean-muted-light uppercase">
                                   Legal Governance
                                 </span>
                               </div>
-                              <h2 className="font-display text-2xl sm:text-2xl font-medium text-ean-navy pt-1">
+                              <h2 className="font-display text-2xl sm:text-2xl font-medium text-ean-text-light pt-1">
                                 {section.title}
                               </h2>
                             </div>
-                            <div className="w-10 h-10 bg-ean-navy/5 flex items-center justify-center text-ean-gold shrink-0 border border-ean-gold/20 print:hidden">
+                            <div className="w-10 h-10 bg-black/5 flex items-center justify-center text-ean-gold shrink-0 border border-ean-gold/20 print:hidden">
                               <IconComponent className="w-5 h-5" />
                             </div>
                           </div>
 
                           {/* Section Summary */}
-                          <p className="font-ui text-sm font-semibold text-ean-navy bg-ean-white p-4 border-l border-ean-gold">
+                          <p className="font-ui text-sm font-semibold text-ean-text-light bg-ean-white p-4 border-l border-ean-gold">
                             {section.summary}
                           </p>
 
                           {/* Section Sub-blocks */}
-                          <div className="space-y-6 font-ui text-sm sm:text-base text-ean-muted-dark leading-relaxed">
+                          <div className="space-y-6 font-ui text-sm sm:text-base text-ean-muted-light leading-relaxed">
                             {section.content.map((block, idx) => (
                               <div key={idx} className="space-y-2">
-                                <h3 className="font-ui font-bold text-sm text-ean-navy uppercase tracking-wider flex items-center gap-2">
+                                <h3 className="font-ui font-bold text-sm text-ean-text-light uppercase tracking-wider flex items-center gap-2">
                                   <ChevronRight className="w-4 h-4 text-ean-gold shrink-0" />
                                   <span>{block.subtitle}</span>
                                 </h3>
-                                <p className="pl-6 text-ean-muted-dark select-text">{block.text}</p>
+                                <p className="pl-6 text-ean-muted-light select-text">{block.text}</p>
                               </div>
                             ))}
                           </div>
@@ -476,19 +474,19 @@ export default function TermsOfUsePage() {
                                 <span>Strictly Prohibited User Activities</span>
                               </div>
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-ean-muted-light">
-                                <div className="p-3 bg-white/5 border border-ean-border-dark">
+                                <div className="p-3 bg-black/5 border border-ean-border-dark">
                                   ❌ <strong>Unlawful Content:</strong> Defamatory, obscene, harassing, or privacy-invasive materials.
                                 </div>
-                                <div className="p-3 bg-white/5 border border-ean-border-dark">
+                                <div className="p-3 bg-black/5 border border-ean-border-dark">
                                   ❌ <strong>Malware & Viruses:</strong> Code designed to damage hardware, software, or network data.
                                 </div>
-                                <div className="p-3 bg-white/5 border border-ean-border-dark">
+                                <div className="p-3 bg-black/5 border border-ean-border-dark">
                                   ❌ <strong>Web Scraping:</strong> Robots, spiders, or automated monitoring devices without prior written consent.
                                 </div>
-                                <div className="p-3 bg-white/5 border border-ean-border-dark">
+                                <div className="p-3 bg-black/5 border border-ean-border-dark">
                                   ❌ <strong>Framing & Deep Links:</strong> Framing the site or unauthorized hypertext linking.
                                 </div>
-                                <div className="p-3 bg-white/5 border border-ean-border-dark sm:col-span-2">
+                                <div className="p-3 bg-black/5 border border-ean-border-dark sm:col-span-2">
                                   ❌ <strong>Commercial Exploitation & Impersonation:</strong> Selling, sub-licensing, or misrepresenting affiliation with EAN Group.
                                 </div>
                               </div>
@@ -497,12 +495,12 @@ export default function TermsOfUsePage() {
 
                           {/* Section 13: Liability Cap Box */}
                           {section.id === 'disclaimers-liability' && (
-                            <div className="bg-ean-gold/10 border border-ean-gold/30 p-5 space-y-2 font-ui text-xs sm:text-sm text-ean-navy">
-                              <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-ean-navy">
+                            <div className="bg-ean-gold/10 border border-ean-gold/30 p-5 space-y-2 font-ui text-xs sm:text-sm text-ean-text-light">
+                              <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-ean-text-light">
                                 <AlertCircle className="w-4 h-4 text-ean-gold" />
                                 <span>Maximum Liability Cap & Sole Remedy</span>
                               </div>
-                              <p className="text-ean-muted-dark">
+                              <p className="text-ean-muted-light">
                                 Your sole and exclusive remedy for dissatisfaction with the site is to stop using the site. The maximum aggregate liability of EAN Group for all causes of action is strictly limited to the total amount paid by you, if any, to EAN Group to access and use the site.
                               </p>
                             </div>
@@ -515,7 +513,7 @@ export default function TermsOfUsePage() {
                                 Dispute Resolution Workflow (Arbitration & Mediation Act 2022)
                               </h4>
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-ui text-xs">
-                                <div className="p-4 bg-white/5 border border-ean-border-dark space-y-2">
+                                <div className="p-4 bg-black/5 border border-ean-border-dark space-y-2">
                                   <span className="font-mono text-[10px] text-ean-gold font-bold block">STEP 01</span>
                                   <h5 className="font-bold text-ean-text-light uppercase">30-Day Amicable Notice</h5>
                                   <p className="text-ean-muted-light text-[11px]">
@@ -523,7 +521,7 @@ export default function TermsOfUsePage() {
                                   </p>
                                 </div>
 
-                                <div className="p-4 bg-white/5 border border-ean-border-dark space-y-2">
+                                <div className="p-4 bg-black/5 border border-ean-border-dark space-y-2">
                                   <span className="font-mono text-[10px] text-ean-gold font-bold block">STEP 02</span>
                                   <h5 className="font-bold text-ean-text-light uppercase">Binding Arbitration</h5>
                                   <p className="text-ean-muted-light text-[11px]">
@@ -531,7 +529,7 @@ export default function TermsOfUsePage() {
                                   </p>
                                 </div>
 
-                                <div className="p-4 bg-white/5 border border-ean-border-dark space-y-2">
+                                <div className="p-4 bg-black/5 border border-ean-border-dark space-y-2">
                                   <span className="font-mono text-[10px] text-ean-gold font-bold block">STEP 03</span>
                                   <h5 className="font-bold text-ean-text-light uppercase">Exclusive Courts Forum</h5>
                                   <p className="text-ean-muted-light text-[11px]">
@@ -600,9 +598,9 @@ export default function TermsOfUsePage() {
         {/* LEGAL INQUIRY / REPORT MODAL */}
         <Presence show={isReportOpen} durationMs={250}>
           {(state) => (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ean-black/80 backdrop-blur-sm print:hidden">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm print:hidden">
               <div
-                className={`bg-ean-navy border border-ean-border-dark text-ean-text-light w-full max-w-xl p-8 shadow-2xl relative space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar ${
+                className={`bg-ean-navy border border-ean-border-dark text-ean-text-light w-full max-w-xl p-8 relative space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar ${
                   state === 'open' ? 'ean-enter-scale' : 'ean-exit-scale'
                 }`}
               >
@@ -643,7 +641,7 @@ export default function TermsOfUsePage() {
                         placeholder="e.g. Adebayo Johnson"
                         value={reportForm.fullName}
                         onChange={(e) => setReportForm({ ...reportForm, fullName: e.target.value })}
-                        className="w-full bg-white/5 border border-ean-border-dark px-3.5 py-2.5 text-ean-text-light placeholder:text-ean-muted-light/40 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30"
+                        className="w-full bg-black/5 border border-ean-border-dark px-3.5 py-2.5 text-ean-text-light placeholder:text-ean-muted-light/40 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30"
                       />
                     </div>
 
@@ -656,7 +654,7 @@ export default function TermsOfUsePage() {
                           placeholder="adebayo@company.com"
                           value={reportForm.email}
                           onChange={(e) => setReportForm({ ...reportForm, email: e.target.value })}
-                          className="w-full bg-white/5 border border-ean-border-dark px-3.5 py-2.5 text-ean-text-light placeholder:text-ean-muted-light/40 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30"
+                          className="w-full bg-black/5 border border-ean-border-dark px-3.5 py-2.5 text-ean-text-light placeholder:text-ean-muted-light/40 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30"
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -666,7 +664,7 @@ export default function TermsOfUsePage() {
                           placeholder="+234 800 000 0000"
                           value={reportForm.phone}
                           onChange={(e) => setReportForm({ ...reportForm, phone: e.target.value })}
-                          className="w-full bg-white/5 border border-ean-border-dark px-3.5 py-2.5 text-ean-text-light placeholder:text-ean-muted-light/40 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30"
+                          className="w-full bg-black/5 border border-ean-border-dark px-3.5 py-2.5 text-ean-text-light placeholder:text-ean-muted-light/40 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30"
                         />
                       </div>
                     </div>
@@ -693,7 +691,7 @@ export default function TermsOfUsePage() {
                         placeholder="Provide details regarding your inquiry, specific clause reference, or nature of the notice..."
                         value={reportForm.details}
                         onChange={(e) => setReportForm({ ...reportForm, details: e.target.value })}
-                        className="w-full bg-white/5 border border-ean-border-dark px-3.5 py-2.5 text-ean-text-light placeholder:text-ean-muted-light/40 focus:outline-none focus:border-ean-gold"
+                        className="w-full bg-black/5 border border-ean-border-dark px-3.5 py-2.5 text-ean-text-light placeholder:text-ean-muted-light/40 focus:outline-none focus:border-ean-gold"
                       />
                     </div>
 
@@ -701,16 +699,16 @@ export default function TermsOfUsePage() {
                       <button
                         type="button"
                         onClick={() => setIsReportOpen(false)}
-                        className="px-5 py-2.5 bg-white/5 hover:bg-white/10 text-ean-text-light transition-colors cursor-pointer"
+                        className="px-5 py-2.5 bg-black/5 hover:bg-black/10 text-ean-text-light transition-colors cursor-pointer"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
                         disabled={isReportSubmitting}
-                        className="px-6 py-2.5 bg-ean-gold hover:bg-ean-gold-light text-ean-navy font-bold transition-colors inline-flex items-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="px-6 py-2.5 bg-ean-gold hover:bg-ean-gold-light text-ean-text-dark font-bold transition-colors inline-flex items-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                       >
-                        <Send className="w-4 h-4 text-ean-navy" />
+                        <Send className="w-4 h-4 text-ean-text-light" />
                         <span>{isReportSubmitting ? 'Submitting…' : 'Submit to Legal Desk'}</span>
                       </button>
                     </div>

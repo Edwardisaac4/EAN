@@ -90,8 +90,6 @@ export default function ServicesSection() {
       id="services-section"
       className="bg-linear-to-b from-ean-obsidian-raised via-ean-obsidian to-ean-obsidian-elevated text-ean-text-light py-20 sm:py-24 relative overflow-hidden border-y border-ean-border-dark select-none"
     >
-      {/* Subtle Ambient Radial Gold Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-180 h-180 rounded-full bg-ean-gold/5 blur-[140px] pointer-events-none" />
 
       <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
         {/* Section Header */}
@@ -154,12 +152,12 @@ export default function ServicesSection() {
                   onClick={() => setActiveTab(idx)}
                   className={`relative z-10 flex items-center gap-2.5 px-5 py-3 font-ui text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap transition-all duration-300 cursor-pointer ${
                     isActive
-                      ? 'text-ean-obsidian font-semibold'
-                      : 'text-zinc-400 hover:text-ean-blue-light bg-ean-obsidian-elevated/80 border border-ean-border-dark hover:border-ean-blue/50'
+                      ? 'text-ean-text-light font-semibold'
+                      : 'text-ean-muted-light hover:text-ean-blue-light bg-ean-obsidian-elevated/80 border border-ean-border-dark hover:border-ean-blue/50'
                   }`}
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    <IconComp size={16} className={isActive ? 'text-ean-obsidian' : 'text-ean-gold'} />
+                    <IconComp size={16} className={isActive ? 'text-ean-text-light' : 'text-ean-gold'} />
                     <span>{srv.tabLabel || srv.name}</span>
                   </span>
                 </button>
@@ -168,7 +166,7 @@ export default function ServicesSection() {
           </div>
 
           {/* Active Service Showcase Spotlight (White Container Box) */}
-          <div className="bg-white border-t border-t-ean-obsidian border-x border-b border-slate-200 overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-12 relative text-slate-900">
+          <div className="bg-white border-t border-t-ean-obsidian border-x border-b border-slate-200 overflow-hidden p-6 sm:p-10 lg:p-12 relative text-slate-900">
             {/* Keying on the slug replays the CSS enter animation per service */}
             <div
               key={activeService.slug}
@@ -177,7 +175,7 @@ export default function ServicesSection() {
               {/* Left Column: Details & Capabilities */}
               <div className="lg:col-span-7 space-y-6">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="font-mono text-xs font-bold tracking-widest text-ean-obsidian bg-ean-obsidian/5 border border-ean-obsidian/15 px-3 py-1 uppercase">
+                  <span className="font-mono text-xs font-bold tracking-widest text-ean-text-light bg-black/5 border border-black/15 px-3 py-1 uppercase">
                     {activeService.eyebrow || `0${activeTab + 1} / 0${SERVICES_DATA.length}`}
                   </span>
                   {activeService.stats?.[0] && (
@@ -238,7 +236,7 @@ export default function ServicesSection() {
 
               {/* Right Column: Visual Showcase */}
               <div className="lg:col-span-5 relative">
-                <div className="relative h-72 sm:h-96 lg:h-112 w-full overflow-hidden border border-slate-200 shadow-xl group">
+                <div className="relative h-72 sm:h-96 lg:h-112 w-full overflow-hidden border border-slate-200 group">
                   <Image
                     src={activeService.image}
                     alt={`${activeService.name} visual`}
@@ -249,17 +247,17 @@ export default function ServicesSection() {
                     loading="lazy"
                   />
                   {/* Soft Shadow Gradient Overlay */}
-                  <div className="absolute inset-0 bg-linear-to-t from-ean-black/80 via-ean-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
 
                   {/* Top Icon Badge - Crisp White Glass */}
-                  <div className="absolute top-4 left-4 p-3.5 bg-white/95 border border-slate-200 text-ean-obsidian shadow-md backdrop-blur-xs">
+                  <div className="absolute top-4 left-4 p-3.5 bg-white/95 border border-slate-200 text-ean-text-light shadow-md backdrop-blur-xs">
                     <ActiveIcon size={24} />
                   </div>
 
                   {/* Bottom Status Pill - Crisp White Glass */}
                   <div className="absolute bottom-4 left-4 right-4 bg-white/95 border border-slate-200 backdrop-blur-xs p-3 flex items-center justify-between text-xs font-ui shadow-lg">
                     <span className="text-slate-900 font-semibold truncate">{activeService.name}</span>
-                    <span className="flex items-center gap-1.5 text-ean-obsidian shrink-0 font-mono text-[10px] uppercase font-bold tracking-wider">
+                    <span className="flex items-center gap-1.5 text-ean-text-light shrink-0 font-mono text-[10px] uppercase font-bold tracking-wider">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                       24/7 Active
                     </span>

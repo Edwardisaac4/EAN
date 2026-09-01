@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { sendGAEvent } from '@next/third-parties/google';
 import GoldButton from '@/components/shared/GoldButton';
 import HoneypotField from '@/components/shared/HoneypotField';
@@ -40,6 +40,8 @@ interface CharterFormState {
   departure: string;
   destination: string;
   date: string;
+  /** Empty on a one-way, and cleared whenever the trip is switched back to one. */
+  returnDate: string;
   passengers: string;
   name: string;
   email: string;
@@ -51,6 +53,7 @@ const EMPTY_FORM: CharterFormState = {
   departure: '',
   destination: '',
   date: '',
+  returnDate: '',
   passengers: '',
   name: '',
   email: '',
@@ -77,12 +80,36 @@ export default function CharterRequestForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
+  const returnDateRef = useRef<HTMLInputElement>(null);
+
+  /*
+   * Choosing Return puts the caret straight in the return date, the way the
+   * airline booking forms people are used to do it — the field appears below
+   * the fold of the eye's current position otherwise, and a revealed input
+   * nobody notices is the same as no input at all.
+   *
+   * Keyed on `trip`, and the form opens on one-way, so this cannot steal focus
+   * on load; it only ever runs on a deliberate change of the toggle.
+   */
+  useEffect(() => {
+    if (trip === 'return') returnDateRef.current?.focus();
+  }, [trip]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => {
+      const next = { ...prev, [name]: value };
+      // A return cannot precede its outbound. If the departure date is moved
+      // past a return that was already chosen, drop the return instead of
+      // leaving an impossible pair in the form for validate() to reject on
+      // submit — ISO dates compare correctly as plain strings.
+      if (name === 'date' && next.returnDate && next.returnDate < value) {
+        next.returnDate = '';
+      }
+      return next;
+    });
     if (errors[name]) {
       setErrors((prev) => {
         const next = { ...prev };
@@ -108,6 +135,18 @@ export default function CharterRequestForm() {
       today.setHours(0, 0, 0, 0);
       if (new Date(`${form.date}T00:00:00`) < today) {
         found.date = 'The departure date is in the past.';
+      }
+    }
+
+    /*
+     * Only enforced on a return. The field is not rendered on a one-way and its
+     * value is cleared with the toggle, so there is nothing to check there.
+     */
+    if (trip === 'return') {
+      if (!form.returnDate) {
+        found.returnDate = 'A return date is required for a return trip.';
+      } else if (form.date && form.returnDate < form.date) {
+        found.returnDate = 'The return date is before the departure date.';
       }
     }
 
@@ -143,6 +182,9 @@ export default function CharterRequestForm() {
       `Route: ${form.departure.trim()} to ${form.destination.trim()}`,
       `Date: ${form.date}`,
       `Trip: ${TRIP_OPTIONS.find((t) => t.id === trip)?.label}`,
+      // Only on a return, so a one-way never arrives at the desk carrying an
+      // empty Return line for somebody to wonder about.
+      ...(trip === 'return' ? [`Return: ${form.returnDate}`] : []),
       `Passengers: ${form.passengers.trim()}`,
       `Aircraft preference: ${aircraft}`,
     ];
@@ -267,6 +309,57 @@ export default function CharterRequestForm() {
           </p>
         )}
 
+        {/*
+         * Split out of the aircraft row, where the prototype leaves it. "Return
+         * flight" sitting beside "Light jet" under one AIRCRAFT PREFERENCE label
+         * reads as a sixth aircraft type, and it is the one chip in that row that
+         * is not mutually exclusive with the others.
+         *
+         * It opens the form because it governs the fields under it: Return adds
+         * a second date, and a control that changes the shape of the form has to
+         * sit above what it changes, not below it.
+         */}
+        <div className="min-[720px]:col-span-2">
+          <span id="charter-trip-label" className={LABEL}>
+            Trip
+          </span>
+          <div className="flex flex-wrap gap-2" aria-labelledby="charter-trip-label">
+            {TRIP_OPTIONS.map((option) => {
+              const isOn = trip === option.id;
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  aria-pressed={isOn}
+                  onClick={() => {
+                    setTrip(option.id);
+                    // Switching back to one way discards the return date and its
+                    // error. Keeping it would submit a return date on a trip the
+                    // desk has been told is one way — invisibly, since the field
+                    // that holds it is no longer on screen.
+                    if (option.id === 'one-way') {
+                      setForm((prev) => (prev.returnDate ? { ...prev, returnDate: '' } : prev));
+                      setErrors((prev) => {
+                        if (!prev.returnDate) return prev;
+                        const next = { ...prev };
+                        delete next.returnDate;
+                        return next;
+                      });
+                    }
+                  }}
+                  className={`${CHIP} ${
+                    isOn
+                      ? 'border-ean-blue text-ean-blue-light bg-ean-blue-muted/30 shadow-[0_0_12px_rgba(43,0,152,0.15)]'
+                      : 'border-ean-border-dark text-ean-slate hover:border-ean-blue hover:text-ean-blue-light'
+                  }`}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <Field
           id="charter-departure"
           label="Departure"
@@ -304,6 +397,31 @@ export default function CharterRequestForm() {
           name="date"
         />
 
+        {/*
+         * Only mounted on a return, so a one-way form is exactly the form it was
+         * before this field existed.
+         *
+         * `min` is the chosen departure date, which keeps the native picker from
+         * offering a return before the outbound at all. Unlike the today-check in
+         * validate() this reads state rather than the clock, so it is safe to
+         * compute during render — both server and client see an empty date on the
+         * first pass.
+         */}
+        {trip === 'return' && (
+          <Field
+            id="charter-return-date"
+            label="Return date"
+            type="date"
+            className="scheme-dark"
+            min={form.date || undefined}
+            inputRef={returnDateRef}
+            value={form.returnDate}
+            error={errors.returnDate}
+            onChange={handleChange}
+            name="returnDate"
+          />
+        )}
+
         <Field
           id="charter-passengers"
           label="Passengers"
@@ -332,43 +450,11 @@ export default function CharterRequestForm() {
                   onClick={() => setAircraft(option)}
                   className={`${CHIP} ${
                     isOn
-                      ? 'border-ean-blue text-ean-blue-light bg-ean-blue-muted/30 shadow-[0_0_12px_rgba(145,116,220,0.15)]'
+                      ? 'border-ean-blue text-ean-blue-light bg-ean-blue-muted/30 shadow-[0_0_12px_rgba(43,0,152,0.15)]'
                       : 'border-ean-border-dark text-ean-slate hover:border-ean-blue hover:text-ean-blue-light'
                   }`}
                 >
                   {option}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/*
-         * Split out of the aircraft row, where the prototype leaves it. "Return
-         * flight" sitting beside "Light jet" under one AIRCRAFT PREFERENCE label
-         * reads as a sixth aircraft type, and it is the one chip in that row that
-         * is not mutually exclusive with the others.
-         */}
-        <div className="min-[720px]:col-span-2">
-          <span id="charter-trip-label" className={LABEL}>
-            Trip
-          </span>
-          <div className="flex flex-wrap gap-2" aria-labelledby="charter-trip-label">
-            {TRIP_OPTIONS.map((option) => {
-              const isOn = trip === option.id;
-              return (
-                <button
-                  key={option.id}
-                  type="button"
-                  aria-pressed={isOn}
-                  onClick={() => setTrip(option.id)}
-                  className={`${CHIP} ${
-                    isOn
-                      ? 'border-ean-blue text-ean-blue-light bg-ean-blue-muted/30 shadow-[0_0_12px_rgba(145,116,220,0.15)]'
-                      : 'border-ean-border-dark text-ean-slate hover:border-ean-blue hover:text-ean-blue-light'
-                  }`}
-                >
-                  {option.label}
                 </button>
               );
             })}
@@ -446,6 +532,9 @@ interface FieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
   label: string;
   error?: string;
+  /** Named explicitly rather than relying on the spread — `ref` is not part of
+   *  InputHTMLAttributes, so it would be dropped silently on its way through. */
+  inputRef?: React.Ref<HTMLInputElement>;
 }
 
 /**
@@ -453,7 +542,7 @@ interface FieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
  * wiring — `aria-invalid`, `aria-describedby`, the red border — is four things
  * that have to agree on every one.
  */
-function Field({ id, label, error, className = '', ...props }: FieldProps) {
+function Field({ id, label, error, className = '', inputRef, ...props }: FieldProps) {
   return (
     <div className={className}>
       <label htmlFor={id} className={LABEL}>
@@ -461,6 +550,7 @@ function Field({ id, label, error, className = '', ...props }: FieldProps) {
       </label>
       <input
         id={id}
+        ref={inputRef}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-error` : undefined}
         className={`${FIELD} ${error ? 'border-ean-error' : 'border-ean-border-dark'}`}

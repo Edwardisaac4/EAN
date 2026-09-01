@@ -98,9 +98,9 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
       <Navbar />
 
-      <main className="flex-1 flex flex-col bg-ean-surface text-ean-text-dark">
+      <main className="flex-1 flex flex-col bg-ean-surface text-ean-text-light">
         {/* HERO BANNER SECTION */}
-        <section className="relative w-full min-h-[60vh] lg:min-h-[65vh] overflow-hidden bg-ean-obsidian flex items-center text-ean-text-light pt-24 pb-16">
+        <section className="relative w-full min-h-[60vh] lg:min-h-[65vh] overflow-hidden bg-ean-obsidian flex items-center text-white pt-24 pb-16">
           {/* Background Image */}
           <div className="absolute inset-0 w-full h-full">
             <Image
@@ -113,9 +113,9 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               quality={85}
             />
             {/* Balanced Obsidian Black gradient overlays — keeping imagery clear while ensuring text contrast */}
-            <div className="absolute inset-0 bg-ean-black/25" />
-            <div className="absolute inset-0 bg-linear-to-r from-ean-obsidian/85 via-ean-obsidian/45 to-transparent" />
-            <div className="absolute inset-0 bg-linear-to-t from-ean-obsidian/80 via-transparent to-ean-black/20" />
+            <div className="absolute inset-0 bg-black/25" />
+            <div className="absolute inset-0 bg-linear-to-r from-black/85 via-black/45 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-black/20" />
           </div>
 
           <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 w-full">
@@ -123,7 +123,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               {/* Back to Services link */}
               <Link
                 href="/services"
-                className="inline-flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-widest text-ean-gold hover:text-ean-text-light transition-colors py-1"
+                className="inline-flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-widest text-white/70 hover:text-white transition-colors py-1"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>All Aviation Services</span>
@@ -131,21 +131,21 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
               {/* Eyebrow badge */}
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-ean-gold/20 border border-ean-gold/40 text-ean-gold">
+                <div className="p-2.5 bg-white/10 border border-white/25 text-white">
                   <IconComponent className="w-5 h-5" />
                 </div>
-                <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
+                <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/70 uppercase">
                   EAN Aviation Specialization
                 </span>
               </div>
 
               {/* Title */}
-              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-ean-text-light leading-[1.1] tracking-tight">
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-white leading-[1.1] tracking-tight">
                 {service.name}
               </h1>
 
               {/* Short summary */}
-              <p className="font-ui text-base sm:text-lg md:text-xl text-ean-text-light/80 leading-relaxed max-w-2xl">
+              <p className="font-ui text-base sm:text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl">
                 {service.short}
               </p>
 
@@ -158,7 +158,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                   </GoldButton>
                 </Link>
                 <Link href="/services">
-                  <OutlineButton className="w-full sm:w-auto text-ean-text-light border-ean-border-dark hover:border-ean-gold">
+                  <OutlineButton className="w-full sm:w-auto text-white border-white/40 hover:border-white">
                     Explore Other Services
                   </OutlineButton>
                 </Link>
@@ -235,7 +235,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
                     <a
                       href="tel:+2348050333410"
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-ean-gold text-ean-obsidian font-semibold text-xs hover:bg-ean-gold-light transition-colors shrink-0"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-ean-gold text-ean-text-dark font-semibold text-xs hover:bg-ean-gold-light transition-colors shrink-0"
                     >
                       <Phone className="w-4 h-4" />
                       <span>+234 (0) 805 033 3410</span>
@@ -244,7 +244,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                 </div>
 
                 {/* Right Column: Features & Capabilities Card */}
-                <div className="lg:col-span-5 bg-white border border-ean-border-light p-6 sm:p-8 shadow-xl space-y-6">
+                <div className="lg:col-span-5 bg-white border border-ean-border-light p-6 sm:p-8 space-y-6">
                   <div className="border-b border-ean-border-light pb-4">
                     <h3 className="font-display text-2xl font-light text-slate-900">
                       Core Capabilities
@@ -312,10 +312,10 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                     const OtherIcon = iconMap[other.iconName] || Plane;
                     return (
                       <Link key={other.slug} href={`/services/${other.slug}`} className="group">
-                        <div className="bg-white border border-ean-border-light hover:border-ean-gold/60 p-6 shadow-md hover:shadow-xl transition-all duration-300 space-y-4 h-full flex flex-col justify-between">
+                        <div className="bg-white border border-ean-border-light hover:border-ean-gold/60 p-6 shadow-md transition-all duration-300 space-y-4 h-full flex flex-col justify-between">
                           <div className="space-y-3">
                             <div className="flex items-center justify-between">
-                              <div className="p-2.5 bg-ean-obsidian/5 text-ean-obsidian group-hover:bg-ean-gold group-hover:text-ean-obsidian transition-colors">
+                              <div className="p-2.5 bg-black/5 text-ean-text-light group-hover:bg-ean-gold group-hover:text-ean-text-dark transition-colors">
                                 <OtherIcon className="w-4 h-4" />
                               </div>
                               <ChevronRight className="w-4 h-4 text-ean-gold group-hover:translate-x-1 transition-transform" />

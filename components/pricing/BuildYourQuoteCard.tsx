@@ -111,10 +111,10 @@ export default function BuildYourQuoteCard({
     <div className="bg-white p-6 md:p-8 shadow-sm border border-ean-border-light space-y-6">
       {/* HEADER SECTION */}
       <div>
-        <h2 className="font-display font-medium text-xl md:text-2xl text-ean-text-dark tracking-wide">
+        <h2 className="font-display font-medium text-xl md:text-2xl text-ean-text-light tracking-wide">
           Build your quote
         </h2>
-        <p className="font-ui text-xs md:text-sm text-ean-muted-dark mt-0.5">
+        <p className="font-ui text-xs md:text-sm text-ean-muted-light mt-0.5">
           Select the aircraft and visit details. Pricing is drawn live from EAN&apos;s approved rate schedule.
         </p>
       </div>
@@ -122,7 +122,7 @@ export default function BuildYourQuoteCard({
       {/* FIELD 1: AIRCRAFT DROPDOWN */}
       <div className="space-y-1.5 relative" ref={dropdownRef}>
         <div className="flex items-center justify-between">
-          <label className="block font-ui font-semibold text-sm text-ean-text-dark">
+          <label className="block font-ui font-semibold text-sm text-ean-text-light">
             Aircraft
           </label>
           <button
@@ -150,7 +150,7 @@ export default function BuildYourQuoteCard({
                 onSetManualMtow(val)
               }}
               placeholder="e.g. 24300 (kg)"
-              className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-navy focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
+              className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-text-light focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
             />
           </div>
         ) : (
@@ -159,19 +159,19 @@ export default function BuildYourQuoteCard({
             <button
               type="button"
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-navy flex items-center justify-between shadow-xs hover:border-ean-blue transition-colors"
+              className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-text-light flex items-center justify-between shadow-xs hover:border-ean-blue transition-colors"
             >
-              <span className="font-semibold truncate text-ean-text-dark">
+              <span className="font-semibold truncate text-ean-text-light">
                 {aircraft?.name || 'Embraer Legacy 650'}
               </span>
-              <ChevronDown className={`w-4 h-4 text-ean-muted-dark transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-4 h-4 text-ean-muted-light transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {/* DROPDOWN MENU OVERLAY */}
             {dropdownOpen && (
-              <div className="absolute left-0 right-0 top-full mt-2 bg-white shadow-xl border border-ean-border-light p-3 z-30 space-y-2 animate-fadeIn">
+              <div className="absolute left-0 right-0 top-full mt-2 bg-white border border-ean-border-light p-3 z-30 space-y-2 animate-fadeIn">
                 <div className="relative">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-ean-muted-dark" />
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-ean-muted-light" />
                   <input
                     type="text"
                     value={searchQuery}
@@ -184,7 +184,7 @@ export default function BuildYourQuoteCard({
 
                 <div className="max-h-60 overflow-y-auto divide-y divide-gray-100">
                   {aircraftResults.length === 0 ? (
-                    <div className="p-3 text-xs font-ui text-ean-muted-dark text-center">
+                    <div className="p-3 text-xs font-ui text-ean-muted-light text-center">
                       No matching aircraft found. Try typing or enter manual MTOW.
                     </div>
                   ) : (
@@ -196,16 +196,16 @@ export default function BuildYourQuoteCard({
                           type="button"
                           onClick={() => handleSelectAircraftItem(item)}
                           className={`w-full text-left p-2.5 text-xs font-ui flex items-center justify-between transition-colors ${
-                            isSelected ? 'bg-ean-gold-muted text-ean-text-dark font-semibold' : 'hover:bg-gray-50 text-ean-navy'
+                            isSelected ? 'bg-ean-gold-muted text-ean-text-light font-semibold' : 'hover:bg-gray-50 text-ean-text-light'
                           }`}
                         >
                           <div>
                             <div className="font-semibold">{item.name}</div>
-                            <div className="text-[11px] text-ean-muted-dark">
+                            <div className="text-[11px] text-ean-muted-light">
                               {item.category || item.manufacturer} · {item.mtow_kg ? `${item.mtow_kg.toLocaleString()} kg` : 'N/A'}
                             </div>
                           </div>
-                          {isSelected && <Check className="w-4 h-4 text-ean-text-dark" />}
+                          {isSelected && <Check className="w-4 h-4 text-ean-text-light" />}
                         </button>
                       )
                     })
@@ -217,7 +217,7 @@ export default function BuildYourQuoteCard({
         )}
 
         {/* HELPER TEXT WITH DYNAMIC MTOW AND BAND RANGE */}
-        <p className="text-xs font-ui text-ean-muted-dark mt-1">
+        <p className="text-xs font-ui text-ean-muted-light mt-1">
           {mtowText}
         </p>
       </div>
@@ -226,7 +226,7 @@ export default function BuildYourQuoteCard({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
         {/* FIELD 2: LOCATION */}
         <div className="space-y-2">
-          <label className="block font-ui font-semibold text-sm text-ean-text-dark">
+          <label className="block font-ui font-semibold text-sm text-ean-text-light">
             Location
           </label>
           <div className="inline-flex p-0.5 bg-white border border-ean-border-light overflow-hidden w-full sm:w-auto">
@@ -237,7 +237,7 @@ export default function BuildYourQuoteCard({
               className={`flex-1 sm:flex-none px-6 py-2.5 text-xs md:text-sm font-ui font-semibold transition-all ${
                 location === 'LOS'
                   ? 'bg-ean-gold text-ean-text-dark shadow-xs'
-                  : 'bg-transparent text-ean-text-dark hover:bg-gray-50'
+                  : 'bg-transparent text-ean-text-light hover:bg-gray-50'
               }`}
             >
               Lagos
@@ -249,7 +249,7 @@ export default function BuildYourQuoteCard({
               className={`flex-1 sm:flex-none px-6 py-2.5 text-xs md:text-sm font-ui font-semibold transition-all ${
                 location === 'ABV'
                   ? 'bg-ean-gold text-ean-text-dark shadow-xs'
-                  : 'bg-transparent text-ean-text-dark hover:bg-gray-50'
+                  : 'bg-transparent text-ean-text-light hover:bg-gray-50'
               }`}
             >
               Abuja
@@ -259,7 +259,7 @@ export default function BuildYourQuoteCard({
 
         {/* FIELD 3: OPERATION */}
         <div className="space-y-2">
-          <label className="block font-ui font-semibold text-sm text-ean-text-dark">
+          <label className="block font-ui font-semibold text-sm text-ean-text-light">
             Operation
           </label>
           <div className="inline-flex p-0.5 bg-white border border-ean-border-light overflow-hidden w-full sm:w-auto">
@@ -270,7 +270,7 @@ export default function BuildYourQuoteCard({
               className={`flex-1 sm:flex-none px-6 py-2.5 text-xs md:text-sm font-ui font-semibold transition-all ${
                 operation === 'dom'
                   ? 'bg-ean-gold text-ean-text-dark shadow-xs'
-                  : 'bg-transparent text-ean-text-dark hover:bg-gray-50'
+                  : 'bg-transparent text-ean-text-light hover:bg-gray-50'
               }`}
             >
               Domestic
@@ -282,7 +282,7 @@ export default function BuildYourQuoteCard({
               className={`flex-1 sm:flex-none px-6 py-2.5 text-xs md:text-sm font-ui font-semibold transition-all ${
                 operation === 'intl'
                   ? 'bg-ean-gold text-ean-text-dark shadow-xs'
-                  : 'bg-transparent text-ean-text-dark hover:bg-gray-50'
+                  : 'bg-transparent text-ean-text-light hover:bg-gray-50'
               }`}
             >
               International
@@ -292,7 +292,7 @@ export default function BuildYourQuoteCard({
 
         {/* FIELD 4: MOVEMENT */}
         <div className="space-y-2">
-          <label className="block font-ui font-semibold text-sm text-ean-text-dark">
+          <label className="block font-ui font-semibold text-sm text-ean-text-light">
             Movement
           </label>
           <div className="inline-flex p-0.5 bg-white border border-ean-border-light overflow-hidden w-full sm:w-auto">
@@ -303,7 +303,7 @@ export default function BuildYourQuoteCard({
               className={`flex-1 sm:flex-none px-6 py-2.5 text-xs md:text-sm font-ui font-semibold transition-all ${
                 day === 'wd'
                   ? 'bg-ean-gold text-ean-text-dark shadow-xs'
-                  : 'bg-transparent text-ean-text-dark hover:bg-gray-50'
+                  : 'bg-transparent text-ean-text-light hover:bg-gray-50'
               }`}
             >
               Weekday
@@ -315,7 +315,7 @@ export default function BuildYourQuoteCard({
               className={`flex-1 sm:flex-none px-6 py-2.5 text-xs md:text-sm font-ui font-semibold transition-all ${
                 day === 'we'
                   ? 'bg-ean-gold text-ean-text-dark shadow-xs'
-                  : 'bg-transparent text-ean-text-dark hover:bg-gray-50'
+                  : 'bg-transparent text-ean-text-light hover:bg-gray-50'
               }`}
             >
               Weekend
@@ -325,7 +325,7 @@ export default function BuildYourQuoteCard({
 
         {/* FIELD 5: PASSENGERS */}
         <div className="space-y-1.5">
-          <label className="block font-ui font-semibold text-sm text-ean-text-dark">
+          <label className="block font-ui font-semibold text-sm text-ean-text-light">
             Passengers
           </label>
           <input
@@ -334,16 +334,16 @@ export default function BuildYourQuoteCard({
             max={60}
             value={pax}
             onChange={(e) => onChangePax(Math.min(60, Math.max(0, Number(e.target.value) || 0)))}
-            className="w-full px-4 py-2.5 bg-white border border-ean-border-light font-ui text-sm text-ean-navy focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
+            className="w-full px-4 py-2.5 bg-white border border-ean-border-light font-ui text-sm text-ean-text-light focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
           />
-          <p className="text-xs font-ui text-ean-muted-dark">
+          <p className="text-xs font-ui text-ean-muted-light">
             Estimate now. Final count is confirmed by the CRO on arrival.
           </p>
         </div>
 
         {/* FIELD 6: STAY */}
         <div className="space-y-2">
-          <label className="block font-ui font-semibold text-sm text-ean-text-dark">
+          <label className="block font-ui font-semibold text-sm text-ean-text-light">
             Stay
           </label>
           <div className="inline-flex p-0.5 bg-white border border-ean-border-light overflow-hidden w-full sm:w-auto">
@@ -354,7 +354,7 @@ export default function BuildYourQuoteCard({
               className={`flex-1 sm:flex-none px-4 py-2.5 text-xs md:text-sm font-ui font-semibold transition-all ${
                 stay === 'same'
                   ? 'bg-ean-gold text-ean-text-dark shadow-xs'
-                  : 'bg-transparent text-ean-text-dark hover:bg-gray-50'
+                  : 'bg-transparent text-ean-text-light hover:bg-gray-50'
               }`}
             >
               Same-day turnaround
@@ -366,7 +366,7 @@ export default function BuildYourQuoteCard({
               className={`flex-1 sm:flex-none px-4 py-2.5 text-xs md:text-sm font-ui font-semibold transition-all ${
                 stay === 'over'
                   ? 'bg-ean-gold text-ean-text-dark shadow-xs'
-                  : 'bg-transparent text-ean-text-dark hover:bg-gray-50'
+                  : 'bg-transparent text-ean-text-light hover:bg-gray-50'
               }`}
             >
               Overnight
@@ -376,20 +376,20 @@ export default function BuildYourQuoteCard({
           {/* OVERNIGHT NIGHTS COUNTER */}
           {stay === 'over' && (
             <div className="flex items-center gap-3 pt-2">
-              <span className="text-xs font-ui text-ean-muted-dark font-medium">Nights:</span>
+              <span className="text-xs font-ui text-ean-muted-light font-medium">Nights:</span>
               <div className="flex items-center gap-2 bg-ean-surface p-1 border border-ean-border-light">
                 <button
                   type="button"
                   onClick={() => onChangeNights(Math.max(1, nights - 1))}
-                  className="w-7 h-7 bg-white text-ean-navy flex items-center justify-center font-bold text-xs shadow-xs hover:bg-gray-100"
+                  className="w-7 h-7 bg-white text-ean-text-light flex items-center justify-center font-bold text-xs shadow-xs hover:bg-gray-100"
                 >
                   <Minus className="w-3 h-3" />
                 </button>
-                <span className="font-mono font-bold text-sm text-ean-navy px-2">{nights}</span>
+                <span className="font-mono font-bold text-sm text-ean-text-light px-2">{nights}</span>
                 <button
                   type="button"
                   onClick={() => onChangeNights(nights + 1)}
-                  className="w-7 h-7 bg-white text-ean-navy flex items-center justify-center font-bold text-xs shadow-xs hover:bg-gray-100"
+                  className="w-7 h-7 bg-white text-ean-text-light flex items-center justify-center font-bold text-xs shadow-xs hover:bg-gray-100"
                 >
                   <Plus className="w-3 h-3" />
                 </button>
@@ -400,7 +400,7 @@ export default function BuildYourQuoteCard({
 
         {/* FIELD 7: HANDLING LEVEL */}
         <div className="space-y-2">
-          <label className="block font-ui font-semibold text-sm text-ean-text-dark">
+          <label className="block font-ui font-semibold text-sm text-ean-text-light">
             Handling level (band is a range)
           </label>
           <div className="inline-flex p-0.5 bg-white border border-ean-border-light overflow-hidden w-full sm:w-auto">
@@ -411,7 +411,7 @@ export default function BuildYourQuoteCard({
               className={`flex-1 sm:flex-none px-6 py-2.5 text-xs md:text-sm font-ui font-semibold transition-all ${
                 handling === 'standard'
                   ? 'bg-ean-gold text-ean-text-dark shadow-xs'
-                  : 'bg-transparent text-ean-text-dark hover:bg-gray-50'
+                  : 'bg-transparent text-ean-text-light hover:bg-gray-50'
               }`}
             >
               Standard
@@ -423,7 +423,7 @@ export default function BuildYourQuoteCard({
               className={`flex-1 sm:flex-none px-6 py-2.5 text-xs md:text-sm font-ui font-semibold transition-all ${
                 handling === 'min'
                   ? 'bg-ean-gold text-ean-text-dark shadow-xs'
-                  : 'bg-transparent text-ean-text-dark hover:bg-gray-50'
+                  : 'bg-transparent text-ean-text-light hover:bg-gray-50'
               }`}
             >
               Floor

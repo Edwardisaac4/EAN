@@ -150,7 +150,7 @@ export default function PricingSection(): React.JSX.Element {
         </div>
 
         {/* INTERACTIVE PRICING ESTIMATOR BOARD */}
-        <div className="bg-ean-navy-mid/90 border border-ean-gold/30 p-6 sm:p-8 lg:p-10 shadow-2xl backdrop-blur-md grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div className="bg-ean-navy-mid/90 border border-ean-gold/30 p-6 sm:p-8 lg:p-10 backdrop-blur-md grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
           {/* LEFT CONFIGURATION PANEL (7 Columns) */}
           <div className="lg:col-span-7 space-y-8">
@@ -213,7 +213,7 @@ export default function PricingSection(): React.JSX.Element {
                       type="button"
                       onClick={() => setSelectedBand(band)}
                       className={`py-3 px-2 text-center font-ui transition-all duration-200 cursor-pointer ${isSelected
-                          ? 'bg-ean-gold text-ean-navy font-bold shadow-lg scale-102'
+                          ? 'bg-ean-gold text-ean-text-dark font-bold shadow-lg scale-102'
                           : 'bg-ean-navy/80 border border-ean-border-dark text-ean-muted-light hover:border-ean-gold/40 hover:text-ean-text-light'
                         }`}
                     >
@@ -249,7 +249,7 @@ export default function PricingSection(): React.JSX.Element {
                     type="button"
                     onClick={() => setSelectedOperation('international')}
                     className={`py-2 px-3 font-ui text-xs font-medium transition-all cursor-pointer ${selectedOperation === 'international'
-                        ? 'bg-ean-gold text-ean-navy font-semibold'
+                        ? 'bg-ean-gold text-ean-text-dark font-semibold'
                         : 'text-ean-muted-light hover:text-ean-text-light'
                       }`}
                   >
@@ -259,7 +259,7 @@ export default function PricingSection(): React.JSX.Element {
                     type="button"
                     onClick={() => setSelectedOperation('domestic')}
                     className={`py-2 px-3 font-ui text-xs font-medium transition-all cursor-pointer ${selectedOperation === 'domestic'
-                        ? 'bg-ean-gold text-ean-navy font-semibold'
+                        ? 'bg-ean-gold text-ean-text-dark font-semibold'
                         : 'text-ean-muted-light hover:text-ean-text-light'
                       }`}
                   >

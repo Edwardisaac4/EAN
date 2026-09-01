@@ -80,14 +80,11 @@ export default function Footer() {
   // email address, and blocking selection stopped visitors copying them.
   return (
     <footer className="bg-linear-to-b from-ean-navy via-ean-navy-mid to-ean-black border-t border-ean-gold/30 pt-12 sm:pt-16 pb-8 mt-auto relative overflow-hidden">
-      {/* Ambient background gold lighting */}
-      <div className="absolute bottom-0 right-0 w-80 sm:w-120 h-80 sm:h-120 rounded-full bg-ean-gold/5 blur-[140px] pointer-events-none" />
-      <div className="absolute top-0 left-10 w-72 h-72 rounded-full bg-blue-950/30 blur-[100px] pointer-events-none" />
 
       <div className="max-w-ean mx-auto px-5 sm:px-6 md:px-8 relative z-10 space-y-10 sm:space-y-12">
 
         {/* Pre-Footer Action Banner */}
-        <div className="p-4 sm:p-6 bg-linear-to-r from-ean-navy via-ean-navy-mid to-ean-navy border border-ean-border-dark backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
+        <div className="p-4 sm:p-6 bg-linear-to-r from-ean-navy via-ean-navy-mid to-ean-navy border border-ean-border-dark backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-center md:text-left">
             <div className="p-2.5 bg-ean-gold/10 text-ean-gold border border-ean-gold/20 shrink-0 hidden sm:block">
               <Compass className="w-5 h-5" />
@@ -105,14 +102,14 @@ export default function Footer() {
           <div className="flex items-center gap-3 w-full md:w-auto justify-center md:justify-end">
             <a
               href="tel:+2348050333410"
-              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white/5 border border-ean-border-dark hover:border-ean-blue/50 text-xs text-ean-text-light transition-colors"
+              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-black/5 border border-ean-border-dark hover:border-ean-blue/50 text-xs text-ean-text-light transition-colors"
             >
               <Phone className="w-3.5 h-3.5 text-ean-gold" />
               <span>+234 (0) 805 033 3410</span>
             </a>
             <a
               href="/contact"
-              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-ean-gold text-ean-navy font-semibold text-xs hover:bg-ean-gold-light transition-colors"
+              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-ean-gold text-ean-text-dark font-semibold text-xs hover:bg-ean-gold-light transition-colors"
             >
               <Mail className="w-3.5 h-3.5" />
               <span>Flight Inquiry</span>
@@ -160,7 +157,7 @@ export default function Footer() {
                     href={soc.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 bg-white/5 border border-ean-border-dark flex items-center justify-center text-ean-muted-light hover:border-ean-blue/60 hover:text-ean-blue-light hover:-translate-y-0.5 transition-[color,border-color,transform] duration-200 cursor-pointer"
+                    className="w-9 h-9 bg-black/5 border border-ean-border-dark flex items-center justify-center text-ean-muted-light hover:border-ean-blue/60 hover:text-ean-blue-light hover:-translate-y-0.5 transition-[color,border-color,transform] duration-200 cursor-pointer"
                     aria-label={soc.label}
                   >
                     <IconComponent className="w-4 h-4" />
@@ -251,12 +248,12 @@ export default function Footer() {
                   24/7 Ops Desk
                 </span>
 
-                <span className="inline-flex items-center gap-1.5 border border-ean-border-dark bg-white/5 text-ean-text-light/80 font-mono text-[10px] tracking-wider px-2.5 py-1">
+                <span className="inline-flex items-center gap-1.5 border border-ean-border-dark bg-black/5 text-ean-text-light/80 font-mono text-[10px] tracking-wider px-2.5 py-1">
                   LOS · DNMM · UTC+1
                 </span>
 
                 {lagosTime && (
-                  <span className="inline-flex items-center gap-1.5 border border-ean-border-dark bg-white/5 text-ean-text-light/80 font-mono text-[10px] tracking-wider px-2.5 py-1">
+                  <span className="inline-flex items-center gap-1.5 border border-ean-border-dark bg-black/5 text-ean-text-light/80 font-mono text-[10px] tracking-wider px-2.5 py-1">
                     <Clock className="w-3 h-3 text-ean-gold/70" />
                     LOS: {lagosTime}
                   </span>
@@ -289,7 +286,7 @@ export default function Footer() {
             {/* Touch-Friendly Back to Top Button */}
             <button
               onClick={scrollToTop}
-              className="group w-8 h-8 border border-ean-border-dark hover:border-ean-blue/60 flex items-center justify-center relative overflow-hidden transition-colors duration-300 text-ean-muted-light hover:text-ean-blue-light cursor-pointer bg-white/5 shrink-0 ml-2"
+              className="group w-8 h-8 border border-ean-border-dark hover:border-ean-blue/60 flex items-center justify-center relative overflow-hidden transition-colors duration-300 text-ean-muted-light hover:text-ean-blue-light cursor-pointer bg-black/5 shrink-0 ml-2"
               aria-label="Scroll to top"
             >
               <div className="absolute transition-transform duration-220 ease-in-out group-hover:-translate-y-5.5">

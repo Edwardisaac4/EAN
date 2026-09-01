@@ -87,10 +87,10 @@ export default function AeroplexHero() {
     <>
       <section
         ref={heroRef}
-        className="relative w-full h-[76vh] min-h-130 max-h-180 overflow-hidden bg-ean-obsidian flex items-end text-ean-text-light"
+        className="relative w-full min-h-105 sm:min-h-120 lg:min-h-130 flex items-center pt-36 pb-20 sm:pt-44 sm:pb-28 overflow-hidden bg-ean-obsidian text-white border-b border-ean-border-dark"
       >
         {/* Background Image Container */}
-        <div ref={heroBgRef} className="absolute inset-0 w-full h-[118%] top-[-9%] select-none">
+        <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none select-none">
           <Image
             src={AEROPLEX_HERO.image}
             alt={AEROPLEX_HERO.imageAlt}
@@ -100,17 +100,18 @@ export default function AeroplexHero() {
             quality={70}
             className="object-cover object-center"
           />
-          {/* Obsidian black overlays matching reference */}
-          <div className="absolute inset-0 bg-linear-to-t from-ean-obsidian via-ean-obsidian/75 via-40% to-ean-black/35" />
-          <div className="absolute inset-0 bg-linear-to-r from-ean-obsidian/92 via-ean-obsidian/55 to-transparent" />
+          {/* Cinematic Obsidian Black luxury overlays — evenly balanced across the image */}
+          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-linear-to-b from-black/80 via-transparent to-black/90" />
+          <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
         </div>
 
         {/* Hero Title & Lede Content */}
-        <div className="relative z-10 w-full max-w-ean mx-auto px-6 md:px-8 pb-12 sm:pb-14">
-          <div className="max-w-2xl space-y-5">
+        <div className="relative z-10 w-full max-w-ean mx-auto px-6 md:px-8">
+          <div className="max-w-3xl space-y-4 sm:space-y-5 text-left">
             {/* Eyebrow */}
             <div ref={eyebrowRef}>
-              <span className="font-ui text-xs font-semibold tracking-[0.25em] text-ean-gold uppercase">
+              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/70 uppercase">
                 {AEROPLEX_HERO.eyebrow}
               </span>
             </div>
@@ -118,17 +119,17 @@ export default function AeroplexHero() {
             {/* Headline with reduced, refined sizing */}
             <h1
               ref={titleRef}
-              className="font-display text-3xl sm:text-4xl md:text-5xl font-light leading-[1.08] tracking-tight text-ean-text-light"
+              className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light leading-[1.1] tracking-tight text-white"
             >
               {AEROPLEX_HERO.title}
             </h1>
 
             {/* Lede Text with refined size */}
-            <div ref={ledeRef} className="space-y-1 pt-0.5">
+            <div ref={ledeRef} className="space-y-2">
               {AEROPLEX_HERO.lede.map((line) => (
                 <p
                   key={line}
-                  className="font-ui text-sm sm:text-base md:text-lg text-ean-text-light/80 leading-relaxed max-w-xl"
+                  className="font-ui text-base sm:text-lg md:text-xl text-white/80 leading-relaxed max-w-xl"
                 >
                   {line}
                 </p>

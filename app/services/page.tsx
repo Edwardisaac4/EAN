@@ -118,8 +118,6 @@ export default function ServicesPage() {
           ref={heroRef}
           className="relative pt-32 pb-20 bg-ean-obsidian border-b border-ean-border-dark overflow-hidden text-ean-text-light"
         >
-          {/* Ambient Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-175 h-175 rounded-full bg-ean-gold/5 blur-[130px] pointer-events-none" />
 
           <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center space-y-4">
             <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
@@ -141,19 +139,17 @@ export default function ServicesPage() {
         </section>
 
         {/* SECTION 2: Our Services Showcase Grid */}
-        <section className="bg-ean-surface text-ean-text-dark py-20 sm:py-24 border-b border-ean-border-light/60 relative overflow-hidden">
-          {/* Subtle Ambient Radial Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 rounded-full bg-ean-gold/10 blur-[120px] pointer-events-none" />
+        <section className="bg-ean-surface text-ean-text-light py-20 sm:py-24 border-b border-ean-border-light/60 relative overflow-hidden">
 
           <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
             <SectionReveal className="text-center max-w-3xl mx-auto mb-16 sm:mb-20 space-y-4">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
                 Service Lines
               </span>
-              <h2 className="font-display text-3xl sm:text-4xl font-light text-ean-navy leading-tight">
+              <h2 className="font-display text-3xl sm:text-4xl font-light text-ean-text-light leading-tight">
                 Our Services at a Glance
               </h2>
-              <p className="font-ui text-base sm:text-lg text-ean-muted-dark leading-relaxed">
+              <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
                 Explore EAN&apos;s full spectrum of specialized business aviation solutions. Select any service to inquire with our operations desk.
               </p>
             </SectionReveal>
@@ -172,7 +168,7 @@ export default function ServicesPage() {
                     {config.cardType === 'wide' && (
                       <div
                         className={`relative bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-ean-border-dark hover:border-ean-gold/60 flex flex-col ${isImageRight ? 'lg:flex-row-reverse' : 'lg:flex-row'
-                          } h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-ean-black/50 overflow-hidden`}
+                          } h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 overflow-hidden`}
                       >
                         {/* Image Section */}
                         <div className="relative h-52 sm:h-60 lg:h-auto lg:w-1/2 overflow-hidden shrink-0 min-h-55">
@@ -251,7 +247,7 @@ export default function ServicesPage() {
 
                     {config.cardType === 'tall' && (
                       <div
-                        className="relative bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-ean-border-dark hover:border-ean-gold/60 flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-ean-black/50 overflow-hidden min-h-125 lg:min-h-full"
+                        className="relative bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-ean-border-dark hover:border-ean-gold/60 flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 overflow-hidden min-h-125 lg:min-h-full"
                       >
                         {/* Background Image */}
                         <div className="absolute inset-0 w-full h-full overflow-hidden">
@@ -323,7 +319,7 @@ export default function ServicesPage() {
 
                     {config.cardType === 'square' && (
                       <div
-                        className="bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-ean-border-dark hover:border-ean-gold/60 flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-ean-black/50 overflow-hidden"
+                        className="bg-linear-to-b from-ean-obsidian-highlight via-ean-obsidian-raised to-ean-obsidian border border-ean-border-dark hover:border-ean-gold/60 flex flex-col justify-between h-full group transition-all duration-500 ease-out hover:-translate-y-1.5 overflow-hidden"
                       >
                         {/* Card Image */}
                         <div className="relative h-48 w-full overflow-hidden shrink-0">
@@ -398,8 +394,6 @@ export default function ServicesPage() {
 
         {/* SECTION 4: Charter & Hangar CTA Banner */}
         <section className="bg-linear-to-r from-ean-obsidian via-ean-obsidian-elevated to-ean-obsidian py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
-          {/* Golden glow */}
-          <div className="absolute -bottom-48 -left-48 w-96 h-96 rounded-full bg-ean-gold/5 blur-[120px] pointer-events-none" />
 
           <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center">
             <SectionReveal className="max-w-3xl mx-auto space-y-8">

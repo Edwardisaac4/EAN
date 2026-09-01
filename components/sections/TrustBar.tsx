@@ -15,7 +15,7 @@ const CELL_RULES = [
 
 export default function TrustBar() {
   return (
-    <section className="bg-ean-navy/95 dark:bg-ean-navy border-y border-ean-border-dark py-4 sm:py-5 md:py-6 relative z-20">
+    <section className="bg-ean-navy/95 border-y border-ean-border-dark py-4 sm:py-5 md:py-6 relative z-20">
       <div className="max-w-ean mx-auto px-3 sm:px-6 md:px-8">
         <SectionReveal>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-4 sm:gap-y-0 gap-x-2 sm:gap-x-4 md:gap-x-6 text-center">

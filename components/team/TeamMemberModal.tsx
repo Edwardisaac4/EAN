@@ -68,7 +68,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
           {/* Backdrop Blur Overlay */}
           <div
             onClick={onClose}
-            className={`fixed inset-0 bg-ean-black/75 backdrop-blur-xl backdrop-saturate-150 cursor-pointer ${
+            className={`fixed inset-0 bg-black/75 backdrop-blur-xl backdrop-saturate-150 cursor-pointer ${
               state === 'open' ? 'ean-enter-fade' : 'ean-exit-fade'
             }`}
           />
@@ -90,7 +90,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-full text-ean-text-light/80 hover:text-ean-text-light hover:bg-white/20 transition-all cursor-pointer"
+                className="p-2 rounded-full text-ean-text-light/80 hover:text-ean-text-light hover:bg-black/20 transition-all cursor-pointer"
                 aria-label="Close bio profile"
               >
                 <X className="w-5 h-5" />
@@ -111,14 +111,14 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                       className="object-cover object-top"
                       quality={80}
                     />
-                    <div className="absolute inset-0 bg-linear-to-t from-ean-black/40 via-transparent to-transparent opacity-60" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-60" />
                   </div>
 
                   <div className="p-4 bg-white border border-ean-gold/25 shadow-xs space-y-1">
                     <div className="text-[10px] uppercase tracking-widest text-ean-gold font-bold">
                       Department
                     </div>
-                    <div className="text-sm font-bold text-ean-text-dark font-ui">
+                    <div className="text-sm font-bold text-ean-text-light font-ui">
                       {activeMember.departmentLabel}
                     </div>
                   </div>
@@ -130,17 +130,17 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                     <span className="font-ui text-xs font-bold uppercase tracking-[0.25em] text-ean-gold">
                       {activeMember.departmentLabel}
                     </span>
-                    <h2 id={titleId} className="font-display text-2xl sm:text-3xl font-light text-ean-text-dark mt-1">
+                    <h2 id={titleId} className="font-display text-2xl sm:text-3xl font-light text-ean-text-light mt-1">
                       {activeMember.name}
                     </h2>
-                    <p className="font-ui text-base text-ean-navy font-semibold mt-1">
+                    <p className="font-ui text-base text-ean-text-light font-semibold mt-1">
                       {activeMember.role}
                     </p>
                   </div>
 
                   {/* Signature Quote */}
                   {activeMember.quote && (
-                    <div className="p-5 bg-linear-to-r from-ean-gold/15 via-white to-white border-l border-ean-gold shadow-xs font-display italic text-sm sm:text-base text-ean-text-dark relative overflow-hidden">
+                    <div className="p-5 bg-linear-to-r from-ean-gold/15 via-white to-white border-l border-ean-gold shadow-xs font-display italic text-sm sm:text-base text-ean-text-light relative overflow-hidden">
                       <Quote className="w-6 h-6 text-ean-gold/30 absolute top-3 right-3" />
                       &ldquo;{activeMember.quote}&rdquo;
                     </div>
@@ -175,7 +175,7 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
                       {activeMember.highlights.map((h, hIdx) => (
                         <div key={hIdx} className="bg-linear-to-br from-white to-ean-surface p-4 border border-ean-gold/30 shadow-xs">
-                          <div className="font-display text-2xl font-bold text-ean-burgundy-accent">{h.value}</div>
+                          <div className="font-display text-2xl font-bold text-ean-text-light">{h.value}</div>
                           <div className="font-ui text-[10px] uppercase tracking-wider text-slate-600 font-semibold">{h.label}</div>
                         </div>
                       ))}

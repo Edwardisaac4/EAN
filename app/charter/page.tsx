@@ -38,7 +38,7 @@ export default function CharterPage() {
            * photograph replaces this one — the prototype's own note on its hero
            * scrim, and the reason the gradient is not a flat overlay.
            */}
-          <div className="absolute inset-0 bg-linear-to-t from-ean-black/95 via-ean-black/70 to-ean-black/70" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/70 to-black/70" />
 
           <div className="relative z-10 w-full max-w-ean mx-auto px-6.5 pt-32 pb-14">
             <Eyebrow as="p">Charter request</Eyebrow>
@@ -51,7 +51,7 @@ export default function CharterPage() {
              * weekdays — C50 holds every timing claim until Operations confirms
              * it. A service level we miss is an integrity breach in writing.
              */}
-            <p className="mt-5 max-w-[56ch] font-ui text-base sm:text-[17px] font-light text-ean-muted-light leading-relaxed">
+            <p className="mt-5 max-w-[56ch] font-ui text-base sm:text-[17px] font-light text-white/70 leading-relaxed">
               Tell us the route and the date. Our charter desk responds with aircraft options and
               an all-in price.
             </p>

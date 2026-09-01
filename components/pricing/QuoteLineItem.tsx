@@ -11,7 +11,7 @@ export default function QuoteLineItem({ item }: QuoteLineItemProps) {
   return (
     <div className="flex items-start justify-between py-2.5 border-b border-gray-100 last:border-b-0">
       <div className="pr-2">
-        <div className="text-xs font-ui font-semibold text-ean-text-dark flex items-center gap-1.5">
+        <div className="text-xs font-ui font-semibold text-ean-text-light flex items-center gap-1.5">
           {item.label}
           {item.provisional && (
             <span className="text-[10px] bg-amber-100 text-amber-800 border border-amber-200 px-1.5 py-0.5 font-mono font-medium">
@@ -31,7 +31,7 @@ export default function QuoteLineItem({ item }: QuoteLineItemProps) {
         ) : (
           <span
             className={`text-xs font-mono font-bold tabular-nums ${
-              item.provisional ? 'text-amber-700' : 'text-ean-text-dark'
+              item.provisional ? 'text-amber-700' : 'text-ean-text-light'
             }`}
           >
             USD {item.value.toLocaleString()}

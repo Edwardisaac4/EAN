@@ -402,19 +402,15 @@ const handleShareLink = async () => {
 return (
   <section id="pricing-portal" className="relative w-full bg-linear-to-b from-ean-burgundy-night via-ean-black to-ean-black-accent text-ean-text-light py-14 sm:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden font-ui">
 
-    {/* Background Radial Ambiance */}
-    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-225 h-137.5 bg-ean-gold/5 blur-[160px] pointer-events-none rounded-full" />
-    <div className="absolute bottom-10 right-10 w-150 h-150 bg-ean-burgundy-rich/25 blur-[180px] pointer-events-none rounded-full" />
-
     <div className="relative z-10 max-w-ean mx-auto space-y-8">
 
       {/* APP TOOLBAR & NAVIGATION SHELL */}
       <SectionReveal>
-        <div className="bg-linear-to-r from-ean-black-accent via-ean-burgundy-deep/40 to-ean-black-accent border border-ean-gold/25 p-4 sm:p-5 backdrop-blur-xl shadow-2xl flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+        <div className="bg-linear-to-r from-ean-black-accent via-ean-burgundy-deep/40 to-ean-black-accent border border-ean-gold/25 p-4 sm:p-5 backdrop-blur-xl flex flex-col lg:flex-row lg:items-center justify-between gap-5">
 
           {/* Header Badge & Title */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-linear-to-br from-ean-gold to-amber-600 flex items-center justify-center text-ean-burgundy-night shadow-[0_0_20px_rgba(169,137,90,0.4)] shrink-0 font-bold">
+            <div className="w-10 h-10 bg-linear-to-br from-ean-gold to-amber-600 flex items-center justify-center text-ean-text-light shadow-[0_0_20px_rgba(43,0,152,0.4)] shrink-0 font-bold">
               <Plane className="w-5 h-5" />
             </div>
             <div>
@@ -437,21 +433,21 @@ return (
             <div className="inline-flex p-1 bg-ean-black-pure/80 border border-ean-gold/20">
               <button
                 onClick={() => setAppMode('calculator')}
-                className={`px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${appMode === 'calculator' ? 'bg-ean-gold text-ean-burgundy-night font-bold shadow-md' : 'text-ean-muted-light hover:text-ean-text-light'
+                className={`px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${appMode === 'calculator' ? 'bg-ean-gold text-ean-text-dark font-bold shadow-md' : 'text-ean-muted-light hover:text-ean-text-light'
                   }`}
               >
                 <Calculator className="w-3.5 h-3.5" /> Quote Builder
               </button>
               <button
                 onClick={() => setAppMode('fleet')}
-                className={`px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${appMode === 'fleet' ? 'bg-ean-gold text-ean-burgundy-night font-bold shadow-md' : 'text-ean-muted-light hover:text-ean-text-light'
+                className={`px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${appMode === 'fleet' ? 'bg-ean-gold text-ean-text-dark font-bold shadow-md' : 'text-ean-muted-light hover:text-ean-text-light'
                   }`}
               >
                 <Layers className="w-3.5 h-3.5" /> Fleet Specs
               </button>
               <button
                 onClick={() => setAppMode('tariff')}
-                className={`px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${appMode === 'tariff' ? 'bg-ean-gold text-ean-burgundy-night font-bold shadow-md' : 'text-ean-muted-light hover:text-ean-text-light'
+                className={`px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${appMode === 'tariff' ? 'bg-ean-gold text-ean-text-dark font-bold shadow-md' : 'text-ean-muted-light hover:text-ean-text-light'
                   }`}
               >
                 <FileText className="w-3.5 h-3.5" /> Rate Matrix
@@ -489,7 +485,7 @@ return (
             >
               <Share2 className="w-4 h-4 text-ean-gold" />
               {copiedLink && (
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-ean-gold text-ean-burgundy-night text-[10px] font-bold whitespace-nowrap shadow-lg">
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-ean-gold text-ean-text-dark text-[10px] font-bold whitespace-nowrap shadow-lg">
                   Copied!
                 </span>
               )}
@@ -505,7 +501,7 @@ return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
           {/* LEFT FORM CONFIGURATOR (7 cols) */}
-          <div className="lg:col-span-7 bg-linear-to-b from-ean-black-accent/90 to-ean-burgundy-deep/60 border border-ean-gold/20 p-6 sm:p-8 backdrop-blur-xl shadow-2xl space-y-8">
+          <div className="lg:col-span-7 bg-linear-to-b from-ean-black-accent/90 to-ean-burgundy-deep/60 border border-ean-gold/20 p-6 sm:p-8 backdrop-blur-xl space-y-8">
 
             {/* Header Step Label */}
             <div className="flex items-center justify-between border-b border-ean-gold/15 pb-4">
@@ -553,7 +549,7 @@ return (
 
               {/* Dropdown Popup Menu */}
               {isDropdownOpen && (
-                <div className="absolute top-full left-0 right-0 mt-2 z-50 bg-linear-to-b from-ean-black-accent via-ean-burgundy-dark to-ean-black-pure border border-ean-gold/40 shadow-2xl overflow-hidden max-h-96 flex flex-col backdrop-blur-2xl">
+                <div className="absolute top-full left-0 right-0 mt-2 z-50 bg-linear-to-b from-ean-black-accent via-ean-burgundy-dark to-ean-black-pure border border-ean-gold/40 overflow-hidden max-h-96 flex flex-col backdrop-blur-2xl">
 
                   {/* Search & Category Filter Header */}
                   <div className="p-3 border-b border-ean-gold/20 space-y-2 bg-ean-black-pure/90">
@@ -588,7 +584,7 @@ return (
                           type="button"
                           onClick={() => setSelectedCategoryFilter(cat.id)}
                           className={`px-2.5 py-0.5 text-[11px] font-medium transition-all cursor-pointer whitespace-nowrap ${selectedCategoryFilter === cat.id
-                            ? 'bg-ean-gold text-ean-burgundy-night font-bold'
+                            ? 'bg-ean-gold text-ean-text-dark font-bold'
                             : 'bg-ean-black-accent border border-ean-border-dark text-ean-muted-light hover:text-ean-text-light hover:border-ean-gold/30'
                             }`}
                         >
@@ -661,7 +657,7 @@ return (
                     type="button"
                     onClick={() => setLocation('lagos')}
                     className={`py-2.5 text-xs font-semibold transition-all cursor-pointer ${location === 'lagos'
-                      ? 'bg-ean-gold text-ean-burgundy-night font-bold shadow-md'
+                      ? 'bg-ean-gold text-ean-text-dark font-bold shadow-md'
                       : 'text-ean-muted-light hover:text-ean-text-light'
                       }`}
                   >
@@ -671,7 +667,7 @@ return (
                     type="button"
                     onClick={() => setLocation('abuja')}
                     className={`py-2.5 text-xs font-semibold transition-all cursor-pointer ${location === 'abuja'
-                      ? 'bg-ean-gold text-ean-burgundy-night font-bold shadow-md'
+                      ? 'bg-ean-gold text-ean-text-dark font-bold shadow-md'
                       : 'text-ean-muted-light hover:text-ean-text-light'
                       }`}
                   >
@@ -690,7 +686,7 @@ return (
                     type="button"
                     onClick={() => setOperation('domestic')}
                     className={`py-2.5 text-xs font-semibold transition-all cursor-pointer ${operation === 'domestic'
-                      ? 'bg-ean-gold text-ean-burgundy-night font-bold shadow-md'
+                      ? 'bg-ean-gold text-ean-text-dark font-bold shadow-md'
                       : 'text-ean-muted-light hover:text-ean-text-light'
                       }`}
                   >
@@ -700,7 +696,7 @@ return (
                     type="button"
                     onClick={() => setOperation('international')}
                     className={`py-2.5 text-xs font-semibold transition-all cursor-pointer ${operation === 'international'
-                      ? 'bg-ean-gold text-ean-burgundy-night font-bold shadow-md'
+                      ? 'bg-ean-gold text-ean-text-dark font-bold shadow-md'
                       : 'text-ean-muted-light hover:text-ean-text-light'
                       }`}
                   >
@@ -719,7 +715,7 @@ return (
                     type="button"
                     onClick={() => setMovement('weekday')}
                     className={`py-2.5 text-xs font-semibold transition-all cursor-pointer ${movement === 'weekday'
-                      ? 'bg-ean-gold text-ean-burgundy-night font-bold shadow-md'
+                      ? 'bg-ean-gold text-ean-text-dark font-bold shadow-md'
                       : 'text-ean-muted-light hover:text-ean-text-light'
                       }`}
                   >
@@ -729,7 +725,7 @@ return (
                     type="button"
                     onClick={() => setMovement('weekend')}
                     className={`py-2.5 text-xs font-semibold transition-all cursor-pointer ${movement === 'weekend'
-                      ? 'bg-ean-gold text-ean-burgundy-night font-bold shadow-md'
+                      ? 'bg-ean-gold text-ean-text-dark font-bold shadow-md'
                       : 'text-ean-muted-light hover:text-ean-text-light'
                       }`}
                   >
@@ -774,7 +770,7 @@ return (
                   type="button"
                   onClick={() => setStay('same_day')}
                   className={`p-3.5 border text-left transition-all cursor-pointer flex items-center justify-between ${stay === 'same_day'
-                    ? 'bg-linear-to-r from-ean-gold/15 to-ean-burgundy-deep/30 border-ean-gold text-ean-text-light shadow-[0_0_12px_rgba(169,137,90,0.15)]'
+                    ? 'bg-linear-to-r from-ean-gold/15 to-ean-burgundy-deep/30 border-ean-gold text-ean-text-light shadow-[0_0_12px_rgba(43,0,152,0.15)]'
                     : 'bg-ean-black-pure/60 border-ean-border-dark text-ean-muted-light hover:border-ean-gold/30'
                     }`}
                 >
@@ -789,7 +785,7 @@ return (
                   type="button"
                   onClick={() => setStay('overnight')}
                   className={`p-3.5 border text-left transition-all cursor-pointer flex items-center justify-between ${stay === 'overnight'
-                    ? 'bg-linear-to-r from-ean-gold/15 to-ean-burgundy-deep/30 border-ean-gold text-ean-text-light shadow-[0_0_12px_rgba(169,137,90,0.15)]'
+                    ? 'bg-linear-to-r from-ean-gold/15 to-ean-burgundy-deep/30 border-ean-gold text-ean-text-light shadow-[0_0_12px_rgba(43,0,152,0.15)]'
                     : 'bg-ean-black-pure/60 border-ean-border-dark text-ean-muted-light hover:border-ean-gold/30'
                     }`}
                 >
@@ -833,7 +829,7 @@ return (
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
-          <label className={`p-3 border flex items-center justify-between cursor-pointer transition-all ${addOns.vipLounge ? 'bg-linear-to-r from-ean-gold/15 to-ean-burgundy-deep/30 border-ean-gold text-ean-text-light shadow-[0_0_12px_rgba(169,137,90,0.15)]' : 'bg-ean-black-pure/60 border-ean-border-dark text-ean-muted-light hover:border-ean-blue/50'
+          <label className={`p-3 border flex items-center justify-between cursor-pointer transition-all ${addOns.vipLounge ? 'bg-linear-to-r from-ean-gold/15 to-ean-burgundy-deep/30 border-ean-gold text-ean-text-light shadow-[0_0_12px_rgba(43,0,152,0.15)]' : 'bg-ean-black-pure/60 border-ean-border-dark text-ean-muted-light hover:border-ean-blue/50'
             }`}>
             <div className="flex items-center gap-2.5">
               <input
@@ -851,7 +847,7 @@ return (
             </div>
           </label>
 
-          <label className={`p-3 border flex items-center justify-between cursor-pointer transition-all ${addOns.catering ? 'bg-linear-to-r from-ean-gold/15 to-ean-burgundy-deep/30 border-ean-gold text-ean-text-light shadow-[0_0_12px_rgba(169,137,90,0.15)]' : 'bg-ean-black-pure/60 border-ean-border-dark text-ean-muted-light hover:border-ean-blue/50'
+          <label className={`p-3 border flex items-center justify-between cursor-pointer transition-all ${addOns.catering ? 'bg-linear-to-r from-ean-gold/15 to-ean-burgundy-deep/30 border-ean-gold text-ean-text-light shadow-[0_0_12px_rgba(43,0,152,0.15)]' : 'bg-ean-black-pure/60 border-ean-border-dark text-ean-muted-light hover:border-ean-blue/50'
             }`}>
             <div className="flex items-center gap-2.5">
               <input
@@ -869,7 +865,7 @@ return (
             </div>
           </label>
 
-          <label className={`p-3 border flex items-center justify-between cursor-pointer transition-all ${addOns.gpuPower ? 'bg-linear-to-r from-ean-gold/15 to-ean-burgundy-deep/30 border-ean-gold text-ean-text-light shadow-[0_0_12px_rgba(169,137,90,0.15)]' : 'bg-ean-black-pure/60 border-ean-border-dark text-ean-muted-light hover:border-ean-blue/50'
+          <label className={`p-3 border flex items-center justify-between cursor-pointer transition-all ${addOns.gpuPower ? 'bg-linear-to-r from-ean-gold/15 to-ean-burgundy-deep/30 border-ean-gold text-ean-text-light shadow-[0_0_12px_rgba(43,0,152,0.15)]' : 'bg-ean-black-pure/60 border-ean-border-dark text-ean-muted-light hover:border-ean-blue/50'
             }`}>
             <div className="flex items-center gap-2.5">
               <input
@@ -887,7 +883,7 @@ return (
             </div>
           </label>
 
-          <label className={`p-3 border flex items-center justify-between cursor-pointer transition-all ${addOns.waterService ? 'bg-linear-to-r from-ean-gold/15 to-ean-burgundy-deep/30 border-ean-gold text-ean-text-light shadow-[0_0_12px_rgba(169,137,90,0.15)]' : 'bg-ean-black-pure/60 border-ean-border-dark text-ean-muted-light hover:border-ean-blue/50'
+          <label className={`p-3 border flex items-center justify-between cursor-pointer transition-all ${addOns.waterService ? 'bg-linear-to-r from-ean-gold/15 to-ean-burgundy-deep/30 border-ean-gold text-ean-text-light shadow-[0_0_12px_rgba(43,0,152,0.15)]' : 'bg-ean-black-pure/60 border-ean-border-dark text-ean-muted-light hover:border-ean-blue/50'
             }`}>
             <div className="flex items-center gap-2.5">
               <input
@@ -914,7 +910,7 @@ return (
 <div className="lg:col-span-5 space-y-6">
 
   {/* Target Aircraft Spec Card */}
-  <div className="bg-linear-to-br from-ean-burgundy-mid via-ean-black-accent to-ean-burgundy-dark border border-ean-gold/30 p-6 shadow-2xl relative overflow-hidden">
+  <div className="bg-linear-to-br from-ean-burgundy-mid via-ean-black-accent to-ean-burgundy-dark border border-ean-gold/30 p-6 relative overflow-hidden">
     <div className="absolute top-0 right-0 w-32 h-32 bg-ean-gold/10 rounded-full blur-2xl pointer-events-none" />
     <div className="relative z-10 space-y-3">
       <div className="flex items-center justify-between">
@@ -950,7 +946,7 @@ return (
   </div>
 
   {/* GATED PRICING CONTAINER */}
-  <div className="bg-linear-to-b from-ean-black-accent/90 via-ean-burgundy-deep/60 to-ean-black-pure border border-ean-gold/30 p-6 backdrop-blur-xl shadow-2xl relative space-y-6 overflow-hidden">
+  <div className="bg-linear-to-b from-ean-black-accent/90 via-ean-burgundy-deep/60 to-ean-black-pure border border-ean-gold/30 p-6 backdrop-blur-xl relative space-y-6 overflow-hidden">
 
     {/* STATE A: PRICE UNLOCKED */}
     {isPriceRevealed ? (
@@ -1050,10 +1046,10 @@ return (
         </div>
 
         {/* HIGH-CONTRAST LEAD COLLECTION OVERLAY */}
-        <div className="absolute inset-0 z-20 flex flex-col justify-center bg-linear-to-b from-ean-black-accent/98 via-ean-burgundy-night/98 to-ean-black-pure/98 border border-ean-gold/40 p-6 space-y-4 backdrop-blur-xl shadow-2xl">
+        <div className="absolute inset-0 z-20 flex flex-col justify-center bg-linear-to-b from-ean-black-accent/98 via-ean-burgundy-night/98 to-ean-black-pure/98 border border-ean-gold/40 p-6 space-y-4 backdrop-blur-xl">
 
           <div className="flex items-center gap-3 border-b border-ean-gold/20 pb-3">
-            <div className="w-9 h-9 bg-linear-to-br from-ean-gold to-amber-600 flex items-center justify-center text-ean-burgundy-night shrink-0 shadow-[0_0_15px_rgba(169,137,90,0.4)]">
+            <div className="w-9 h-9 bg-linear-to-br from-ean-gold to-amber-600 flex items-center justify-center text-ean-text-light shrink-0 shadow-[0_0_15px_rgba(43,0,152,0.4)]">
               <Lock className="w-4 h-4 font-bold" />
             </div>
             <div>
@@ -1133,7 +1129,7 @@ return (
             <GoldButton
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 text-xs font-bold uppercase tracking-wider shadow-[0_4px_25px_rgba(169,137,90,0.4)] mt-2"
+              className="w-full py-3.5 text-xs font-bold uppercase tracking-wider shadow-[0_4px_25px_rgba(43,0,152,0.4)] mt-2"
             >
               {isSubmitting ? 'Unlocking Quote...' : 'Reveal Rate Estimate'}
               <ArrowRight className="w-4 h-4 ml-1" />
@@ -1165,7 +1161,7 @@ return (
 {/* WORKSPACE MODE 2: FLEET SPECS EXPLORER */ }
 {
   appMode === 'fleet' && (
-    <div className="bg-linear-to-b from-ean-black-accent/90 to-ean-burgundy-deep/60 border border-ean-gold/20 p-6 sm:p-8 backdrop-blur-xl shadow-2xl space-y-6">
+    <div className="bg-linear-to-b from-ean-black-accent/90 to-ean-burgundy-deep/60 border border-ean-gold/20 p-6 sm:p-8 backdrop-blur-xl space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-ean-gold/15 pb-6">
         <div>
           <h2 className="font-display text-2xl font-semibold text-ean-text-light">Business Aircraft Fleet Explorer</h2>
@@ -1184,7 +1180,7 @@ return (
           <div
             key={ac.id}
             className={`p-5 border transition-all duration-300 space-y-4 flex flex-col justify-between ${selectedAircraft.id === ac.id
-              ? 'bg-linear-to-br from-ean-gold/15 via-ean-burgundy-accent/20 to-ean-black-accent border-ean-gold shadow-[0_4px_25px_rgba(169,137,90,0.25)]'
+              ? 'bg-linear-to-br from-ean-gold/15 via-ean-burgundy-accent/20 to-ean-black-accent border-ean-gold shadow-[0_4px_25px_rgba(43,0,152,0.25)]'
               : 'bg-ean-black-pure/70 border-ean-border-dark hover:border-ean-gold/40'
               }`}
           >
@@ -1222,7 +1218,7 @@ return (
                 setSelectedAircraft(ac);
                 setAppMode('calculator');
               }}
-              className="w-full mt-4 py-2.5 bg-ean-black-accent hover:bg-ean-gold hover:text-ean-burgundy-night text-ean-text-light border border-ean-gold/20 font-semibold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-full mt-4 py-2.5 bg-ean-black-accent hover:bg-ean-gold hover:text-ean-text-dark text-ean-text-light border border-ean-gold/20 font-semibold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <Calculator className="w-3.5 h-3.5 text-ean-gold" /> Calculate Quote for this Aircraft
             </button>
@@ -1236,7 +1232,7 @@ return (
 {/* WORKSPACE MODE 3: TARIFF RATE MATRIX */ }
 {
   appMode === 'tariff' && (
-    <div className="bg-linear-to-b from-ean-black-accent/90 to-ean-burgundy-deep/60 border border-ean-gold/20 p-6 sm:p-8 backdrop-blur-xl shadow-2xl space-y-6">
+    <div className="bg-linear-to-b from-ean-black-accent/90 to-ean-burgundy-deep/60 border border-ean-gold/20 p-6 sm:p-8 backdrop-blur-xl space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-ean-gold/15 pb-6">
         <div>
           <h2 className="font-display text-2xl font-semibold text-ean-text-light">EAN Approved Tariff Matrix</h2>
@@ -1246,7 +1242,7 @@ return (
         </div>
         <button
           onClick={() => setAppMode('calculator')}
-          className="px-4 py-2 bg-ean-gold text-ean-burgundy-night text-xs font-bold shadow-md hover:bg-ean-gold-light transition-all cursor-pointer self-start sm:self-auto"
+          className="px-4 py-2 bg-ean-gold text-ean-text-dark text-xs font-bold shadow-md hover:bg-ean-gold-light transition-all cursor-pointer self-start sm:self-auto"
         >
           ← Switch to Calculator
         </button>
@@ -1301,8 +1297,8 @@ return (
   {/* SAVED QUOTES DRAWER */ }
 {
   isSavedDrawerOpen && (
-    <div className="fixed inset-0 z-50 bg-ean-black/80 backdrop-blur-md flex justify-end">
-      <div className="w-full max-w-md bg-linear-to-b from-ean-black-accent via-ean-burgundy-dark to-ean-black-pure border-l border-ean-gold/30 h-full p-6 space-y-6 overflow-y-auto shadow-2xl">
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex justify-end">
+      <div className="w-full max-w-md bg-linear-to-b from-ean-black-accent via-ean-burgundy-dark to-ean-black-pure border-l border-ean-gold/30 h-full p-6 space-y-6 overflow-y-auto">
         <div className="flex items-center justify-between border-b border-ean-gold/20 pb-4">
           <div className="flex items-center gap-2">
             <Bookmark className="w-5 h-5 text-ean-gold" />
@@ -1355,8 +1351,8 @@ return (
 {/* FORMAL PRINTABLE PDF QUOTE MODAL */ }
 {
   isPrintModalOpen && (
-    <div className="fixed inset-0 z-50 bg-ean-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-      <div className="w-full max-w-3xl bg-white text-slate-900 p-8 space-y-6 shadow-2xl relative my-8">
+    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+      <div className="w-full max-w-3xl bg-white text-slate-900 border border-ean-grey/50 p-8 space-y-6 relative my-8">
         <button
           onClick={() => setIsPrintModalOpen(false)}
           className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900 cursor-pointer"
