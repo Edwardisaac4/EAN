@@ -2,6 +2,23 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * The ops strip's one cut: the resting desktop bar.
+ *
+ * Width alone cannot express it. Every iPad in landscape is wider than the
+ * 960px the row needs — mini 1133, iPad and Air 1180, Pro 11" 1194, Pro 13"
+ * 1366 — so a plain `min-[960px]` froze the strip on all of them, and pushing
+ * the number past 1366 to catch them would freeze it on nothing and sweep in
+ * every 1280 and 1366 laptop instead.
+ *
+ * So it asks what the device is, not how wide it is. `hover: hover` and
+ * `pointer: fine` together are a mouse or a trackpad driving a cursor; iPadOS
+ * reports `hover: none` and `pointer: coarse` even with the Magic Keyboard
+ * attached, and phones report the same. Anything that is not a wide, cursor-
+ * driven screen gets the ticker.
+ */
+@custom-variant ops-static (@media (min-width: 960px) and (hover: hover) and (pointer: fine));
+
 @theme {
   /*
    * Surfaces — the paper ramp.

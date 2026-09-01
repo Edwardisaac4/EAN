@@ -41,8 +41,18 @@ export default function CharterPage() {
           <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/70 to-black/70" />
 
           <div className="relative z-10 w-full max-w-ean mx-auto px-6.5 pt-32 pb-14">
-            <Eyebrow as="p">Charter request</Eyebrow>
-            <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-[52px]">
+            {/*
+             * White at the call site, not the inherited token. `text-ean-text-light`
+             * is INK under the v8 paper ramp — correct on a white section, invisible
+             * on this photograph. Every other full-bleed hero on the site (/about,
+             * /history, /team, /contact, /services/[slug]) already sets white here;
+             * this one was missed in the conversion. The eyebrow goes with it: the
+             * shared component is brand blue, which is 1.3:1 on the scrim.
+             */}
+            <Eyebrow as="p" className="text-white/70">
+              Charter request
+            </Eyebrow>
+            <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-[52px] text-white">
               Request a charter.
             </h1>
             {/*

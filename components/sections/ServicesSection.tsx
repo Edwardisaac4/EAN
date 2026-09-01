@@ -152,12 +152,12 @@ export default function ServicesSection() {
                   onClick={() => setActiveTab(idx)}
                   className={`relative z-10 flex items-center gap-2.5 px-5 py-3 font-ui text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap transition-all duration-300 cursor-pointer ${
                     isActive
-                      ? 'text-ean-text-light font-semibold'
+                      ? 'text-ean-text-dark font-semibold'
                       : 'text-ean-muted-light hover:text-ean-blue-light bg-ean-obsidian-elevated/80 border border-ean-border-dark hover:border-ean-blue/50'
                   }`}
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    <IconComp size={16} className={isActive ? 'text-ean-text-light' : 'text-ean-gold'} />
+                    <IconComp size={16} className={isActive ? 'text-ean-text-dark' : 'text-ean-gold'} />
                     <span>{srv.tabLabel || srv.name}</span>
                   </span>
                 </button>
