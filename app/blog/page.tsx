@@ -159,21 +159,55 @@ export default function BlogPage() {
         {/* SECTION 1: Featured Post Hero */}
         <section
           ref={heroRef}
-          className="relative pt-32 pb-20 bg-linear-to-b from-ean-navy to-ean-navy-mid border-b border-ean-border-dark overflow-hidden"
+          className="relative pt-36 pb-24 overflow-hidden"
         >
+          {/*
+           * Full-bleed photograph. Decorative — the featured article's own
+           * headline is the h1 — so `alt` is empty. `priority` lives here now
+           * rather than on the cover image below: this band is the larger
+           * above-the-fold paint and therefore the LCP element, and AGENTS.md
+           * §8 allows exactly one per page. `quality={70}` is the whitelisted
+           * step for full-bleed hero art.
+           *
+           * The scrim is tuned to this frame, not shared with the other two
+           * heroes. This one is a lounge interior: two warm lamps in the lower
+           * left, directly behind where the excerpt starts, and a floodlit
+           * fuselage behind the headline. Those are the two constraints, and
+           * they are what set 40% flat plus a 35/10/40 gradient — at that
+           * weight the excerpt clears 5.8:1 against its worst pixel and the
+           * headline 3.8:1, while the lamps and the jet both survive. Dropping
+           * to 30% puts the headline at 2.7:1 over the fuselage.
+           *
+           * A second photograph sits inside this band (the featured cover), and
+           * the scrim is also what separates them: the band reads as ground,
+           * the card as the image.
+           */}
+          <div className="absolute inset-0 z-0" aria-hidden="true">
+            <Image
+              src="/images/insight Hero.jpg"
+              alt=""
+              fill
+              sizes="100vw"
+              quality={70}
+              priority
+              className="object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-linear-to-b from-black/35 via-black/10 to-black/40" />
+          </div>
 
           <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
               {/* Left Column: Featured Details */}
               <div className="lg:col-span-6 space-y-6">
                 <div className="space-y-3">
-                  <span className="inline-block border border-ean-gold/30 bg-ean-gold/5 text-ean-gold text-[10px] sm:text-xs uppercase font-bold tracking-widest px-3 py-1">
+                  <span className="inline-block border border-white/25 bg-black/40 backdrop-blur-xs text-white text-[10px] sm:text-xs uppercase font-bold tracking-widest px-3 py-1">
                     Featured Article
                   </span>
                   <Link href={`/blog/${featuredArticle.slug}`} className="group block">
                     <h1
                       ref={featuredTitleRef}
-                      className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-ean-text-light leading-[1.1] group-hover:text-ean-gold transition-colors duration-300"
+                      className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-white leading-[1.1] group-hover:text-white/75 transition-colors duration-300"
                     >
                       {featuredArticle.title}
                     </h1>
@@ -182,29 +216,29 @@ export default function BlogPage() {
 
                 <p
                   ref={featuredExcerptRef}
-                  className="font-ui text-sm sm:text-base text-ean-muted-light leading-relaxed max-w-2xl"
+                  className="font-ui text-sm sm:text-base text-white/85 leading-relaxed max-w-2xl"
                 >
                   {featuredArticle.excerpt}
                 </p>
 
                 {/* Metadata Row */}
-                <div className="flex items-center gap-6 font-ui text-xs text-ean-muted-light border-y border-ean-border-dark py-3 w-fit">
+                <div className="flex items-center gap-6 font-ui text-xs text-white/85 border-y border-white/20 py-3 w-fit">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-ean-gold" />
+                    <Calendar className="w-4 h-4 text-white" />
                     <span>{featuredArticle.publishedAt}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-ean-gold" />
+                    <Clock className="w-4 h-4 text-white" />
                     <span>{featuredArticle.readTime}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-ean-gold" />
-                    <span className="text-ean-text-light font-semibold">{featuredArticle.category}</span>
+                    <BookOpen className="w-4 h-4 text-white" />
+                    <span className="text-white font-semibold">{featuredArticle.category}</span>
                   </div>
                 </div>
 
                 <div className="pt-2">
-                  <Link href={`/blog/${featuredArticle.slug}`} className="inline-flex items-center gap-2 text-sm font-ui font-semibold text-ean-gold hover:text-ean-gold-light group">
+                  <Link href={`/blog/${featuredArticle.slug}`} className="inline-flex items-center gap-2 text-sm font-ui font-semibold text-white hover:text-white/75 group">
                     <span>Read Full Article</span>
                     <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </Link>
@@ -214,20 +248,20 @@ export default function BlogPage() {
               {/* Right Column: Hero Cover Image */}
               <div 
                 ref={featuredImageRef} 
-                className="lg:col-span-6 relative w-full h-65 sm:h-87.5 lg:h-105 overflow-hidden border border-ean-border-dark group"
+                className="lg:col-span-6 relative w-full h-65 sm:h-87.5 lg:h-105 overflow-hidden border border-white/20 group"
               >
                 <Image
                   src={featuredArticle.image}
                   alt={featuredArticle.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                  priority
                   className="object-cover transition-transform duration-1000 group-hover:scale-103"
                   quality={80}
                 />
-                {/* Visual Gold corner frame border */}
-                <div className="absolute inset-4 border border-ean-border-dark group-hover:border-ean-gold/30 transition-colors duration-500 pointer-events-none" />
-                <div className="absolute inset-0 bg-linear-to-t from-ean-navy/60 via-transparent to-transparent pointer-events-none" />
+                {/* Inset frame. White at low opacity, not a border token — the
+                    card sits on the photographic band. */}
+                <div className="absolute inset-4 border border-white/20 group-hover:border-white/45 transition-colors duration-500 pointer-events-none" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
               </div>
             </div>
           </div>

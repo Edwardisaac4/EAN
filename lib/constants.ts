@@ -185,7 +185,6 @@ export const NAV_ITEMS: NavItem[] = [
       { name: "History", href: "/history" },
     ],
   },
-  { name: "The Aeroplex", href: "/the-aeroplex" },
   {
     name: "Services",
     href: "/services",
@@ -199,6 +198,7 @@ export const NAV_ITEMS: NavItem[] = [
       { name: "Hangarage & Offices", href: "/services/leased-offices" },
     ],
   },
+  { name: "The Aeroplex", href: "/the-aeroplex" },
   { name: "Pricing", href: "/pricing" },
   { name: "Insights", href: "/blog" },
   { name: "Contact Us", href: "/contact" },
@@ -1119,7 +1119,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
       "PLST Certified",
       "Customer Relations Specialist",
     ],
-    highlights: [{ label: "Client Service Excellence", value: "Premium" }],
+    highlights: [{ label: "Client Service Excellence", value: "Premium" }]
   },
   {
     id: "bukunola-hundeyin",

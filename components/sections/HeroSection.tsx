@@ -204,12 +204,12 @@ export default function HeroSection() {
               </Link>
             )}
             {slide.secondaryCta.href.startsWith('#') ? (
-              <OutlineButton variant="dark" onClick={() => scrollToHash(slide.secondaryCta.href)}>
+              <OutlineButton variant="photo" onClick={() => scrollToHash(slide.secondaryCta.href)}>
                 {slide.secondaryCta.text}
               </OutlineButton>
             ) : (
               <Link href={slide.secondaryCta.href}>
-                <OutlineButton variant="dark">{slide.secondaryCta.text}</OutlineButton>
+                <OutlineButton variant="photo">{slide.secondaryCta.text}</OutlineButton>
               </Link>
             )}
           </div>

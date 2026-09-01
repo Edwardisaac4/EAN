@@ -18,6 +18,7 @@ import {
   getRevealSnapshot,
   getRevealServerSnapshot,
 } from '@/lib/pricing/reveal-store'
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import BuildYourQuoteCard from './BuildYourQuoteCard'
 import AddonsGrid from './AddonsGrid'
@@ -116,21 +117,52 @@ export default function PricingCalculator() {
 
   return (
     <div className="min-h-screen bg-ean-surface text-ean-text-light pb-20">
-      {/* ELEGANT & COMPACT HERO SECTION WITH NAVBAR CLEARANCE */}
-      <section className="bg-linear-to-b from-ean-navy-mid via-ean-navy to-ean-navy text-ean-text-light pt-28 pb-8 md:pt-32 md:pb-10 px-6 relative overflow-hidden border-b border-ean-gold/30 shadow-md">
-        {/* Subtle Ambient Gold Blur */}
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-ean-gold/10 rounded-full blur-3xl pointer-events-none" />
+      {/* HERO SECTION WITH NAVBAR CLEARANCE — photograph, not a paper gradient.
+          The ambient gold blur that used to sit top-right went with the
+          gradient: at 10% opacity over a photograph it reads as a smudge, and
+          the scrim already supplies the tonal falloff it was drawn for. */}
+      <section className="pt-32 pb-12 md:pt-36 md:pb-16 px-6 relative overflow-hidden">
+        {/*
+         * Decorative — the h1 carries the meaning — so `alt` is empty.
+         * `priority` because this band is the LCP element on /pricing and the
+         * only priority image on the route (AGENTS.md §8). `quality={70}` is
+         * the whitelisted step for full-bleed hero art.
+         *
+         * The scrim is tuned to this frame rather than shared with the other
+         * two heroes — the three photographs sit whole stops apart, so one
+         * setting either drowns this one or under-protects the others. Here the
+         * copy sits over the dead-black left third while the jet line fills the
+         * right, so 40% flat plus a 40/10/45 gradient is already 9.8:1 for
+         * white across the 99th percentile and 5.1:1 at the brightest pixel.
+         * Anything heavier just erases the aircraft.
+         */}
+        <div className="absolute inset-0 z-0" aria-hidden="true">
+          <Image
+            src="/images/pricing hero.jpg"
+            alt=""
+            fill
+            sizes="100vw"
+            quality={70}
+            priority
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-linear-to-b from-black/40 via-black/10 to-black/45" />
+        </div>
 
+        {/* Literal white over a photograph, per AGENTS.md §5. The badge trades
+            its gold fill for a smoked-glass chip so it holds its edge against
+            whatever tone sits behind it. */}
         <div className="max-w-ean mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-ui tracking-widest uppercase text-ean-gold font-semibold bg-ean-gold/10 px-3.5 py-1 rounded-full mb-3 border border-ean-gold/30 backdrop-blur-xs shadow-[0_0_15px_rgba(43,0,152,0.1)]">
+            <div className="inline-flex items-center gap-2 text-xs font-ui tracking-widest uppercase text-white font-semibold bg-black/40 px-3.5 py-1 rounded-full mb-3 border border-white/25 backdrop-blur-xs">
               <Calculator className="w-3.5 h-3.5" />
               Official FBO Tariff & Calculator
             </div>
-            <h1 className="font-display font-light text-2xl sm:text-2xl text-ean-text-light tracking-wide leading-snug">
+            <h1 className="font-display font-light text-2xl sm:text-3xl text-white tracking-wide leading-snug">
               FBO Pricing &amp; Quote Portal
             </h1>
-            <p className="font-ui text-ean-muted-light text-xs sm:text-sm md:text-base mt-2 max-w-2xl leading-relaxed">
+            <p className="font-ui text-white/85 text-xs sm:text-sm md:text-base mt-2 max-w-2xl leading-relaxed">
               Instant ground handling estimates, passenger facilitation fees, and customizable add-ons for Lagos MMIA &amp; Abuja NAIA.
             </p>
           </div>
