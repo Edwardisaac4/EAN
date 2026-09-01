@@ -22,7 +22,6 @@ export default function PartnerRequest() {
         id={AEROPLEX_SECTION_IDS.request}
         className="scroll-mt-24 bg-ean-navy text-ean-text-light py-20 sm:py-24 relative overflow-hidden"
       >
-        <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/10 blur-[120px] pointer-events-none" />
 
         <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">

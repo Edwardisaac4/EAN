@@ -173,7 +173,7 @@ export default function HistoryPage() {
         {/* SECTION 1: Cinematic Hero */}
         <section
           ref={heroRef}
-          className="relative w-full h-[55vh] min-h-100 overflow-hidden bg-ean-obsidian flex items-center text-ean-text-light border-b border-ean-border-dark"
+          className="relative w-full h-[55vh] min-h-100 overflow-hidden bg-ean-obsidian flex items-center text-white border-b border-ean-border-dark"
         >
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
@@ -187,28 +187,28 @@ export default function HistoryPage() {
               quality={80}
             />
             {/* Cinematic Obsidian Black luxury overlays */}
-            <div className="absolute inset-0 bg-ean-black/60" />
-            <div className="absolute inset-0 bg-linear-to-b from-ean-obsidian/80 via-transparent to-ean-obsidian/90" />
-            <div className="absolute inset-0 bg-radial-at-c from-transparent via-ean-black/20 to-ean-black/60" />
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-linear-to-b from-black/80 via-transparent to-black/90" />
+            <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
           </div>
 
           <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 w-full pt-20">
             <div className="max-w-3xl space-y-6">
               <p
                 ref={eyebrowRef}
-                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase"
+                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/70 uppercase"
               >
                 Our Legacy
               </p>
               <h1
                 ref={titleRef}
-                className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-ean-text-light leading-[1.1]"
+                className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-white leading-[1.1]"
               >
                 The Evolution of Excellence
               </h1>
               <p
                 ref={subtitleRef}
-                className="font-ui text-base sm:text-lg text-ean-text-light/80 max-w-2xl leading-relaxed"
+                className="font-ui text-base sm:text-lg text-white/80 max-w-2xl leading-relaxed"
               >
                 A decade of pushing boundaries, elevating safety records, and creating a world-class business aviation hub in West Africa.
               </p>
@@ -224,16 +224,16 @@ export default function HistoryPage() {
               timelineSection?.scrollIntoView({ behavior: 'smooth' });
             }}
           >
-            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-ean-text-light/60">
+            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-white/60">
               Explore History
             </span>
-            <ChevronDown className="w-5 h-5 text-ean-gold" />
+            <ChevronDown className="w-5 h-5 text-white/70" />
           </div>
         </section>
 
         {/* SECTION 2: Metrics Strip */}
         <section
-          className="bg-ean-surface text-ean-text-dark border-y border-ean-border-light/60 py-12 relative z-20"
+          className="bg-ean-surface text-ean-text-light border-y border-ean-border-light/60 py-12 relative z-20"
         >
           <div className="max-w-ean mx-auto px-6 md:px-8">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-6 text-center">
@@ -241,7 +241,7 @@ export default function HistoryPage() {
                 <div className="font-display text-2xl sm:text-3xl md:text-4xl font-semibold text-ean-gold tracking-tight">
                   <StatCounter targetValue={15} suffix="+" />
                 </div>
-                <p className="font-ui text-[10px] sm:text-xs uppercase tracking-widest text-ean-muted-dark">
+                <p className="font-ui text-[10px] sm:text-xs uppercase tracking-widest text-ean-muted-light">
                   Years of Operation
                 </p>
               </div>
@@ -253,7 +253,7 @@ export default function HistoryPage() {
                 <div className="font-display text-2xl sm:text-3xl md:text-4xl font-semibold text-ean-gold tracking-tight">
                   <span>NCAA</span>
                 </div>
-                <p className="font-ui text-[10px] sm:text-xs uppercase tracking-widest text-ean-muted-dark">
+                <p className="font-ui text-[10px] sm:text-xs uppercase tracking-widest text-ean-muted-light">
                   Licensed &amp; Audited — ICAO Standards
                 </p>
               </div>
@@ -262,7 +262,7 @@ export default function HistoryPage() {
                 <div className="font-display text-2xl sm:text-3xl md:text-4xl font-semibold text-ean-gold tracking-tight">
                   <span>1st</span>
                 </div>
-                <p className="font-ui text-[10px] sm:text-xs uppercase tracking-widest text-ean-muted-dark">
+                <p className="font-ui text-[10px] sm:text-xs uppercase tracking-widest text-ean-muted-light">
                   Integrated FBO Hangar
                 </p>
               </div>
@@ -275,7 +275,7 @@ export default function HistoryPage() {
           <section
             ref={timelineContainerRef}
             id="timeline-section"
-            className="relative w-full h-screen flex flex-col justify-between py-12 md:py-16 overflow-hidden bg-ean-surface text-ean-text-dark border-b border-ean-border-light/60"
+            className="relative w-full h-screen flex flex-col justify-between py-12 md:py-16 overflow-hidden bg-ean-surface text-ean-text-light border-b border-ean-border-light/60"
           >
             
             {/* Top Header */}
@@ -284,19 +284,19 @@ export default function HistoryPage() {
                 <span className="font-ui text-xs font-semibold tracking-[0.25em] text-ean-gold uppercase">
                   Our History
                 </span>
-                <h2 className="font-display text-2xl sm:text-3xl font-light text-ean-navy leading-tight">
+                <h2 className="font-display text-2xl sm:text-3xl font-light text-ean-text-light leading-tight">
                   The Milestones of Flight
                 </h2>
               </div>
               <div className="font-display text-2xl font-light text-ean-gold/60 flex items-center gap-3">
-                <span className="text-ean-navy text-4xl font-semibold">2011</span>
+                <span className="text-ean-text-light text-4xl font-semibold">2011</span>
                 <span>/</span>
                 <span>2026</span>
               </div>
             </div>
 
             {/* Horizontal Timeline Track */}
-            <div className="relative w-full max-w-ean mx-auto px-6 md:px-8 h-1 bg-ean-navy/10 my-4 select-none">
+            <div className="relative w-full max-w-ean mx-auto px-6 md:px-8 h-1 bg-black/10 my-4 select-none">
               <div
                 ref={progressLineRef}
                 className="absolute left-0 top-0 h-full bg-ean-gold"
@@ -329,10 +329,10 @@ export default function HistoryPage() {
                         setSelectedEvent(event);
                       }
                     }}
-                    className="history-slide w-[85vw] sm:w-[65vw] lg:w-[50vw] shrink-0 bg-white border border-ean-border-light p-4 sm:p-8 flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch shadow-xl h-[56vh] sm:h-[46vh] lg:h-[48vh] relative overflow-hidden group hover:border-ean-gold/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ean-gold transition-all duration-300 cursor-pointer"
+                    className="history-slide w-[85vw] sm:w-[65vw] lg:w-[50vw] shrink-0 bg-white border border-ean-border-light p-4 sm:p-8 flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch h-[56vh] sm:h-[46vh] lg:h-[48vh] relative overflow-hidden group hover:border-ean-gold/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ean-gold transition-all duration-300 cursor-pointer"
                   >
                     {/* Background giant year number */}
-                    <div className="absolute -bottom-6 -right-6 font-display text-[120px] sm:text-[150px] lg:text-[200px] font-bold text-ean-navy/5 pointer-events-none select-none group-hover:text-ean-gold/10 transition-colors duration-500">
+                    <div className="absolute -bottom-6 -right-6 font-display text-[120px] sm:text-[150px] lg:text-[200px] font-bold text-ean-text-light/5 pointer-events-none select-none group-hover:text-ean-gold/10 transition-colors duration-500">
                       {event.year}
                     </div>
 
@@ -346,7 +346,7 @@ export default function HistoryPage() {
                         className="object-cover object-center transition-transform duration-750 group-hover:scale-105"
                         quality={80}
                       />
-                      <div className="absolute inset-0 bg-linear-to-t from-ean-black/40 via-transparent to-transparent sm:from-white/70" />
+                      <div className="absolute inset-0 bg-linear-to-t from-white/40 via-transparent to-transparent sm:from-white/70" />
                       <div className="absolute bottom-2 right-2 px-2 py-1 bg-ean-navy/90 backdrop-blur-xs text-[9px] sm:text-[10px] font-mono text-ean-gold uppercase tracking-wider z-10">
                         Click to Read Story
                       </div>
@@ -360,21 +360,21 @@ export default function HistoryPage() {
                             {event.year}
                           </span>
                           {event.category && (
-                            <span className="px-2 py-0.5 bg-ean-navy/5 border border-ean-navy/10 text-[9px] font-mono text-ean-navy font-bold uppercase tracking-wider">
+                            <span className="px-2 py-0.5 bg-black/5 border border-black/10 text-[9px] font-mono text-ean-text-light font-bold uppercase tracking-wider">
                               {event.category}
                             </span>
                           )}
                         </div>
-                        <h3 className="font-ui text-base sm:text-xl font-semibold text-ean-navy group-hover:text-ean-gold transition-colors duration-300 line-clamp-2 sm:line-clamp-none">
+                        <h3 className="font-ui text-base sm:text-xl font-semibold text-ean-text-light group-hover:text-ean-gold transition-colors duration-300 line-clamp-2 sm:line-clamp-none">
                           {event.title}
                         </h3>
-                        <p className="font-ui text-xs sm:text-sm text-ean-muted-dark leading-relaxed line-clamp-3">
+                        <p className="font-ui text-xs sm:text-sm text-ean-muted-light leading-relaxed line-clamp-3">
                           {event.description}
                         </p>
                       </div>
 
                       {/* Read Full Story Action Prompt */}
-                      <div className="pt-1 sm:pt-2 flex items-center gap-1.5 font-ui text-xs font-bold text-ean-navy group-hover:text-ean-gold transition-colors">
+                      <div className="pt-1 sm:pt-2 flex items-center gap-1.5 font-ui text-xs font-bold text-ean-text-light group-hover:text-ean-gold transition-colors">
                         <span>Read Full Milestone Story</span>
                         <ChevronRight className="w-4 h-4 text-ean-gold transition-transform duration-300 group-hover:translate-x-1" />
                       </div>
@@ -385,7 +385,7 @@ export default function HistoryPage() {
             </div>
 
             {/* Bottom scroll hint */}
-            <div className="font-ui text-[10px] text-center uppercase tracking-widest text-ean-muted-dark flex items-center justify-center gap-2">
+            <div className="font-ui text-[10px] text-center uppercase tracking-widest text-ean-muted-light flex items-center justify-center gap-2">
               <span>Scroll down to slide through time</span>
               <span>•</span>
               <span className="text-ean-gold font-bold">Click any milestone to view full narrative</span>
@@ -395,8 +395,6 @@ export default function HistoryPage() {
 
         {/* SECTION 4: Premium Call to Action */}
         <section className="bg-ean-obsidian py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
-          <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/10 blur-[140px] pointer-events-none" />
-          <div className="absolute -top-48 -left-48 w-96 h-96 rounded-full bg-white/5 blur-[120px] pointer-events-none" />
 
           <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center">
             <div className="max-w-3xl mx-auto space-y-8">
@@ -430,4 +428,3 @@ export default function HistoryPage() {
     </>
   );
 }
-

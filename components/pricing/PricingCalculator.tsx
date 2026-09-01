@@ -115,7 +115,7 @@ export default function PricingCalculator() {
   }
 
   return (
-    <div className="min-h-screen bg-ean-surface text-ean-text-dark pb-20">
+    <div className="min-h-screen bg-ean-surface text-ean-text-light pb-20">
       {/* ELEGANT & COMPACT HERO SECTION WITH NAVBAR CLEARANCE */}
       <section className="bg-linear-to-b from-ean-navy-mid via-ean-navy to-ean-navy text-ean-text-light pt-28 pb-8 md:pt-32 md:pb-10 px-6 relative overflow-hidden border-b border-ean-gold/30 shadow-md">
         {/* Subtle Ambient Gold Blur */}
@@ -123,7 +123,7 @@ export default function PricingCalculator() {
 
         <div className="max-w-ean mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-ui tracking-widest uppercase text-ean-gold font-semibold bg-ean-gold/10 px-3.5 py-1 rounded-full mb-3 border border-ean-gold/30 backdrop-blur-xs shadow-[0_0_15px_rgba(169,137,90,0.1)]">
+            <div className="inline-flex items-center gap-2 text-xs font-ui tracking-widest uppercase text-ean-gold font-semibold bg-ean-gold/10 px-3.5 py-1 rounded-full mb-3 border border-ean-gold/30 backdrop-blur-xs shadow-[0_0_15px_rgba(43,0,152,0.1)]">
               <Calculator className="w-3.5 h-3.5" />
               Official FBO Tariff & Calculator
             </div>

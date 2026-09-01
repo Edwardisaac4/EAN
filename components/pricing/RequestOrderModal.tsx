@@ -90,9 +90,9 @@ Status: NEW — route to Operations (ABO One / RPS)`
       role="dialog"
       aria-modal="true"
       aria-labelledby="request-order-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ean-black/70 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200"
     >
-      <div className="bg-ean-navy border border-ean-gold/40 shadow-2xl w-full max-w-lg overflow-hidden text-ean-text-light flex flex-col max-h-[90vh]">
+      <div className="bg-ean-navy border border-ean-gold/40 w-full max-w-lg overflow-hidden text-ean-text-light flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="px-6 py-4 border-b border-ean-border-dark flex items-center justify-between bg-ean-navy-mid">
           <div className="flex items-center gap-2">
@@ -113,7 +113,7 @@ Status: NEW — route to Operations (ABO One / RPS)`
 
         {/* Modal Body */}
         <div className="p-6 overflow-y-auto font-mono text-xs leading-relaxed space-y-4 bg-ean-navy text-ean-text-light">
-          <div className="p-4 bg-ean-black/40 border border-ean-gold/30 whitespace-pre-wrap selection:bg-ean-gold selection:text-black">
+          <div className="p-4 bg-black/5 border border-ean-gold/30 whitespace-pre-wrap selection:bg-ean-gold selection:text-black">
             {orderText}
           </div>
         </div>

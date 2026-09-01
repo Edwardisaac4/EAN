@@ -60,8 +60,8 @@ export default function CharterSection() {
           className="object-cover object-center"
         />
         {/* Luxury Overlay Gradients for Readability */}
-        <div className="absolute inset-0 bg-ean-black/75" />
-        <div className="absolute inset-0 bg-linear-to-r from-ean-black/85 via-ean-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-black/75" />
+        <div className="absolute inset-0 bg-linear-to-r from-black/85 via-black/40 to-transparent" />
       </div>
 
       {/* Content Area */}
@@ -69,15 +69,15 @@ export default function CharterSection() {
         <SectionReveal>
           <div className="max-w-2xl text-left space-y-6 sm:space-y-8">
             <div className="space-y-3">
-              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
+              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/70 uppercase">
                 Bespoke Flight Solutions
               </span>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-ean-text-light leading-[1.15]">
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-white leading-[1.15]">
                 Charters Tailored to Your Schedule
               </h2>
             </div>
 
-            <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
+            <p className="font-ui text-base sm:text-lg text-white/70 leading-relaxed">
               Fly to your own schedule. Whether for business or leisure, our
               on-demand jet and helicopter charter services offer flexibility, privacy, and
               uncompromising safety standards across regional and international routes.
@@ -85,7 +85,7 @@ export default function CharterSection() {
 
             <div className="pt-2">
               <Link href="/charter">
-                <GoldButton className="shadow-[0_4px_15px_rgba(169,137,90,0.3)] hover:shadow-[0_4px_25px_rgba(169,137,90,0.5)]">
+                <GoldButton className="shadow-[0_4px_15px_rgba(43,0,152,0.3)] hover:shadow-[0_4px_25px_rgba(43,0,152,0.5)]">
                   Request a Charter
                 </GoldButton>
               </Link>

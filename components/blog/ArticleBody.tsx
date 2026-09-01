@@ -18,7 +18,7 @@ export default function ArticleBody({ blocks }: ArticleBodyProps) {
   if (!blocks.length) return null;
 
   return (
-    <div className="space-y-6 font-ui text-ean-text-dark text-base sm:text-lg leading-relaxed">
+    <div className="space-y-6 font-ui text-ean-text-light text-base sm:text-lg leading-relaxed">
       {blocks.map((block, idx) => (
         <Block key={idx} block={block} />
       ))}
@@ -30,7 +30,7 @@ function Block({ block }: { block: ArticleBlock }) {
   switch (block.type) {
     case 'lead':
       return (
-        <p className="text-xl font-light text-ean-navy leading-relaxed border-l border-ean-gold pl-6 italic">
+        <p className="text-xl font-light text-ean-text-light leading-relaxed border-l border-ean-gold pl-6 italic">
           {block.text}
         </p>
       );
@@ -39,11 +39,11 @@ function Block({ block }: { block: ArticleBlock }) {
       // Rendered as real h2/h3 so the document outline is navigable by assistive
       // technology and legible to a crawler, not just visually distinct.
       return block.level === 2 ? (
-        <h2 className="font-display text-2xl sm:text-2xl text-ean-navy font-medium pt-6">
+        <h2 className="font-display text-2xl sm:text-2xl text-ean-text-light font-medium pt-6">
           {block.text}
         </h2>
       ) : (
-        <h3 className="font-ui text-lg sm:text-xl text-ean-navy font-semibold pt-4">
+        <h3 className="font-ui text-lg sm:text-xl text-ean-text-light font-semibold pt-4">
           {block.text}
         </h3>
       );
@@ -75,7 +75,7 @@ function Block({ block }: { block: ArticleBlock }) {
         <dl className="space-y-5">
           {block.items.map((item, idx) => (
             <div key={idx} className="border-l border-ean-border-light pl-5">
-              <dt className="font-ui font-semibold text-ean-navy inline">{item.term}: </dt>
+              <dt className="font-ui font-semibold text-ean-text-light inline">{item.term}: </dt>
               <dd className="inline">{item.text}</dd>
             </div>
           ))}
@@ -112,7 +112,7 @@ function Block({ block }: { block: ArticleBlock }) {
               <div className="font-display text-2xl sm:text-3xl font-light text-ean-gold tracking-tight">
                 {item.value}
               </div>
-              <p className="font-ui text-xs text-ean-muted-dark leading-relaxed">{item.label}</p>
+              <p className="font-ui text-xs text-ean-muted-light leading-relaxed">{item.label}</p>
             </div>
           ))}
         </div>
@@ -134,7 +134,7 @@ function Block({ block }: { block: ArticleBlock }) {
                     <th
                       key={idx}
                       scope="col"
-                      className="font-ui text-xs font-bold uppercase tracking-wider text-ean-navy px-5 py-4 border-b border-ean-border-light"
+                      className="font-ui text-xs font-bold uppercase tracking-wider text-ean-text-light px-5 py-4 border-b border-ean-border-light"
                     >
                       {header}
                     </th>
@@ -152,8 +152,8 @@ function Block({ block }: { block: ArticleBlock }) {
                         key={cellIdx}
                         className={`px-5 py-4 text-sm align-top ${
                           cellIdx === 0
-                            ? 'font-ui font-semibold text-ean-navy'
-                            : 'text-ean-muted-dark'
+                            ? 'font-ui font-semibold text-ean-text-light'
+                            : 'text-ean-muted-light'
                         }`}
                       >
                         {cell}
@@ -165,7 +165,7 @@ function Block({ block }: { block: ArticleBlock }) {
             </table>
           </div>
           {block.caption && (
-            <figcaption className="font-ui text-xs text-ean-muted-dark italic">
+            <figcaption className="font-ui text-xs text-ean-muted-light italic">
               {block.caption}
             </figcaption>
           )}
@@ -189,10 +189,10 @@ function Block({ block }: { block: ArticleBlock }) {
             height={block.height}
             sizes="(max-width: 896px) 100vw, 896px"
             quality={80}
-            className="w-full h-auto border border-ean-border-light bg-ean-black/5"
+            className="w-full h-auto border border-ean-border-light bg-black/5"
           />
           {block.caption && (
-            <figcaption className="font-ui text-xs text-ean-muted-dark italic">
+            <figcaption className="font-ui text-xs text-ean-muted-light italic">
               {block.caption}
             </figcaption>
           )}
@@ -202,7 +202,6 @@ function Block({ block }: { block: ArticleBlock }) {
     case 'cta':
       return (
         <div className="bg-ean-navy text-ean-text-light p-8 my-8 relative overflow-hidden">
-          <div className="absolute -bottom-24 -right-24 w-48 h-48 rounded-full bg-ean-gold/10 blur-[80px] pointer-events-none" />
           <p className="relative z-10 font-ui text-base sm:text-lg leading-relaxed text-ean-muted-light">
             {block.text}
           </p>

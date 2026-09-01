@@ -122,17 +122,17 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
   return (
     <div className="bg-ean-surface border border-ean-border-light p-6 text-left shadow-xs space-y-4">
       {/* BADGE PILL */}
-      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-ean-border-light rounded-full text-xs font-ui font-semibold text-ean-burgundy-rich shadow-2xs">
+      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-ean-border-light rounded-full text-xs font-ui font-semibold text-ean-text-light shadow-2xs">
         <span className="w-2 h-2 rounded-full bg-ean-burgundy-rich" />
         See your price
       </div>
 
       {/* CARD HEADINGS */}
       <div>
-        <h3 className="font-ui font-bold text-base md:text-lg text-ean-burgundy-rich">
+        <h3 className="font-ui font-bold text-base md:text-lg text-ean-text-light">
           Enter your details to reveal pricing
         </h3>
-        <p className="font-ui text-xs md:text-sm text-ean-muted-dark mt-0.5">
+        <p className="font-ui text-xs md:text-sm text-ean-muted-light mt-0.5">
           So our team can follow up and prepare your handling.
         </p>
       </div>
@@ -157,7 +157,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Full name"
-            className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-text-dark placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
+            className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-text-light placeholder:text-ean-muted-light/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
           />
         </div>
 
@@ -169,7 +169,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-text-dark placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
+            className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-text-light placeholder:text-ean-muted-light/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
           />
           <input
             type="tel"
@@ -177,7 +177,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="Phone / WhatsApp"
-            className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-text-dark placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
+            className="w-full px-4 py-3 bg-white border border-ean-border-light font-ui text-sm text-ean-text-light placeholder:text-ean-muted-light/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
           />
         </div>
 
@@ -198,7 +198,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
         </button>
 
         {!hasAircraft && (
-          <p className="font-ui text-[11px] text-ean-muted-dark text-center">
+          <p className="font-ui text-[11px] text-ean-muted-light text-center">
             Select an aircraft or enter its MTOW above to enable pricing.
           </p>
         )}

@@ -25,7 +25,7 @@ const STATE_STYLES: Record<
 > = {
   complete: {
     icon: CheckCircle2,
-    marker: 'bg-ean-gold text-ean-navy border-ean-gold',
+    marker: 'bg-ean-gold text-ean-text-dark border-ean-gold',
     period: 'text-ean-gold',
     card: 'border-ean-gold/40 bg-ean-navy/50',
     label: 'Complete',
@@ -54,7 +54,6 @@ export default function ProgrammeTimeline() {
     >
       {/* Same ambient gold source the other dark sections use, kept off-centre so
           it reads as light falling across the band rather than a vignette. */}
-      <div className="absolute -top-40 left-1/4 w-96 h-96 rounded-full bg-ean-gold/5 blur-[140px] pointer-events-none" />
 
       <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
         <SectionReveal className="max-w-3xl space-y-4 mb-14">

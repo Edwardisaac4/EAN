@@ -107,7 +107,7 @@ export default function TeamPage() {
         {/* SECTION 1: Obsidian Black Cinematic Hero */}
         <section
           ref={heroRef}
-          className="relative w-full h-[75vh] min-h-125 overflow-hidden bg-ean-obsidian flex items-center text-ean-text-light border-b border-ean-border-dark"
+          className="relative w-full h-[75vh] min-h-125 overflow-hidden bg-ean-obsidian flex items-center text-white border-b border-ean-border-dark"
         >
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
@@ -121,29 +121,29 @@ export default function TeamPage() {
               quality={80}
             />
             {/* Cinematic Obsidian Black luxury overlays */}
-            <div className="absolute inset-0 bg-ean-black/60" />
-            <div className="absolute inset-0 bg-linear-to-b from-ean-obsidian/80 via-transparent to-ean-obsidian/90" />
-            <div className="absolute inset-0 bg-radial-at-c from-transparent via-ean-black/20 to-ean-black/60" />
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-linear-to-b from-black/80 via-transparent to-black/90" />
+            <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
           </div>
 
           <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 w-full pt-20">
             <div className="max-w-3xl space-y-6">
               <p
                 ref={eyebrowRef}
-                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase flex items-center gap-2"
+                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/70 uppercase flex items-center gap-2"
               >
-                <Users className="w-4 h-4 text-ean-gold" />
+                <Users className="w-4 h-4 text-white/70" />
                 Leadership & Governance
               </p>
               <h1
                 ref={titleRef}
-                className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-ean-text-light leading-[1.1]"
+                className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white leading-[1.1]"
               >
                 The Minds Behind the Mission
               </h1>
               <p
                 ref={subtitleRef}
-                className="font-ui text-base sm:text-lg md:text-xl text-ean-text-light/80 max-w-2xl leading-relaxed"
+                className="font-ui text-base sm:text-lg md:text-xl text-white/80 max-w-2xl leading-relaxed"
               >
                 Meet the seasoned aviation executives, captains, and engineers steering EAN Aviation toward new frontiers of growth, safety, and operational precision in West Africa.
               </p>
@@ -159,10 +159,10 @@ export default function TeamPage() {
               ceoSection?.scrollIntoView({ behavior: 'smooth' });
             }}
           >
-            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-ean-text-light/60">
+            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-white/60">
               Meet Leadership
             </span>
-            <ChevronDown className="w-5 h-5 text-ean-gold" />
+            <ChevronDown className="w-5 h-5 text-white/70" />
           </div>
         </section>
 
@@ -176,7 +176,6 @@ export default function TeamPage() {
 
         {/* SECTION 4: Gold & Onyx Executive Call to Action */}
         <section className="bg-linear-to-r from-ean-burgundy-night via-ean-burgundy-dusk to-ean-black py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
-          <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/10 blur-[120px] pointer-events-none" />
 
           <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center">
             <SectionReveal className="max-w-3xl mx-auto space-y-8">

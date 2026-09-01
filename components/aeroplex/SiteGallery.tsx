@@ -125,14 +125,14 @@ export default function SiteGallery() {
                   quality={80}
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-ean-black via-ean-black/25 to-transparent opacity-90" />
+                <div className="absolute inset-0 bg-linear-to-t from-black via-black/25 to-transparent opacity-90" />
 
                 <span className="absolute top-4 left-4 font-mono text-[10px] uppercase tracking-[0.2em] text-ean-gold border border-ean-gold/40 bg-ean-black/70 backdrop-blur-sm px-2 py-1 rounded-full">
                   {item.tag}
                 </span>
 
                 <div className="absolute bottom-0 inset-x-0 p-5 flex items-end justify-between gap-4">
-                  <p className="font-ui text-sm text-ean-text-light font-medium leading-snug line-clamp-2 max-w-[85%]">
+                  <p className="font-ui text-sm text-white font-medium leading-snug line-clamp-2 max-w-[85%]">
                     {item.caption}
                   </p>
                   <span
@@ -153,7 +153,7 @@ export default function SiteGallery() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
             <div
               onClick={() => setOpenIndex(null)}
-              className={`fixed inset-0 bg-ean-black-pure/90 backdrop-blur-lg cursor-pointer ${state === 'open' ? 'ean-enter-fade' : 'ean-exit-fade'
+              className={`fixed inset-0 bg-black/90 backdrop-blur-lg cursor-pointer ${state === 'open' ? 'ean-enter-fade' : 'ean-exit-fade'
                 }`}
             />
 
@@ -174,7 +174,7 @@ export default function SiteGallery() {
                   type="button"
                   onClick={() => setOpenIndex(null)}
                   aria-label="Close modal"
-                  className="p-2 -mr-2 rounded-full text-ean-text-light/80 hover:text-ean-text-light hover:border-ean-blue/50 hover:bg-white/10 transition-colors cursor-pointer"
+                  className="p-2 -mr-2 rounded-full text-ean-text-light/80 hover:text-ean-text-light hover:border-ean-blue/50 hover:bg-black/10 transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>

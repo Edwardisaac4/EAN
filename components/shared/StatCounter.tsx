@@ -102,9 +102,9 @@ export default function StatCounter({
   return (
     <span
       ref={elementRef}
-      // Fraunces at 300 is the figure treatment throughout this system. Set
-      // here rather than at the call site so a statistic cannot be dropped in
-      // and silently render in Archivo.
+      // The display token at 300 is the figure treatment throughout this
+      // system. Set here rather than at the call site so a statistic cannot be
+      // dropped in and silently render at the default body weight.
       className={`inline-block font-display font-light ${className}`}
       style={{ transformOrigin: 'center' }}
     >

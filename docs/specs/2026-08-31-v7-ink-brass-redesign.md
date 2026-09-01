@@ -4,7 +4,15 @@
 **Source of truth:** `EAN_Revised_Site_v7_FOR_YUWA.html` (change-order prototype), read
 in **clean view** — annotations off. The annotation layer is review scaffolding and
 ships nothing.
-**Status:** Not started. Supersedes the dark half (Job B) of
+**Status:** **Job P (the ink/brass palette) is superseded** by
+[2026-09-01-light-blue-grey-theme.md](./2026-09-01-light-blue-grey-theme.md),
+which inverts the surfaces to paper and replaces brass with the brand blue on
+CEO instruction. The surface half of Job L is superseded with it, and Job L's
+brief was rewritten there. **Jobs T (typography) and G (geometry) are untouched
+by that document and remain valid** — Fraunces / Archivo / IBM Plex Mono, square
+corners, one 1px rule weight, the 1160px measure.
+
+Supersedes the dark half (Job B) of
 [2026-08-31-blue-gold-dark-theme.md](./2026-08-31-blue-gold-dark-theme.md), whose
 Job A (de-burgundy) already shipped.
 

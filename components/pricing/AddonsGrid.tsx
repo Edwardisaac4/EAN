@@ -19,10 +19,10 @@ export default function AddonsGrid({ addons, band, onToggleAddon }: AddonsGridPr
     <div className="bg-white p-6 md:p-8 shadow-sm border border-ean-border-light space-y-6">
       {/* HEADER SECTION */}
       <div>
-        <h2 className="font-ui font-bold text-lg md:text-xl text-ean-burgundy-rich tracking-tight">
+        <h2 className="font-ui font-bold text-lg md:text-xl text-ean-text-light tracking-tight">
           Add services
         </h2>
-        <p className="font-ui text-xs md:text-sm text-ean-muted-dark mt-0.5">
+        <p className="font-ui text-xs md:text-sm text-ean-muted-light mt-0.5">
           Optional. Prices update as you select.
         </p>
       </div>
@@ -39,13 +39,13 @@ export default function AddonsGrid({ addons, band, onToggleAddon }: AddonsGridPr
                 type="checkbox"
                 checked={Boolean(addons[ciqAddon.id])}
                 onChange={() => onToggleAddon(ciqAddon.id)}
-                className="w-4 h-4 border-ean-border-light text-ean-burgundy-rich focus:ring-ean-burgundy-rich accent-ean-burgundy-rich cursor-pointer"
+                className="w-4 h-4 border-ean-border-light text-ean-text-light focus:ring-ean-burgundy-rich accent-ean-burgundy-rich cursor-pointer"
               />
-              <span className="font-ui text-sm font-medium text-ean-text-dark">
+              <span className="font-ui text-sm font-medium text-ean-text-light">
                 {ciqAddon.label}
               </span>
             </div>
-            <span className="font-ui text-sm text-ean-muted-dark shrink-0">
+            <span className="font-ui text-sm text-ean-muted-light shrink-0">
               ${addonRate(ciqAddon, band)?.toLocaleString()}
             </span>
           </label>
@@ -70,13 +70,13 @@ export default function AddonsGrid({ addons, band, onToggleAddon }: AddonsGridPr
                     type="checkbox"
                     checked={isChecked}
                     onChange={() => onToggleAddon(addon.id)}
-                    className="w-4 h-4 border-ean-border-light text-ean-burgundy-rich focus:ring-ean-burgundy-rich accent-ean-burgundy-rich cursor-pointer shrink-0"
+                    className="w-4 h-4 border-ean-border-light text-ean-text-light focus:ring-ean-burgundy-rich accent-ean-burgundy-rich cursor-pointer shrink-0"
                   />
-                  <span className="font-ui text-sm font-medium text-ean-text-dark truncate">
+                  <span className="font-ui text-sm font-medium text-ean-text-light truncate">
                     {addon.label}
                   </span>
                 </div>
-                <span className="font-ui text-sm text-ean-muted-dark shrink-0 ml-2">
+                <span className="font-ui text-sm text-ean-muted-light shrink-0 ml-2">
                   {priceDisplay}
                 </span>
               </label>

@@ -8,7 +8,7 @@ import SectionReveal from '@/components/shared/SectionReveal';
 // through to OutlineButton's navy fill while History overrode it to gold, so the
 // two buttons sitting side by side behaved differently on the same hover.
 const LINK_HOVER =
-  'hover:bg-ean-gold hover:border-ean-gold hover:text-ean-navy dark:border-white dark:text-ean-text-light dark:hover:bg-ean-gold dark:hover:border-ean-gold dark:hover:text-ean-navy';
+  'hover:bg-ean-gold hover:border-ean-gold hover:text-ean-text-dark';
 
 const SECTION_LINKS = [
   { label: 'Our Credentials', href: '/about' },
@@ -18,7 +18,7 @@ const SECTION_LINKS = [
 
 export default function AboutSection() {
   return (
-    <section className="bg-ean-white dark:bg-ean-navy-mid text-ean-text-dark dark:text-ean-text-light py-20 sm:py-24 relative overflow-hidden transition-colors duration-500">
+    <section className="bg-ean-white text-ean-text-light py-20 sm:py-24 relative overflow-hidden transition-colors duration-500">
       <div className="max-w-ean mx-auto px-6 md:px-8">
         <SectionReveal>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -28,12 +28,12 @@ export default function AboutSection() {
                 <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
                   Who We Are
                 </span>
-                <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-ean-navy dark:text-ean-text-light leading-[1.15]">
+                <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-ean-text-light leading-[1.15]">
                   Pioneering Business Aviation in West Africa
                 </h2>
               </div>
 
-              <div className="space-y-4 font-ui text-base sm:text-lg text-ean-muted-dark dark:text-ean-muted-light leading-relaxed max-w-2xl">
+              <div className="space-y-4 font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed max-w-2xl">
                 <p>
                   Founded in Lagos in 2011, EAN Aviation is {"West Africa's "}
                   leading integrated business aviation company. We operate the {"region's "}
@@ -60,7 +60,7 @@ export default function AboutSection() {
             </div>
 
             {/* Right Column: Visual Hangar / Jet Image */}
-            <div className="lg:col-span-5 relative w-full h-80 sm:h-100 lg:h-125 overflow-hidden shadow-xl border border-ean-border-light dark:border-ean-border-dark group">
+            <div className="lg:col-span-5 relative w-full h-80 sm:h-100 lg:h-125 overflow-hidden border border-ean-border-light group">
               {/* about-jet.jpg rather than hero/slide-1.jpg: the hero above already
                   opens on slide-1, and it is also DEFAULT_OG_IMAGE, so reusing it
                   here left one photograph carrying the entire homepage. */}
@@ -73,7 +73,7 @@ export default function AboutSection() {
                 quality={80}
               />
               {/* Subtle luxury glow overlay */}
-              <div className="absolute inset-0 bg-linear-to-t from-ean-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
           </div>
         </SectionReveal>

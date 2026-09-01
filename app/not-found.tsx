@@ -29,8 +29,6 @@ export default function NotFound() {
 
       <main className="flex-1 flex flex-col bg-ean-navy text-ean-text-light">
         <section className="relative flex-1 flex items-center py-24 sm:py-32 overflow-hidden">
-          {/* Ambient gold light source, consistent with the CTA sections */}
-          <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/10 blur-[120px] pointer-events-none" />
 
           <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-8 w-full space-y-10">
             <div className="space-y-6">

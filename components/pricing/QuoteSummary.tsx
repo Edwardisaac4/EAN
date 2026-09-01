@@ -69,16 +69,16 @@ export default function QuoteSummary({
               {/* BLURRED BACKGROUND PLACEHOLDER ITEM LIST */}
               <div className="mt-6 blur-xs opacity-30 select-none pointer-events-none space-y-3">
                 <div className="flex justify-between text-xs font-ui">
-                  <span className="font-semibold text-ean-navy">Handling fee</span>
-                  <span className="font-mono font-bold text-ean-navy">$550</span>
+                  <span className="font-semibold text-ean-text-light">Handling fee</span>
+                  <span className="font-mono font-bold text-ean-text-light">$550</span>
                 </div>
                 <div className="flex justify-between text-xs font-ui">
-                  <span className="font-semibold text-ean-navy">CIQ fee</span>
-                  <span className="font-mono font-bold text-ean-navy">$600</span>
+                  <span className="font-semibold text-ean-text-light">CIQ fee</span>
+                  <span className="font-mono font-bold text-ean-text-light">$600</span>
                 </div>
                 <div className="flex justify-between text-xs font-ui">
-                  <span className="font-semibold text-ean-navy">Overnight parking</span>
-                  <span className="font-mono font-bold text-ean-navy">$100</span>
+                  <span className="font-semibold text-ean-text-light">Overnight parking</span>
+                  <span className="font-mono font-bold text-ean-text-light">$100</span>
                 </div>
               </div>
             </div>
@@ -86,14 +86,14 @@ export default function QuoteSummary({
             /* REVEALED PRICE DETAILS & ITEMIZED BREAKDOWN */
             <div className="space-y-5 animate-fadeIn">
               <div className="flex items-center justify-between pb-2 border-b border-ean-border-light">
-                <span className="text-xs font-ui uppercase tracking-widest font-semibold flex items-center gap-1.5 text-ean-burgundy-rich">
+                <span className="text-xs font-ui uppercase tracking-widest font-semibold flex items-center gap-1.5 text-ean-text-light">
                   <Calculator className="w-4 h-4 text-ean-gold" />
                   Itemized Charge Summary
                 </span>
               </div>
 
               {quote.items.length === 0 ? (
-                <div className="text-xs font-ui text-ean-muted-dark text-center py-6">
+                <div className="text-xs font-ui text-ean-muted-light text-center py-6">
                   Select an aircraft to view ground handling estimates.
                 </div>
               ) : (
@@ -106,10 +106,10 @@ export default function QuoteSummary({
 
               {/* TOTAL ESTIMATE ROW */}
               <div className="pt-4 border-t border-ean-border-light">
-                <div className="text-[11px] font-ui uppercase tracking-widest text-ean-muted-dark font-semibold">
+                <div className="text-[11px] font-ui uppercase tracking-widest text-ean-muted-light font-semibold">
                   Total Estimated Handling Fee
                 </div>
-                <div className="text-2xl font-mono font-bold text-ean-burgundy-rich mt-1 tabular-nums">
+                <div className="text-2xl font-mono font-bold text-ean-text-light mt-1 tabular-nums">
                   {quote.totalDisplay}
                 </div>
               </div>

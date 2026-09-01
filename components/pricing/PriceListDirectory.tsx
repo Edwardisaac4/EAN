@@ -62,11 +62,11 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
       {/* HEADER CONTROLS BAR */}
       <div className="bg-white p-6 shadow-sm border border-ean-border-light flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="font-display font-bold text-2xl text-ean-navy flex items-center gap-2">
+          <h2 className="font-display font-bold text-2xl text-ean-text-light flex items-center gap-2">
             <FileSpreadsheet className="w-6 h-6 text-ean-gold" />
             Official FBO Rate Sheet & Operational Tariff
           </h2>
-          <p className="font-ui text-xs md:text-sm text-ean-muted-dark mt-1">
+          <p className="font-ui text-xs md:text-sm text-ean-muted-light mt-1">
             Standard published rates for Lagos MMIA & Abuja NAIA ground handling and airside support services.
           </p>
         </div>
@@ -80,7 +80,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               className={`px-3 py-1.5 text-xs font-ui font-medium transition-colors ${
                 selectedLocation === 'ALL'
                   ? 'bg-ean-navy text-ean-text-light shadow-sm'
-                  : 'text-ean-muted-dark hover:text-ean-navy'
+                  : 'text-ean-muted-light hover:text-ean-text-light'
               }`}
             >
               All Stations
@@ -91,7 +91,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               className={`px-3 py-1.5 text-xs font-ui font-medium transition-colors ${
                 selectedLocation === 'LOS'
                   ? 'bg-ean-navy text-ean-text-light shadow-sm'
-                  : 'text-ean-muted-dark hover:text-ean-navy'
+                  : 'text-ean-muted-light hover:text-ean-text-light'
               }`}
             >
               Lagos (LOS)
@@ -102,7 +102,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               className={`px-3 py-1.5 text-xs font-ui font-medium transition-colors ${
                 selectedLocation === 'ABV'
                   ? 'bg-ean-navy text-ean-text-light shadow-sm'
-                  : 'text-ean-muted-dark hover:text-ean-navy'
+                  : 'text-ean-muted-light hover:text-ean-text-light'
               }`}
             >
               Abuja (ABV)
@@ -132,7 +132,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               Ground Handling Base Tariffs (By Aircraft MTOW Weight Class)
             </h3>
           </div>
-          <span className="text-xs font-ui text-ean-muted-light bg-white/10 px-3 py-1 rounded-full w-fit">
+          <span className="text-xs font-ui text-ean-muted-light bg-black/10 px-3 py-1 rounded-full w-fit">
             Per Flight Turnaround
           </span>
         </div>
@@ -140,7 +140,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
         <div className="overflow-x-auto">
           <table className="w-full text-left font-ui text-xs md:text-sm">
             <thead>
-              <tr className="bg-ean-surface border-b border-ean-border-light text-ean-navy uppercase tracking-wider font-semibold text-[11px]">
+              <tr className="bg-ean-surface border-b border-ean-border-light text-ean-text-light uppercase tracking-wider font-semibold text-[11px]">
                 <th className="py-4 px-6">MTOW Weight Category</th>
                 <th className="py-4 px-6">Aircraft Class Examples</th>
                 {(selectedLocation === 'ALL' || selectedLocation === 'LOS') && (
@@ -154,7 +154,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
                 )}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 text-ean-navy">
+            <tbody className="divide-y divide-gray-100 text-ean-text-light">
               {BANDS_ORDER.map((b) => {
                 const rate = HANDLING_LOS[b]
                 const minRate = `$${rate.min.toLocaleString()}`
@@ -162,7 +162,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
 
                 return (
                   <tr key={b} className="hover:bg-gray-50/80 transition-colors">
-                    <td className="py-4 px-6 font-semibold text-ean-navy">
+                    <td className="py-4 px-6 font-semibold text-ean-text-light">
                       <div className="flex items-center gap-2">
                         <span className="w-6 h-6 rounded-full bg-ean-gold/10 text-ean-gold font-bold flex items-center justify-center text-xs">
                           {b}
@@ -170,12 +170,12 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
                         <span>{BANDS[b].label}</span>
                       </div>
                     </td>
-                    <td className="py-4 px-6 text-ean-muted-dark text-xs max-w-xs">
+                    <td className="py-4 px-6 text-ean-muted-light text-xs max-w-xs">
                       {BAND_EXAMPLES[b]}
                     </td>
                     {(selectedLocation === 'ALL' || selectedLocation === 'LOS') && (
                       <>
-                        <td className="py-4 px-6 text-right font-mono font-medium text-ean-navy">
+                        <td className="py-4 px-6 text-right font-mono font-medium text-ean-text-light">
                           {minRate}
                         </td>
                         <td className="py-4 px-6 text-right font-mono font-bold text-ean-gold">
@@ -184,7 +184,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
                       </>
                     )}
                     {(selectedLocation === 'ALL' || selectedLocation === 'ABV') && (
-                      <td className="py-4 px-6 text-right font-mono font-semibold text-ean-navy">
+                      <td className="py-4 px-6 text-right font-mono font-semibold text-ean-text-light">
                         ${HANDLING_ABV.toLocaleString()}
                       </td>
                     )}
@@ -194,7 +194,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
             </tbody>
           </table>
         </div>
-        <div className="p-4 bg-ean-surface border-t border-ean-border-light text-[11px] font-ui text-ean-muted-dark flex items-center gap-2">
+        <div className="p-4 bg-ean-surface border-t border-ean-border-light text-[11px] font-ui text-ean-muted-light flex items-center gap-2">
           <HelpCircle className="w-4 h-4 text-ean-gold shrink-0" />
           <span>Rates are per aircraft turnaround (arrival &amp; departure) and are quoted in USD. Bands A and B carry a single published figure; bands C, D and E are published as a range, shown here as its floor and ceiling. Outstation handling is ${OUTSTATION_HANDLING_USD} per turnaround at any station outside Lagos and Abuja.</span>
         </div>
@@ -214,10 +214,10 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
           <div className="p-5 space-y-4 flex-1">
             <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
-                <div className="font-ui font-semibold text-xs text-ean-navy">
+                <div className="font-ui font-semibold text-xs text-ean-text-light">
                   Abuja Handling
                 </div>
-                <div className="text-[11px] text-ean-muted-dark">
+                <div className="text-[11px] text-ean-muted-light">
                   Per turnaround at Abuja NAIA &middot; flat across every MTOW band
                 </div>
               </div>
@@ -228,10 +228,10 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
 
             <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
-                <div className="font-ui font-semibold text-xs text-ean-navy">
+                <div className="font-ui font-semibold text-xs text-ean-text-light">
                   Outstation Handling Fee
                 </div>
-                <div className="text-[11px] text-ean-muted-dark">
+                <div className="text-[11px] text-ean-muted-light">
                   Per turnaround at any station outside Lagos and Abuja
                 </div>
               </div>
@@ -242,10 +242,10 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
 
             <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
-                <div className="font-ui font-semibold text-xs text-ean-navy">
+                <div className="font-ui font-semibold text-xs text-ean-text-light">
                   CIQ Fee (Customs, Immigration, Quarantine)
                 </div>
-                <div className="text-[11px] text-ean-muted-dark">
+                <div className="text-[11px] text-ean-muted-light">
                   Official inspection clearance facilitation per flight
                 </div>
               </div>
@@ -256,10 +256,10 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
 
             <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
-                <div className="font-ui font-semibold text-xs text-ean-navy">
+                <div className="font-ui font-semibold text-xs text-ean-text-light">
                   Overnight Parking
                 </div>
-                <div className="text-[11px] text-ean-muted-dark">
+                <div className="text-[11px] text-ean-muted-light">
                   Per night &middot; flat across every MTOW band
                 </div>
               </div>
@@ -270,10 +270,10 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
 
             <div className="flex items-center justify-between p-3 bg-ean-surface border border-ean-border-light">
               <div>
-                <div className="font-ui font-semibold text-xs text-ean-navy">
+                <div className="font-ui font-semibold text-xs text-ean-text-light">
                   Disbursement Fee
                 </div>
-                <div className="text-[11px] text-ean-muted-dark">
+                <div className="text-[11px] text-ean-muted-light">
                   Levied on any payment EAN makes on the operator&apos;s behalf
                 </div>
               </div>
@@ -297,7 +297,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
             <div className="overflow-x-auto">
               <table className="w-full text-left font-ui text-xs">
                 <thead>
-                  <tr className="border-b border-ean-border-light text-ean-navy uppercase tracking-wider font-semibold text-[10px]">
+                  <tr className="border-b border-ean-border-light text-ean-text-light uppercase tracking-wider font-semibold text-[10px]">
                     <th className="py-2 pr-2">Band</th>
                     <th className="py-2 px-2 text-right">Apron Parking</th>
                     <th className="py-2 pl-2 text-right">Hangarage</th>
@@ -306,10 +306,10 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
                 <tbody className="divide-y divide-gray-100">
                   {BANDS_ORDER.map((b) => (
                     <tr key={b}>
-                      <td className="py-2.5 pr-2 font-semibold text-ean-navy whitespace-nowrap">
+                      <td className="py-2.5 pr-2 font-semibold text-ean-text-light whitespace-nowrap">
                         {b} &middot; {BANDS[b].range}
                       </td>
-                      <td className="py-2.5 px-2 text-right font-mono font-semibold text-ean-navy">
+                      <td className="py-2.5 px-2 text-right font-mono font-semibold text-ean-text-light">
                         ${APRON_PARKING ? (addonRate(APRON_PARKING, b) ?? 0).toLocaleString() : '—'}
                       </td>
                       <td className="py-2.5 pl-2 text-right font-mono font-bold text-ean-gold">
@@ -321,7 +321,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               </table>
             </div>
 
-            <div className="p-3 bg-ean-gold/10 border border-ean-gold/30 text-xs font-ui text-ean-navy flex items-start gap-2">
+            <div className="p-3 bg-ean-gold/10 border border-ean-gold/30 text-xs font-ui text-ean-text-light flex items-start gap-2">
               <Sparkles className="w-4 h-4 text-ean-gold shrink-0 mt-0.5" />
               <span>Both are charged per day. Every rate on this sheet is quoted in USD &mdash; there are no naira-denominated charges.</span>
             </div>
@@ -349,7 +349,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search airside service..."
-              className="w-full pl-9 pr-4 py-2 bg-white/10 border border-ean-border-dark text-ean-text-light placeholder-white/50 text-xs font-ui focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
+              className="w-full pl-9 pr-4 py-2 bg-black/10 border border-ean-border-dark text-ean-text-light placeholder-white/50 text-xs font-ui focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
             />
           </div>
         </div>
@@ -373,10 +373,10 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
                 className="bg-white p-4 border border-ean-border-light shadow-xs hover:border-ean-blue/50 transition-all flex flex-col justify-between"
               >
                 <div>
-                  <div className="font-ui font-semibold text-sm text-ean-navy mb-1">
+                  <div className="font-ui font-semibold text-sm text-ean-text-light mb-1">
                     {addon.label}
                   </div>
-                  <div className="text-[11px] font-ui text-ean-muted-dark">
+                  <div className="text-[11px] font-ui text-ean-muted-light">
                     {addon.per === 'flat'
                       ? 'Flat rate per flight service'
                       : addon.per === 'band'
@@ -388,10 +388,10 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
                     <div className="mt-3 grid grid-cols-5 gap-1">
                       {BANDS_ORDER.map((b, i) => (
                         <div key={b} className="text-center bg-ean-surface border border-ean-border-light py-1">
-                          <div className="text-[9px] font-ui uppercase tracking-wider text-ean-muted-dark">
+                          <div className="text-[9px] font-ui uppercase tracking-wider text-ean-muted-light">
                             {b}
                           </div>
-                          <div className="font-mono text-[10px] font-semibold text-ean-navy">
+                          <div className="font-mono text-[10px] font-semibold text-ean-text-light">
                             ${bandRates[i].toLocaleString()}
                           </div>
                         </div>
@@ -400,7 +400,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
                   )}
                 </div>
                 <div className="mt-4 pt-3 border-t border-ean-border-light flex items-center justify-between">
-                  <span className="text-[11px] font-ui uppercase tracking-wider text-ean-muted-dark">
+                  <span className="text-[11px] font-ui uppercase tracking-wider text-ean-muted-light">
                     Tariff
                   </span>
                   <span className="font-mono font-bold text-sm text-ean-gold">
@@ -424,7 +424,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
               Monthly Handling Arrangements &amp; Disbursement
             </h3>
           </div>
-          <span className="text-xs font-ui text-ean-muted-light bg-white/10 px-3 py-1 rounded-full w-fit">
+          <span className="text-xs font-ui text-ean-muted-light bg-black/10 px-3 py-1 rounded-full w-fit">
             Per Calendar Month
           </span>
         </div>
@@ -432,16 +432,16 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
         <div className="overflow-x-auto">
           <table className="w-full text-left font-ui text-xs md:text-sm">
             <thead>
-              <tr className="bg-ean-surface border-b border-ean-border-light text-ean-navy uppercase tracking-wider font-semibold text-[11px]">
+              <tr className="bg-ean-surface border-b border-ean-border-light text-ean-text-light uppercase tracking-wider font-semibold text-[11px]">
                 <th className="py-4 px-6">MTOW Weight Category</th>
                 <th className="py-4 px-6 text-right">Monthly Handling (Hangarage)</th>
                 <th className="py-4 px-6 text-right">Monthly Handling (Apron)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 text-ean-navy">
+            <tbody className="divide-y divide-gray-100 text-ean-text-light">
               {BANDS_ORDER.map((b) => (
                 <tr key={b} className="hover:bg-gray-50/80 transition-colors">
-                  <td className="py-4 px-6 font-semibold text-ean-navy">
+                  <td className="py-4 px-6 font-semibold text-ean-text-light">
                     <div className="flex items-center gap-2">
                       <span className="w-6 h-6 rounded-full bg-ean-gold/10 text-ean-gold font-bold flex items-center justify-center text-xs">
                         {b}
@@ -452,7 +452,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
                   <td className="py-4 px-6 text-right font-mono font-bold text-ean-gold">
                     ${MONTHLY_HANDLING[b].hangarage.toLocaleString()}
                   </td>
-                  <td className="py-4 px-6 text-right font-mono font-semibold text-ean-navy">
+                  <td className="py-4 px-6 text-right font-mono font-semibold text-ean-text-light">
                     ${MONTHLY_HANDLING[b].apron.toLocaleString()}
                   </td>
                 </tr>
@@ -461,7 +461,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
           </table>
         </div>
 
-        <div className="p-4 bg-ean-surface border-t border-ean-border-light text-[11px] font-ui text-ean-muted-dark flex items-center gap-2">
+        <div className="p-4 bg-ean-surface border-t border-ean-border-light text-[11px] font-ui text-ean-muted-light flex items-center gap-2">
           <HelpCircle className="w-4 h-4 text-ean-gold shrink-0" />
           <span>
             Monthly handling is a standing arrangement billed per calendar month, separate from per-turnaround handling. A disbursement fee of {DISBURSEMENT_RATE * 100}% applies to any payment EAN makes on the operator&apos;s behalf — fuel uplift, permits and third-party invoices included.
@@ -470,7 +470,7 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
       </div>
 
       {/* FOOTER CTA STRIP — SWITCH TO CALCULATOR */}
-      <div className="bg-linear-to-r from-ean-navy to-ean-navy-mid text-ean-text-light p-8 shadow-xl border border-ean-gold/30 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="bg-linear-to-r from-ean-navy to-ean-navy-mid text-ean-text-light p-8 border border-ean-gold/30 flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
           <h3 className="font-display font-bold text-2xl text-ean-text-light">
             Need an Exact Tailored Quote for Your Flight?

@@ -7,12 +7,17 @@ interface OutlineButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 /**
  * The secondary call to action — the same geometry and type as GoldButton, but
- * a 1px brass hairline instead of a fill, resolving to the fill on hover.
+ * a 1px blue hairline instead of a fill, resolving to the fill on hover.
  *
- * `variant` distinguishes the surface it sits on, not the colour it draws in:
- * brass is the only accent in this system, so both variants are brass. The
- * light variant simply starts from ink type, because on a brass or ivory
- * surface brass-on-brass would vanish.
+ * `variant` distinguishes the surface it sits on, not the colour it draws in.
+ * On paper there is only one ground, so both variants now draw in the brand
+ * blue and differ only in hairline weight — `light` sits on a busier surface
+ * and takes the softer 40% rule.
+ *
+ * The light variant used to invert to an ink fill carrying ivory type. That
+ * only worked while ivory was the light colour: with the paper ramp it is
+ * white-on-white at rest and ink-on-ink on hover, so it was rewritten to the
+ * same blue button as `dark` rather than repointed.
  */
 export default function OutlineButton({
   children,
@@ -26,7 +31,7 @@ export default function OutlineButton({
   const variantStyles =
     variant === 'dark'
       ? 'border-ean-gold text-ean-gold hover:bg-ean-gold hover:text-ean-text-dark'
-      : 'border-ean-text-dark/30 text-ean-text-dark hover:bg-ean-text-dark hover:text-ean-text-light hover:border-ean-text-dark';
+      : 'border-ean-gold/40 text-ean-gold hover:bg-ean-gold hover:text-ean-text-dark hover:border-ean-gold';
 
   return (
     <button className={`${baseStyles} ${variantStyles} ${className}`} {...props}>

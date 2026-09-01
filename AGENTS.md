@@ -131,42 +131,66 @@ fetching into a public page without a reason.
 ## 5. Design tokens
 
 Defined in `app/globals.css` under `@theme`. Always use the token; never a raw
-hex, never an arbitrary colour value.
+hex, never an arbitrary colour value — with one deliberate exception, below.
 
-The palette is **ink/brass**, replacing the indigo/gold one in v7. Surfaces are
-near-neutral warm greys (hue ~195° at very low saturation); brass (`#a9895a`) is
-the sole accent. `--color-ean-navy` is three swaps stale — it is not navy, it is
-an ink grey. The names stayed to avoid a 300-site churn.
+The palette is **blue/paper**, replacing the ink/brass one. Every surface is
+white or a near-white step; the brand blue (`#2b0098`, the CEO's value and, to
+within three RGB units, the logotype's own indigo) is the only accent. The names
+are four swaps stale — `ean-navy` is not navy, `ean-black` is white, `ean-gold`
+is blue. They stayed to avoid a 900-site churn.
 
 ```
-Surfaces  ean-black-pure #0a0d0f · ean-black #0e1214 · ean-black-accent #12171a
-          ean-navy #161c1f · ean-navy-mid #111618
-          ean-white #ffffff · ean-surface #f5f2ea
-          ean-obsidian #0e1214 · -raised #161c1f · -elevated/-highlight #1d2529
+Surfaces  ean-black / ean-black-pure / ean-white / ean-obsidian #ffffff  (paper)
+          ean-navy / ean-black-accent / ean-obsidian-raised #f4f5f7     (raised)
+          ean-navy-mid #f9fafb
+          ean-surface / ean-obsidian-elevated / -highlight #eaecf0      (recessed)
 Legacy    ean-burgundy · -mid · -deep · -dark · -night · -rich · -accent · -dusk
-          — aliases onto the ink ramp. Prefer the surfaces above in new code.
-Accent    ean-gold #a9895a · ean-gold-light #c4a576 · ean-gold-muted
-          ean-blue #9174dc · ean-blue-light #a390d5 · ean-blue-muted · ean-blue-border
-          ean-indigo #2a009a — the mark's own colour; logo lockup and light surfaces only
-Neutral   ean-slate #8a939b · ean-slate-deep #767f8a (ink surfaces only — 4.64:1 on ean-black)
-Status    ean-live #2e7d5b (dot only, never for text)
-Text      ean-text-light #f5f2ea (ivory) · ean-text-dark #0e1214 (ink)
-          ean-muted-light #c9c4b6 · ean-muted-dark rgba(14,18,20,0.85)
-Borders   ean-border-dark rgba(245,242,234,0.13) · ean-border-light rgba(14,18,20,0.14)
+          — aliases onto the paper ramp. Prefer the surfaces above in new code.
+Accent    ean-gold #2b0098 (13.50:1 on paper) · ean-gold-light #4a1fd0 (8.76:1)
+          ean-gold-muted · ean-indigo / ean-blue #2b0098 (collapsed onto the accent)
+          ean-blue-light #4a1fd0 · ean-blue-muted · ean-blue-border
+Neutral   ean-grey #969696 — the brand grey. STRUCTURE ONLY, see below
+          ean-slate #6b6b6b (5.33:1) · ean-slate-deep #4a4a4a (8.86:1)
+          Not surface-constrained: both clear AA on all three papers.
+Status    ean-live #0f6b45 (6.54:1) · ean-error #b91c1c (6.47:1) — both may carry text
+Text      ean-text-light #1f1f23 (ink, 16.43:1 on paper) · ean-muted-light #4a4a4a
+          ean-text-dark #ffffff (13.50:1 on the blue fill) · ean-muted-dark #cfc6ee
+Borders   ean-border-dark rgba(150,150,150,.45) · ean-border-light rgba(150,150,150,.30)
 Fonts     font-display (Fraunces) · font-ui (Archivo) · font-mono (IBM Plex Mono)
 ```
 
-Brass is an accent only — CTAs, badges, underlines, icon strokes. Never a large
-surface fill. Brass measures 5.8:1 on ink, and ink measures 5.8:1 on brass, so it
-works as both a type colour and a fill.
+**`-light` and `-dark` name the SURFACE, not the type.** `text-ean-text-light` is
+"type for a light-on-dark context" and on the paper ramp that is **ink**;
+`text-ean-text-dark` is "type for a dark-on-light context" and on the blue fill
+that is **white**. The pair inverted with the swap, which is exactly what lets
+588 existing call sites resolve correctly without being touched. Read the name as
+a role, never as a colour.
 
-**`ean-indigo` (`#2a009a`) is not usable for text or icons on a dark surface.** At
-lightness 30% it has no useful contrast on the ink ramp. Use `ean-blue` (`#9174dc`)
-for accent work on dark; `ean-indigo` is for the logo lockup and light surfaces.
+**The blue is a surface, not only an accent.** Its relative luminance is 0.0278 —
+one step above the old ink ramp's top step and nowhere near the papers. The paper
+steps are 1.09 and 1.18 apart, so they cannot carry section rhythm the way the
+old dark/light alternation did (18.83). A full-bleed `#2b0098` band and full-bleed
+photography are what replace it. **Composition rule: no more than two consecutive
+sections on paper.**
 
-The plan behind the migration, the per-file inventory, and the two decisions still
-open are in `docs/specs/2026-08-31-blue-gold-dark-theme.md`. The site is not yet
-dark-themed — the light sections listed there are unconverted.
+**`ean-grey` (`#969696`) must never carry text.** It measures 2.96:1 on paper —
+below AA text (4.5:1) *and* below AA large text (3:1), and below the 3:1 non-text
+floor for a border that is a control's only affordance. It is the hairline,
+divider, table-rule and grid-gap colour. For muted type use `ean-slate`
+(`#6b6b6b`, 5.33:1). Inside a blue fill the grey does clear 4.5:1 (4.56:1) and may
+be used there.
+
+**The one exception to "always use the token":** literal `text-white`,
+`bg-black/70`, `from-black/80` and friends are correct — and required — over
+**photography**. There is no token whose job is "type on a photograph", and
+inventing one for ~45 sites was not worth a 25th token. A photo band is a dark
+scrim carrying white type; a paper section is a token surface carrying token
+type. Do not mix them.
+
+The migration plan, the per-file inventory, and the design work still outstanding
+are in `docs/specs/2026-09-01-light-blue-grey-theme.md`. The engineering track
+(§1–§8) has shipped; the redesign track (§9 — band rhythm, QuoteCalculator, the
+per-page rebuilds) is gated on comps and has not.
 
 `font-display` is for headlines. Body copy, labels and UI text are `font-ui`.
 

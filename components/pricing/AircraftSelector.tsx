@@ -84,7 +84,7 @@ export default function AircraftSelector({
     return (
       <div className="bg-white p-6 shadow-sm border border-ean-border-light space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-ui font-semibold text-lg text-ean-navy flex items-center gap-2">
+          <h3 className="font-ui font-semibold text-lg text-ean-text-light flex items-center gap-2">
             <Plane className="w-5 h-5 text-ean-gold" />
             1. Select Aircraft (Manual MTOW)
           </h3>
@@ -95,7 +95,7 @@ export default function AircraftSelector({
 
         <div className="space-y-3">
           <div>
-            <label className="block text-xs font-ui text-ean-muted-dark mb-1 font-medium">Aircraft MTOW (kg)</label>
+            <label className="block text-xs font-ui text-ean-muted-light mb-1 font-medium">Aircraft MTOW (kg)</label>
             <input
               type="number"
               placeholder="e.g. 17145"
@@ -111,7 +111,7 @@ export default function AircraftSelector({
               }}
               min={500}
               max={600000}
-              className="w-full px-4 py-3 bg-ean-surface border border-ean-border-light text-ean-navy text-sm font-ui focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
+              className="w-full px-4 py-3 bg-ean-surface border border-ean-border-light text-ean-text-light text-sm font-ui focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
             />
             {manualMtow ? (
               <p className="mt-2 text-sm text-ean-gold font-medium">
@@ -135,7 +135,7 @@ export default function AircraftSelector({
   return (
     <div className="bg-white p-6 shadow-sm border border-ean-border-light space-y-4" ref={dropRef}>
       <div className="flex items-center justify-between">
-        <h3 className="font-ui font-semibold text-lg text-ean-navy flex items-center gap-2">
+        <h3 className="font-ui font-semibold text-lg text-ean-text-light flex items-center gap-2">
           <Plane className="w-5 h-5 text-ean-gold" />
           1. Select Aircraft
         </h3>
@@ -160,7 +160,7 @@ export default function AircraftSelector({
             }}
             onClick={() => setIsOpen(true)}
             onFocus={() => setIsOpen(true)}
-            className="w-full pl-10 pr-12 py-3 bg-ean-surface border border-ean-border-light text-ean-navy text-sm font-ui focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors cursor-pointer"
+            className="w-full pl-10 pr-12 py-3 bg-ean-surface border border-ean-border-light text-ean-text-light text-sm font-ui focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors cursor-pointer"
           />
 
           {/* Right controls: Loading / Clear / Toggle Arrow */}
@@ -188,10 +188,10 @@ export default function AircraftSelector({
 
         {/* Floating Dropdown menu */}
         {isOpen && (
-          <div className="absolute z-30 left-0 right-0 w-full bg-white border border-ean-border-light shadow-xl mt-1 max-h-72 overflow-y-auto divide-y divide-gray-100">
+          <div className="absolute z-30 left-0 right-0 w-full bg-white border border-ean-border-light mt-1 max-h-72 overflow-y-auto divide-y divide-gray-100">
 
             {/* Sub-header */}
-            <div className="px-4 py-2 bg-ean-surface text-[11px] font-ui font-semibold text-ean-muted-dark uppercase tracking-wider sticky top-0 border-b border-ean-border-light flex items-center justify-between">
+            <div className="px-4 py-2 bg-ean-surface text-[11px] font-ui font-semibold text-ean-muted-light uppercase tracking-wider sticky top-0 border-b border-ean-border-light flex items-center justify-between">
               <span>{debouncedQ.length >= 2 ? `Search Results for "${query}"` : 'Select from Business Aviation Fleet'}</span>
               {data && <span className="text-ean-gold">{data.length} Models</span>}
             </div>

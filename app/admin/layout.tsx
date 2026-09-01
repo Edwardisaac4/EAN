@@ -6,7 +6,7 @@ import { AdminSidebar } from '@/components/admin/AdminSidebar';
 /*
  * Admin's own fonts, requested here rather than in the root layout.
  *
- * The public site moved to Fraunces/Archivo/IBM Plex Mono; admin is explicitly
+ * The public site sets in Archivo with IBM Plex Mono labels; admin is explicitly
  * out of that scope and must keep rendering in Cormorant + Inter. Loading them
  * from this layout means the two extra faces are fetched on /admin routes only
  * and cost a public page load nothing.

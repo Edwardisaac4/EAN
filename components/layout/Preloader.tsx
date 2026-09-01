@@ -37,7 +37,7 @@ export default function Preloader() {
       aria-hidden="true"
       className="ean-preloader fixed inset-0 z-9999 pointer-events-none"
     >
-      <div className="ean-preloader-veil absolute inset-0 bg-ean-navy" />
+      <div className="ean-preloader-veil absolute inset-0 bg-ean-gold" />
 
       <div className="ean-preloader-mark absolute inset-0 flex flex-col items-center justify-center gap-7">
         <svg viewBox="0 0 260 110" className="w-[min(64vw,320px)]">
@@ -63,7 +63,7 @@ export default function Preloader() {
           </defs>
 
           <path
-            className="ean-preloader-arc fill-none stroke-ean-gold-muted"
+            className="ean-preloader-arc fill-none stroke-white/25"
             d={ARC_PATH}
             pathLength="1"
             strokeWidth="1"
@@ -80,7 +80,7 @@ export default function Preloader() {
 
           <g className="ean-preloader-plane">
             <g className="ean-preloader-bank">
-              <path className="fill-ean-gold-light" d={JET_PATH} />
+              <path className="fill-white" d={JET_PATH} />
             </g>
           </g>
         </svg>
@@ -94,7 +94,7 @@ export default function Preloader() {
             <span className="ean-preloader-letter inline-block">A</span>
             <span className="ean-preloader-letter inline-block">N</span>
           </span>
-          <span className="ean-preloader-rule h-px w-16 bg-ean-gold-muted" />
+          <span className="ean-preloader-rule h-px w-16 bg-white/25" />
         </div>
       </div>
     </div>

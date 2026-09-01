@@ -246,8 +246,6 @@ export default function PrivacyPolicyPage() {
       <main className="flex-1 flex flex-col bg-ean-navy text-ean-text-light min-h-screen">
         {/* HERO SECTION */}
         <section className="relative pt-32 pb-20 bg-linear-to-b from-ean-navy via-ean-navy-mid to-ean-navy border-b border-ean-border-dark overflow-hidden">
-          {/* Ambient Gold Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-160 h-160 rounded-full bg-ean-gold/5 blur-[140px] pointer-events-none" />
 
           <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center space-y-6">
             <div className="inline-flex items-center gap-2 border border-ean-gold/30 bg-ean-gold/10 text-ean-gold text-xs font-semibold uppercase tracking-[0.25em] px-4 py-1.5">
@@ -265,15 +263,15 @@ export default function PrivacyPolicyPage() {
 
             {/* Quick Metadata Bar */}
             <div className="pt-4 flex flex-wrap items-center justify-center gap-4 text-xs font-ui text-ean-muted-light">
-              <span className="inline-flex items-center gap-1.5 bg-white/5 border border-ean-border-dark px-3.5 py-1.5">
+              <span className="inline-flex items-center gap-1.5 bg-black/5 border border-ean-border-dark px-3.5 py-1.5">
                 <Clock className="w-3.5 h-3.5 text-ean-gold" />
                 Last Updated: <strong className="text-ean-text-light">15 October 2025</strong>
               </span>
-              <span className="inline-flex items-center gap-1.5 bg-white/5 border border-ean-border-dark px-3.5 py-1.5">
+              <span className="inline-flex items-center gap-1.5 bg-black/5 border border-ean-border-dark px-3.5 py-1.5">
                 <Building2 className="w-3.5 h-3.5 text-ean-gold" />
                 Entity: <strong className="text-ean-text-light">EAN Aviation Limited</strong>
               </span>
-              <span className="inline-flex items-center gap-1.5 bg-white/5 border border-ean-border-dark px-3.5 py-1.5">
+              <span className="inline-flex items-center gap-1.5 bg-black/5 border border-ean-border-dark px-3.5 py-1.5">
                 <Mail className="w-3.5 h-3.5 text-ean-gold" />
                 DPO Contact: <strong className="text-ean-text-light">info@ean.aero</strong>
               </span>
@@ -283,9 +281,9 @@ export default function PrivacyPolicyPage() {
             <div className="pt-6 flex flex-wrap items-center justify-center gap-4">
               <a
                 href="mailto:info@ean.aero?subject=Privacy%20Policy%20Inquiry"
-                className="inline-flex items-center gap-2 bg-ean-gold hover:bg-ean-gold-light text-ean-navy border border-ean-gold text-xs uppercase tracking-wider font-bold px-6 py-3.5 transition-colors shadow-xs"
+                className="inline-flex items-center gap-2 bg-ean-gold hover:bg-ean-gold-light text-ean-text-dark border border-ean-gold text-xs uppercase tracking-wider font-bold px-6 py-3.5 transition-colors shadow-xs"
               >
-                <Mail className="w-4 h-4 text-ean-navy" />
+                <Mail className="w-4 h-4 text-ean-text-light" />
                 <span>Contact DPO Desk</span>
               </a>
             </div>
@@ -293,7 +291,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         {/* MAIN BODY CONTENT */}
-        <section className="bg-ean-white text-ean-text-dark py-16 sm:py-20 flex-1">
+        <section className="bg-ean-white text-ean-text-light py-16 sm:py-20 flex-1">
           <div className="max-w-ean mx-auto px-6 md:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
               
@@ -302,7 +300,7 @@ export default function PrivacyPolicyPage() {
                 <div className="bg-ean-surface border border-ean-border-light/60 p-6 space-y-4 shadow-xs">
                   <div className="flex items-center gap-2 border-b border-ean-border-light pb-3">
                     <FileText className="w-4 h-4 text-ean-gold" />
-                    <h3 className="font-ui text-sm font-bold uppercase tracking-wider text-ean-navy">
+                    <h3 className="font-ui text-sm font-bold uppercase tracking-wider text-ean-text-light">
                       Policy Index
                     </h3>
                   </div>
@@ -315,12 +313,12 @@ export default function PrivacyPolicyPage() {
                       placeholder="Search clauses (e.g. cookies)..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-ean-white border border-ean-border-light pl-8 pr-7 py-2 text-xs text-ean-navy placeholder:text-ean-muted-dark/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
+                      className="w-full bg-ean-white border border-ean-border-light pl-8 pr-7 py-2 text-xs text-ean-text-light placeholder:text-ean-muted-light/60 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors"
                     />
                     {searchQuery && (
                       <button
                         onClick={() => setSearchQuery('')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ean-muted-dark hover:text-ean-navy text-xs font-bold"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ean-muted-light hover:text-ean-text-light text-xs font-bold"
                       >
                         ×
                       </button>
@@ -338,11 +336,11 @@ export default function PrivacyPolicyPage() {
                           className={`w-full text-left flex items-center justify-between gap-3 p-2.5 text-xs font-ui transition-all duration-200 cursor-pointer relative ${
                             isActive
                               ? 'bg-ean-navy text-ean-text-light font-semibold shadow-xs border-l border-ean-gold pl-3'
-                              : 'text-ean-muted-dark hover:bg-ean-black/5 hover:text-ean-navy'
+                              : 'text-ean-muted-light hover:bg-black/5 hover:text-ean-text-light'
                           }`}
                         >
                           <div className="flex items-start gap-2.5 min-w-0">
-                            <span className={`font-mono text-[10px] font-bold ${isActive ? 'text-ean-gold' : 'text-ean-muted-dark'}`}>
+                            <span className={`font-mono text-[10px] font-bold ${isActive ? 'text-ean-gold' : 'text-ean-muted-light'}`}>
                               {sec.num}
                             </span>
                             <span className="line-clamp-1">{sec.title}</span>
@@ -385,8 +383,8 @@ export default function PrivacyPolicyPage() {
                 {filteredSections.length === 0 ? (
                   <div className="text-center py-16 bg-ean-surface border border-ean-border-light space-y-3">
                     <AlertCircle className="w-8 h-8 text-ean-gold mx-auto" />
-                    <h3 className="font-display text-xl font-medium text-ean-navy">No matching policy sections found</h3>
-                    <p className="font-ui text-sm text-ean-muted-dark">Try searching with a different term like &quot;consent&quot;, &quot;retention&quot;, &quot;cookies&quot;, or &quot;DPO&quot;.</p>
+                    <h3 className="font-display text-xl font-medium text-ean-text-light">No matching policy sections found</h3>
+                    <p className="font-ui text-sm text-ean-muted-light">Try searching with a different term like &quot;consent&quot;, &quot;retention&quot;, &quot;cookies&quot;, or &quot;DPO&quot;.</p>
                   </div>
                 ) : (
                   filteredSections.map((section) => {
@@ -404,33 +402,33 @@ export default function PrivacyPolicyPage() {
                                 <span className="font-mono text-xs font-bold text-ean-gold bg-ean-gold/10 px-2.5 py-1 border border-ean-gold/20">
                                   SECTION {section.num}
                                 </span>
-                                <span className="font-ui text-xs font-semibold tracking-widest text-ean-muted-dark uppercase">
+                                <span className="font-ui text-xs font-semibold tracking-widest text-ean-muted-light uppercase">
                                   Legal Framework
                                 </span>
                               </div>
-                              <h2 className="font-display text-2xl sm:text-2xl font-medium text-ean-navy pt-1">
+                              <h2 className="font-display text-2xl sm:text-2xl font-medium text-ean-text-light pt-1">
                                 {section.title}
                               </h2>
                             </div>
-                            <div className="w-10 h-10 bg-ean-navy/5 flex items-center justify-center text-ean-gold shrink-0 border border-ean-gold/20">
+                            <div className="w-10 h-10 bg-black/5 flex items-center justify-center text-ean-gold shrink-0 border border-ean-gold/20">
                               <IconComponent className="w-5 h-5" />
                             </div>
                           </div>
 
                           {/* Section Summary */}
-                          <p className="font-ui text-sm font-semibold text-ean-navy bg-ean-white p-4 border-l border-ean-gold">
+                          <p className="font-ui text-sm font-semibold text-ean-text-light bg-ean-white p-4 border-l border-ean-gold">
                             {section.summary}
                           </p>
 
                           {/* Section Sub-blocks */}
-                          <div className="space-y-6 font-ui text-sm sm:text-base text-ean-muted-dark leading-relaxed">
+                          <div className="space-y-6 font-ui text-sm sm:text-base text-ean-muted-light leading-relaxed">
                             {section.content.map((block, idx) => (
                               <div key={idx} className="space-y-2">
-                                <h3 className="font-ui font-bold text-sm text-ean-navy uppercase tracking-wider flex items-center gap-2">
+                                <h3 className="font-ui font-bold text-sm text-ean-text-light uppercase tracking-wider flex items-center gap-2">
                                   <ChevronRight className="w-4 h-4 text-ean-gold shrink-0" />
                                   <span>{block.subtitle}</span>
                                 </h3>
-                                <p className="pl-6 text-ean-muted-dark">{block.text}</p>
+                                <p className="pl-6 text-ean-muted-light">{block.text}</p>
                               </div>
                             ))}
                           </div>
@@ -440,19 +438,19 @@ export default function PrivacyPolicyPage() {
                           {/* Section 1: Lawful Basis Badges */}
                           {section.id === 'lawful-basis' && (
                             <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 pt-4 font-ui text-xs font-semibold">
-                              <div className="bg-ean-white p-3 border border-ean-border-light text-center text-ean-navy col-span-1 sm:col-span-2">
+                              <div className="bg-ean-white p-3 border border-ean-border-light text-center text-ean-text-light col-span-1 sm:col-span-2">
                                 🔒 Consent
                               </div>
-                              <div className="bg-ean-white p-3 border border-ean-border-light text-center text-ean-navy col-span-1 sm:col-span-2">
+                              <div className="bg-ean-white p-3 border border-ean-border-light text-center text-ean-text-light col-span-1 sm:col-span-2">
                                 ✈️ Contract Performance
                               </div>
-                              <div className="bg-ean-white p-3 border border-ean-border-light text-center text-ean-navy col-span-1 sm:col-span-2">
+                              <div className="bg-ean-white p-3 border border-ean-border-light text-center text-ean-text-light col-span-1 sm:col-span-2">
                                 ⚖️ Legal Obligation
                               </div>
-                              <div className="bg-ean-white p-3 border border-ean-border-light text-center text-ean-navy col-span-1 sm:col-span-3">
+                              <div className="bg-ean-white p-3 border border-ean-border-light text-center text-ean-text-light col-span-1 sm:col-span-3">
                                 🚑 Vital Interest
                               </div>
-                              <div className="bg-ean-white p-3 border border-ean-border-light text-center text-ean-navy col-span-2 sm:col-span-3">
+                              <div className="bg-ean-white p-3 border border-ean-border-light text-center text-ean-text-light col-span-2 sm:col-span-3">
                                 🏛️ Public Interest
                               </div>
                             </div>
@@ -507,12 +505,12 @@ export default function PrivacyPolicyPage() {
 
                           {/* Section 7: PCIDSS Highlight Box */}
                           {section.id === 'retention' && (
-                            <div className="bg-ean-gold/10 border border-ean-gold/30 p-5 space-y-2 font-ui text-xs sm:text-sm text-ean-navy">
-                              <div className="flex items-center gap-2 font-bold text-ean-navy uppercase tracking-wider">
+                            <div className="bg-ean-gold/10 border border-ean-gold/30 p-5 space-y-2 font-ui text-xs sm:text-sm text-ean-text-light">
+                              <div className="flex items-center gap-2 font-bold text-ean-text-light uppercase tracking-wider">
                                 <Lock className="w-4 h-4 text-ean-gold" />
                                 <span>PCI DSS Mandatory 10-Year Retention Mandate</span>
                               </div>
-                              <p className="text-ean-muted-dark">
+                              <p className="text-ean-muted-light">
                                 Under our Payment Card Industry Data Security Standard (PCIDSS) obligation, we are legally required to retain transaction and identity records for a minimum of ten (10) years from the end date of our business relationship with you.
                               </p>
                             </div>
@@ -529,19 +527,19 @@ export default function PrivacyPolicyPage() {
                                     <th className="p-3 font-semibold uppercase">User Control</th>
                                   </tr>
                                 </thead>
-                                <tbody className="divide-y divide-ean-border-light text-ean-muted-dark">
+                                <tbody className="divide-y divide-ean-border-light text-ean-muted-light">
                                   <tr className="bg-ean-white">
-                                    <td className="p-3 font-bold text-ean-navy">Necessary Cookies</td>
+                                    <td className="p-3 font-bold text-ean-text-light">Necessary Cookies</td>
                                     <td className="p-3">Essential for core security, session login, and flight engine features.</td>
                                     <td className="p-3 font-semibold text-xs text-red-600">Mandatory (Cannot Disable)</td>
                                   </tr>
                                   <tr className="bg-ean-surface">
-                                    <td className="p-3 font-bold text-ean-navy">Performance & Analytics</td>
+                                    <td className="p-3 font-bold text-ean-text-light">Performance & Analytics</td>
                                     <td className="p-3">Gathers technical metrics and traffic patterns to optimize layout.</td>
                                     <td className="p-3 font-semibold text-xs text-ean-gold">Configurable via Settings</td>
                                   </tr>
                                   <tr className="bg-ean-white">
-                                    <td className="p-3 font-bold text-ean-navy">Advertising & Targeting</td>
+                                    <td className="p-3 font-bold text-ean-text-light">Advertising & Targeting</td>
                                     <td className="p-3">Delivers tailored aviation offers and relevant announcements.</td>
                                     <td className="p-3 font-semibold text-xs text-ean-gold">Configurable via Settings</td>
                                   </tr>
@@ -608,9 +606,9 @@ export default function PrivacyPolicyPage() {
         {/* DSAR MODAL / DRAWER */}
         <Presence show={isDSAROpen} durationMs={250}>
           {(state) => (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ean-black/80 backdrop-blur-sm">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
               <div
-                className={`bg-ean-navy border border-ean-border-dark text-ean-text-light w-full max-w-xl p-8 shadow-2xl relative space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar ${
+                className={`bg-ean-navy border border-ean-border-dark text-ean-text-light w-full max-w-xl p-8 relative space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar ${
                   state === 'open' ? 'ean-enter-scale' : 'ean-exit-scale'
                 }`}
               >
@@ -653,7 +651,7 @@ export default function PrivacyPolicyPage() {
                         placeholder="Chief Segun Demuren"
                         value={dsarForm.fullName}
                         onChange={(e) => setDsarForm({ ...dsarForm, fullName: e.target.value })}
-                        className="w-full bg-white/5 border border-ean-border-dark px-4 py-3 text-sm text-ean-text-light placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30"
+                        className="w-full bg-black/5 border border-ean-border-dark px-4 py-3 text-sm text-ean-text-light placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30"
                       />
                     </div>
 
@@ -668,7 +666,7 @@ export default function PrivacyPolicyPage() {
                           placeholder="client@company.com"
                           value={dsarForm.email}
                           onChange={(e) => setDsarForm({ ...dsarForm, email: e.target.value })}
-                          className="w-full bg-white/5 border border-ean-border-dark px-4 py-3 text-sm text-ean-text-light placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30"
+                          className="w-full bg-black/5 border border-ean-border-dark px-4 py-3 text-sm text-ean-text-light placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30"
                         />
                       </div>
 
@@ -682,7 +680,7 @@ export default function PrivacyPolicyPage() {
                           placeholder="+234 (0) 800..."
                           value={dsarForm.phone}
                           onChange={(e) => setDsarForm({ ...dsarForm, phone: e.target.value })}
-                          className="w-full bg-white/5 border border-ean-border-dark px-4 py-3 text-sm text-ean-text-light placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30"
+                          className="w-full bg-black/5 border border-ean-border-dark px-4 py-3 text-sm text-ean-text-light placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30"
                         />
                       </div>
                     </div>
@@ -715,7 +713,7 @@ export default function PrivacyPolicyPage() {
                         placeholder="Please detail your flight booking reference, manifest records, or specific fields you wish to inspect/update..."
                         value={dsarForm.details}
                         onChange={(e) => setDsarForm({ ...dsarForm, details: e.target.value })}
-                        className="w-full bg-white/5 border border-ean-border-dark px-4 py-3 text-sm text-ean-text-light placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-gold resize-none"
+                        className="w-full bg-black/5 border border-ean-border-dark px-4 py-3 text-sm text-ean-text-light placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-gold resize-none"
                       />
                     </div>
 

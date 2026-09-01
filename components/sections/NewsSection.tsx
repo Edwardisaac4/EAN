@@ -11,7 +11,7 @@ import { MOCK_POSTS } from '@/lib/constants';
 
 export default function NewsSection() {
   return (
-    <section className="bg-ean-white dark:bg-ean-navy-mid text-ean-text-dark dark:text-ean-text-light py-20 sm:py-24 transition-colors duration-500 overflow-hidden relative">
+    <section className="bg-ean-white text-ean-text-light py-20 sm:py-24 transition-colors duration-500 overflow-hidden relative">
       <div className="max-w-ean mx-auto px-6 md:px-8">
         <SectionReveal>
           {/* Header */}
@@ -20,7 +20,7 @@ export default function NewsSection() {
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
                 Aviation Insights
               </span>
-              <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-navy dark:text-ean-text-light leading-[1.15]">
+              <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-text-light leading-[1.15]">
                 Latest News & Executive Insights
               </h2>
             </div>
@@ -28,7 +28,6 @@ export default function NewsSection() {
               <Link href="/blog">
                 <OutlineButton
                   variant="light"
-                  className="dark:border-white dark:text-ean-text-light dark:hover:bg-ean-gold dark:hover:border-ean-gold dark:hover:text-ean-navy"
                 >
                   View All Insights
                 </OutlineButton>
@@ -59,16 +58,16 @@ export default function NewsSection() {
                   className={`block focus:outline-none group ${gridClass}`}
                 >
                   <div
-                    className={`bg-ean-surface dark:bg-ean-navy border border-ean-border-light dark:border-ean-border-dark overflow-hidden h-full flex flex-col ${
+                    className={`bg-ean-surface border border-ean-border-light overflow-hidden h-full flex flex-col ${
                       isWide
                         ? isReversed
                           ? 'lg:flex-row-reverse'
                           : 'lg:flex-row'
                         : ''
-                    } transition-[background-color,border-color,transform,box-shadow] duration-500 ease-out group-hover:-translate-y-1.5 group-hover:shadow-[0_12px_30px_rgba(169,137,90,0.1)] cursor-pointer shadow-xs`}
+                    } transition-[background-color,border-color,transform,box-shadow] duration-500 ease-out group-hover:-translate-y-1.5 group-hover:shadow-[0_12px_30px_rgba(43,0,152,0.1)] cursor-pointer shadow-xs`}
                   >
                     {/* Image wrapper */}
-                    <div className={`relative w-full ${isWide ? 'h-52 lg:h-auto lg:w-1/2 min-h-60' : 'h-48 sm:h-52'} overflow-hidden bg-ean-black/10 shrink-0`}>
+                    <div className={`relative w-full ${isWide ? 'h-52 lg:h-auto lg:w-1/2 min-h-60' : 'h-48 sm:h-52'} overflow-hidden bg-black/10 shrink-0`}>
                       <Image
                         src={post.image}
                         alt={post.title}
@@ -87,24 +86,24 @@ export default function NewsSection() {
                           <span className="font-ui text-[10px] uppercase font-bold tracking-[0.15em] text-ean-gold border border-ean-gold/30 px-2.5 py-0.5 bg-ean-gold/5">
                             {post.category}
                           </span>
-                          <span className="font-ui text-xs text-ean-muted-dark dark:text-ean-muted-light">
+                          <span className="font-ui text-xs text-ean-muted-light">
                             {post.publishedAt}
                           </span>
                         </div>
 
                         {/* Headline */}
-                        <h3 className="font-display text-xl sm:text-2xl font-medium text-ean-navy dark:text-ean-text-light leading-tight group-hover:text-ean-gold transition-colors duration-300">
+                        <h3 className="font-display text-xl sm:text-2xl font-medium text-ean-text-light leading-tight group-hover:text-ean-gold transition-colors duration-300">
                           {post.title}
                         </h3>
 
                         {/* Excerpt */}
-                        <p className="font-ui text-sm sm:text-base text-ean-muted-dark dark:text-ean-muted-light leading-relaxed line-clamp-3">
+                        <p className="font-ui text-sm sm:text-base text-ean-muted-light leading-relaxed line-clamp-3">
                           {post.excerpt}
                         </p>
                       </div>
 
                       {/* Arrow Indicator */}
-                      <div className="pt-2 flex items-center gap-1 font-ui text-xs font-bold tracking-widest text-ean-navy dark:text-ean-text-light group-hover:text-ean-gold transition-colors duration-300 uppercase">
+                      <div className="pt-2 flex items-center gap-1 font-ui text-xs font-bold tracking-widest text-ean-text-light group-hover:text-ean-gold transition-colors duration-300 uppercase">
                         Read Article
                         <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                       </div>

@@ -26,7 +26,7 @@ export default function CampusOverview() {
             {AEROPLEX_OVERVIEW.paragraphs.map((paragraph, index) => (
               <p
                 key={index}
-                className="font-ui text-sm sm:text-base text-zinc-300 leading-relaxed"
+                className="font-ui text-sm sm:text-base text-ean-muted-light leading-relaxed"
               >
                 {paragraph}
               </p>
@@ -49,7 +49,7 @@ export default function CampusOverview() {
             {AEROPLEX_FACTS.map((fact) => (
               <div
                 key={fact.id}
-                className="group flex flex-col sm:flex-row items-stretch hover:bg-white/[0.03] transition-colors duration-300"
+                className="group flex flex-col sm:flex-row items-stretch hover:bg-black/[0.03] transition-colors duration-300"
               >
                 <div className="relative w-full sm:w-36 md:w-40 h-32 sm:h-auto shrink-0 overflow-hidden bg-ean-navy">
                   <Image
@@ -60,7 +60,7 @@ export default function CampusOverview() {
                     quality={80}
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-ean-black/25 group-hover:bg-transparent transition-colors duration-300" />
+                  <div className="absolute inset-0 bg-black/25 group-hover:bg-transparent transition-colors duration-300" />
                 </div>
 
                 <div className="flex-1 p-5 sm:p-6 flex flex-col justify-center space-y-1.5 min-w-0">

@@ -60,8 +60,8 @@ export default function ContactSection() {
           className="object-cover object-center"
         />
         {/* Luxury overlays for text visibility */}
-        <div className="absolute inset-0 bg-ean-black/70" />
-        <div className="absolute inset-0 bg-linear-to-t from-ean-black/85 via-ean-black/40 to-ean-black/75" />
+        <div className="absolute inset-0 bg-black/70" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/40 to-black/75" />
       </div>
 
       {/* Content */}
@@ -69,22 +69,22 @@ export default function ContactSection() {
         <SectionReveal>
           <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8 flex flex-col items-center">
             <div className="space-y-3">
-              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
+              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/70 uppercase">
                 Elevate Your Journey
               </span>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-ean-text-light leading-[1.15]">
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-white leading-[1.15]">
                 Experience the Pinnacle of Business Aviation
               </h2>
             </div>
 
-            <p className="font-ui text-base sm:text-lg text-ean-muted-light max-w-2xl leading-relaxed">
+            <p className="font-ui text-base sm:text-lg text-white/70 max-w-2xl leading-relaxed">
               Connect with our dedicated services team today to plan your charter flight, secure FBO
               ground handling in Lagos, or discuss aircraft fleet solutions.
             </p>
 
             <div className="pt-4">
               <Link href="/contact">
-                <GoldButton className="px-10 py-4 shadow-[0_4px_20px_rgba(169,137,90,0.35)] hover:shadow-[0_4px_30px_rgba(169,137,90,0.55)]">
+                <GoldButton className="px-10 py-4 shadow-[0_4px_20px_rgba(43,0,152,0.35)] hover:shadow-[0_4px_30px_rgba(43,0,152,0.55)]">
                   Get in Touch
                 </GoldButton>
               </Link>

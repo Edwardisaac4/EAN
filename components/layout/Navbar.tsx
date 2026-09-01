@@ -25,12 +25,26 @@ interface IndicatorRect {
  *    offsets its own content (`pt-20` and up) to clear an overlaid bar. Making
  *    the nav sticky would push all thirteen heroes down by 66px, which is a
  *    change to every page rather than to this component. So the bar overlays,
- *    and earns its ink background on scroll instead of carrying it at rest.
+ *    and earns its opaque background on scroll instead of carrying it at rest.
  * 2. A mobile drawer exists. The prototype simply hides its links below 1120px.
  *
- * Everything else is the prototype: 66px, `rgba(14,18,20,.94)` over `blur(12px)`,
- * a 1160px wrap at 26px gutters, 23px link gap, 200px dropdowns on ink-accent
- * behind a hairline border, and the outline CTA at 11px.
+ * Everything else is the prototype: 66px, a 95% page-ground fill over
+ * `blur(12px)`, a 1160px wrap at 26px gutters, 23px link gap, 200px dropdowns
+ * on the raised step behind a hairline border, and the outline CTA at 11px.
+ *
+ * The resting bar is opaque paper, not transparent, and that is a deliberate
+ * change made with the v8 light theme rather than an oversight.
+ *
+ * On ink it could float: ivory links read over any hero. On paper the links are
+ * INK, and the thirteen heroes are split — seven are full-bleed photographs
+ * (home, /about, /contact, /history, /team, /charter, /services/[slug],
+ * /the-aeroplex) where ink is invisible, and the rest are white sections where
+ * white would be. One transparent bar cannot serve both, and the ops strip
+ * above it is already opaque, so the bar carries the page ground at rest and
+ * only gains its hairline and blur on scroll.
+ *
+ * The alternative — per-route knowledge of which heroes are photographs — is
+ * real design work and belongs with the navbar comp, not with the palette swap.
  */
 export default function Navbar() {
   const pathname = usePathname();
@@ -151,7 +165,7 @@ export default function Navbar() {
         <div
           className={`h-16.5 border-b transition-colors duration-300 ${isScrolled
               ? 'bg-ean-black/95 backdrop-blur-md border-ean-border-dark'
-              : 'bg-transparent border-transparent'
+              : 'bg-ean-black border-transparent'
             }`}
         >
           <div className="max-w-ean mx-auto h-full px-6.5 flex items-center justify-between gap-4">

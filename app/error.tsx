@@ -28,7 +28,6 @@ export default function Error({ error, reset }: ErrorProps) {
   return (
     <main className="flex-1 flex items-center bg-ean-navy text-ean-text-light">
       <section className="relative w-full py-24 sm:py-32 overflow-hidden">
-        <div className="absolute -bottom-48 -right-48 w-96 h-96 rounded-full bg-ean-gold/10 blur-[120px] pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 md:px-8 space-y-8">
           <div className="w-12 h-12 bg-ean-gold/10 border border-ean-gold/20 flex items-center justify-center">
@@ -53,7 +52,7 @@ export default function Error({ error, reset }: ErrorProps) {
             <button
               type="button"
               onClick={reset}
-              className="bg-ean-gold text-ean-navy font-ui font-semibold text-sm px-7 py-3.5 tracking-wider hover:bg-ean-gold-light transition-all duration-300 inline-flex items-center justify-center gap-2 cursor-pointer"
+              className="bg-ean-gold text-ean-text-dark font-ui font-semibold text-sm px-7 py-3.5 tracking-wider hover:bg-ean-gold-light transition-all duration-300 inline-flex items-center justify-center gap-2 cursor-pointer"
             >
               <RotateCcw className="w-4 h-4" />
               Try again

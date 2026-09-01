@@ -309,28 +309,28 @@ export default function ContactPage() {
               className="object-cover object-center"
             />
             {/* Cinematic Obsidian Black luxury overlays — evenly balanced across the image */}
-            <div className="absolute inset-0 bg-ean-black/60" />
-            <div className="absolute inset-0 bg-linear-to-b from-ean-obsidian/80 via-transparent to-ean-obsidian/90" />
-            <div className="absolute inset-0 bg-radial-at-c from-transparent via-ean-black/20 to-ean-black/60" />
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-linear-to-b from-black/80 via-transparent to-black/90" />
+            <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
           </div>
 
           <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 w-full">
             <div className="max-w-3xl space-y-4 sm:space-y-5 text-left">
               <span
                 ref={heroEyebrowRef}
-                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block"
+                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/70 uppercase block"
               >
                 Contact
               </span>
               <h1
                 ref={heroTitleRef}
-                className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-ean-text-light leading-[1.1] tracking-tight"
+                className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white leading-[1.1] tracking-tight"
               >
                 Every inquiry answered by a person.
               </h1>
               <p
                 ref={heroSubtitleRef}
-                className="font-ui text-base sm:text-lg md:text-xl text-ean-text-light/80 max-w-xl leading-relaxed"
+                className="font-ui text-base sm:text-lg md:text-xl text-white/80 max-w-xl leading-relaxed"
               >
                 Our operations desk runs 24 hours a day. For anything time-critical, call or email dispatch directly.
               </p>
@@ -339,7 +339,7 @@ export default function ContactPage() {
         </section>
 
         {/* SECTION 2: 2-Column Main Contact Block */}
-        <section className="bg-ean-white text-ean-text-dark py-20 sm:py-24">
+        <section className="bg-ean-white text-ean-text-light py-20 sm:py-24">
           <div className="max-w-ean mx-auto px-6 md:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
               {/* Left Column: Office & Hangar Info */}
@@ -348,10 +348,10 @@ export default function ContactPage() {
                   <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
                     Our Location
                   </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-medium text-ean-navy leading-tight">
+                  <h2 className="font-display text-2xl sm:text-3xl font-medium text-ean-text-light leading-tight">
                     Murtala Muhammed International Airport
                   </h2>
-                  <p className="font-ui text-base text-ean-muted-dark leading-relaxed">
+                  <p className="font-ui text-base text-ean-muted-light leading-relaxed">
                     EAN Aviation operates private FBO facilities right at the MMIA terminal in Lagos, giving you secure, direct airport apron access.
                   </p>
                 </SectionReveal>
@@ -359,11 +359,11 @@ export default function ContactPage() {
                 {/* HQ Detail Card */}
                 <SectionReveal>
                   <div className="bg-ean-surface border border-ean-border-light/60 p-8 space-y-6 shadow-xs">
-                    <h3 className="font-ui text-lg font-bold text-ean-navy border-b border-ean-border-light/60 pb-3">
+                    <h3 className="font-ui text-lg font-bold text-ean-text-light border-b border-ean-border-light/60 pb-3">
                       {LAGOS_HQ.title}
                     </h3>
 
-                    <div className="space-y-4 font-ui text-sm sm:text-base text-ean-muted-dark">
+                    <div className="space-y-4 font-ui text-sm sm:text-base text-ean-muted-light">
                       <div className="flex gap-4 items-start">
                         <MapPin className="w-5 h-5 text-ean-gold shrink-0 mt-0.5" />
                         <span>{LAGOS_HQ.address}</span>
@@ -383,7 +383,7 @@ export default function ContactPage() {
 
                       <div className="flex gap-4 items-start border-t border-ean-border-light/40 pt-4 mt-4">
                         <Clock className="w-5 h-5 text-ean-gold shrink-0 mt-0.5" />
-                        <span className="font-semibold text-ean-navy">{LAGOS_HQ.hours}</span>
+                        <span className="font-semibold text-ean-text-light">{LAGOS_HQ.hours}</span>
                       </div>
                     </div>
                   </div>
@@ -439,7 +439,7 @@ export default function ContactPage() {
                               value={formData.name}
                               onChange={handleChange}
                               placeholder="Segun Demuren"
-                              className={`bg-white/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 ${errors.name ? 'border-red-500' : 'border-ean-border-dark'
+                              className={`bg-black/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 ${errors.name ? 'border-red-500' : 'border-ean-border-dark'
                                 }`}
                             />
                             {errors.name && (
@@ -460,7 +460,7 @@ export default function ContactPage() {
                                 value={formData.email}
                                 onChange={handleChange}
                                 placeholder="client@company.com"
-                                className={`bg-white/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 ${errors.email ? 'border-red-500' : 'border-ean-border-dark'
+                                className={`bg-black/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 ${errors.email ? 'border-red-500' : 'border-ean-border-dark'
                                   }`}
                               />
                               {errors.email && (
@@ -479,7 +479,7 @@ export default function ContactPage() {
                                 value={formData.phone}
                                 onChange={handleChange}
                                 placeholder="+234 (0) 800..."
-                                className={`bg-white/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 ${errors.phone ? 'border-red-500' : 'border-ean-border-dark'
+                                className={`bg-black/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 ${errors.phone ? 'border-red-500' : 'border-ean-border-dark'
                                   }`}
                               />
                               {errors.phone && (
@@ -501,7 +501,7 @@ export default function ContactPage() {
                                 value={formData.company}
                                 onChange={handleChange}
                                 placeholder="Corporate Aviation Ltd"
-                                className="bg-white/5 border border-ean-border-dark px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300"
+                                className="bg-black/5 border border-ean-border-dark px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300"
                               />
                             </div>
 
@@ -522,8 +522,8 @@ export default function ContactPage() {
                                       // nothing visible to land on. `has-focus-visible`
                                       // moves the focus ring onto the label it belongs to.
                                       className={`flex items-center gap-3 p-3 border cursor-pointer transition-all duration-200 has-focus-visible:ring-2 has-focus-visible:ring-ean-blue has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-ean-navy ${isChecked
-                                        ? 'bg-ean-blue-muted/30 border-ean-blue text-ean-text-light shadow-[0_0_12px_rgba(145,116,220,0.2)]'
-                                        : 'bg-white/5 border-ean-border-dark text-ean-muted-light hover:border-ean-blue/50 hover:text-ean-text-light'
+                                        ? 'bg-ean-blue-muted/30 border-ean-blue text-ean-text-light shadow-[0_0_12px_rgba(43,0,152,0.2)]'
+                                        : 'bg-black/5 border-ean-border-dark text-ean-muted-light hover:border-ean-blue/50 hover:text-ean-text-light'
                                         }`}
                                     >
                                       <input
@@ -537,8 +537,8 @@ export default function ContactPage() {
                                       />
                                       <div
                                         className={`w-4 h-4 border flex items-center justify-center transition-all ${isChecked
-                                          ? 'bg-ean-blue border-ean-blue text-ean-black'
-                                          : 'border-ean-border-dark bg-ean-black/20'
+                                          ? 'bg-ean-blue border-ean-blue text-ean-text-dark'
+                                          : 'border-ean-border-dark bg-black/5'
                                           }`}
                                       >
                                         {isChecked && <CheckCircle className="w-3.5 h-3.5 stroke-3" />}
@@ -563,7 +563,7 @@ export default function ContactPage() {
                               value={formData.message}
                               onChange={handleChange}
                               placeholder="Describe your flight routing, date, passenger size, or hangar support requirements..."
-                              className={`bg-white/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 resize-none ${errors.message ? 'border-red-500' : 'border-ean-border-dark'
+                              className={`bg-black/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 resize-none ${errors.message ? 'border-red-500' : 'border-ean-border-dark'
                                 }`}
                             />
                             {errors.message && (
@@ -623,16 +623,16 @@ export default function ContactPage() {
         </section>
 
         {/* SECTION 3: FAQ Accordion */}
-        <section className="bg-ean-surface text-ean-text-dark py-20 sm:py-24 border-t border-ean-border-light/60">
+        <section className="bg-ean-surface text-ean-text-light py-20 sm:py-24 border-t border-ean-border-light/60">
           <div className="max-w-ean mx-auto px-6 md:px-8">
             <SectionReveal className="text-center max-w-2xl mx-auto mb-16 space-y-4">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
                 Information
               </span>
-              <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-navy leading-tight">
+              <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-text-light leading-tight">
                 Frequently Asked Questions
               </h2>
-              <p className="font-ui text-base text-ean-muted-dark leading-relaxed">
+              <p className="font-ui text-base text-ean-muted-light leading-relaxed">
                 Review immediate solutions to common questions regarding EAN’s flight approvals, MMIA ground support, and scheduling.
               </p>
             </SectionReveal>
@@ -653,7 +653,7 @@ export default function ContactPage() {
                       >
                         <div className="flex gap-4 items-center">
                           <HelpCircle className="w-5 h-5 text-ean-gold shrink-0" />
-                          <span className="font-semibold text-ean-navy text-sm sm:text-base group-hover:text-ean-gold transition-colors duration-200">
+                          <span className="font-semibold text-ean-text-light text-sm sm:text-base group-hover:text-ean-gold transition-colors duration-200">
                             {faq.question}
                           </span>
                         </div>
@@ -679,7 +679,7 @@ export default function ContactPage() {
                           }`}
                       >
                         <div className="overflow-hidden">
-                          <div className="px-6 pb-6 pt-0 sm:px-8 sm:pb-6 text-sm sm:text-base text-ean-muted-dark border-t border-ean-border-light/25 leading-relaxed pl-14">
+                          <div className="px-6 pb-6 pt-0 sm:px-8 sm:pb-6 text-sm sm:text-base text-ean-muted-light border-t border-ean-border-light/25 leading-relaxed pl-14">
                             {faq.answer}
                           </div>
                         </div>
@@ -706,7 +706,7 @@ export default function ContactPage() {
           <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-ean-navy/40 to-transparent" />
 
           {/* Subtle location card */}
-          <div className="relative z-10 max-w-md bg-ean-navy/90 backdrop-blur-md border border-ean-border-dark p-8 text-center space-y-4 shadow-2xl mx-4 sm:mx-auto">
+          <div className="relative z-10 max-w-md bg-ean-navy/90 backdrop-blur-md border border-ean-border-dark p-8 text-center space-y-4 mx-4 sm:mx-auto">
             <span className="font-ui text-[10px] uppercase tracking-widest text-ean-gold font-bold">
               Coordinates & Access
             </span>
