@@ -30,9 +30,19 @@ GSAP, or browser APIs. `AboutSection`, `VIPSection`, `PartnersStrip` and
 There is no animation library beyond GSAP. Framer Motion was removed
 deliberately; do not reintroduce it or add a replacement.
 
-**GSAP** — scroll-driven work only: parallax, `SectionReveal`, `StatCounter`.
-Always `useGSAP` from `@gsap/react`. Register plugins at file level, outside the
-component. Never a raw `useEffect` with gsap inside.
+**GSAP** — scroll-driven work only: parallax, `SectionReveal`, `StatCounter`,
+and the `Navbar` chrome collapse. Always `useGSAP` from `@gsap/react`. Register
+plugins at file level, outside the component. Never a raw `useEffect` with gsap
+inside.
+
+`Navbar` is **transparent at rest on all fifteen routes** and resolves to the
+same opaque paper bar on scroll. Only the *palette* varies, via `hasPhotoHero`:
+white links over the eleven full-bleed photo heroes (`/`, `/about`, `/contact`,
+`/history`, `/team`, `/charter`, `/services`, `/services/[slug]`, `/pricing`,
+`/blog`, `/the-aeroplex`), ink links on the four paper ones (`/blog/[slug]`,
+`/privacy-policy`, `/terms-of-use`, the 404). Set the prop from what is actually
+behind the bar — white type on a near-white hero is invisible, and so is ink on
+a scrim. The logo is held to brand colour on every route regardless.
 
 **Every GSAP animation must also be wrapped in `withReducedMotion` from
 `lib/gsap-motion.ts`, including its second callback.** The

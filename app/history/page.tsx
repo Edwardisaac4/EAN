@@ -167,7 +167,7 @@ export default function HistoryPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar hasPhotoHero />
 
       <main className="flex-1 flex flex-col">
         {/* SECTION 1: Cinematic Hero */}

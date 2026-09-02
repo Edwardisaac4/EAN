@@ -65,7 +65,7 @@ const INFRASTRUCTURE_ITEMS = [
     title: 'Wings™ In-Flight Culinary Facility',
     category: 'Executive Gourmet Unit',
     icon: UtensilsCrossed,
-    image: '/images/services/wings-4.jpg',
+    image: '/images/new wings..jpg',
     badge: 'On-Site Flight Kitchen',
     description: 'Our proprietary on-site culinary facility located adjacent to the FBO ramp. Master chefs prepare high-altitude gourmet menus, ensuring farm-to-cabin freshness delivered directly to private jet flights.',
     specs: [
@@ -87,15 +87,15 @@ export default function InfrastructureShowcase() {
 
       <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 space-y-12">
         {/* Section Header */}
-        <SectionReveal className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-widest bg-ean-gold/10 text-ean-gold border border-ean-gold/30">
+        <SectionReveal className="text-center max-w-3xl mx-auto space-y-4" stagger={0.1} distance={40} duration={1}>
+          <span data-reveal className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-widest bg-ean-gold/10 text-ean-gold border border-ean-gold/30">
             <MapPin className="w-3.5 h-3.5" />
             DNMM / LOS • Murtala Muhammed Airport Hub
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl font-light text-ean-text-light leading-tight">
+          <h2 data-reveal className="font-display text-3xl sm:text-4xl font-light text-ean-text-light leading-tight">
             West Africa’s Premier Aviation Infrastructure
           </h2>
-          <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
+          <p data-reveal className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
             We operate out of a fully integrated physical complex at Lagos airport — bringing tarmac access, AMO engineering, corporate dealership, and gourmet dining together under one roof.
           </p>
         </SectionReveal>

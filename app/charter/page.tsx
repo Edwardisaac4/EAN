@@ -20,7 +20,7 @@ import CharterRequestForm from '@/components/charter/CharterRequestForm';
 export default function CharterPage() {
   return (
     <>
-      <Navbar />
+      <Navbar hasPhotoHero />
 
       <main className="flex-1 flex flex-col bg-ean-black text-ean-text-light">
         {/* `.pagehero` — the prototype's shorter hero: image, scrim, three lines. */}

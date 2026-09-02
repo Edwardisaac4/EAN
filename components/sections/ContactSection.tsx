@@ -59,30 +59,37 @@ export default function ContactSection() {
           quality={80}
           className="object-cover object-center"
         />
-        {/* Luxury overlays for text visibility */}
-        <div className="absolute inset-0 bg-black/70" />
-        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/40 to-black/75" />
+        {/* Luminous overlay so the runway and aircraft are clearly visible */}
+        <div className="absolute inset-0 bg-black/35" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/55 via-transparent to-black/45" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 py-20 text-center w-full">
-        <SectionReveal>
+      <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 py-20 sm:py-24 text-center w-full">
+        {/*
+          Full-bleed photo band: the longest travel and slowest curve on the
+          site. These sections are a single statement laid over a photograph
+          that is already moving under parallax, so the copy has to arrive on a
+          slower curve than the card grids or it reads as a second scroll effect
+          rather than a sequence.
+        */}
+        <SectionReveal stagger={0.14} distance={48} duration={1.1} ease="power3.out">
           <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8 flex flex-col items-center">
-            <div className="space-y-3">
-              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/70 uppercase">
+            <div data-reveal className="space-y-3">
+              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/90 uppercase">
                 Elevate Your Journey
               </span>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-white leading-[1.15]">
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-white leading-[1.15] drop-shadow-sm">
                 Experience the Pinnacle of Business Aviation
               </h2>
             </div>
 
-            <p className="font-ui text-base sm:text-lg text-white/70 max-w-2xl leading-relaxed">
+            <p data-reveal className="font-ui text-base sm:text-lg text-white/90 max-w-2xl leading-relaxed drop-shadow-xs">
               Connect with our dedicated services team today to plan your charter flight, secure FBO
               ground handling in Lagos, or discuss aircraft fleet solutions.
             </p>
 
-            <div className="pt-4">
+            <div data-reveal className="pt-4">
               <Link href="/contact">
                 <GoldButton className="px-10 py-4 shadow-[0_4px_20px_rgba(43,0,152,0.35)] hover:shadow-[0_4px_30px_rgba(43,0,152,0.55)]">
                   Get in Touch

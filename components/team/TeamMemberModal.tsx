@@ -186,24 +186,17 @@ export default function TeamMemberModal({ member, isOpen, onClose }: TeamMemberM
             </div>
 
             {/* Footer Action Strip */}
-            <div className="px-6 py-4.5 bg-white border-t border-slate-200/80 flex items-center justify-between">
+            <div className="px-6 py-4 bg-white border-t border-slate-200/80 flex items-center justify-between">
               <span className="text-xs text-slate-500 font-ui hidden sm:inline-block font-medium">
                 EAN Aviation Executive Leadership
               </span>
               <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                 <button
                   onClick={onClose}
-                  className="px-5 py-2.5 border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-semibold transition-colors cursor-pointer"
+                  className="px-6 py-2.5 bg-ean-navy hover:bg-ean-navy-mid text-black text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer shadow-xs"
                 >
                   Close
                 </button>
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-ean-gold hover:bg-ean-gold-light text-ean-text-dark text-xs font-bold uppercase tracking-wider transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5" />
-                  Contact Leadership
-                </Link>
               </div>
             </div>
           </div>

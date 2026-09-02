@@ -153,7 +153,7 @@ export default function BlogPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar hasPhotoHero />
 
       <main className="flex-1 flex flex-col bg-ean-navy text-ean-text-light">
         {/* SECTION 1: Featured Post Hero */}
@@ -317,9 +317,22 @@ export default function BlogPage() {
           <div className="max-w-ean mx-auto px-6 md:px-8">
             
             {filteredArticles.length > 0 ? (
-                <div
+                /*
+                  One trigger on the grid, then a diagonal sweep. A SectionReveal
+                  per card put every card in a row on the same `top 85%` line, so
+                  a row arrived on one frame.
+
+                  `ean-enter-up` came off the container in the same move. It faded
+                  the whole grid up as one block on a filter change; with the
+                  `key` still here the SectionReveal remounts instead, and because
+                  the grid is already past the trigger line by then the cards
+                  restagger. One animation doing the job, not two over each other.
+                */
+                <SectionReveal
                   key={activeCategory}
-                  className="ean-enter-up grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                  stagger={0.06}
+                  grid
                 >
                   {filteredArticles.map((art, idx) => {
                     // Alternate spans:
@@ -332,7 +345,7 @@ export default function BlogPage() {
                     const isImageRight = idx % 4 === 0;
 
                     return (
-                      <SectionReveal key={art.slug} className={`h-full ${gridClass}`}>
+                      <div key={art.slug} data-reveal className={`h-full ${gridClass}`}>
                         <Link href={`/blog/${art.slug}`} className="block h-full group focus:outline-none">
                           <div
                             className={`bg-ean-surface border border-ean-border-light/60 p-0 shadow-xs overflow-hidden flex flex-col group-hover:-translate-y-1.5 group-hover:border-ean-gold/40 group-hover:shadow-[0_12px_35px_rgba(43,0,152,0.1)] ${
@@ -394,10 +407,10 @@ export default function BlogPage() {
                             </div>
                           </div>
                         </Link>
-                      </SectionReveal>
+                      </div>
                     );
                   })}
-                </div>
+                </SectionReveal>
               ) : (
                 <div
                   key="no-articles"
@@ -422,14 +435,14 @@ export default function BlogPage() {
         <section className="bg-linear-to-r from-ean-navy to-ean-navy-mid py-20 sm:py-24 border-t border-ean-border-dark relative overflow-hidden">
 
           <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center">
-            <SectionReveal className="max-w-2xl mx-auto space-y-8">
-              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
+            <SectionReveal className="max-w-2xl mx-auto space-y-8" stagger={0.14} distance={48} duration={1.1} ease="power3.out">
+              <span data-reveal className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
                 Executive Insights
               </span>
-              <h2 className="font-display text-2xl sm:text-4xl font-light text-ean-text-light leading-tight">
+              <h2 data-reveal className="font-display text-2xl sm:text-4xl font-light text-ean-text-light leading-tight">
                 Subscribe to Aviation Intel
               </h2>
-              <p className="font-ui text-sm sm:text-base text-ean-muted-light max-w-lg mx-auto leading-relaxed">
+              <p data-reveal className="font-ui text-sm sm:text-base text-ean-muted-light max-w-lg mx-auto leading-relaxed">
                 Receive our quarterly analysis of West African flight regulations, corporate aviation indices, and distributorship insights directly to your desk.
               </p>
 

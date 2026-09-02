@@ -356,6 +356,9 @@
    * Runs in CSS rather than GSAP so the headline and CTAs paint on the very
    * first frame instead of waiting for hydration. Keeping this off the JS
    * critical path is what keeps FCP/LCP low — do not port it back to GSAP.
+   *
+   * Balanced premium timing: elegant 0.95s entrance with crisp rhythmic stagger
+   * and steady dwell time before transition.
    */
   @keyframes ean-rise {
     from {
@@ -364,45 +367,77 @@
     }
     to {
       opacity: 1;
-      transform: none;
+      transform: translate3d(0, 0, 0);
     }
   }
 
   .ean-rise {
-    animation: ean-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: ean-rise 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .ean-rise-delay-1 {
-    animation-delay: 0.12s;
+    animation-delay: 0.20s;
   }
 
   .ean-rise-delay-2 {
-    animation-delay: 0.24s;
+    animation-delay: 0.42s;
   }
 
   .ean-rise-delay-3 {
-    animation-delay: 0.36s;
+    animation-delay: 0.58s;
   }
 
   .ean-rise-delay-4 {
-    animation-delay: 0.9s;
+    animation-delay: 0.74s;
+  }
+
+  .ean-rise-delay-5 {
+    animation-delay: 0.90s;
+  }
+
+  .ean-rise-delay-6 {
+    animation-delay: 1.08s;
+  }
+
+  .ean-rise-delay-7 {
+    animation-delay: 1.30s;
+  }
+
+  @keyframes hero-slide-progress {
+    from {
+      width: 0%;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  .animate-hero-progress {
+    animation: hero-slide-progress 9.5s linear forwards;
   }
 
   /*
    * Opening veil — see components/layout/Preloader.tsx.
    *
-   * The main layers share one 2.6s timeline, which is why their stops are
-   * percentages rather than delays: 23.08% = 0.60s, 32.69% = 0.85s,
-   * 61.54% = 1.60s, 65.38% = 1.70s, 67.31% = 1.75s, 92.31% = 2.40s.
+   * The main layers share one 1.4s timeline, which is why their stops are
+   * percentages rather than delays: 32% = 0.45s, 52% = 0.73s, 55% = 0.77s,
+   * 58% = 0.81s, 82% = 1.15s, 97% = 1.36s.
    *
-   * The backdrop and the artwork clear on deliberately different schedules. An
-   * opaque full-viewport layer is the one thing Lighthouse's Speed Index
-   * penalises, since it scores a filmstrip of visual progress — so the veil
-   * goes transparent at 0.60s and the jet finishes its climb over the live hero
-   * instead. Lengthening the beat is therefore free; lengthening the *opaque*
-   * phase is not. LCP, CLS and TBT are untouched either way: LCP performs no
-   * occlusion test, the layer is out of flow, and there is no JS. If Speed
-   * Index ever needs buying back, pull 23.08% down — never shorten the 2.6s.
+   * The veil stays opaque for the whole artwork phase — the jet draws its arc
+   * and the lockup lands over the brand colour, and only then does the layer
+   * dissolve to reveal the site. That is the reverse of the earlier design,
+   * which cleared the backdrop at 0.60s and let the jet finish its climb over
+   * the live hero. That was cheaper on Lighthouse's Speed Index, which scores a
+   * filmstrip of visual progress, but it read as the site arriving before the
+   * preloader had finished — the one thing a preloader exists not to do. The
+   * beat was cut 2.6s → 1.4s to pay for it, so the opaque phase grows
+   * 0.60s → 1.15s rather than to the whole of the former 2.6s.
+   *
+   * LCP, CLS and TBT are unaffected either way: LCP performs no occlusion test,
+   * the layer is out of flow, and there is no JS. Speed Index is the only
+   * metric that moves — see AGENTS.md §8. If it ever needs buying back, cut the
+   * beat further and scale every percentage stop with it; do not reintroduce an
+   * early veil clear.
    */
   @keyframes ean-veil-dismiss {
     0%,
@@ -416,10 +451,10 @@
 
   @keyframes ean-veil-out {
     0%,
-    23.08% {
+    82% {
       opacity: 1;
     }
-    32.69%,
+    97%,
     100% {
       opacity: 0;
     }
@@ -429,7 +464,7 @@
     0% {
       stroke-dashoffset: 1;
     }
-    65.38%,
+    55%,
     100% {
       stroke-dashoffset: 0;
     }
@@ -445,7 +480,7 @@
     0% {
       stroke-dashoffset: 0.26;
     }
-    65.38%,
+    55%,
     100% {
       stroke-dashoffset: -0.74;
     }
@@ -455,7 +490,7 @@
     0% {
       offset-distance: 0%;
     }
-    65.38%,
+    55%,
     100% {
       offset-distance: 100%;
     }
@@ -466,10 +501,10 @@
     0% {
       transform: rotate(-7deg);
     }
-    38% {
+    32% {
       transform: rotate(3deg);
     }
-    65.38%,
+    55%,
     100% {
       transform: rotate(0deg);
     }
@@ -478,10 +513,10 @@
   /* Jet and trail dissolve as they leave frame. */
   @keyframes ean-veil-jet-out {
     0%,
-    61.54% {
+    52% {
       opacity: 1;
     }
-    67.31%,
+    58%,
     100% {
       opacity: 0;
     }
@@ -507,26 +542,19 @@
     }
   }
 
-  @keyframes ean-veil-mark-out {
-    0%,
-    92.31% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-
   .ean-preloader {
-    animation: ean-veil-dismiss 2.6s linear forwards;
+    animation: ean-veil-dismiss 1.4s linear forwards;
   }
 
   .ean-preloader-veil {
-    animation: ean-veil-out 2.6s ease-out forwards;
+    animation: ean-veil-out 1.4s ease-out forwards;
   }
 
+  /* Deliberately ean-veil-out, not a fade of its own: the backdrop and the
+     artwork now leave together as one dissolve, and sharing the keyframe is
+     what guarantees they cannot drift apart again. */
   .ean-preloader-mark {
-    animation: ean-veil-mark-out 2.6s ease-out forwards;
+    animation: ean-veil-out 1.4s ease-out forwards;
   }
 
   /*
@@ -537,14 +565,14 @@
    */
   .ean-preloader-arc {
     stroke-dasharray: 1;
-    animation: ean-veil-draw 2.6s cubic-bezier(0.4, 0, 0.4, 1) forwards;
+    animation: ean-veil-draw 1.4s cubic-bezier(0.4, 0, 0.4, 1) forwards;
   }
 
   .ean-preloader-trail {
     stroke-dasharray: 0.26 1;
     animation:
-      ean-veil-trail 2.6s cubic-bezier(0.4, 0, 0.4, 1) forwards,
-      ean-veil-jet-out 2.6s linear forwards;
+      ean-veil-trail 1.4s cubic-bezier(0.4, 0, 0.4, 1) forwards,
+      ean-veil-jet-out 1.4s linear forwards;
   }
 
   /* Coloured here, not on the SVG element: var() is unreliable inside a
@@ -580,14 +608,14 @@
     transform-box: fill-box;
     transform-origin: center;
     animation:
-      ean-veil-fly 2.6s cubic-bezier(0.4, 0, 0.4, 1) forwards,
-      ean-veil-jet-out 2.6s linear forwards;
+      ean-veil-fly 1.4s cubic-bezier(0.4, 0, 0.4, 1) forwards,
+      ean-veil-jet-out 1.4s linear forwards;
   }
 
   .ean-preloader-bank {
     transform-box: fill-box;
     transform-origin: center;
-    animation: ean-veil-bank 2.6s cubic-bezier(0.4, 0, 0.4, 1) forwards;
+    animation: ean-veil-bank 1.4s cubic-bezier(0.4, 0, 0.4, 1) forwards;
   }
 
   @supports not (offset-path: path("M 0 0 L 1 1")) {
@@ -595,7 +623,7 @@
       0% {
         transform: translate3d(14px, 90px, 0) rotate(-12deg);
       }
-      65.38%,
+      55%,
       100% {
         transform: translate3d(246px, 22px, 0) rotate(-12deg);
       }
@@ -612,29 +640,32 @@
   }
 
   /*
-   * Letters and rule carry real delays rather than sharing the 2.6s timeline,
+   * Letters and rule carry real delays rather than sharing the 1.4s timeline,
    * because a stagger cannot be expressed as percentages of one animation.
    * Note the reduced-motion block must therefore zero animation-delay too.
    */
   .ean-preloader-letter {
-    animation: ean-veil-letter 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: ean-veil-letter 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .ean-preloader-letter:nth-child(1) {
-    animation-delay: 1.6s;
+    animation-delay: 0.6s;
   }
 
   .ean-preloader-letter:nth-child(2) {
-    animation-delay: 1.69s;
+    animation-delay: 0.67s;
   }
 
   .ean-preloader-letter:nth-child(3) {
-    animation-delay: 1.78s;
+    animation-delay: 0.74s;
   }
 
+  /* Lands at 1.08s — the last thing to finish, and it has to finish before the
+     veil starts dissolving at 1.15s, or the lockup completes itself on top of
+     the revealing site instead of on the veil. */
   .ean-preloader-rule {
     transform-origin: center;
-    animation: ean-veil-rule 0.35s cubic-bezier(0.16, 1, 0.3, 1) 1.85s both;
+    animation: ean-veil-rule 0.28s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
   }
 
   /*
@@ -814,6 +845,57 @@
   }
 
   /*
+   * Route entrance — app/template.tsx.
+   *
+   * Named into the `ean-enter-*` family on purpose: the reduced-motion block
+   * below matches `[class*="ean-enter-"]`, so this is gated by the rule that is
+   * already there rather than needing a second one.
+   *
+   * The opacity floor is 0.6, not 0. This beat sits in front of LCP on *every*
+   * navigation, and AGENTS.md §8 is explicit that the opaque phase is the
+   * expensive part — so no frame of a route change is ever blank, and the whole
+   * thing is over in 0.28s.
+   *
+   * **Opacity only, and no transform — this is a hard constraint, not taste.**
+   * The route wrapper is an ancestor of every page, and Navbar renders inside
+   * the page rather than in PublicShell, as a `fixed top-0` header (Navbar.tsx
+   * §1: fixed rather than sticky, so thirteen heroes are not pushed down 66px).
+   * A transform on an ancestor makes that ancestor the containing block for its
+   * fixed descendants, so a `translate3d` here would re-anchor the navbar to the
+   * top of the *document* for the duration. On a fresh navigation that only
+   * wobbles it 12px; on a back/forward navigation, where Next restores scroll
+   * position, the navbar would be parked wherever the document top is — off
+   * screen — and flash back in 0.28s later. `filter` and `clip-path` have the
+   * same containing-block effect, so they are out for the same reason. Motion
+   * that reads more deliberate than a fade has to be built inside the page, not
+   * on the route wrapper.
+   */
+  @keyframes ean-route-in {
+    from {
+      opacity: 0.6;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .ean-enter-route {
+    animation: ean-route-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /*
+   * /admin is out of scope for site motion — it is a triage tool, and the spec
+   * for this pass says so outright. `app/template.tsx` is a *root* template, so
+   * it wraps admin routes too and there is no per-segment way to opt one out; a
+   * client-side pathname check would be the alternative and would cost the whole
+   * point of keeping this CSS-only. `.admin-theme` is the one div wrapping every
+   * admin route (app/admin/layout.tsx), so matching on it is exact.
+   */
+  .ean-enter-route:has(.admin-theme) {
+    animation: none;
+  }
+
+  /*
    * Shared sliding indicator (the gold nav underline and the gold service-tab
    * pill). Replaces framer-motion's layoutId morph: the element is positioned
    * absolutely and moved with a transform, so it glides between targets.
@@ -830,15 +912,20 @@
       animation: none;
     }
 
+    .animate-hero-progress {
+      animation: none;
+      width: 100%;
+    }
+
     /*
      * Every preloader layer, not just the wrapper. All are `forwards`/`both`,
      * so collapsing the duration lands each on its end state — veil
      * transparent, artwork faded, wrapper `visibility: hidden`. Miss one and a
-     * full-opacity burgundy sheet is left sitting over the site.
+     * full-opacity indigo sheet is left sitting over the site.
      *
      * `animation-delay` must be zeroed alongside the duration: the letters and
-     * rule are delayed up to 1.85s, so duration alone would still blank them
-     * for nearly two seconds before they appeared.
+     * rule are delayed up to 0.8s, so duration alone would still blank them for
+     * most of a second before they appeared.
      */
     .ean-preloader,
     .ean-preloader-veil,

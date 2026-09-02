@@ -101,7 +101,7 @@ export default function TeamPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar hasPhotoHero />
 
       <main className="flex-1 flex flex-col bg-ean-black text-ean-text-light">
         {/* SECTION 1: Obsidian Black Cinematic Hero */}
@@ -171,38 +171,8 @@ export default function TeamPage() {
           <CeoSpotlight ceoMember={ceoMember} />
         </div>
 
-        {/* SECTION 3: Warm Light Surface Directory Grid (High Contrast Visual Break) */}
+        {/* SECTION 3: Executive Leadership & Management Directory Grid */}
         <TeamDirectoryGrid members={TEAM_MEMBERS} />
-
-        {/* SECTION 4: Gold & Onyx Executive Call to Action */}
-        <section className="bg-linear-to-r from-ean-burgundy-night via-ean-burgundy-dusk to-ean-black py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-dark">
-
-          <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center">
-            <SectionReveal className="max-w-3xl mx-auto space-y-8">
-              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
-                Work With EAN Leadership
-              </span>
-              <h2 className="font-display text-3xl sm:text-5xl font-light text-ean-text-light leading-tight">
-                Designed for Distinction
-              </h2>
-              <p className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-light max-w-2xl mx-auto leading-relaxed">
-                Connect directly with our department heads to coordinate jet charters, hangar space, aircraft maintenance, or corporate travel logistics.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                <Link href="/charter">
-                  <GoldButton className="w-full sm:w-auto">
-                    Request a Charter
-                  </GoldButton>
-                </Link>
-                <Link href="/contact">
-                  <OutlineButton variant="dark" className="w-full sm:w-auto">
-                    Speak With Executive Office
-                  </OutlineButton>
-                </Link>
-              </div>
-            </SectionReveal>
-          </div>
-        </section>
       </main>
     </>
   );

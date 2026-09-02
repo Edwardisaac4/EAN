@@ -56,14 +56,14 @@ export default function ProgrammeTimeline() {
           it reads as light falling across the band rather than a vignette. */}
 
       <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
-        <SectionReveal className="max-w-3xl space-y-4 mb-14">
-          <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
+        <SectionReveal className="max-w-3xl space-y-4 mb-14" stagger={0.1} distance={40} duration={1}>
+          <span data-reveal className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
             {AEROPLEX_PROGRAMME_INTRO.eyebrow}
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl font-light leading-tight">
+          <h2 data-reveal className="font-display text-3xl sm:text-4xl font-light leading-tight">
             {AEROPLEX_PROGRAMME_INTRO.title}
           </h2>
-          <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
+          <p data-reveal className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
             {AEROPLEX_PROGRAMME_INTRO.standfirst}
           </p>
         </SectionReveal>

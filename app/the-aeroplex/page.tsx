@@ -11,7 +11,7 @@ import CampusOverview from '@/components/aeroplex/CampusOverview';
 export default function TheAeroplexPage() {
   return (
     <>
-      <Navbar />
+      <Navbar hasPhotoHero />
 
       <main className="flex-1 flex flex-col bg-ean-obsidian text-ean-text-light">
         <AeroplexHero />

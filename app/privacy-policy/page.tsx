@@ -387,10 +387,19 @@ export default function PrivacyPolicyPage() {
                     <p className="font-ui text-sm text-ean-muted-light">Try searching with a different term like &quot;consent&quot;, &quot;retention&quot;, &quot;cookies&quot;, or &quot;DPO&quot;.</p>
                   </div>
                 ) : (
-                  filteredSections.map((section) => {
+                  /*
+                    One trigger for the whole section list, not one per section.
+                    Each section owned a private ScrollTrigger on the same `top 85%`
+                    line, so a long document built N triggers to produce a single
+                    simultaneous fade. This is also the most restrained surface on the
+                    site by design — a short travel and a tight stagger, fired once at
+                    the head of the document, so nothing moves while it is being read.
+                  */
+                  <SectionReveal className="space-y-12" stagger={0.04} distance={16} duration={0.5}>
+                    {filteredSections.map((section) => {
                     const IconComponent = ICON_MAP[section.iconName] || FileText;
                     return (
-                      <SectionReveal key={section.id}>
+                      <div key={section.id} data-reveal>
                         <article
                           id={section.id}
                           className="bg-ean-surface border border-ean-border-light/60 p-8 sm:p-10 space-y-6 shadow-xs hover:border-ean-gold/30 transition-all duration-300 scroll-mt-36"
@@ -593,9 +602,10 @@ export default function PrivacyPolicyPage() {
                           )}
 
                         </article>
-                      </SectionReveal>
+                      </div>
                     );
-                  })
+                    })}
+                  </SectionReveal>
                 )}
 
               </div>

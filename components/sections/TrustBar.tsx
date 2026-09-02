@@ -17,11 +17,19 @@ export default function TrustBar() {
   return (
     <section className="bg-ean-navy/95 border-y border-ean-border-dark py-4 sm:py-5 md:py-6 relative z-20">
       <div className="max-w-ean mx-auto px-3 sm:px-6 md:px-8">
-        <SectionReveal>
+        {/*
+          A KPI band is scanned, not read, so it gets the shortest travel and the
+          quickest curve on the site — the opposite end of the range from the
+          editorial sections either side of it. `grid` sweeps the cells in
+          rendered order, which matters here because the band is 2x2 below sm and
+          4-across above it.
+        */}
+        <SectionReveal stagger={0.07} distance={16} duration={0.55} grid>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-4 sm:gap-y-0 gap-x-2 sm:gap-x-4 md:gap-x-6 text-center">
             {TRUST_STATS.map((stat, idx) => (
               <div
                 key={stat.figure}
+                data-reveal
                 className={`flex flex-col items-center justify-center space-y-1 px-1 sm:px-3 pb-3 sm:pb-0 border-ean-border-dark/40 ${CELL_RULES[idx]}`}
               >
                 {/* Refined compact scale for a sleek KPI bar */}

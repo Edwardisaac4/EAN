@@ -17,7 +17,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const SLIDE_INTERVAL_MS = 6500;
+const SLIDE_INTERVAL_MS = 9500;
 
 // Written out as whole class strings, not composed from fragments — Tailwind
 // scans source text, so a class it cannot read literally never reaches the CSS.
@@ -36,6 +36,7 @@ export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const parallaxRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   // Slides 2..n are withheld from the server HTML. They sit at inset-0 inside
   // the viewport, so `loading="lazy"` never defers them — the browser would
@@ -61,14 +62,14 @@ export default function HeroSection() {
     setCurrentSlide(index);
   };
 
-  // Auto-play timer that automatically resets on slide change
+  // Auto-play timer that automatically resets on slide change, pausing on user hover
   useEffect(() => {
-    if (!carouselReady) return;
+    if (!carouselReady || isPaused) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
     }, SLIDE_INTERVAL_MS);
     return () => clearInterval(timer);
-  }, [currentSlide, carouselReady]);
+  }, [currentSlide, carouselReady, isPaused]);
 
   useGSAP(
     () =>
@@ -110,10 +111,20 @@ export default function HeroSection() {
   };
 
   const slide = HERO_SLIDES[currentSlide];
+  const bulletItems =
+    slide.bullets ??
+    (slide.subtitle.includes(' · ')
+      ? slide.subtitle
+          .split(/\s*·\s*|\n/)
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : null);
 
   return (
     <div
       ref={containerRef}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
       className="relative w-full h-screen min-h-150 md:min-h-175 lg:min-h-190 overflow-hidden bg-ean-navy flex items-center select-none"
     >
       {/* Background Slides Container — single parallax layer */}
@@ -131,29 +142,34 @@ export default function HeroSection() {
           return (
             <div
               key={s.id}
-              className={`absolute inset-0 transition-[opacity,transform] duration-[1400ms] ease-in-out ${
-                isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.08]'
+              className={`absolute inset-0 transition-opacity duration-[1800ms] ease-in-out ${
+                isActive ? 'opacity-100 z-1' : 'opacity-0 z-0 pointer-events-none'
               }`}
-              style={{ zIndex: isActive ? 1 : 0 }}
             >
-              <Image
-                src={s.image}
-                alt={s.eyebrow}
-                fill
-                sizes="100vw"
-                priority={idx === 0}
-                fetchPriority={idx === 0 ? 'high' : 'auto'}
-                loading={idx === 0 ? 'eager' : 'lazy'}
-                quality={70}
-                className="object-cover object-center"
-              />
+              <div
+                className={`relative w-full h-full transform-gpu transition-transform duration-[9500ms] ease-out ${
+                  isActive ? 'scale-100' : 'scale-[1.035]'
+                }`}
+              >
+                <Image
+                  src={s.image}
+                  alt={s.eyebrow}
+                  fill
+                  sizes="100vw"
+                  priority={idx === 0}
+                  fetchPriority={idx === 0 ? 'high' : 'auto'}
+                  loading={idx === 0 ? 'eager' : 'lazy'}
+                  quality={70}
+                  className="object-cover object-center"
+                />
+              </div>
             </div>
           );
         })}
 
-        {/* Overlays for high readability — shared across every slide */}
-        <div className="absolute inset-0 z-2 bg-linear-to-r from-black/85 via-black/45 to-transparent" />
-        <div className="absolute inset-0 z-2 bg-linear-to-t from-black/90 via-black/25 to-black/65" />
+        {/* Luminous overlays for high image visibility and clean text contrast */}
+        <div className="absolute inset-0 z-2 bg-linear-to-r from-black/65 via-black/25 to-transparent" />
+        <div className="absolute inset-0 z-2 bg-linear-to-t from-black/45 via-transparent to-black/35" />
       </div>
 
       {/* Main Content (Text Layer) */}
@@ -182,18 +198,45 @@ export default function HeroSection() {
             ))}
           </h1>
 
-          {/* Subtitle */}
-          <p className="ean-rise ean-rise-delay-2 font-ui text-xs sm:text-sm md:text-base lg:text-lg text-white/70 leading-relaxed mb-6 sm:mb-8 md:mb-9 max-w-xl">
-            {slide.subtitle.split('\n').map((line, i) => (
-              <React.Fragment key={i}>
-                {line}
-                {i < slide.subtitle.split('\n').length - 1 && <br className="hidden sm:inline" />}
-              </React.Fragment>
-            ))}
-          </p>
+          {/* Subtitle / Bullet Points */}
+          {bulletItems && bulletItems.length > 0 ? (
+            <div className="flex flex-wrap items-center gap-x-3.5 gap-y-2 mb-6 sm:mb-8 md:mb-9 max-w-2xl">
+              {bulletItems.map((bullet, bIdx) => {
+                const delayClass =
+                  bIdx === 0
+                    ? 'ean-rise-delay-2'
+                    : bIdx === 1
+                    ? 'ean-rise-delay-3'
+                    : bIdx === 2
+                    ? 'ean-rise-delay-4'
+                    : 'ean-rise-delay-5';
+
+                return (
+                  <div
+                    key={bIdx}
+                    className={`ean-rise ${delayClass} inline-flex items-center gap-2.5 font-ui text-xs sm:text-sm md:text-base text-white/80`}
+                  >
+                    {bIdx > 0 && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-ean-gold/80 inline-block shrink-0 shadow-[0_0_8px_rgba(196,149,42,0.6)]" />
+                    )}
+                    <span>{bullet}</span>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="ean-rise ean-rise-delay-2 font-ui text-xs sm:text-sm md:text-base lg:text-lg text-white/70 leading-relaxed mb-6 sm:mb-8 md:mb-9 max-w-xl">
+              {slide.subtitle.split('\n').map((line, i) => (
+                <React.Fragment key={i}>
+                  {line}
+                  {i < slide.subtitle.split('\n').length - 1 && <br className="hidden sm:inline" />}
+                </React.Fragment>
+              ))}
+            </p>
+          )}
 
           {/* Action Buttons */}
-          <div className="ean-rise ean-rise-delay-3 flex flex-wrap sm:flex-row items-center gap-3.5 sm:gap-4 w-full sm:w-auto">
+          <div className="ean-rise ean-rise-delay-6 flex flex-wrap sm:flex-row items-center gap-3.5 sm:gap-4 w-full sm:w-auto">
             {slide.primaryCta.href.startsWith('#') ? (
               <GoldButton onClick={() => scrollToHash(slide.primaryCta.href)}>
                 {slide.primaryCta.text}
@@ -217,24 +260,33 @@ export default function HeroSection() {
       </div>
 
       {/* Slide Progress Indicator Dots */}
-      <div className="absolute bottom-10 left-6 md:left-8 z-20 flex items-center gap-3">
-        {HERO_SLIDES.map((s, idx) => (
-          <button
-            key={s.id}
-            onClick={() => handleDotClick(idx)}
-            className={`transition-all duration-500 rounded-full cursor-pointer ${
-              idx === currentSlide
-                ? 'w-8 h-2 bg-white'
-                : 'w-2 h-2 bg-white/40 hover:bg-white/75'
-            }`}
-            aria-label={`Go to slide ${idx + 1}`}
-          />
-        ))}
+      <div className="absolute bottom-10 left-6 md:left-8 z-20 flex items-center gap-2.5">
+        {HERO_SLIDES.map((s, idx) => {
+          const isActive = idx === currentSlide;
+          return (
+            <button
+              key={s.id}
+              onClick={() => handleDotClick(idx)}
+              className={`group relative h-2 rounded-full cursor-pointer transition-all duration-700 overflow-hidden ${
+                isActive ? 'w-12 bg-white/20' : 'w-2.5 bg-white/35 hover:bg-white/60'
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            >
+              {isActive && (
+                <span
+                  key={`progress-${currentSlide}`}
+                  style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
+                  className="absolute inset-y-0 left-0 bg-white rounded-full animate-hero-progress"
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Scroll Down Indicator */}
       <div
-        className="ean-rise ean-rise-delay-4 absolute bottom-10 right-6 md:right-8 z-20 flex flex-col items-center cursor-pointer"
+        className="ean-rise ean-rise-delay-7 absolute bottom-10 right-6 md:right-8 z-20 flex flex-col items-center cursor-pointer"
         onClick={() => scrollToHash('#services-section')}
       >
         <div className="w-8 h-13 rounded-full border border-white/30 flex items-center justify-center backdrop-blur-sm bg-black/10 hover:border-white transition-colors duration-300 shadow-[0_0_15px_rgba(43,0,152,0.1)]">

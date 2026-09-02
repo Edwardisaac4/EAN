@@ -36,12 +36,17 @@ import { getTrackingContext } from '@/lib/lead-tracking';
 const getServiceFromSlug = (slug: string): string => {
   const val = slug.toLowerCase();
   const mapping: Record<string, string> = {
+    'aircraft-sales-leasing': 'sales_leasing',
+    'aircraft-sales': 'sales_leasing',
+    'sales-leasing': 'sales_leasing',
+    'sales': 'sales_leasing',
+    'aircraft-charter': 'charter',
+    'charter': 'charter',
+    'aircraft-sales-charter': 'sales_leasing',
     'fbo-ground-support': 'fbo',
     'fbo': 'fbo',
     'aircraft-maintenance': 'maintenance',
     'maintenance': 'maintenance',
-    'aircraft-sales-charter': 'charter',
-    'charter': 'charter',
     'wings-catering': 'catering',
     'catering': 'catering',
     'vip-lounge': 'vip',
@@ -64,7 +69,8 @@ const getServiceFromSlug = (slug: string): string => {
 };
 
 const AVAILABLE_SERVICES = [
-  { id: 'charter', label: 'Charter' },
+  { id: 'sales_leasing', label: 'Aircraft Sales & Leasing' },
+  { id: 'charter', label: 'Aircraft Charter' },
   { id: 'fbo', label: 'FBO & Ground Handling' },
   { id: 'maintenance', label: 'Aircraft Maintenance' },
   { id: 'catering', label: 'Wings Catering' },
@@ -96,7 +102,12 @@ export default function ContactPage() {
   // so any value here came from a bot.
   const [honeypot, setHoneypot] = useState('');
 
-  const [selectedServices, setSelectedServices] = useState<string[]>(['charter']);
+  // Starts empty. Anything pre-ticked here is a guess at the visitor's intent
+  // that arrives in the lead data as if they had chosen it, and 'charter' was
+  // being attributed to every contact-page lead that never touched the boxes.
+  // A genuine intent signal comes from `?service=` below, or from the visitor.
+  // The field is optional: handleSubmit falls back to 'general'.
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -104,7 +115,8 @@ export default function ContactPage() {
   const handleServiceToggle = (serviceId: string) => {
     setSelectedServices((prev) => {
       if (prev.includes(serviceId)) {
-        if (prev.length === 1) return prev;
+        // No floor at one selection: a visitor who ticked the wrong box must be
+        // able to untick it, and zero is a valid answer here.
         return prev.filter((id) => id !== serviceId);
       } else {
         return [...prev, serviceId];
@@ -262,7 +274,7 @@ export default function ContactPage() {
 
       sendGAEvent('event', 'generate_lead', {
         category: 'Inquiry',
-        service: selectedServices.join(', '),
+        service: selectedServices.join(', ') || 'general',
         value: 1,
       });
 
@@ -275,7 +287,7 @@ export default function ContactPage() {
         company: '',
         message: '',
       });
-      setSelectedServices(['charter']);
+      setSelectedServices([]);
     } catch (err) {
       console.error('Error submitting lead form:', err);
       setIsSubmitting(false);
@@ -289,7 +301,7 @@ export default function ContactPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar hasPhotoHero />
 
       <main className="flex-1 flex flex-col bg-ean-navy text-ean-text-light">
         {/* SECTION 1: Contact Hero */}
@@ -438,7 +450,7 @@ export default function ContactPage() {
                               name="name"
                               value={formData.name}
                               onChange={handleChange}
-                              placeholder="Segun Demuren"
+                              placeholder="John Duran"
                               className={`bg-black/5 border px-4 py-3 text-sm placeholder:text-ean-text-light/20 focus:outline-none focus:border-ean-blue focus:ring-1 focus:ring-ean-blue/30 transition-colors duration-300 ${errors.name ? 'border-red-500' : 'border-ean-border-dark'
                                 }`}
                             />
@@ -625,24 +637,33 @@ export default function ContactPage() {
         {/* SECTION 3: FAQ Accordion */}
         <section className="bg-ean-surface text-ean-text-light py-20 sm:py-24 border-t border-ean-border-light/60">
           <div className="max-w-ean mx-auto px-6 md:px-8">
-            <SectionReveal className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
+            <SectionReveal className="text-center max-w-2xl mx-auto mb-16 space-y-4" stagger={0.1} distance={40} duration={1}>
+              <span data-reveal className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
                 Information
               </span>
-              <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-text-light leading-tight">
+              <h2 data-reveal className="font-display text-3xl sm:text-4xl font-medium text-ean-text-light leading-tight">
                 Frequently Asked Questions
               </h2>
-              <p className="font-ui text-base text-ean-muted-light leading-relaxed">
+              <p data-reveal className="font-ui text-base text-ean-muted-light leading-relaxed">
                 Review immediate solutions to common questions regarding EAN’s flight approvals, MMIA ground support, and scheduling.
               </p>
             </SectionReveal>
 
-            {/* Accordion List */}
-            <div className="max-w-3xl mx-auto space-y-4 font-ui">
+            {/* Accordion list. One trigger on the list rather than one per
+                question: twelve accordions each owned a ScrollTrigger on the
+                same `top 85%` line, which is twelve triggers producing one
+                simultaneous fade. No `grid` here — this is a single column, so
+                DOM order is the order the eye reads. */}
+            <SectionReveal
+              className="max-w-3xl mx-auto space-y-4 font-ui"
+              stagger={0.05}
+              distance={20}
+              duration={0.6}
+            >
               {FAQ_ITEMS.map((faq, idx) => {
                 const isOpen = openFAQIndex === idx;
                 return (
-                  <SectionReveal key={idx}>
+                  <div key={idx} data-reveal>
                     <div className="bg-ean-white border border-ean-border-light/60 overflow-hidden shadow-xs hover:border-ean-gold/30 transition-all duration-300">
                       <button
                         id={`faq-trigger-${idx}`}
@@ -685,10 +706,10 @@ export default function ContactPage() {
                         </div>
                       </div>
                     </div>
-                  </SectionReveal>
+                  </div>
                 );
               })}
-            </div>
+            </SectionReveal>
           </div>
         </section>
 
