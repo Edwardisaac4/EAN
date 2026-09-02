@@ -18,8 +18,18 @@ export default function PartnersStrip() {
         <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-28 bg-linear-to-r from-ean-surface to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-28 bg-linear-to-l from-ean-surface to-transparent z-10 pointer-events-none" />
 
-        {/* Infinite CSS marquee wrapper */}
-        <div className="flex w-max animate-marquee space-x-6 sm:space-x-8 pr-6 sm:pr-8 items-center group-hover:[animation-play-state:paused]">
+        {/*
+          Infinite CSS marquee wrapper.
+
+          `motion-reduce:animate-none` is the reduced-motion gate, and it has to
+          live here rather than in the `@media (prefers-reduced-motion)` block in
+          globals.css: that block enumerates class names, and `animate-marquee`
+          is a Tailwind `@theme` animation utility rather than one of the hand-
+          written `ean-*` families it lists. An endless horizontal crawl is the
+          category the preference most exists to stop — hover pauses it, a motion
+          preference did not. Matches OpsStrip, which already carried the gate.
+        */}
+        <div className="flex w-max animate-marquee motion-reduce:animate-none space-x-6 sm:space-x-8 pr-6 sm:pr-8 items-center group-hover:[animation-play-state:paused]">
           {doublePartners.map((partner, idx) => (
             <div
               key={idx}

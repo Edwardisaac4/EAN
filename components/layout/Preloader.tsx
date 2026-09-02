@@ -2,19 +2,27 @@
  * Opening veil over the hero — a gold flight path that draws itself while a jet
  * climbs it trailing vapour, handing off to the EAN lockup as it leaves frame.
  *
- * Deliberately a Server Component with a pure CSS animation. The original
+ * A pure CSS animation with no JavaScript behaviour of its own. The original
  * version held an opaque full-viewport overlay in the server HTML and only tore
  * it down once GSAP had hydrated, which pushed first paint behind the entire
- * client bundle. Nothing here costs a byte of JavaScript or a network request:
- * the artwork is inline SVG rather than /images/new-logo.png for exactly that
- * reason. Do not reintroduce a JS-controlled unmount.
+ * client bundle. Nothing here costs a byte of runtime JavaScript or a network
+ * request: the artwork is inline SVG rather than /images/new-logo.png for
+ * exactly that reason. Do not reintroduce a JS-controlled unmount.
  *
- * The veil and the artwork clear on separate timelines (see globals.css). The
- * backdrop goes transparent at 0.60s while the jet keeps climbing over the live
- * hero until 1.70s, because an opaque layer is the only part Speed Index
- * penalises — which is what makes the full 2.6s beat free. `pointer-events-none`
- * is therefore load-bearing, not defensive: this layer sits over real, clickable
- * content for three quarters of its life.
+ * Note that it is not a Server Component, despite reading like one — its only
+ * caller, PublicShell, is `'use client'`, so this module is part of the client
+ * bundle. That costs bundle bytes but not first paint: the markup is in the
+ * server HTML and the animation is CSS, so nothing here waits on hydration.
+ *
+ * Timeline in globals.css, 1.4s end to end. The veil stays fully opaque until
+ * 1.15s — through the jet's climb (0 → 0.77s) and the lockup's stagger
+ * (0.60 → 1.08s) — and then the whole layer dissolves over 1.15 → 1.36s to
+ * reveal the site. So the preloader genuinely finishes before the page is
+ * visible, which the previous split timeline did not: it cleared the backdrop
+ * at 0.60s and flew the jet over the live hero for another 1.1s, which read as
+ * the site arriving mid-animation. The trade is Speed Index — AGENTS.md §8 has
+ * the numbers. `pointer-events-none` still matters, but the window it covers is
+ * now the 0.25s dissolve rather than three quarters of the beat.
  */
 
 /**

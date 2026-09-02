@@ -210,21 +210,27 @@ per-page rebuilds) is gated on comps and has not.
 Framer Motion was removed. Nothing may reintroduce it.
 
 - **GSAP + ScrollTrigger** — scroll-driven work only: parallax, section
-  reveals, stat counters. Always `useGSAP` from `@gsap/react`, never a raw
-  `useEffect`. Register plugins at file level, outside the component.
+  reveals, stat counters, and the navbar chrome collapse. Always `useGSAP` from
+  `@gsap/react`, never a raw `useEffect`. Register plugins at file level,
+  outside the component. The navbar is the one that does **not** use
+  ScrollTrigger: GSAP.md §6.6 takes a plain scroll listener there, because the
+  same listener has to set the React state that drives the colour swap.
 - **CSS keyframes in `globals.css`** — entrances, exits, hovers, the marquee.
   Utility classes: `ean-rise`, `ean-enter-*` / `ean-exit-*` (fade, up, down,
   dropdown, scale, modal), `ean-indicator`, `ean-preloader*`.
-- **The preloader** (`components/layout/Preloader.tsx`) — a gold flight path that
+- **The preloader** (`components/layout/Preloader.tsx`) — a flight path that
   draws itself while an inline-SVG jet climbs it trailing vapour, handing off to
-  a staggered `EAN` lockup. Server Component, zero JS, zero network requests.
-  The main `ean-preloader*` layers share one **2.6s** timeline, so their stops
-  are percentages of 2.6s, not delays; the letters and rule are the exception
-  and carry real `animation-delay`s, because a stagger cannot be expressed as
-  percentages of a single animation. The vapour trail is a moving dash window
-  (`stroke-dasharray: 0.26 1` against `pathLength="1"`) rather than a second
-  motion path, which is what keeps it locked to the jet for free. Read §8 before
-  retiming any of it.
+  a staggered `EAN` lockup, over an opaque veil that dissolves once the artwork
+  is done. Zero runtime JS, zero network requests. Not a Server Component,
+  though the file reads like one: `PublicShell` is `'use client'`, so it lands in
+  the client bundle — harmless for first paint, since the markup is server-
+  rendered and the animation is CSS. The main `ean-preloader*` layers share one
+  **1.4s** timeline, so their stops are percentages of 1.4s, not delays; the
+  letters and rule are the exception and carry real `animation-delay`s, because a
+  stagger cannot be expressed as percentages of a single animation. The vapour
+  trail is a moving dash window (`stroke-dasharray: 0.26 1` against
+  `pathLength="1"`) rather than a second motion path, which is what keeps it
+  locked to the jet for free. Read §8 before retiming any of it.
 - **`components/shared/Presence.tsx`** — the `AnimatePresence` replacement.
   Holds a child mounted for its exit duration; renders no wrapper element.
 - **Sliding indicators** (nav underline, service tabs, blog filters) — one
@@ -265,24 +271,33 @@ LCP behind the entire client bundle. The hero and preloader are CSS-driven for
 exactly this reason. `StatCounter` renders its real figure in the markup and
 resets to `0` in JS, so crawlers and no-JS visitors read the true number.
 
-**The preloader's veil and its artwork clear on different schedules, and that is
-the point.** An opaque full-viewport layer is the one thing Lighthouse's Speed
-Index penalises, because it scores a filmstrip of visual progress. So
-`.ean-preloader-veil` goes transparent at 0.60s while the jet keeps climbing over
-the live hero until 1.70s, and only the whole layer hides at 2.6s. LCP, CLS and
-TBT are indifferent to it — LCP performs no occlusion test for overlays, the
-layer is `fixed`/`inset-0` and out of flow, and there is no JS. Do not collapse
-it back into one layer held opaque for the full beat, and note that
-`pointer-events-none` on the wrapper is now load-bearing: the layer sits over
-real, clickable content for roughly three quarters of its life.
+**The preloader's veil holds opaque until the artwork is finished, and the beat
+is short to pay for that.** The timeline is **1.4s**: veil fully opaque 0 → 1.15s
+(`82%`), covering the jet's climb (0 → 0.77s) and the lockup's stagger (0.60 →
+1.08s); the veil and the artwork then dissolve together 1.15 → 1.36s (`97%`);
+the wrapper hides at 1.4s. The veil and the mark share the `ean-veil-out`
+keyframe precisely so they cannot drift apart.
 
-**Lengthening the beat is free; lengthening the opaque phase is not.** Measured
-on a production build, desktop preset: Performance held at **99 across four
-runs** when the animation went 1.2s → 2.6s, because only the opaque phase moved
-(0.55s → 0.60s). Speed Index oscillated 1.0–1.1s against a 1.0s baseline, which
-is inside the noise band that also swung TBT 10–60ms between identical builds.
-If Speed Index ever does need buying back, pull the veil's `23.08%` stop down —
-never shorten the 2.6s.
+This deliberately reverses an earlier design that cleared the backdrop at 0.60s
+and let the jet finish its climb over the live hero, keeping the opaque phase
+tiny. That was the cheaper choice for Lighthouse's Speed Index — an opaque
+full-viewport layer is the one thing SI penalises, because it scores a filmstrip
+of visual progress — but it made the site appear while the preloader was still
+playing, which defeats the point of having one. **Speed Index is the price, and
+it is the only metric that moves**: the opaque phase went 0.60s → 1.15s, so
+expect SI to rise by roughly that difference from its ~1.0–1.1s baseline. LCP,
+CLS and TBT are still indifferent — LCP performs no occlusion test for overlays,
+the layer is `fixed`/`inset-0` and out of flow, and there is no JS.
+
+The old "Performance held at 99 across four runs, 1.2s → 2.6s" measurement was
+taken against the split timeline and **no longer describes this build**. Re-run
+Lighthouse before quoting a number.
+
+If Speed Index needs buying back, shorten the beat and scale every percentage
+stop with it — 1.2s was a shipped length before, so there is room. Do not
+reintroduce an early veil clear. `pointer-events-none` on the wrapper is still
+required, but it now covers only the 0.25s dissolve rather than three quarters
+of the beat.
 
 **`images.qualities` in `next.config.ts` is a whitelist.** Next 16 returns
 **HTTP 400** for any `quality` not listed. It currently allows `[70, 75, 80]` —

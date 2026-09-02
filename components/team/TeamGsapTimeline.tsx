@@ -60,8 +60,8 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
           // 3. Stage content reveal sequence using position parameters
           tl.fromTo(
             imageRef.current,
-            { opacity: 0, scale: 1.06, filter: 'blur(8px)' },
-            { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.7 },
+            { opacity: 0, scale: 1.06 },
+            { opacity: 1, scale: 1, duration: 0.7 },
             'start'
           );
 
@@ -117,7 +117,7 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
 
           gsap.set(
             [imageRef.current, nameRef.current, roleRef.current, quoteRef.current].filter(Boolean),
-            { opacity: 1, x: 0, y: 0, scale: 1, filter: 'blur(0px)', clearProps: 'transform' }
+            { opacity: 1, x: 0, y: 0, scale: 1, clearProps: 'transform' }
           );
 
           if (bioRef.current) {
@@ -210,7 +210,7 @@ export default function TeamGsapTimeline({ members }: TeamGsapTimelineProps) {
                 quality={80}
               />
               <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-transparent to-transparent opacity-60" />
-              <div className="absolute top-4 left-4 px-3 py-1 bg-ean-navy/90 backdrop-blur-md border border-ean-gold/30 font-mono text-[10px] text-ean-gold uppercase tracking-widest">
+              <div className="absolute top-4 left-4 px-3 py-1 bg-ean-navy/90 border border-ean-gold/30 font-mono text-[10px] text-ean-gold uppercase tracking-widest">
                 {activeMember.departmentLabel}
               </div>
               <div className="absolute bottom-4 left-4 right-4 text-xs font-mono text-ean-muted-light uppercase tracking-wider">

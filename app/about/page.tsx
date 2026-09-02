@@ -1,30 +1,20 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { 
-  ShieldCheck, 
-  Crown, 
-  Clock, 
-  Globe,
-  Award,
-  CheckCircle2,
-  MapPin,
-  Building2,
-  ChevronDown
-} from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
 import Navbar from '@/components/layout/Navbar';
 import SectionReveal from '@/components/shared/SectionReveal';
+import GoldButton from '@/components/shared/GoldButton';
 import OutlineButton from '@/components/shared/OutlineButton';
 import { withReducedMotion } from '@/lib/gsap-motion';
 import {
   VALUE_PILLARS,
-  CREDENTIAL_ITEMS,
   TRUST_STATS
 } from '@/lib/constants';
 
@@ -33,24 +23,17 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const iconMap = {
-  ShieldCheck,
-  Crown,
-  Clock,
-  Globe,
-  Award,
-  CheckCircle2,
-  MapPin,
-  Building2,
-};
-
 export default function AboutPage() {
+  const [expandedCard, setExpandedCard] = useState<number | null>(null);
+
   const heroRef = useRef<HTMLDivElement>(null);
   const heroBgRef = useRef<HTMLDivElement>(null);
   const eyebrowRef = useRef<HTMLParagraphElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const ctaBgRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () =>
@@ -119,50 +102,72 @@ export default function AboutPage() {
     { scope: heroRef }
   );
 
+  useGSAP(
+    () =>
+      withReducedMotion(
+        () => {
+          gsap.to(ctaBgRef.current, {
+            yPercent: 15,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: ctaRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true,
+            },
+          });
+        },
+        () => {
+          gsap.set(ctaBgRef.current, { yPercent: 0, clearProps: 'transform' });
+        }
+      ),
+    { scope: ctaRef }
+  );
+
   return (
     <>
-      <Navbar />
+      <Navbar hasPhotoHero />
 
       <main className="flex-1 flex flex-col">
         {/* SECTION 1: Cinematic Hero */}
         <section
           ref={heroRef}
-          className="relative w-full min-h-105 sm:min-h-120 lg:min-h-130 flex items-center pt-36 pb-20 sm:pt-44 sm:pb-28 overflow-hidden bg-ean-obsidian text-white border-b border-ean-border-dark"
+          className="relative w-full min-h-[540px] sm:min-h-[620px] lg:min-h-[680px] flex items-center pt-36 pb-20 sm:pt-44 sm:pb-28 overflow-hidden bg-ean-obsidian text-white border-b border-ean-border-dark"
         >
           {/* Parallax Background */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
             <Image
-              src="/images/hero/slide-2.jpg"
-              alt="EAN Aviation executive private aircraft on the ramp at Lagos"
+              src="/images/Usage.jpg"
+              alt="EAN Aviation aircraft operations, ramp handling and engineering excellence"
               fill
               sizes="100vw"
               priority
-              className="object-cover"
-              quality={80}
+              className="object-cover object-[center_38%] sm:object-[center_35%]"
+              quality={90}
             />
-            {/* Cinematic Obsidian Black luxury overlays */}
-            <div className="absolute inset-0 bg-black/60" />
-            <div className="absolute inset-0 bg-linear-to-b from-black/80 via-transparent to-black/90" />
-            <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
+            {/* Soft, luminous overlays — lightened to keep the aircraft and lighting bright and vibrant */}
+            <div className="absolute inset-0 bg-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-black/65" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent w-full sm:w-3/4" />
           </div>
 
           <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 w-full">
-            <div className="max-w-3xl space-y-4 sm:space-y-5 text-left">
+            <div className="max-w-3xl space-y-4 sm:space-y-5 text-left drop-shadow-md">
               <p
                 ref={eyebrowRef}
-                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/70 uppercase"
+                className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/85 uppercase drop-shadow-sm"
               >
                 Credentials & Legacy
               </p>
               <h1
                 ref={titleRef}
-                className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white leading-[1.1] tracking-tight"
+                className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white leading-[1.1] tracking-tight drop-shadow-md"
               >
                 Pioneering Aviation Excellence
               </h1>
               <p
                 ref={subtitleRef}
-                className="font-ui text-base sm:text-lg md:text-xl text-white/80 max-w-xl leading-relaxed"
+                className="font-ui text-base sm:text-lg md:text-xl text-white/95 max-w-xl leading-relaxed drop-shadow-sm"
               >
                 For over a decade, EAN Aviation has defined business flight in West Africa, 
                 combining state-of-the-art infrastructure with an unyielding commitment to safety and precision.
@@ -222,106 +227,183 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* SECTION 4: Core Pillars (Service, Safety, Precision, Leadership) */}
-        <section className="bg-ean-navy-mid text-ean-text-light py-20 sm:py-24">
+        {/* SECTION 4: Core Principles & Pillars with Photo Hover Reveal */}
+        <section className="bg-ean-navy-mid text-ean-text-light py-20 sm:py-24 border-t border-ean-border-dark">
           <div className="max-w-ean mx-auto px-6 md:px-8">
-            <SectionReveal className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
+            <SectionReveal className="text-center max-w-3xl mx-auto mb-16 space-y-4" stagger={0.1} distance={40} duration={1}>
+              <span data-reveal className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
                 Core Principles
               </span>
-              <h2 className="font-display text-3xl sm:text-4xl font-light text-ean-text-light leading-tight">
+              <h2 data-reveal className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-ean-text-light leading-tight">
                 Defining the EAN Standard
               </h2>
-              <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
+              <p data-reveal className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
                 Our operations are governed by four non-negotiable principles, ensuring every charter, maintenance operation, and FBO handling exceeds industry norms.
               </p>
             </SectionReveal>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            {/* One trigger on the grid, then a diagonal sweep. One
+                SectionReveal per pillar meant four private ScrollTriggers on the
+                same `top 85%` line, so the row landed on a single frame. */}
+            <SectionReveal
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
+              stagger={0.06}
+              grid
+            >
               {VALUE_PILLARS.map((pillar, idx) => {
-                const IconComponent = iconMap[pillar.icon as keyof typeof iconMap];
+                const isExpanded = expandedCard === idx;
                 return (
-                  <SectionReveal key={idx}>
+                  <div key={idx} data-reveal className="h-full">
                     <div
-                      className="h-full bg-ean-navy/40 border border-ean-border-dark hover:border-ean-gold/30 hover:-translate-y-1.5 hover:shadow-[0_10px_30px_rgba(43,0,152,0.1)] p-8 backdrop-blur-xs flex flex-col justify-between transition-[border-color,transform,box-shadow] duration-300 ease-out"
+                      onClick={() => setExpandedCard((prev) => (prev === idx ? null : idx))}
+                      className={`relative h-[450px] sm:h-[480px] lg:h-[510px] w-full overflow-hidden bg-ean-obsidian group cursor-pointer flex flex-col justify-between transition-all duration-500 ${
+                        isExpanded
+                          ? 'border border-blue-500/80 shadow-[0_20px_45px_rgba(43,0,152,0.45)]'
+                          : 'border border-ean-border-dark hover:border-blue-500/80 hover:shadow-[0_20px_45px_rgba(43,0,152,0.45)]'
+                      }`}
                     >
-                      <div className="space-y-6">
-                        <div className="w-12 h-12 bg-ean-gold/10 flex items-center justify-center text-ean-gold border border-ean-gold/20">
-                          <IconComponent className="w-6 h-6" />
-                        </div>
-                        <h3 className="font-ui text-lg font-semibold text-ean-text-light tracking-wide">
+                      {/* Photo Background representing the Service/Pillar */}
+                      <Image
+                        src={pillar.image || '/images/about-jet.jpg'}
+                        alt={`${pillar.title} - EAN Aviation`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                        className={`object-cover transition-transform duration-700 ease-out ${
+                          isExpanded ? 'scale-105' : 'group-hover:scale-110'
+                        }`}
+                        quality={85}
+                      />
+
+                      {/* Base Luminous Vignette Overlay - lightened */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent z-10 transition-opacity duration-500" />
+
+                      {/* Deep Royal Blue Luxury Backdrop on Hover / Tap Expansion */}
+                      <div
+                        className={`absolute inset-0 bg-[#080d28]/75 backdrop-blur-[2px] transition-opacity duration-500 z-10 ${
+                          isExpanded ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                        }`}
+                      />
+
+                      {/* Vibrant Blue Radial Ambient Glow on Hover / Tap Expansion */}
+                      <div
+                        className={`absolute inset-0 bg-radial-at-t from-[#2b0098]/40 via-blue-900/10 to-transparent transition-opacity duration-700 z-10 pointer-events-none ${
+                          isExpanded ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                        }`}
+                      />
+
+                      {/* Card Top: Glowing Minimal Accent */}
+                      <div className="relative z-20 p-6 sm:p-7 flex items-center justify-end">
+                        <div
+                          className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                            isExpanded
+                              ? 'bg-blue-400 shadow-[0_0_10px_#4a1fd0]'
+                              : 'bg-white/30 group-hover:bg-blue-400 group-hover:shadow-[0_0_10px_#4a1fd0]'
+                          }`}
+                        />
+                      </div>
+
+                      {/* Card Bottom: Title, Desktop Hover Write-Up & In-Place Tap Expansion */}
+                      <div className="relative z-20 mt-auto p-6 sm:p-7 space-y-2.5">
+                        <span className="font-ui text-[11px] font-semibold tracking-[0.25em] text-blue-300 uppercase block">
+                          Principle
+                        </span>
+
+                        <h3
+                          className={`font-display text-2xl sm:text-2xl lg:text-[25px] font-light leading-tight transition-colors duration-300 ${
+                            isExpanded ? 'text-blue-100' : 'text-white group-hover:text-blue-100'
+                          }`}
+                        >
                           {pillar.title}
                         </h3>
-                        <p className="font-ui text-sm sm:text-base text-ean-muted-light leading-relaxed">
-                          {pillar.description}
-                        </p>
+
+                        {/* Interactive Expanding Blue Accent Hairline */}
+                        <div
+                          className={`h-[2px] bg-blue-400 transition-all duration-500 ease-out ${
+                            isExpanded
+                              ? 'w-full bg-blue-300 shadow-[0_0_8px_rgba(96,165,250,0.6)]'
+                              : 'w-8 group-hover:w-full group-hover:bg-blue-300 group-hover:shadow-[0_0_8px_rgba(96,165,250,0.6)]'
+                          }`}
+                        />
+
+                        {/* Write-Up: Smoothly slides and expands on hover (desktop) OR when card is expanded (mobile) */}
+                        <div
+                          className={`grid transition-[grid-template-rows] duration-500 ease-out ${
+                            isExpanded
+                              ? 'grid-rows-[1fr]'
+                              : 'grid-rows-[0fr] sm:group-hover:grid-rows-[1fr]'
+                          }`}
+                        >
+                          <div className="overflow-hidden">
+                            <p
+                              className={`font-ui text-sm text-white/90 leading-relaxed pt-2 transition-opacity duration-500 delay-100 ${
+                                isExpanded ? 'opacity-100' : 'opacity-0 sm:group-hover:opacity-100'
+                              }`}
+                            >
+                              {pillar.description}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* View Principle Action Link / CTA */}
+                        <div className="pt-2 flex items-center justify-between text-blue-300 group-hover:text-blue-200 font-ui text-xs font-bold uppercase tracking-widest border-t border-white/15">
+                          <span className="flex items-center gap-1.5">
+                            {isExpanded ? 'Close Principle' : 'View Principle'}
+                          </span>
+                          <ChevronRight
+                            className={`w-4 h-4 transform transition-transform duration-300 text-blue-300 ${
+                              isExpanded ? 'rotate-90' : 'group-hover:translate-x-1.5'
+                            }`}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </SectionReveal>
+                  </div>
                 );
               })}
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 5: Credentials & Infrastructure Grid */}
-        <section className="bg-ean-surface text-ean-text-light py-20 sm:py-24">
-          <div className="max-w-ean mx-auto px-6 md:px-8">
-            <SectionReveal className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
-                Infrastructure
-              </span>
-              <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-text-light leading-tight">
-                Our Regional Capabilities
-              </h2>
-              <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
-                We back our service with physical infrastructure and certified authority, providing direct support right on the tarmac.
-              </p>
             </SectionReveal>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-              {CREDENTIAL_ITEMS.map((item, idx) => {
-                const IconComponent = iconMap[item.icon as keyof typeof iconMap];
-                return (
-                  <SectionReveal key={idx}>
-                    <div className="bg-ean-white border border-ean-border-light/60 p-8 sm:p-10 shadow-xs flex gap-6 items-start hover:shadow-md transition-all duration-300 h-full">
-                      <div className="p-3 bg-black/5 text-ean-text-light border border-black/10 shrink-0">
-                        <IconComponent className="w-6 h-6" />
-                      </div>
-                      <div className="space-y-2">
-                        <h3 className="font-ui text-lg font-semibold text-ean-text-light">
-                          {item.title}
-                        </h3>
-                        <p className="font-ui text-sm sm:text-base text-ean-muted-light leading-relaxed">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-                  </SectionReveal>
-                );
-              })}
-            </div>
           </div>
         </section>
 
-        {/* SECTION 7: Premium Call to Action */}
-        <section className="bg-ean-surface text-ean-text-light py-20 sm:py-24 relative overflow-hidden border-t border-ean-border-light/60">
+        {/* SECTION 5: Experience EAN Aviation CTA */}
+        <section
+          ref={ctaRef}
+          className="relative w-full min-h-[460px] sm:min-h-[520px] lg:min-h-[580px] flex items-center justify-center overflow-hidden bg-ean-obsidian text-white border-t border-ean-border-dark"
+        >
+          {/* Parallax Background Container */}
+          <div ref={ctaBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
+            <Image
+              src="/images/about.jpg"
+              alt="Experience EAN Aviation bespoke private jet operations and flight support"
+              fill
+              sizes="100vw"
+              quality={80}
+              className="object-cover object-center"
+            />
+            {/* Soft, balanced overlay so the aircraft, tarmac, and landscape remain bright and luminous */}
+            <div className="absolute inset-0 bg-black/30" />
+            <div className="absolute inset-0 bg-linear-to-b from-black/45 via-black/15 to-black/55" />
+          </div>
 
-          <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center">
-            <SectionReveal className="max-w-3xl mx-auto space-y-8">
-              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
+          <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 py-20 sm:py-28 text-center w-full">
+            <SectionReveal className="max-w-3xl mx-auto space-y-7 drop-shadow-sm" stagger={0.14} distance={48} duration={1.1} ease="power3.out">
+              <span data-reveal className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase inline-block">
                 Experience EAN Aviation
               </span>
-              <h2 className="font-display text-3xl sm:text-5xl font-light text-ean-text-light leading-tight">
+              <h2 data-reveal className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white leading-tight drop-shadow-md">
                 Elevate Your Journey
               </h2>
-              <p className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-light max-w-2xl mx-auto leading-relaxed">
+              <p data-reveal className="font-ui text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-sm">
                 Whether you require bespoke private jet charters, helicopter acquisition, or premium flight support at Murtala Muhammed Airport, our crew is ready to execute.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                <Link href="/contact">
-                  <OutlineButton variant="light" className="w-full sm:w-auto">
+              <div data-reveal className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                <Link href="/contact" className="w-full sm:w-auto">
+                  <GoldButton className="w-full sm:w-auto px-9 py-4">
                     Contact Our Office
+                  </GoldButton>
+                </Link>
+                <Link href="/charter" className="w-full sm:w-auto">
+                  <OutlineButton variant="photo" className="w-full sm:w-auto px-9 py-4">
+                    Request a Charter
                   </OutlineButton>
                 </Link>
               </div>

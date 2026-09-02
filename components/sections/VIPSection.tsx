@@ -1,74 +1,124 @@
-import React from 'react';
+'use client';
+
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { withReducedMotion } from '@/lib/gsap-motion';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+import { CheckCircle2 } from 'lucide-react';
+import GoldButton from '@/components/shared/GoldButton';
 import OutlineButton from '@/components/shared/OutlineButton';
 import SectionReveal from '@/components/shared/SectionReveal';
 
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+const VIP_FEATURES = [
+  'Private VIP Terminal Access',
+  'Customs & Immigration Assistance, On-Site',
+];
+
 export default function VIPSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () =>
+      withReducedMotion(
+        () => {
+          // Parallax effect on background image matching CharterSection
+          gsap.to(bgRef.current, {
+            yPercent: 15,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true,
+            },
+          });
+        },
+        () => {
+          gsap.set(bgRef.current, { yPercent: 0, clearProps: 'transform' });
+        }
+      ),
+    { scope: containerRef }
+  );
+
   return (
-    <section className="bg-ean-white text-ean-text-light py-20 sm:py-24 transition-colors duration-500 overflow-hidden relative">
-      <div className="max-w-ean mx-auto px-6 md:px-8">
-        <SectionReveal>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            {/* Left Column: Large Lounge Visual */}
-            <div className="lg:col-span-5 relative w-full h-80 sm:h-100 lg:h-125 overflow-hidden border border-ean-border-light group lg:order-1">
-              <Image
-                src="/images/vip-lounge.jpg"
-                alt="EAN Aviation premium airport terminal VIP lounge"
-                fill
-                sizes="(max-width: 1024px) 100vw, 40vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                quality={80}
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-black/45 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    <section
+      ref={containerRef}
+      id="vip-section"
+      className="relative w-full min-h-125 sm:min-h-150 flex items-center justify-center overflow-hidden bg-ean-navy select-none"
+    >
+      {/* Parallax Background Container with light luxury overlay */}
+      <div ref={bgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
+        <Image
+          src="/images/vip-lounge.jpg"
+          alt="EAN Aviation premium airport terminal VIP lounge"
+          fill
+          sizes="100vw"
+          priority={false}
+          quality={85}
+          className="object-cover object-center"
+        />
+        {/* Subtle black overlay so the lounge imagery remains luminous while text is legible */}
+        <div className="absolute inset-0 bg-black/45" />
+        <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/35 to-transparent" />
+      </div>
+
+      {/* Content Area */}
+      <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 py-20 sm:py-24 w-full">
+        {/*
+          Full-bleed photo band: the longest travel and slowest curve on the
+          site. These sections are a single statement laid over a photograph
+          that is already moving under parallax, so the copy has to arrive on a
+          slower curve than the card grids or it reads as a second scroll effect
+          rather than a sequence.
+        */}
+        <SectionReveal stagger={0.14} distance={48} duration={1.1} ease="power3.out">
+          <div className="max-w-2xl text-left space-y-6 sm:space-y-8">
+            <div data-reveal className="space-y-3">
+              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white uppercase">
+                VIP Terminal Experience
+              </span>
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-white leading-[1.15]">
+                {"Lagos Airport's"} Premier Dedicated VIP Terminal
+              </h2>
             </div>
 
-            {/* Right Column: Copy & Highlights */}
-            <div className="lg:col-span-7 space-y-6 sm:space-y-8 lg:order-2">
-              <div className="space-y-3">
-                <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
-                  VIP Terminal Experience
-                </span>
-                <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-text-light leading-[1.15]">
-                  {"Lagos Airport's"} Premier Dedicated VIP Terminal
-                </h2>
-              </div>
-
-              <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
-                Step away from the bustle of Lagos Murtala Mohammed International Airport. {"EAN's"} VIP Lounge
-                offers direct check-in, quiet comfort, and dedicated passenger assistance clear of the
-                commercial terminal.
-              </p>
-
-              {/* Highlights Bullet List */}
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-ui text-sm sm:text-base text-ean-text-light font-medium">
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-ean-gold" />
-                  Private VIP Terminal Access
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-ean-gold" />
-                  Wings™ In-Flight Catering
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-ean-gold" />
-                  Customs & Immigration Assistance
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-ean-gold" />
-                  Secure Tarmac Transfer
-                </li>
+            {/* Highlights Feature Grid matching ServicesSection */}
+            <div data-reveal className="space-y-3">
+              <span className="block h-px w-full bg-white/15 origin-left mb-6" />
+              <span className="font-ui text-xs font-bold tracking-wider text-white/80 uppercase block">
+                Operational Highlights
+              </span>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 font-ui text-sm sm:text-base text-white font-medium">
+                {VIP_FEATURES.map((feat, fIdx) => (
+                  <li key={fIdx} className="flex items-start gap-2.5 sm:gap-3">
+                    <CheckCircle2 className="w-4.5 h-4.5 text-white shrink-0 mt-0.5" />
+                    <span className="leading-snug">{feat}</span>
+                  </li>
+                ))}
               </ul>
+            </div>
 
-              <div className="pt-2">
-                <Link href="/services/vip-lounge">
-                  <OutlineButton
-                    variant="light"
-                  >
-                    Explore VIP Experience
-                  </OutlineButton>
-                </Link>
-              </div>
+            {/* Action Bar */}
+            <div data-reveal className="pt-2 flex flex-wrap items-center gap-4">
+              <Link href="/services/vip-lounge">
+                <GoldButton>
+                  Explore VIP Experience
+                </GoldButton>
+              </Link>
+              <Link href="/contact?service=vip-lounge">
+                <OutlineButton variant="photo">
+                  Inquire With Concierge
+                </OutlineButton>
+              </Link>
             </div>
           </div>
         </SectionReveal>

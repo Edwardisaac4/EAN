@@ -18,7 +18,7 @@ export default function PricingPage() {
           { name: 'Pricing', path: '/pricing' },
         ])}
       />
-      <Navbar />
+      <Navbar hasPhotoHero />
       <main className="flex-1">
         <PricingCalculator />
       </main>

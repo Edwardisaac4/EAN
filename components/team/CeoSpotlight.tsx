@@ -33,7 +33,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
               <div className="relative aspect-4/5 overflow-hidden border border-ean-gold/30 group bg-ean-navy-mid">
                 {/* Decorative Frame Elements */}
                 <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-transparent to-transparent z-10 opacity-70 group-hover:opacity-50 transition-opacity duration-500" />
-                <div className="absolute top-4 left-4 z-20 px-3 py-1 bg-ean-navy/80 backdrop-blur-md border border-ean-gold/40 text-[10px] uppercase font-mono tracking-widest text-ean-gold">
+                <div className="absolute top-4 left-4 z-20 px-3 py-1 bg-ean-navy/90 border border-ean-gold/40 text-[10px] uppercase font-mono tracking-widest text-ean-gold">
                   Founder & CEO
                 </div>
 
@@ -78,7 +78,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
 
               {/* CEO Signature Quote Box */}
               {ceoMember.quote && (
-                <div className="relative p-6 sm:p-8 bg-linear-to-r from-black/15 via-black/5 to-transparent border-l border-ean-gold backdrop-blur-md space-y-3">
+                <div className="relative p-6 sm:p-8 bg-linear-to-r from-black/15 via-black/5 to-transparent border-l border-ean-gold space-y-3">
                   <Quote className="w-8 h-8 text-ean-gold/40 absolute top-4 right-4" />
                   <p className="font-display italic text-lg sm:text-xl text-ean-text-light leading-relaxed relative z-10">
                     &ldquo;{ceoMember.quote}&rdquo;
@@ -124,7 +124,7 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
               <div className="pt-4">
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="inline-flex items-center gap-3 px-6 py-3.5 bg-linear-to-r from-ean-gold via-ean-gold-light to-ean-gold text-ean-text-light font-ui text-xs font-semibold uppercase tracking-widest shadow-lg hover:shadow-ean-gold/20 hover:brightness-110 transition-all duration-300 cursor-pointer"
+                  className="inline-flex items-center gap-3 px-6 py-3.5 bg-linear-to-r from-ean-gold via-ean-gold-light to-ean-gold text-white font-ui text-xs font-semibold uppercase tracking-widest shadow-lg hover:shadow-ean-gold/20 hover:brightness-110 transition-all duration-300 cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4" />
                   Read Full Executive Profile

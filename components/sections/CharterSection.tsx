@@ -66,9 +66,16 @@ export default function CharterSection() {
 
       {/* Content Area */}
       <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 py-20 w-full">
-        <SectionReveal>
+        {/*
+          Full-bleed photo band: the longest travel and slowest curve on the
+          site. These sections are a single statement laid over a photograph
+          that is already moving under parallax, so the copy has to arrive on a
+          slower curve than the card grids or it reads as a second scroll effect
+          rather than a sequence.
+        */}
+        <SectionReveal stagger={0.14} distance={48} duration={1.1} ease="power3.out">
           <div className="max-w-2xl text-left space-y-6 sm:space-y-8">
-            <div className="space-y-3">
+            <div data-reveal className="space-y-3">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/70 uppercase">
                 Bespoke Flight Solutions
               </span>
@@ -77,13 +84,13 @@ export default function CharterSection() {
               </h2>
             </div>
 
-            <p className="font-ui text-base sm:text-lg text-white/70 leading-relaxed">
+            <p data-reveal className="font-ui text-base sm:text-lg text-white/70 leading-relaxed">
               Fly to your own schedule. Whether for business or leisure, our
               on-demand jet and helicopter charter services offer flexibility, privacy, and
               uncompromising safety standards across regional and international routes.
             </p>
 
-            <div className="pt-2">
+            <div data-reveal className="pt-2">
               <Link href="/charter">
                 <GoldButton className="shadow-[0_4px_15px_rgba(43,0,152,0.3)] hover:shadow-[0_4px_25px_rgba(43,0,152,0.5)]">
                   Request a Charter

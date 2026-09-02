@@ -14,7 +14,7 @@ const ContactSection = dynamic(() => import("@/components/sections/ContactSectio
 export default function Home() {
   return (
     <>
-      <Navbar />
+      <Navbar hasPhotoHero />
       <main className="flex-1 flex flex-col">
         <HeroSection />
         <TrustBar />

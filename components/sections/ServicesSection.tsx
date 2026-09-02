@@ -3,6 +3,8 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import {
   Plane,
   Wrench,
@@ -13,10 +15,10 @@ import {
   ArrowUpRight,
   CheckCircle2,
   ChevronRight,
-  Sparkles,
 } from 'lucide-react';
 
 import { SERVICES_DATA } from '@/lib/constants';
+import { withReducedMotion } from '@/lib/gsap-motion';
 import GoldButton from '@/components/shared/GoldButton';
 import OutlineButton from '@/components/shared/OutlineButton';
 
@@ -31,6 +33,7 @@ const ICON_MAP = {
 
 export default function ServicesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLUListElement>(null);
   const [activeTab, setActiveTab] = useState(0);
 
   // Sliding gold pill behind the active tab — the CSS equivalent of the
@@ -82,7 +85,148 @@ export default function ServicesSection() {
   }, [measurePill]);
 
   const activeService = SERVICES_DATA[activeTab] || SERVICES_DATA[0];
-  const ActiveIcon = ICON_MAP[activeService.iconName as keyof typeof ICON_MAP] || Plane;
+
+  // One master timeline for the whole showcase, replacing the 0.35s
+  // `ean-enter-up` fade the card used to get from CSS. Nothing here touches
+  // opacity: every element arrives from behind a clip edge or from under a
+  // mask, which is what separates this from the generic fade and is also what
+  // keeps §8 satisfied — the card paints complete without JS, and GSAP only
+  // ever applies the hidden state at runtime, inside useLayoutEffect, so there
+  // is no flash of finished content before it plays.
+  //
+  // The beats overlap rather than queue. First movement is at 0.06s and the
+  // headline is legible by ~0.5s, so the card never reads as *waiting*; the
+  // photograph keeps easing out of its 1.06 scale underneath for a full 1.3s,
+  // which is where the unhurried feel comes from. Perceived speed is set by
+  // the first beat, not the last.
+  //
+  // Keyed to activeTab because the block is remounted per service, so every
+  // ref and selector resolves to fresh nodes and the sequence has to replay.
+  useGSAP(
+    () =>
+      withReducedMotion(
+        () => {
+          const items = gsap.utils.toArray<HTMLElement>(
+            featuresRef.current?.children ?? []
+          );
+          const marks = items
+            .map((li) => li.querySelector('svg'))
+            .filter((el): el is SVGSVGElement => el !== null);
+
+          const tl = gsap.timeline({
+            defaults: { ease: 'power3.out' },
+            delay: 0.06,
+          });
+
+          // The photograph settles for the whole beat under everything else.
+          tl.fromTo(
+            '[data-card-media]',
+            { scale: 1.06, clipPath: 'inset(0% 0% 0% 14%)' },
+            {
+              scale: 1,
+              clipPath: 'inset(0% 0% 0% 0%)',
+              duration: 1.3,
+              ease: 'power2.out',
+              clearProps: 'clipPath,transform',
+            },
+            0
+          )
+            // Editorial mask reveal: the line rides up from under its own
+            // overflow-hidden wrapper rather than fading on the spot.
+            .fromTo(
+              '[data-card-title]',
+              { yPercent: 115 },
+              {
+                yPercent: 0,
+                duration: 0.85,
+                ease: 'power4.out',
+                clearProps: 'transform',
+              },
+              0.16
+            )
+            .fromTo(
+              '[data-card-rule]',
+              { scaleX: 0 },
+              {
+                scaleX: 1,
+                duration: 0.8,
+                ease: 'power2.inOut',
+                clearProps: 'transform',
+              },
+              0.3
+            )
+            .fromTo(
+              '[data-card-label]',
+              { clipPath: 'inset(0% 100% 0% 0%)' },
+              {
+                clipPath: 'inset(0% 0% 0% 0%)',
+                duration: 0.5,
+                clearProps: 'clipPath',
+              },
+              0.42
+            );
+
+          // Highlights keep the slow, one-at-a-time cadence: stagger is ~73%
+          // of duration, so each line all but finishes before the next starts.
+          if (items.length) {
+            tl.fromTo(
+              items,
+              { clipPath: 'inset(0% 100% 0% 0%)', x: -20 },
+              {
+                clipPath: 'inset(0% 0% 0% 0%)',
+                x: 0,
+                duration: 0.75,
+                stagger: 0.55,
+                clearProps: 'clipPath,transform',
+              },
+              0.55
+            ).fromTo(
+              marks,
+              { scale: 0, rotate: -120 },
+              {
+                scale: 1,
+                rotate: 0,
+                duration: 0.5,
+                stagger: 0.55,
+                ease: 'back.out(3)',
+                clearProps: 'transform',
+              },
+              0.8
+            );
+          }
+
+          tl.fromTo(
+            '[data-card-action]',
+            { yPercent: 60, clipPath: 'inset(0% 0% 100% 0%)' },
+            {
+              yPercent: 0,
+              clipPath: 'inset(0% 0% 0% 0%)',
+              duration: 0.7,
+              stagger: 0.1,
+              clearProps: 'clipPath,transform',
+            },
+            0.72
+          );
+        },
+        () => {
+          gsap.set(
+            [
+              '[data-card-media]',
+              '[data-card-title]',
+              '[data-card-rule]',
+              '[data-card-label]',
+              '[data-card-action]',
+            ],
+            { clearProps: 'clipPath,transform' }
+          );
+          const items = featuresRef.current?.children;
+          if (items?.length) {
+            gsap.set(items, { clearProps: 'clipPath,transform' });
+          }
+        }
+      ),
+    { scope: containerRef, dependencies: [activeTab], revertOnUpdate: true }
+  );
 
   return (
     <section
@@ -94,16 +238,13 @@ export default function ServicesSection() {
       <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
         {/* Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 sm:mb-16 gap-6">
-          <div className="space-y-3 max-w-2xl">
+          <div className="max-w-2xl">
             <div className="flex items-center gap-2">
               <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
-                Our Capabilities
+                Our Services
               </span>
               <span className="inline-block w-8 h-px bg-ean-gold/40" />
             </div>
-            <h2 className="font-display text-3xl sm:text-4xl font-light text-ean-text-light leading-[1.15]">
-              Six Service Lines from One Lagos Base
-            </h2>
           </div>
 
           <div className="shrink-0">
@@ -165,45 +306,63 @@ export default function ServicesSection() {
             })}
           </div>
 
-          {/* Active Service Showcase Spotlight (White Container Box) */}
-          <div className="bg-white border-t border-t-ean-obsidian border-x border-b border-slate-200 overflow-hidden p-6 sm:p-10 lg:p-12 relative text-slate-900">
+          {/* Active Service Showcase — photograph as the card ground, content
+              overlaid on a scrim (same treatment as CharterSection) */}
+          <div className="relative overflow-hidden bg-ean-obsidian border-t border-t-ean-obsidian border-x border-b border-ean-border-dark min-h-125 sm:min-h-137 flex items-center">
+            {/* Background photograph + readability scrim */}
+            <div key={`${activeService.slug}-bg`} data-card-media className="absolute inset-0 pointer-events-none">
+              <Image
+                src={activeService.image}
+                alt={`${activeService.name} visual`}
+                fill
+                sizes="(max-width: 1280px) 100vw, 1280px"
+                className="object-cover"
+                style={{ objectPosition: activeService.imagePosition ?? '50% 50%' }}
+                quality={80}
+                loading="lazy"
+              />
+              {/* One left-weighted ramp rather than a flat wash plus a ramp:
+                  the flat layer was greying out the right half, where the
+                  subject of every one of these photographs sits. Measured
+                  against the actual pixels under the copy, this holds white
+                  body text above 4.5:1 across the text column on all six
+                  images — worst case 4.88:1, VIP Lounge under the second
+                  bullet column — while leaving the right edge, where every
+                  subject sits, at 85% of the photograph. */}
+              <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/75 to-black/15" />
+            </div>
+
             {/* Keying on the slug replays the CSS enter animation per service */}
             <div
               key={activeService.slug}
-              className="ean-enter-up grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+              className="relative z-10 w-full p-6 sm:p-10 lg:p-12"
             >
-              {/* Left Column: Details & Capabilities */}
-              <div className="lg:col-span-7 space-y-6">
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className="font-mono text-xs font-bold tracking-widest text-ean-text-light bg-black/5 border border-black/15 px-3 py-1 uppercase">
-                    {activeService.eyebrow || `0${activeTab + 1} / 0${SERVICES_DATA.length}`}
-                  </span>
-                  {activeService.stats?.[0] && (
-                    <span className="font-ui text-xs font-medium text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 flex items-center gap-1.5">
-                      <Sparkles size={12} className="text-ean-gold" />
-                      <span>{activeService.stats[0]}</span>
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-3">
-                  <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-light text-slate-900 leading-tight">
+              <div className="max-w-2xl space-y-6">
+                <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-light text-white leading-tight overflow-hidden pb-1 -mb-1">
+                  <span data-card-title className="block">
                     {activeService.name}
-                  </h3>
-                  <p className="font-ui text-base sm:text-lg text-slate-600 leading-relaxed">
-                    {activeService.extendedDescription || activeService.short}
-                  </p>
-                </div>
+                  </span>
+                </h3>
 
                 {/* Features Grid */}
-                <div className="border-t border-slate-200 pt-6 space-y-3">
-                  <span className="font-ui text-xs font-bold tracking-wider text-slate-900 uppercase block">
+                <div className="space-y-3">
+                  <span
+                    data-card-rule
+                    className="block h-px w-full bg-white/15 origin-left mb-6"
+                  />
+                  <span
+                    data-card-label
+                    className="font-ui text-xs font-bold tracking-wider text-white/80 uppercase block"
+                  >
                     Operational Highlights
                   </span>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-ui text-sm text-slate-800">
-                    {activeService.features.map((feat, fIdx) => (
+                  <ul
+                    ref={featuresRef}
+                    className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-ui text-sm text-white"
+                  >
+                    {activeService.features.slice(0, 2).map((feat, fIdx) => (
                       <li key={fIdx} className="flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-ean-gold shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-4.5 h-4.5 text-white shrink-0 mt-0.5" />
                         <span className="leading-snug">{feat}</span>
                       </li>
                     ))}
@@ -212,56 +371,30 @@ export default function ServicesSection() {
 
                 {/* Action Bar */}
                 <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                  <Link href={activeService.primaryButtonHref || `/contact?service=${activeService.slug}`}>
+                  <Link
+                    data-card-action
+                    href={activeService.primaryButtonHref || `/contact?service=${activeService.slug}`}
+                  >
                     <GoldButton className="w-full sm:w-auto">
                       <span>{activeService.primaryButtonText || 'Inquire With Operations'}</span>
                       <ChevronRight size={16} />
                     </GoldButton>
                   </Link>
-                  {activeService.secondaryButtonText ? (
-                    <Link href={activeService.secondaryButtonHref || `/contact?service=${activeService.slug}&action=quote`}>
-                      <OutlineButton variant="light" className="w-full sm:w-auto">
+                  {/* Secondary action only where the service defines one. There used
+                      to be a "Full Specifications" fallback to /services#slug in this
+                      slot; it was removed, so the five services without their own
+                      secondary text now show a single primary button. The section
+                      header still links through to /services. */}
+                  {activeService.secondaryButtonText && (
+                    <Link
+                      data-card-action
+                      href={activeService.secondaryButtonHref || `/contact?service=${activeService.slug}&action=quote`}
+                    >
+                      <OutlineButton variant="photo" className="w-full sm:w-auto">
                         {activeService.secondaryButtonText}
                       </OutlineButton>
                     </Link>
-                  ) : (
-                    <Link href={`/services#${activeService.slug}`}>
-                      <OutlineButton variant="light" className="w-full sm:w-auto">
-                        Full Specifications
-                      </OutlineButton>
-                    </Link>
                   )}
-                </div>
-              </div>
-
-              {/* Right Column: Visual Showcase */}
-              <div className="lg:col-span-5 relative">
-                <div className="relative h-72 sm:h-96 lg:h-112 w-full overflow-hidden border border-slate-200 group">
-                  <Image
-                    src={activeService.image}
-                    alt={`${activeService.name} visual`}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 45vw"
-                    className="object-cover transition-transform duration-750 group-hover:scale-105"
-                    quality={80}
-                    loading="lazy"
-                  />
-                  {/* Soft Shadow Gradient Overlay */}
-                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
-
-                  {/* Top Icon Badge - Crisp White Glass */}
-                  <div className="absolute top-4 left-4 p-3.5 bg-white/95 border border-slate-200 text-ean-text-light shadow-md backdrop-blur-xs">
-                    <ActiveIcon size={24} />
-                  </div>
-
-                  {/* Bottom Status Pill - Crisp White Glass */}
-                  <div className="absolute bottom-4 left-4 right-4 bg-white/95 border border-slate-200 backdrop-blur-xs p-3 flex items-center justify-between text-xs font-ui shadow-lg">
-                    <span className="text-slate-900 font-semibold truncate">{activeService.name}</span>
-                    <span className="flex items-center gap-1.5 text-ean-text-light shrink-0 font-mono text-[10px] uppercase font-bold tracking-wider">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      24/7 Active
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>

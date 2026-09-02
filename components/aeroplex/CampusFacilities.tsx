@@ -33,23 +33,30 @@ export default function CampusFacilities() {
   return (
     <section className="bg-ean-surface text-ean-text-light py-20 sm:py-24 border-y border-ean-border-light/70">
       <div className="max-w-ean mx-auto px-6 md:px-8">
-        <SectionReveal className="max-w-3xl space-y-4 mb-14">
-          <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
+        <SectionReveal className="max-w-3xl space-y-4 mb-14" stagger={0.1} distance={40} duration={1}>
+          <span data-reveal className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
             {AEROPLEX_FACILITIES_INTRO.eyebrow}
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl font-medium text-ean-text-light leading-tight">
+          <h2 data-reveal className="font-display text-3xl sm:text-4xl font-medium text-ean-text-light leading-tight">
             {AEROPLEX_FACILITIES_INTRO.title}
           </h2>
-          <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
+          <p data-reveal className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
             {AEROPLEX_FACILITIES_INTRO.standfirst}
           </p>
         </SectionReveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {/* One trigger on the grid, then a diagonal sweep. A SectionReveal per
+            card gave every card in a row the same trigger line, so the grid
+            arrived a whole row at a time. */}
+        <SectionReveal
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+          stagger={0.06}
+          grid
+        >
           {AEROPLEX_FACILITIES.map((facility, index) => {
             const Icon = facilityIcons[facility.iconName];
             return (
-              <SectionReveal key={facility.id}>
+              <div key={facility.id} data-reveal>
                 <article className="group relative h-full bg-ean-white border border-ean-border-light/70 p-7 sm:p-8 shadow-xs hover:shadow-lg hover:border-ean-blue/60 hover:-translate-y-1.5 transition-[border-color,transform,box-shadow] duration-300 ease-out flex flex-col gap-5">
                   {/* Index in mono, top-right — the programme is a numbered set of
                       elements, not a ranked list of features. */}
@@ -70,10 +77,10 @@ export default function CampusFacilities() {
                     </p>
                   </div>
                 </article>
-              </SectionReveal>
+              </div>
             );
           })}
-        </div>
+        </SectionReveal>
       </div>
     </section>
   );

@@ -403,9 +403,13 @@ export const SITE_GALLERY: AeroplexGalleryItem[] = [
   },
   {
     id: 'wings-kitchen',
-    src: '/images/services/wings-4.jpg',
-    alt: 'Dining room of the Wings™ flight kitchen at MMIA Lagos, with laid tables, upholstered seating and a bar at the rear',
-    caption: 'Wings™, EAN’s flight kitchen on airport grounds.',
+    src: '/images/new wings..jpg',
+    // The alt and caption move with the photograph. The frame this replaced was
+    // the kitchen's dining room on airport grounds; this one is a laid cabin
+    // table, so the old text described something no longer in the picture — and
+    // the caption asserted a location the new frame cannot support.
+    alt: 'A private jet cabin table laid for service, with sushi, a salmon and quinoa salad, edamame and chilled wine',
+    caption: 'Wings™ in-flight catering, plated for the cabin.',
     tag: 'Catering',
     span: 4,
   },

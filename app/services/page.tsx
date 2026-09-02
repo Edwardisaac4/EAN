@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
@@ -10,9 +10,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import Navbar from '@/components/layout/Navbar';
 import SectionReveal from '@/components/shared/SectionReveal';
-import ServiceFeatureRow, {
-  type ServiceRowGround,
-} from '@/components/services/ServiceFeatureRow';
+import ServiceCard from '@/components/services/ServiceCard';
 
 import { SERVICES_DATA } from '@/lib/constants';
 
@@ -22,44 +20,53 @@ if (typeof window !== 'undefined') {
 }
 
 /*
- * The band rhythm — spec §9.2, and the reason this page was rebuilt.
+ * The band rhythm — spec §9.2.
  *
  * The v8 swap left every section on this page a paper surface: a white hero, an
  * `ean-surface` grid, an `ean-surface` spacer, and a CTA whose gradient read
  * white → #eaecf0 → white. Total luminance range across the whole page was
- * 1.18, which is why it reads as one continuous sheet. The build record puts it
- * plainly: nothing on the site obeys "no more than two consecutive sections on
- * paper".
+ * 1.18, which is why it read as one continuous sheet — nothing obeyed "no more
+ * than two consecutive sections on paper".
  *
- * The fix is not to go back toward dark. It is that #2b0098 has a relative
- * luminance of 0.0278 — a dark surface that happens to be chromatic, and the
- * only value in this palette that can do what the ink bands did. So the rows
- * cycle on a period of three and the cycle contains a blue band:
+ * The alternating feature rows fixed that by cycling recessed → blue → paper
+ * across seven full-width bands. The card grid fixes it a different way, and
+ * with fewer moving parts:
  *
- *   hero    PHOTOGRAPH
- *   row 01  recessed
- *   row 02  BLUE
- *   row 03  paper       ─┐ run of 2
- *   row 04  recessed    ─┘
- *   row 05  BLUE
- *   row 06  paper
- *   CTA     BLUE
+ *   hero     PHOTOGRAPH
+ *   grid     recessed paper, carrying seven full-bleed PHOTOGRAPH cards
+ *   CTA      BLUE
  *
- * The hero was the paper opener in that plan and is now a full-bleed
- * photograph, which is the other half of what §9.2 asks for — it shortens the
- * opening run from two to one and gives the page a dark surface before the
- * first blue band. The cycle itself is unchanged.
- *
- * The longest paper-family run is two, everywhere. Because it is `idx % 3` and
- * not a slug lookup, a seventh service extends the rhythm correctly with no
- * edit here — which the bento config it replaces could not do.
+ * One paper section, so the composition rule holds with room to spare. The
+ * darkness the ink bands used to supply now comes from the cards themselves —
+ * each is a photograph under a scrim that washes to #2b0098 on interaction, so
+ * the recessed ground reads as the gap between dark objects rather than as a
+ * surface of its own. That is the same argument §9.2 makes for the blue band,
+ * applied at card scale instead of section scale.
  */
-const GROUND_CYCLE: ServiceRowGround[] = ['recessed', 'blue', 'paper'];
+
+/*
+ * Every card is one column wide — 1 / 2 / 3 across the breakpoints, the same
+ * uniform grid /team and /about use.
+ *
+ * The earlier version spanned the first and last cards across two columns to
+ * fill nine cells exactly. That is a bento, and it made the layout positional:
+ * two of the seven cards were composed differently from the other five, so the
+ * card had to carry a `wide` prop that switched its title size and split its
+ * feature list into two columns, and an eighth service would have landed in a
+ * different shape than the seventh. A uniform grid drops all of that — one card
+ * body, one `sizes` string, and the array's length stops mattering.
+ */
+const CARD_SIZES = '(min-width: 1024px) 350px, (min-width: 768px) 50vw, 100vw';
 
 export default function ServicesPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
+
+  // One card pinned open at a time, keyed by slug. Hover and keyboard focus open
+  // a card on their own, in CSS; this is the pinned state a tap or a click sets,
+  // and it outranks both.
+  const [pinnedSlug, setPinnedSlug] = useState<string | null>(null);
 
   useGSAP(
     () =>
@@ -94,7 +101,7 @@ export default function ServicesPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar hasPhotoHero />
 
       <main className="flex-1 flex flex-col">
         {/* SECTION 1 — Header. Photograph. */}
@@ -151,54 +158,86 @@ export default function ServicesPage() {
               ref={titleRef}
               className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-white leading-tight"
             >
-              Six Aviation Service Lines at Lagos MMIA
+              Our Services
             </h1>
             <p
               ref={subtitleRef}
               className="font-ui text-base sm:text-lg text-white/85 max-w-2xl mx-auto leading-relaxed"
             >
-              From direct airport tarmac handling and certified engineering to
-              exclusive distributor operations, EAN Aviation delivers precision at
-              every flight level.
+              End-to-end aviation services, from tarmac handling and certified engineering to exclusive distribution
             </p>
           </div>
         </section>
 
         {/*
-         * SECTIONS 2–7 — one full-width row per service line.
+         * SECTION 2 — the service cards.
          *
-         * The bento grid this replaces had three card variants (wide, tall,
-         * square) selected by a slug-keyed `bentoConfigs` map, each with its own
-         * ~120-line body — around 250 lines of near-duplicate markup for six
-         * services. It also could not show the content: every card `truncate`d
-         * its feature list, the tall variant buried its photograph under a
-         * 90%-white gradient, and only the wide card surfaced a stat.
+         * Replaces seven alternating full-width rows. The rows were built to
+         * undo a bento grid that `truncate`d its feature lists and bleached its
+         * photographs under a 90%-white gradient; this grid keeps what that fix
+         * was protecting — every card opens to its full description, all of its
+         * features, both stat chips and both calls to action, over a photograph
+         * with nothing washing it out — while giving the page back the scan-in-
+         * one-screen shape a service index wants. See ServiceCard for the
+         * disclosure and accessibility model.
          *
-         * A row shows all four features, both stats, the photograph at full
-         * saturation, and both calls to action. The `id` and `scroll-mt-28` move
-         * to the section element so the `/services#slug` links out of
-         * ServicesSection keep landing correctly.
+         * The `id`/`scroll-mt-28` live on the card's own <article>, so the
+         * `/services#slug` links out of ServicesSection keep landing correctly.
          */}
-        {SERVICES_DATA.map((service, idx) => (
-          <ServiceFeatureRow
-            key={service.slug}
-            service={service}
-            ground={GROUND_CYCLE[idx % GROUND_CYCLE.length]}
-            imageRight={idx % 2 === 1}
-          />
-        ))}
+        <section className="bg-ean-surface border-y border-ean-border-light">
+          <div className="max-w-ean mx-auto px-6 md:px-8 py-20 sm:py-24">
+            <SectionReveal className="max-w-3xl mb-14 space-y-4" stagger={0.1} distance={40} duration={1}>
+              <span data-reveal className="font-mono text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase block">
+                Service Lines
+              </span>
+              <h2 data-reveal className="font-display text-3xl sm:text-4xl lg:text-5xl font-light text-ean-text-light leading-tight">
+                All Services, One Location
+              </h2>
+              <p data-reveal className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
+                EAN provides comprehensive, full-spectrum aviation support at one location.
+              </p>
+            </SectionReveal>
 
-        {/* SECTION 8 — Charter & hangar CTA. Blue band. */}
+            {/*
+              One trigger on the grid, not one per card. A `SectionReveal` per
+              mapped item looks like a stagger and is not: each card owned a
+              private ScrollTrigger at `top 85%`, so every card in a row crossed
+              the line on the same frame and the grid arrived a whole row at a
+              time. `grid` measures the rendered positions and sweeps the cards
+              diagonally instead.
+            */}
+            <SectionReveal
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7"
+              stagger={0.06}
+              grid
+            >
+              {SERVICES_DATA.map((service) => (
+                <div key={service.slug} data-reveal>
+                  <ServiceCard
+                    service={service}
+                    sizes={CARD_SIZES}
+                    isExpanded={pinnedSlug === service.slug}
+                    onToggle={() =>
+                      setPinnedSlug((prev) => (prev === service.slug ? null : service.slug))
+                    }
+                  />
+                </div>
+              ))}
+            </SectionReveal>
+          </div>
+        </section>
+
+        {/* SECTION 3 — Charter & hangar CTA. Blue band. */}
         <section className="bg-ean-gold py-20 sm:py-24 relative overflow-hidden">
           <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10 text-center">
-            <SectionReveal className="max-w-3xl mx-auto space-y-8">
-              <span className="font-mono text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-muted-dark uppercase block">
+            <SectionReveal className="max-w-3xl mx-auto space-y-8" stagger={0.14} distance={48} duration={1.1} ease="power3.out">
+              <span data-reveal className="font-mono text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-muted-dark uppercase block">
                 Custom Flight Solutions
               </span>
-              <h2 className="font-display text-3xl sm:text-5xl font-light text-ean-text-dark leading-tight">
+              <h2 data-reveal className="font-display text-3xl sm:text-5xl font-light text-ean-text-dark leading-tight">
                 Design Your Flight Parameters
               </h2>
-              <p className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-dark max-w-2xl mx-auto leading-relaxed">
+              <p data-reveal className="font-ui text-base sm:text-lg md:text-xl text-ean-muted-dark max-w-2xl mx-auto leading-relaxed">
                 Connect directly with our corporate operations team to draft custom
                 flight schedules, secure airport ground clearances, or inspect MMIA
                 hangar leases.
@@ -208,7 +247,7 @@ export default function ServicesPage() {
                * this section's own background — they would render as invisible
                * controls here. Same geometry, inverted for the blue ground.
                */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+              <div data-reveal className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                 <Link
                   href="/charter"
                   className="w-full sm:w-auto font-ui font-semibold text-[12.5px] uppercase tracking-[0.08em] px-7 py-3.5 transition-colors duration-300 inline-flex items-center justify-center gap-2 rounded-none border bg-ean-white border-ean-white text-ean-gold hover:bg-ean-muted-dark hover:border-ean-muted-dark"

@@ -96,7 +96,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
         ]}
       />
 
-      <Navbar />
+      <Navbar hasPhotoHero />
 
       <main className="flex-1 flex flex-col bg-ean-surface text-ean-text-light">
         {/* HERO BANNER SECTION */}

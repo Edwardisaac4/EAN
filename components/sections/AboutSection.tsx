@@ -20,11 +20,17 @@ export default function AboutSection() {
   return (
     <section className="bg-ean-white text-ean-text-light py-20 sm:py-24 relative overflow-hidden transition-colors duration-500">
       <div className="max-w-ean mx-auto px-6 md:px-8">
-        <SectionReveal>
+        {/*
+          Editorial pacing: further and slower than a card grid, because the eye
+          is being asked to start reading rather than to scan a set. The grid
+          itself is not marked — only the four blocks inside it — so the columns
+          hold their position and nothing reflows as the copy arrives.
+        */}
+        <SectionReveal stagger={0.12} distance={40} duration={1}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: Text Content */}
             <div className="lg:col-span-7 space-y-6 sm:space-y-8">
-              <div className="space-y-3">
+              <div data-reveal className="space-y-3">
                 <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
                   Who We Are
                 </span>
@@ -33,7 +39,7 @@ export default function AboutSection() {
                 </h2>
               </div>
 
-              <div className="space-y-4 font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed max-w-2xl">
+              <div data-reveal className="space-y-4 font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed max-w-2xl">
                 <p>
                   Founded in Lagos in 2011, EAN Aviation is {"West Africa's "}
                   leading integrated business aviation company. We operate the {"region's "}
@@ -48,7 +54,7 @@ export default function AboutSection() {
                 </p>
               </div>
 
-              <div className="pt-2 flex flex-wrap items-center gap-4">
+              <div data-reveal className="pt-2 flex flex-wrap items-center gap-4">
                 {SECTION_LINKS.map(({ label, href }) => (
                   <Link key={href} href={href}>
                     <OutlineButton variant="light" className={LINK_HOVER}>
@@ -60,7 +66,7 @@ export default function AboutSection() {
             </div>
 
             {/* Right Column: Visual Hangar / Jet Image */}
-            <div className="lg:col-span-5 relative w-full h-80 sm:h-100 lg:h-125 overflow-hidden border border-ean-border-light group">
+            <div data-reveal className="lg:col-span-5 relative w-full h-80 sm:h-100 lg:h-125 overflow-hidden border border-ean-border-light group">
               {/* about-jet.jpg rather than hero/slide-1.jpg: the hero above already
                   opens on slide-1, and it is also DEFAULT_OG_IMAGE, so reusing it
                   here left one photograph carrying the entire homepage. */}

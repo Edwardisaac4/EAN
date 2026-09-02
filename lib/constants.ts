@@ -25,6 +25,7 @@ export interface HeroSlide {
    */
   titleScale?: "compact";
   subtitle: string;
+  bullets?: string[];
   image: string;
   primaryCta: {
     text: string;
@@ -78,6 +79,16 @@ export interface ServiceRichData {
   stats?: string[];
   features: string[];
   image: string;
+  /**
+   * `object-position` for the homepage showcase, where the image is a
+   * full-bleed background in a ~2.3:1 slot. The FBO, maintenance and charter
+   * shots are 400x560 portraits: cover keeps only the middle ~30% of their
+   * height, which in all three is empty sky or ceiling above the subject.
+   * Anchoring low pulls the aircraft and engineers back into frame. Passed as
+   * an inline style, not a Tailwind class — Tailwind cannot statically detect
+   * a class name built from data.
+   */
+  imagePosition?: string;
   primaryButtonText?: string;
   primaryButtonHref?: string;
   secondaryButtonText?: string;
@@ -122,6 +133,7 @@ export interface ValuePillar {
   icon: string;
   title: string;
   description: string;
+  image?: string;
 }
 
 export interface CredentialItem {
@@ -189,10 +201,10 @@ export const NAV_ITEMS: NavItem[] = [
     name: "Services",
     href: "/services",
     dropdownItems: [
-      { name: "All Services", href: "/services" },
+      { name: "Aircraft Sales & Leasing", href: "/services/aircraft-sales-leasing" },
+      { name: "Aircraft Charter", href: "/services/aircraft-charter" },
       { name: "FBO & Ground Handling", href: "/services/fbo-ground-support" },
       { name: "Aircraft Maintenance", href: "/services/aircraft-maintenance" },
-      { name: "Charter & Aircraft Sales", href: "/services/aircraft-sales-charter" },
       { name: "Wings In-Flight Catering", href: "/services/wings-catering" },
       { name: "VIP Lounges", href: "/services/vip-lounge" },
       { name: "Hangarage & Offices", href: "/services/leased-offices" },
@@ -210,9 +222,10 @@ export const NAV_CTA = {
 };
 
 export const FOOTER_SERVICES_LINKS = [
+  { name: "Aircraft Sales & Leasing", href: "/services/aircraft-sales-leasing" },
+  { name: "Aircraft Charter", href: "/services/aircraft-charter" },
   { name: "FBO & Ground Handling", href: "/services/fbo-ground-support" },
   { name: "Aircraft Maintenance", href: "/services/aircraft-maintenance" },
-  { name: "Charter & Sales", href: "/services/aircraft-sales-charter" },
   { name: "Wings Catering", href: "/services/wings-catering" },
   { name: "VIP Lounges", href: "/services/vip-lounge" },
   { name: "Hangarage & Offices", href: "/services/leased-offices" },
@@ -240,6 +253,12 @@ export const HERO_SLIDES: HeroSlide[] = [
     title: "Elevating Every\nJourney",
     subtitle:
       "FBO Services · Aircraft Charter · NCAA-Approved\nMaintenance · VIP Ground Handling",
+    bullets: [
+      "FBO Services",
+      "Aircraft Charter",
+      "NCAA-Approved Maintenance",
+      "VIP Ground Handling",
+    ],
     image: "/images/hero/slide-1.jpg",
     primaryCta: {
       text: "Make an Inquiry",
@@ -369,6 +388,20 @@ export const PARTNERS: string[] = PARTNER_LOGOS.map((p) => p.name);
 
 export const EAN_SERVICES = [
   {
+    slug: "aircraft-sales-leasing",
+    name: "Aircraft Sales & Leasing",
+    short:
+      "Exclusive aircraft brokerage, fleet acquisitions, leasing structures, and authorized Airbus Helicopters distributorship.",
+    icon: "BadgeCheck",
+  },
+  {
+    slug: "aircraft-charter",
+    name: "Aircraft Charter",
+    short:
+      "On-demand private jet and helicopter chartering tailored to your exact itinerary and schedule.",
+    icon: "Plane",
+  },
+  {
     slug: "fbo-ground-support",
     name: "FBO & Ground Handling",
     short:
@@ -381,13 +414,6 @@ export const EAN_SERVICES = [
     short:
       "An NCAA-approved Aircraft Maintenance Organization for business and commercial aircraft.",
     icon: "Wrench",
-  },
-  {
-    slug: "aircraft-sales-charter",
-    name: "Charter & Aircraft Sales",
-    short:
-      "On-demand jet and helicopter charter, with brokerage, pre-purchase inspection and acquisition advisory.",
-    icon: "BadgeCheck",
   },
   {
     slug: "wings-catering",
@@ -414,10 +440,53 @@ export const EAN_SERVICES = [
 
 export const SERVICES_DATA: ServiceRichData[] = [
   {
+    slug: "aircraft-sales-leasing",
+    name: "Aircraft Sales & Leasing",
+    tabLabel: "Aircraft Sales & Leasing",
+    short:
+      "Exclusive aircraft brokerage, fleet acquisitions, leasing structures, and authorized Airbus Helicopters distributorship.",
+    iconName: "BadgeCheck",
+    extendedDescription:
+      "Corporate aircraft sales brokerage, pre-purchase technical inspections, aircraft leasing structures, and acquisition advisory for owners entering or expanding in the region. As the exclusive distributor for Airbus Helicopters in West Africa, EAN provides end-to-end sales, leasing, and lifecycle support.",
+    stats: ["Aircraft Sales & Leasing", "Airbus Distributor"],
+    features: [
+      "Executive jet and helicopter sales brokerage",
+      "Bespoke aircraft leasing and financing advisory",
+      "Pre-purchase technical inspections and airworthiness evaluation",
+      "Authorized Airbus Helicopters dealership and factory support",
+    ],
+    image: "/images/services/aircraft-sles-and-charter.jpg",
+    imagePosition: "50% 70%",
+    primaryButtonText: "MAKE AN INQUIRY",
+    primaryButtonHref: "/contact?service=aircraft-sales-leasing",
+  },
+  {
+    slug: "aircraft-charter",
+    name: "Aircraft Charter",
+    tabLabel: "Aircraft Charter",
+    short:
+      "On-demand private jet and helicopter chartering tailored to your exact itinerary and schedule.",
+    iconName: "Plane",
+    extendedDescription:
+      "On-demand jet and rotary-wing charter tailored to your schedule with bespoke flight solutions across West Africa and worldwide. Our dedicated flight operations team manages flight planning, overflight permits, and direct tarmac departures for HNIs, corporate leaders, and flight departments.",
+    stats: ["On-Demand Charter", "24/7 Flight Dispatch"],
+    features: [
+      "Bespoke executive jet and helicopter charter",
+      "Regional and international route planning",
+      "Dedicated 24/7 flight dispatch and permit clearance",
+      "Discreet VIP boarding and direct tarmac transfer",
+    ],
+    image: "/images/charter-cabin.jpg",
+    imagePosition: "50% 50%",
+    primaryButtonText: "REQUEST A CHARTER",
+    primaryButtonHref: "/charter",
+    secondaryButtonText: "MAKE AN INQUIRY",
+    secondaryButtonHref: "/contact?service=aircraft-charter",
+  },
+  {
     slug: "fbo-ground-support",
     name: "FBO & Ground Handling",
     tabLabel: "FBO & Ground Handling",
-    eyebrow: "01 / 06 · 24/7 DISPATCH",
     short:
       "Operating Nigeria's first fully integrated Fixed Base Operator at MMIA, Lagos.",
     iconName: "Plane",
@@ -430,7 +499,7 @@ export const SERVICES_DATA: ServiceRichData[] = [
       "Aircraft fueling and ground power (GPU)",
       "Secure hangar and ramp parking",
     ],
-    image: "/images/services/ean-service-banners-fbo.jpg",
+    image: "/images/services/fbo-jet-overwater.jpg",
     primaryButtonText: "MAKE AN INQUIRY",
     primaryButtonHref: "/contact?service=fbo-ground-support",
     secondaryButtonText: "BUILD YOUR QUOTE",
@@ -440,7 +509,6 @@ export const SERVICES_DATA: ServiceRichData[] = [
     slug: "aircraft-maintenance",
     name: "Aircraft Maintenance",
     tabLabel: "Aircraft Maintenance",
-    eyebrow: "02 / 06 · NCAA APPROVED",
     short:
       "An NCAA-approved Aircraft Maintenance Organization for business and commercial aircraft.",
     iconName: "Wrench",
@@ -454,35 +522,14 @@ export const SERVICES_DATA: ServiceRichData[] = [
       "Approved wheels and brakes workshop",
     ],
     image: "/images/services/s1-banner-maintenance-c-2.jpg",
+    imagePosition: "50% 70%",
     primaryButtonText: "MAKE AN INQUIRY",
     primaryButtonHref: "/contact?service=aircraft-maintenance",
   },
   {
-    slug: "aircraft-sales-charter",
-    name: "Charter & Aircraft Sales",
-    tabLabel: "Charter & Sales",
-    eyebrow: "03 / 06",
-    short:
-      "On-demand jet and helicopter charter, with brokerage, pre-purchase inspection and acquisition advisory.",
-    iconName: "BadgeCheck",
-    extendedDescription:
-      "On-demand jet and helicopter charter, with brokerage, pre-purchase inspection and acquisition advisory for owners entering or growing in the region.",
-    stats: ["Aircraft Sales Brokerage", "Global Permit Desk"],
-    features: [
-      "Bespoke charter itineraries, regional and international",
-      "Aircraft sales brokerage and acquisition advisory",
-      "Pre-purchase inspections and evaluations",
-      "Aircraft management and crew staffing",
-    ],
-    image: "/images/services/aircraft-sles-and-charter.jpg",
-    primaryButtonText: "REQUEST A CHARTER",
-    primaryButtonHref: "/contact?service=aircraft-sales-charter",
-  },
-  {
     slug: "wings-catering",
     name: "Wings In-Flight Catering",
-    tabLabel: "Wings Catering",
-    eyebrow: "04 / 06",
+    tabLabel: "Wings In-Flight Catering",
     short:
       "Our own kitchen and restaurant at the Jet Center, preparing bespoke in-flight catering.",
     iconName: "UtensilsCrossed",
@@ -494,7 +541,7 @@ export const SERVICES_DATA: ServiceRichData[] = [
       "Food safety controls and thermal packaging",
       "Dietary and allergen accommodation",
     ],
-    image: "/images/services/wings-4.jpg",
+    image: "/images/new wings..jpg",
     primaryButtonText: "MAKE AN INQUIRY",
     primaryButtonHref: "/contact?service=wings-catering",
   },
@@ -502,7 +549,6 @@ export const SERVICES_DATA: ServiceRichData[] = [
     slug: "vip-lounge",
     name: "VIP Lounges",
     tabLabel: "VIP Lounges",
-    eyebrow: "05 / 06",
     short:
       "Private lounges at our Lagos terminal and Abuja location, away from the commercial concourse.",
     iconName: "Star",
@@ -521,19 +567,18 @@ export const SERVICES_DATA: ServiceRichData[] = [
   },
   {
     slug: "leased-offices",
-    name: "Hangarage & Offices",
-    tabLabel: "Hangarage & Offices",
-    eyebrow: "06 / 06",
+    name: "Leased Offices",
+    tabLabel: "Leased Offices",
     short:
-      "Airside hangar bays, secured ramp parking, and fully serviced executive offices at MMIA, Lagos.",
+      "Secure, fully-equipped executive office and hangar space at Murtala Muhammed Airport.",
     iconName: "Building2",
     extendedDescription:
-      "Airside hangar bays, secured ramp parking, and fully serviced executive offices located directly at Murtala Muhammed Airport. Tailored for flight departments, international operators, and corporate aviation teams.",
-    stats: ["MMIA Airside Access", "Hangarage & Serviced Suites"],
+      "Premium office spaces and hangarage at the EAN Jet Center, designed for flight departments, charter companies, and aviation businesses.",
+    stats: ["MMIA Airside Access", "Offices & Serviced Suites"],
     features: [
-      "Dedicated hangar bays and ramp parking",
+      "Flexible office configurations",
       "Furnished airside executive offices",
-      "Secure access-controlled building",
+      "Secure access controlled building",
       "Shared boardrooms and conference amenities",
     ],
     image: "/images/services/office-space.jpg",
@@ -938,24 +983,28 @@ export const VALUE_PILLARS: ValuePillar[] = [
     title: "Safety & Compliance",
     description:
       "We operate to the highest international safety standards, backed by regular audits and NCAA approvals to provide absolute peace of mind.",
+    image: "/images/about cards/about card4.jpg",
   },
   {
     icon: "Crown",
     title: "Tailored Service",
     description:
       "Every flight and terminal experience is tailored to the exact specifications, schedule, and lifestyle of our high-net-worth clients.",
+    image: "/images/about cards/about card1.jpg",
   },
   {
     icon: "Clock",
     title: "Operational Precision",
     description:
       "We coordinate ground support, fueling, and maintenance with meticulous efficiency to guarantee on-time departures.",
+    image: "/images/about cards/about card2.jpg",
   },
   {
     icon: "Globe",
     title: "Regional Leadership",
     description:
       "Deeply rooted in West Africa, we bridge regional aviation requirements with international flight support, AMO engineering, and charter services.",
+    image: "/images/about cards/about card3.jpg",
   },
 ];
 

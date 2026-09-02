@@ -95,14 +95,14 @@ export default function SiteGallery() {
       className="scroll-mt-24 bg-ean-black text-ean-text-light py-20 sm:py-24"
     >
       <div className="max-w-ean mx-auto px-6 md:px-8">
-        <SectionReveal className="max-w-3xl space-y-4 mb-12">
-          <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
+        <SectionReveal className="max-w-3xl space-y-4 mb-12" stagger={0.1} distance={40} duration={1}>
+          <span data-reveal className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
             {SITE_GALLERY_INTRO.eyebrow}
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl font-light leading-tight">
+          <h2 data-reveal className="font-display text-3xl sm:text-4xl font-light leading-tight">
             {SITE_GALLERY_INTRO.title}
           </h2>
-          <p className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
+          <p data-reveal className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
             {SITE_GALLERY_INTRO.standfirst}
           </p>
         </SectionReveal>
