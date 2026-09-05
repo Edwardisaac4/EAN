@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Presence from '@/components/shared/Presence';
-import { X, CheckCircle2, ChevronRight, Sparkles, BookOpen } from 'lucide-react';
+import { X, CheckCircle2, ChevronRight, Sparkles, BookOpen, ExternalLink } from 'lucide-react';
 import { TimelineEvent } from '@/lib/constants';
 
 interface TimelineEventModalProps {
@@ -70,13 +70,25 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
             <div className="overflow-y-auto p-6 sm:p-8 space-y-6">
               {/* Optional Visual Image Banner */}
               {event.image && (
-                <div className="relative w-full h-56 sm:h-72 overflow-hidden border border-ean-border-dark group">
+                <div
+                  className={`relative w-full h-56 sm:h-72 overflow-hidden border border-ean-border-dark group ${
+                    event.imageFit === 'contain' ? 'bg-white' : ''
+                  }`}
+                >
                   <Image
                     src={event.image}
                     alt={event.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 700px"
-                    className="object-cover"
+                    className={
+                      event.imageFit === 'contain'
+                        ? // The banner is wider than it is tall and the marks run
+                          // from square to 6:1, so a logo is fitted rather than
+                          // cropped. The heavier bottom padding keeps it clear of
+                          // the year and archive labels overlaid below.
+                          'object-contain p-6 pb-16'
+                        : 'object-cover'
+                    }
                     quality={80}
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-ean-burgundy-dark via-transparent to-transparent" />
@@ -112,6 +124,25 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
                       <p key={pIdx}>{paragraph}</p>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {/*
+                * Off-site source. A plain `<a>` rather than `Link`: this leaves
+                * the site, so it gets `target="_blank"` and the `noopener`
+                * pairing, and there is no route for Next to prefetch.
+                */}
+              {event.sourceUrl && (
+                <div className="border-t border-ean-border-dark pt-6">
+                  <a
+                    href={event.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-2.5 border border-ean-gold/40 bg-ean-gold/10 px-5 py-3 font-ui text-xs font-bold uppercase tracking-wider text-ean-gold transition-colors hover:border-ean-gold hover:bg-ean-gold hover:text-ean-text-dark"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                    <span>{event.sourceLabel || 'Read the full announcement'}</span>
+                  </a>
                 </div>
               )}
 

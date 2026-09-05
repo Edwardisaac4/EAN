@@ -40,7 +40,7 @@ export default function PartnersStrip() {
                 alt={partner.name}
                 width={160}
                 height={80}
-                className="max-h-full max-w-full object-contain filter grayscale opacity-90 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                className="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-105"
               />
             </div>
           ))}

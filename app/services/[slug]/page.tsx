@@ -151,11 +151,34 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
+                {/*
+                 * Charter is the one service with a request form of its own, and
+                 * before this the page had no route to it: both CTAs here went to
+                 * the general contact form. Where `requestFormHref` is set it
+                 * takes the primary slot and the inquiry button steps down to an
+                 * outline — two gold buttons abreast give the row no hierarchy,
+                 * and the form is the stronger path for someone who already
+                 * knows their route and date.
+                 */}
+                {service.requestFormHref && (
+                  <Link href={service.requestFormHref}>
+                    <GoldButton className="w-full sm:w-auto">
+                      <span>{service.requestFormText || 'Start a Request'}</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </GoldButton>
+                  </Link>
+                )}
                 <Link href={`/contact?service=${service.slug}`}>
-                  <GoldButton className="w-full sm:w-auto">
-                    <span>Inquire About {service.name}</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </GoldButton>
+                  {service.requestFormHref ? (
+                    <OutlineButton className="w-full sm:w-auto text-white border-white/40 hover:border-white">
+                      Inquire About {service.name}
+                    </OutlineButton>
+                  ) : (
+                    <GoldButton className="w-full sm:w-auto">
+                      <span>Inquire About {service.name}</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </GoldButton>
+                  )}
                 </Link>
                 <Link href="/services">
                   <OutlineButton className="w-full sm:w-auto text-white border-white/40 hover:border-white">

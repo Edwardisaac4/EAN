@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import ImageBlock from '@/components/shared/ImageBlock';
 import Link from 'next/link';
 import OutlineButton from '@/components/shared/OutlineButton';
 import SectionReveal from '@/components/shared/SectionReveal';
@@ -29,7 +29,7 @@ export default function AboutSection() {
         <SectionReveal stagger={0.12} distance={40} duration={1}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: Text Content */}
-            <div className="lg:col-span-7 space-y-6 sm:space-y-8">
+            <div className="lg:col-span-6 space-y-6 sm:space-y-8">
               <div data-reveal className="space-y-3">
                 <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
                   Who We Are
@@ -65,21 +65,23 @@ export default function AboutSection() {
               </div>
             </div>
 
-            {/* Right Column: Visual Hangar / Jet Image */}
-            <div data-reveal className="lg:col-span-5 relative w-full h-80 sm:h-100 lg:h-125 overflow-hidden border border-ean-border-light group">
-              {/* about-jet.jpg rather than hero/slide-1.jpg: the hero above already
-                  opens on slide-1, and it is also DEFAULT_OG_IMAGE, so reusing it
-                  here left one photograph carrying the entire homepage. */}
-              <Image
-                src="/images/about-jet.jpg"
-                alt="Passengers boarding a Bombardier business jet on the EAN Aviation ramp at sunset"
-                fill
-                sizes="(max-width: 1024px) 100vw, 40vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                quality={80}
+            {/*
+              Right Column: the photograph is a 16:9 panorama, so a portrait box
+              cropped away half its width — the tail, both engines and the ground
+              crew — and filled the rest of the frame with flat overcast sky.
+              (object-position could not rescue it: the image is wider than any
+              portrait box, so the height fills exactly and the vertical value has
+              no slack to move.) The frame now follows the photograph instead, and
+              the columns split evenly to carry it.
+            */}
+            <div data-reveal className="lg:col-span-6">
+              <ImageBlock
+                src="/images/about-us.jpg"
+                alt="EAN Aviation ground crew towing a Dassault Falcon on the ramp at Murtala Muhammed International Airport, Lagos"
+                ratio="16 / 10"
+                sizes="(max-width: 1024px) 100vw, 45vw"
+                className="border border-ean-border-light"
               />
-              {/* Subtle luxury glow overlay */}
-              <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
           </div>
         </SectionReveal>

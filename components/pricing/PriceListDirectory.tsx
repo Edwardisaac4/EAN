@@ -361,11 +361,16 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
             const bandRates = addon.per === 'band'
               ? BANDS_ORDER.map((b) => addonRate(addon, b) ?? 0)
               : null
+            // A per-passenger service carries its unit on the figure. Without it
+            // the card reads as the whole charge for the turnaround.
+            const flatRate = `$${(addonRate(addon, 'A') ?? 0).toLocaleString()}`
             const displayRate = addon.per === 'request'
               ? 'On request'
               : bandRates
                 ? `$${Math.min(...bandRates).toLocaleString()} – $${Math.max(...bandRates).toLocaleString()}`
-                : `$${(addonRate(addon, 'A') ?? 0).toLocaleString()}`
+                : addon.per === 'pax'
+                  ? `${flatRate} / pax`
+                  : flatRate
 
             return (
               <div
@@ -376,12 +381,19 @@ export default function PriceListDirectory({ onSwitchToQuote }: PriceListDirecto
                   <div className="font-ui font-semibold text-sm text-ean-text-light mb-1">
                     {addon.label}
                   </div>
+                  {addon.intlOnly && (
+                    <div className="text-[10px] font-ui uppercase tracking-wider text-ean-blue mb-1">
+                      International only
+                    </div>
+                  )}
                   <div className="text-[11px] font-ui text-ean-muted-light">
                     {addon.per === 'flat'
                       ? 'Flat rate per flight service'
                       : addon.per === 'band'
                         ? 'Rate varies by aircraft MTOW band'
-                        : (addon.note ?? 'Quoted on request')}
+                        : addon.per === 'pax'
+                          ? 'Charged per passenger'
+                          : (addon.note ?? 'Quoted on request')}
                   </div>
 
                   {bandRates && (

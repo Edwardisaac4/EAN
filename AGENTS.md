@@ -414,12 +414,14 @@ reads "Founded in Lagos in 2011", and `TIMELINE_EVENTS` opens on a single 2011
 card. `foundingDate: "2011"` is now asserted in the `organizationSchema` JSON-LD
 in `lib/seo.ts`, which had withheld it while the timeline disagreed.
 
-The timeline's first card **merges the founding, the first integrated FBO hangar
-and the Wings™ flight kitchen** into one 2011 entry. Those were separate cards
-dated 2009 and 2010; re-dating the founding to 2011 would otherwise have left the
-catering launch happening before the company existed. Do not split them back out.
-`/history` therefore holds two 2011 cards — the merged founding entry and the
-NCAA AMO approval — and its header range reads "2011 / 2026".
+The founding, the first integrated FBO hangar and the Wings™ flight kitchen are
+**three separate cards that all carry the year 2011**. The card boundaries are
+free to move; **the year is not**. These were once dated 2009 and 2010, which put
+the catering launch before the company existed — never re-date either of them
+off 2011. (They were briefly merged into one card to enforce that; splitting them
+again on a shared 2011 keeps the constraint without the merge.) `/history`
+therefore holds three 2011 cards — founding, Wings™ and the NCAA AMO approval —
+and its header range reads "2011 / 2026".
 
 Note that `docs/reviews/2026-08-18-content-signoff-brief.md` still records C44 as
 open, and argues against 2011 on the grounds above; that objection is answered by

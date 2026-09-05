@@ -48,6 +48,11 @@ const contentSecurityPolicy = [
   // is still sent below for older ones.
   "frame-ancestors 'none'",
   "object-src 'none'",
+  // The contact-page Google Maps embed. Without this the iframe inherits
+  // `default-src 'self'` and the browser blocks it outright — the map renders
+  // as an empty box with a console error and nothing else. Google alone; this
+  // is not a general licence to frame third parties.
+  "frame-src 'self' https://www.google.com https://maps.google.com",
   `script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === "development" ? "'unsafe-eval' " : ""}https://www.googletagmanager.com https://www.google-analytics.com`,
   "style-src 'self' 'unsafe-inline'",
   // next/font self-hosts its files, so no external font origin is required.

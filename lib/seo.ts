@@ -12,6 +12,7 @@
 
 import type { Metadata } from "next";
 import { LAGOS_HQ } from "@/lib/constants";
+import { mapPlaceUrl } from "@/lib/maps";
 
 /**
  * Canonical origin. Overridable so Vercel preview deployments self-reference
@@ -267,6 +268,16 @@ export function localBusinessSchema(): JsonLd {
       addressRegion: "Lagos",
       addressCountry: "NG",
     },
+    // The same pin the contact-page map drops. `geo` is what lets a search
+    // engine put the business on its own map rather than re-geocoding the
+    // street address, which for a tenant inside an airport perimeter resolves
+    // to the passenger terminal.
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: LAGOS_HQ.map.lat,
+      longitude: LAGOS_HQ.map.lng,
+    },
+    hasMap: mapPlaceUrl(LAGOS_HQ.map),
     // 24/7, matching LAGOS_HQ.hours.
     openingHoursSpecification: [
       {

@@ -14,13 +14,15 @@ import {
   ChevronDown,
   HelpCircle,
   Send,
-  CheckCircle
+  CheckCircle,
+  Navigation
 } from 'lucide-react';
 
 import Navbar from '@/components/layout/Navbar';
 import SectionReveal from '@/components/shared/SectionReveal';
 import GoldButton from '@/components/shared/GoldButton';
 import HoneypotField from '@/components/shared/HoneypotField';
+import LocationMap from '@/components/shared/LocationMap';
 import { withReducedMotion } from '@/lib/gsap-motion';
 
 // Register GSAP plugins at the file level
@@ -31,6 +33,7 @@ if (typeof window !== 'undefined') {
 // Static Data Structures
 import { FAQ_ITEMS, LAGOS_HQ } from '@/lib/constants';
 import { getTrackingContext } from '@/lib/lead-tracking';
+import { mapDirectionsUrl } from '@/lib/maps';
 
 // Helper to map service slug to form select option value
 const getServiceFromSlug = (slug: string): string => {
@@ -378,7 +381,23 @@ export default function ContactPage() {
                     <div className="space-y-4 font-ui text-sm sm:text-base text-ean-muted-light">
                       <div className="flex gap-4 items-start">
                         <MapPin className="w-5 h-5 text-ean-gold shrink-0 mt-0.5" />
-                        <span>{LAGOS_HQ.address}</span>
+                        {/*
+                          The address and the way to get there, together. The
+                          map lower down is the browsable version; this is the
+                          one-tap version for someone already in a car.
+                        */}
+                        <span className="space-y-1.5">
+                          <span className="block">{LAGOS_HQ.address}</span>
+                          <a
+                            href={mapDirectionsUrl(LAGOS_HQ.map)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 font-semibold text-ean-gold hover:underline"
+                          >
+                            <Navigation className="w-3.5 h-3.5" aria-hidden />
+                            Get directions
+                          </a>
+                        </span>
                       </div>
 
                       <div className="flex gap-4 items-start">
@@ -713,31 +732,34 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* SECTION 4: Stylized MMIA Airport Location Spotlight */}
-        <section className="relative w-full h-87.5 sm:h-112.5 bg-ean-navy flex items-center justify-center overflow-hidden border-t border-ean-border-dark">
-          <Image
-            src="/images/runway.jpg"
-            alt="Private jet on runway with city skyline backdrop"
-            fill
-            sizes="100vw"
-            className="object-cover"
-            quality={80}
-          />
-          {/* Visual Dark Overlay to match page transition */}
-          <div className="absolute inset-0 bg-linear-to-t from-ean-navy via-ean-navy/40 to-transparent" />
+        {/*
+          SECTION 4: Finding us.
 
-          {/* Subtle location card */}
-          <div className="relative z-10 max-w-md bg-ean-navy/90 backdrop-blur-md border border-ean-border-dark p-8 text-center space-y-4 mx-4 sm:mx-auto">
-            <span className="font-ui text-[10px] uppercase tracking-widest text-ean-gold font-bold">
-              Coordinates & Access
-            </span>
-            <h3 className="font-display text-xl sm:text-2xl font-light text-ean-text-light leading-tight">
-              Direct Airside Support
-            </h3>
-            <p className="font-ui text-xs sm:text-sm text-ean-muted-light leading-relaxed">
-              Our FBO terminal is situated airside at Murtala Muhammed Airport, Lagos. Ground transfers and executive escorts are coordinated by EAN security personnel.
-            </p>
+          This was a runway photograph with a card reading "Coordinates &
+          Access" over it, which named no coordinates and gave no access -- it
+          was decoration standing where the practical answer belonged. It now
+          carries a live map at full height with the address on top of it.
+
+          Deliberately full-bleed rather than boxed into the page container: a
+          map is read by scanning outward from the pin, and the surrounding
+          roads are the part that tells a driver which gate to use.
+        */}
+        <section className="relative w-full bg-ean-navy border-t border-ean-border-dark">
+          <div className="max-w-ean mx-auto px-6 md:px-8 pt-20 pb-12 sm:pt-28">
+            <SectionReveal className="max-w-2xl space-y-5">
+              <span className="font-ui text-[10px] uppercase tracking-widest text-ean-gold font-bold">
+                Coordinates &amp; Access
+              </span>
+              <h2 className="font-display text-2xl sm:text-3xl font-light text-ean-text-light leading-tight">
+                Direct Airside Support
+              </h2>
+              <p className="font-ui text-sm sm:text-base text-ean-muted-light leading-relaxed">
+                Our FBO terminal is situated airside at Murtala Muhammed Airport, Lagos. Ground transfers and executive escorts are coordinated by EAN security personnel. Open directions on your phone and call us when you are ten minutes out -- we will meet you at the gate.
+              </p>
+            </SectionReveal>
           </div>
+
+          <LocationMap pin={LAGOS_HQ.map} title={LAGOS_HQ.title} />
         </section>
       </main>
     </>

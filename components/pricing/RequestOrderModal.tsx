@@ -61,11 +61,13 @@ Passengers: ${state.pax} (estimated — CRO confirms on arrival)
 --------------------------------
 Requested services:
 
-${quote.items.map(i => `${i.label}${i.sub ? ` (${i.sub})` : ''}: USD ${i.value.toLocaleString()}`).join('\n')}
+${quote.items.map(i => `- ${i.label}${i.sub ? ` (${i.sub})` : ''}${i.pending ? ' — quoted on request' : ''}`).join('\n')}
 --------------------------------
 Estimated total: ${quote.totalDisplay}
 --------------------------------
-Status: NEW — route to Operations (ABO One / RPS)`
+Status: NEW — route to Operations (ABO One / RPS)
+Fuel at Platts-based pricing on request. Final passenger count is confirmed by
+the CRO on arrival, which sets the invoice.`
 
   const handleCopy = async () => {
     try {

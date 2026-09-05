@@ -6,7 +6,7 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 import Navbar from '@/components/layout/Navbar';
 import SectionReveal from '@/components/shared/SectionReveal';
@@ -342,18 +342,6 @@ export default function AboutPage() {
                               {pillar.description}
                             </p>
                           </div>
-                        </div>
-
-                        {/* View Principle Action Link / CTA */}
-                        <div className="pt-2 flex items-center justify-between text-blue-300 group-hover:text-blue-200 font-ui text-xs font-bold uppercase tracking-widest border-t border-white/15">
-                          <span className="flex items-center gap-1.5">
-                            {isExpanded ? 'Close Principle' : 'View Principle'}
-                          </span>
-                          <ChevronRight
-                            className={`w-4 h-4 transform transition-transform duration-300 text-blue-300 ${
-                              isExpanded ? 'rotate-90' : 'group-hover:translate-x-1.5'
-                            }`}
-                          />
                         </div>
                       </div>
                     </div>
