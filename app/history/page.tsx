@@ -108,14 +108,44 @@ export default function HistoryPage() {
           const track = horizontalScrollRef.current;
           if (!container || !track) return;
 
-          const getDistance = () =>
-            Math.max(0, track.scrollWidth - window.innerWidth);
+          // Measured off the last card rather than `track.scrollWidth`, which
+          // drops the flex container's trailing padding. That shortfall stopped
+          // the scroll with the final milestone jammed against the right edge of
+          // the viewport while every earlier card had passed through the middle
+          // — the last one never got the same resting place as the rest.
+          // Taking both rects under the same transform makes the measurement
+          // independent of however far the track is currently translated.
+          const getDistance = () => {
+            const last = track.lastElementChild;
+            if (!last) return 0;
+            const padRight = parseFloat(getComputedStyle(track).paddingRight) || 0;
+            const extent =
+              last.getBoundingClientRect().right -
+              track.getBoundingClientRect().left +
+              padRight;
+            // `clientWidth`, not `window.innerWidth`: the section is clipped to
+            // the layout viewport, which excludes the vertical scrollbar. Using
+            // innerWidth overstates the visible width by the scrollbar and
+            // leaves the last card short by that much.
+            return Math.max(
+              0,
+              extent - document.documentElement.clientWidth
+            );
+          };
+
+          // Scroll spent parked on the final card once the track has finished
+          // travelling, as a fraction of the travel. `scrub` trails the scroll
+          // position by 1.2s, so without a hold the pin releases while the track
+          // is still catching up and the last milestone is carried off-screen
+          // mid-glide — it is the only card that never gets to settle, because
+          // every other one is still mid-track when its turn comes.
+          const HOLD_RATIO = 0.06;
 
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: container,
               start: 'top top',
-              end: () => `+=${getDistance()}`,
+              end: () => `+=${getDistance() * (1 + HOLD_RATIO)}`,
               scrub: 1.2,
               pin: true,
               anticipatePin: 1,
@@ -126,12 +156,15 @@ export default function HistoryPage() {
           tl.to(track, {
             x: () => -getDistance(),
             ease: 'none',
-          });
+            duration: 1,
+          })
+            // An empty tween, so the pin holds while the track stays put.
+            .to({}, { duration: HOLD_RATIO });
 
           if (progressLineRef.current) {
             tl.to(
               progressLineRef.current,
-              { width: '100%', ease: 'none' },
+              { width: '100%', ease: 'none', duration: 1 },
               0
             );
           }
@@ -311,6 +344,9 @@ export default function HistoryPage() {
             >
               {TIMELINE_EVENTS.map((event, idx) => {
                 const img = event.image || '/images/about-jet.jpg';
+                // A partner logo is fitted inside the box on a white plate; a
+                // photograph fills it. See TimelineEvent.imageFit.
+                const isLogo = event.imageFit === 'contain';
 
                 // role/tabIndex rather than a real <button>: the card's content is
                 // flow content (heading, paragraph, image), which a <button> may not
@@ -337,16 +373,29 @@ export default function HistoryPage() {
                     </div>
 
                     {/* Image Section (Top on mobile, Right on desktop) */}
-                    <div className="relative w-full sm:w-[45%] h-44 sm:h-full overflow-hidden border border-ean-border-light shrink-0 order-first sm:order-last">
+                    <div
+                      className={`relative w-full sm:w-[45%] h-44 sm:h-full overflow-hidden border border-ean-border-light shrink-0 order-first sm:order-last ${
+                        isLogo ? 'bg-white' : ''
+                      }`}
+                    >
                       <Image
                         src={img}
                         alt={event.title}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 30vw, 25vw"
-                        className="object-cover object-center transition-transform duration-750 group-hover:scale-105"
+                        className={`transition-transform duration-750 group-hover:scale-105 ${
+                          isLogo
+                            ? 'object-contain p-6 sm:p-8'
+                            : 'object-cover object-center'
+                        }`}
                         quality={80}
                       />
-                      <div className="absolute inset-0 bg-linear-to-t from-white/40 via-transparent to-transparent sm:from-white/70" />
+                      {/* The scrim exists to hold the photograph off the card's
+                          white content column. A logo is already on white —
+                          veiling it just greys the mark. */}
+                      {!isLogo && (
+                        <div className="absolute inset-0 bg-linear-to-t from-white/40 via-transparent to-transparent sm:from-white/70" />
+                      )}
                       <div className="absolute bottom-2 right-2 px-2 py-1 bg-ean-navy/90 backdrop-blur-xs text-[9px] sm:text-[10px] font-mono text-ean-gold uppercase tracking-wider z-10">
                         Click to Read Story
                       </div>

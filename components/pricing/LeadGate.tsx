@@ -120,10 +120,10 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
   }
 
   return (
-    <div className="bg-ean-surface border border-ean-border-light p-6 text-left shadow-xs space-y-4">
+    <div className="bg-ean-surface border border-ean-border-light p-5 md:p-6 text-left space-y-4">
       {/* BADGE PILL */}
       <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-ean-border-light rounded-full text-xs font-ui font-semibold text-ean-text-light shadow-2xs">
-        <span className="w-2 h-2 rounded-full bg-ean-burgundy-rich" />
+        <span className="w-2 h-2 rounded-full bg-ean-gold" />
         See your price
       </div>
 
@@ -185,11 +185,11 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
         <button
           type="submit"
           disabled={isSubmitting || !hasAircraft}
-          className="w-full mt-2 py-3.5 px-6 bg-ean-burgundy-rich hover:bg-ean-burgundy text-ean-text-light font-ui font-bold text-sm transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full mt-2 py-3.5 px-6 bg-ean-gold hover:bg-ean-gold-light text-ean-text-dark font-ui font-bold text-sm transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin text-ean-text-light" />
+              <Loader2 className="w-4 h-4 animate-spin text-ean-text-dark" />
               Unlocking Pricing...
             </>
           ) : (

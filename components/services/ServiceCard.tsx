@@ -316,15 +316,6 @@ export default function ServiceCard({
               </div>
             </div>
           </div>
-
-          {/* Visual affordance only. The accessible name and the click target
-              both belong to the full-card button above. */}
-          <div
-            aria-hidden="true"
-            className="border-t border-white/20 pt-3 font-ui text-[11px] font-semibold uppercase tracking-[0.2em] text-white"
-          >
-            {isExpanded ? 'Close' : 'Explore Service'}
-          </div>
         </div>
       </div>
     </article>

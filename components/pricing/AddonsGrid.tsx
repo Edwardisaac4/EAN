@@ -1,84 +1,85 @@
 'use client'
 
 import React from 'react'
-import { ADDONS, addonRate } from '@/lib/pricing/bands'
-import { MtowBand } from '@/types/pricing'
+import { ADDONS } from '@/lib/pricing/bands'
+import { Operation } from '@/types/pricing'
 
 interface AddonsGridProps {
   addons: Record<string, boolean>
-  band: MtowBand
+  operation: Operation
   onToggleAddon: (id: string) => void
 }
 
-export default function AddonsGrid({ addons, band, onToggleAddon }: AddonsGridProps) {
-  // Separate CIQ (first item) and the rest of the items for clean 2-column layout matching screenshot
-  const ciqAddon = ADDONS.find(a => a.id === 'ciq')
-  const remainingAddons = ADDONS.filter(a => a.id !== 'ciq')
+export default function AddonsGrid({ addons, operation, onToggleAddon }: AddonsGridProps) {
+  // Some services exist only on an international movement — PSC among them.
+  // They are dropped from the grid rather than shown disabled: a domestic
+  // visitor has no decision to make about a charge that cannot apply to them.
+  const offered = ADDONS.filter(a => !a.intlOnly || operation === 'intl')
+
+  // CIQ leads on its own row — it is the one service most international
+  // movements need, and the operation toggle ticks it automatically.
+  const ciqAddon = offered.find(a => a.id === 'ciq')
+  const remainingAddons = offered.filter(a => a.id !== 'ciq')
 
   return (
-    <div className="bg-white p-6 md:p-8 shadow-sm border border-ean-border-light space-y-6">
-      {/* HEADER SECTION */}
+    <div className="bg-white p-6 md:p-8 shadow-sm border border-ean-border-light space-y-5">
       <div>
-        <h2 className="font-ui font-bold text-lg md:text-xl text-ean-text-light tracking-tight">
+        <h2 className="font-display font-medium text-lg md:text-xl text-ean-text-light tracking-wide">
           Add services
         </h2>
+        {/* No per-service figure is quoted here. The published sheet stays with
+            the FBO — what the visitor gets is the estimated total for the
+            turnaround they have configured, in the summary alongside. */}
         <p className="font-ui text-xs md:text-sm text-ean-muted-light mt-0.5">
-          Optional. Prices update as you select.
+          Optional. Your estimated total updates as you select — the items marked
+          on request are quoted separately and do not move the figure.
         </p>
       </div>
 
-      <div className="space-y-4">
-        {/* TOP ITEM: CIQ (Full Width or Primary Row) */}
+      <div className="space-y-3">
         {ciqAddon && (
-          <label
-            key={ciqAddon.id}
-            className="flex items-center justify-between gap-4 p-1 hover:bg-ean-surface transition-colors cursor-pointer select-none"
-          >
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                checked={Boolean(addons[ciqAddon.id])}
-                onChange={() => onToggleAddon(ciqAddon.id)}
-                className="w-4 h-4 border-ean-border-light text-ean-text-light focus:ring-ean-burgundy-rich accent-ean-burgundy-rich cursor-pointer"
-              />
-              <span className="font-ui text-sm font-medium text-ean-text-light">
-                {ciqAddon.label}
-              </span>
-            </div>
-            <span className="font-ui text-sm text-ean-muted-light shrink-0">
-              ${addonRate(ciqAddon, band)?.toLocaleString()}
+          <label className="flex items-center gap-3 py-1.5 px-1 hover:bg-ean-surface transition-colors cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={Boolean(addons[ciqAddon.id])}
+              onChange={() => onToggleAddon(ciqAddon.id)}
+              className="w-4 h-4 accent-ean-gold cursor-pointer shrink-0"
+            />
+            <span className="font-ui text-[13.5px] text-ean-text-light">
+              {ciqAddon.label}
             </span>
           </label>
         )}
 
-        {/* 2-COLUMN CHECKBOX GRID FOR REMAINING SERVICES */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-1">
           {remainingAddons.map((addon) => {
-            const isChecked = Boolean(addons[addon.id])
-            const rate = addonRate(addon, band)
-            // Band-priced services move with MTOW, so the figure shown is the
-            // one for the aircraft currently selected, not a headline rate.
-            const priceDisplay = rate === null ? 'On request' : `$${rate.toLocaleString()}`
+            // `per` says how a service is priced, never what it costs. The
+            // on-request items are the one thing worth flagging up front: the
+            // CRO prices them by hand, so they stay outside the total and the
+            // figure on screen will not move when one is ticked.
+            const isOnRequest = addon.per === 'request'
 
             return (
               <label
                 key={addon.id}
-                className="flex items-center justify-between gap-4 p-1 hover:bg-ean-surface transition-colors cursor-pointer select-none"
+                className="flex items-center justify-between gap-4 py-1.5 px-1 hover:bg-ean-surface transition-colors cursor-pointer select-none"
               >
-                <div className="flex items-center gap-3 min-w-0">
+                <span className="flex items-center gap-3 min-w-0">
                   <input
                     type="checkbox"
-                    checked={isChecked}
+                    checked={Boolean(addons[addon.id])}
                     onChange={() => onToggleAddon(addon.id)}
-                    className="w-4 h-4 border-ean-border-light text-ean-text-light focus:ring-ean-burgundy-rich accent-ean-burgundy-rich cursor-pointer shrink-0"
+                    className="w-4 h-4 accent-ean-gold cursor-pointer shrink-0"
                   />
-                  <span className="font-ui text-sm font-medium text-ean-text-light truncate">
+                  <span className="font-ui text-[13.5px] text-ean-text-light truncate">
                     {addon.label}
                   </span>
-                </div>
-                <span className="font-ui text-sm text-ean-muted-light shrink-0 ml-2">
-                  {priceDisplay}
                 </span>
+                {isOnRequest && (
+                  <span className="font-ui text-[11.5px] text-ean-slate shrink-0 whitespace-nowrap">
+                    On request
+                  </span>
+                )}
               </label>
             )
           })}

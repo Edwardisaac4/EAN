@@ -69,9 +69,18 @@ export const MONTHLY_HANDLING: Record<MtowBand, { hangarage: number; apron: numb
   E: { hangarage: 30000, apron: 25000 },
 }
 
+// Whether the sheet publishes this band's Lagos handling as a range rather than
+// a single figure. Bands A and B carry one number, so the floor/standard toggle
+// has nothing to move between and the UI hides it. A boolean is safe to ask for
+// in a component; the rates behind it are not.
+export function isBandedHandling(band: MtowBand): boolean {
+  return HANDLING_LOS[band].min !== HANDLING_LOS[band].standard
+}
+
 // `flat` — one figure for every band. `band` — a figure per band.
+// `pax` — one figure per passenger, multiplied by the head count on the quote.
 // `request` — listed on the sheet with no published price; quoted on request.
-export type AddonPricing = 'flat' | 'band' | 'request'
+export type AddonPricing = 'flat' | 'band' | 'request' | 'pax'
 
 export interface Addon {
   id:    string
@@ -79,6 +88,10 @@ export interface Addon {
   per:   AddonPricing
   value: number | Record<MtowBand, number>
   note?: string
+  // Only offered on an international turnaround. The add-on grid hides these
+  // on a domestic movement and the quote refuses to total them, so a flag left
+  // ticked behind a toggle can never reach a client's figure.
+  intlOnly?: boolean
 }
 
 // Add-on services, in published-sheet order.
@@ -105,10 +118,16 @@ export const ADDONS: readonly Addon[] = [
   { id: 'ambulance',        label: 'Ambulance tarmac pass',                    per: 'flat',    value: 250 },
   { id: 'gpu_diesel',       label: 'GPU (diesel)',                             per: 'flat',    value: 100 },
   { id: 'wheelchair_intl',  label: 'Wheelchair service (international)',       per: 'flat',    value: 20 },
+
+  // Beyond the published sheet. The block above stays in sheet order; services
+  // added since the last revision land here until the PDF catches up.
+  { id: 'psc',              label: 'PSC (Passenger Service Charge)',           per: 'pax',     value: 65, intlOnly: true },
 ]
 
-// Resolves an add-on to its rate for a given band. Returns null for the
-// on-request items, which have no published figure to total.
+// Resolves an add-on to its published rate for a given band. This is the unit
+// rate, not the line total — a `pax` item returns the per-passenger figure and
+// it is the quote that multiplies it out. Returns null for the on-request
+// items, which have no published figure to total.
 export function addonRate(addon: Addon, band: MtowBand): number | null {
   if (addon.per === 'request') return null
   if (typeof addon.value === 'number') return addon.value

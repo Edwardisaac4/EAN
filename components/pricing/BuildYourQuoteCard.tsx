@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Aircraft, Location, Operation, StayType, HandingTier, DayType, MtowBand } from '@/types/pricing'
-import { BANDS } from '@/lib/pricing/bands'
+import { BANDS, isBandedHandling } from '@/lib/pricing/bands'
 import { Search, ChevronDown, Check, PenLine, Plus, Minus } from 'lucide-react'
 
 interface BuildYourQuoteCardProps {
@@ -398,8 +398,11 @@ export default function BuildYourQuoteCard({
           )}
         </div>
 
-        {/* FIELD 7: HANDLING LEVEL */}
-        <div className="space-y-2">
+        {/* FIELD 7: HANDLING LEVEL — only Lagos prices as a range, and only in
+            bands C, D and E. Elsewhere the toggle offers a choice between two
+            identical figures, which reads as a discount the visitor cannot
+            actually take. */}
+        <div className={`space-y-2 ${location === 'LOS' && isBandedHandling(band) ? '' : 'hidden'}`}>
           <label className="block font-ui font-semibold text-sm text-ean-text-light">
             Handling level (band is a range)
           </label>

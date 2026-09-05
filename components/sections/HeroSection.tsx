@@ -111,6 +111,7 @@ export default function HeroSection() {
   };
 
   const slide = HERO_SLIDES[currentSlide];
+  const secondaryHref = slide.secondaryCta?.href ?? '';
   const bulletItems =
     slide.bullets ??
     (slide.subtitle.includes(' · ')
@@ -246,14 +247,22 @@ export default function HeroSection() {
                 <GoldButton>{slide.primaryCta.text}</GoldButton>
               </Link>
             )}
-            {slide.secondaryCta.href.startsWith('#') ? (
-              <OutlineButton variant="photo" onClick={() => scrollToHash(slide.secondaryCta.href)}>
-                {slide.secondaryCta.text}
-              </OutlineButton>
-            ) : (
-              <Link href={slide.secondaryCta.href}>
-                <OutlineButton variant="photo">{slide.secondaryCta.text}</OutlineButton>
-              </Link>
+            {/* Bound to a local so the narrowing survives into the callback —
+                reading `slide.secondaryCta` again inside `onClick` would widen
+                back to possibly-undefined. */}
+            {slide.secondaryCta && (
+              slide.secondaryCta.href.startsWith('#') ? (
+                <OutlineButton
+                  variant="photo"
+                  onClick={() => scrollToHash(secondaryHref)}
+                >
+                  {slide.secondaryCta.text}
+                </OutlineButton>
+              ) : (
+                <Link href={slide.secondaryCta.href}>
+                  <OutlineButton variant="photo">{slide.secondaryCta.text}</OutlineButton>
+                </Link>
+              )
             )}
           </div>
         </div>

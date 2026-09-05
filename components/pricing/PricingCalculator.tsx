@@ -12,6 +12,7 @@ import {
   LeadDetails,
 } from '@/types/pricing'
 import { buildQuote } from '@/lib/pricing/calculations'
+import { ADDONS } from '@/lib/pricing/bands'
 import {
   grantReveal,
   subscribeToReveal,
@@ -23,12 +24,21 @@ import dynamic from 'next/dynamic'
 import BuildYourQuoteCard from './BuildYourQuoteCard'
 import AddonsGrid from './AddonsGrid'
 import QuoteSummary from './QuoteSummary'
+import PriceListTab from './PriceListTab'
 import { Calculator } from 'lucide-react'
 
 // Dynamically import heavy modals to cut down JS bundle size & main-thread execution time
 const RequestOrderModal = dynamic(() => import('./RequestOrderModal'))
 
+const TABS = [
+  { id: 'quote', label: 'Get a Quote' },
+  { id: 'ref', label: 'Price List' },
+] as const
+
+type TabId = (typeof TABS)[number]['id']
+
 export default function PricingCalculator() {
+  const [tab, setTab] = useState<TabId>('quote')
   const [aircraft, setAircraft] = useState<Aircraft | null>(null)
   const [manualMtow, setManualMtow] = useState<number | null>(null)
   const [location, setLocation] = useState<Location>('LOS')
@@ -111,6 +121,22 @@ export default function PricingCalculator() {
     setAddons(prev => ({ ...prev, ciq: true }))
   }
 
+  // Switching back to domestic drops the international-only selections. Leaving
+  // them ticked behind the toggle would silently restore the charge — PSC on a
+  // full cabin is not a small surprise — the moment the visitor switched back.
+  const handleChangeOperation = (op: Operation) => {
+    setOperation(op)
+    if (op !== 'intl') {
+      setAddons(prev => {
+        const next = { ...prev }
+        ADDONS.forEach(addon => {
+          if (addon.intlOnly) delete next[addon.id]
+        })
+        return next
+      })
+    }
+  }
+
   const handleLeadSubmit = (submittedLead: LeadDetails) => {
     grantReveal(submittedLead)
   }
@@ -157,64 +183,111 @@ export default function PricingCalculator() {
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-ui tracking-widest uppercase text-white font-semibold bg-black/40 px-3.5 py-1 rounded-full mb-3 border border-white/25 backdrop-blur-xs">
               <Calculator className="w-3.5 h-3.5" />
-              Official FBO Tariff & Calculator
+              Pricing &amp; Request Portal
             </div>
             <h1 className="font-display font-light text-2xl sm:text-3xl text-white tracking-wide leading-snug">
               FBO Pricing &amp; Quote Portal
             </h1>
             <p className="font-ui text-white/85 text-xs sm:text-sm md:text-base mt-2 max-w-2xl leading-relaxed">
-              Instant ground handling estimates, passenger facilitation fees, and customizable add-ons for Lagos MMIA &amp; Abuja NAIA.
+              Ground handling estimates and add-on services for Murtala Muhammed International
+              Airport, Lagos, and Nnamdi Azikiwe International Airport, Abuja.
             </p>
           </div>
         </div>
       </section>
 
-      {/* CALCULATOR CONTAINER VIEW */}
-      <div className="max-w-ean mx-auto px-6 mt-6 md:mt-8">
-        {/* TWO-COLUMN CALCULATOR LAYOUT */}
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          {/* CALCULATOR MAIN PANEL */}
-          <div className="flex-1 w-full space-y-6">
-            {/* BUILD YOUR QUOTE CARD */}
-            <BuildYourQuoteCard
-              aircraft={aircraft}
-              manualMtow={manualMtow}
-              onSelectAircraft={handleSelectAircraft}
-              onSetManualMtow={handleSetManualMtow}
-              location={location}
-              operation={operation}
-              day={day}
-              pax={pax}
-              stay={stay}
-              nights={nights}
-              handling={handling}
-              band={quote.band}
-              onChangeLocation={setLocation}
-              onChangeOperation={setOperation}
-              onChangeDay={setDay}
-              onChangePax={setPax}
-              onChangeStay={setStay}
-              onChangeNights={setNights}
-              onChangeHandling={setHandling}
-              onAutoCheckCiq={handleAutoCheckCiq}
-            />
+      {/* TAB BAR — sticky beneath the site navbar. The quote panel sticks lower
+          (lg:top-32) so it clears this strip rather than sliding under it. */}
+      <div className="sticky top-16 z-20 bg-white border-b border-ean-border-light shadow-xs">
+        <div
+          role="tablist"
+          aria-label="Pricing portal sections"
+          className="max-w-ean mx-auto px-6 flex gap-1 overflow-x-auto"
+        >
+          {TABS.map(({ id, label }) => {
+            const isActive = tab === id
+            return (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                id={`pricing-tab-${id}`}
+                aria-selected={isActive}
+                aria-controls={`pricing-panel-${id}`}
+                onClick={() => setTab(id)}
+                className={`font-ui font-semibold text-[13.5px] px-4 py-4 border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
+                  isActive
+                    ? 'text-ean-gold border-ean-gold'
+                    : 'text-ean-muted-light border-transparent hover:text-ean-text-light'
+                }`}
+              >
+                {label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
 
-            {/* STEP 3: ADD-ON SERVICES */}
-            <AddonsGrid
-              addons={addons}
-              band={quote.band}
-              onToggleAddon={handleToggleAddon}
+      <div className="max-w-ean mx-auto px-6 mt-6 md:mt-8">
+        {/* GET A QUOTE. Kept mounted and hidden rather than unmounted, so a
+            visitor who checks the price list does not come back to a cleared
+            configuration. */}
+        <div
+          role="tabpanel"
+          id="pricing-panel-quote"
+          aria-labelledby="pricing-tab-quote"
+          hidden={tab !== 'quote'}
+        >
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <div className="flex-1 w-full space-y-6">
+              <BuildYourQuoteCard
+                aircraft={aircraft}
+                manualMtow={manualMtow}
+                onSelectAircraft={handleSelectAircraft}
+                onSetManualMtow={handleSetManualMtow}
+                location={location}
+                operation={operation}
+                day={day}
+                pax={pax}
+                stay={stay}
+                nights={nights}
+                handling={handling}
+                band={quote.band}
+                onChangeLocation={setLocation}
+                onChangeOperation={handleChangeOperation}
+                onChangeDay={setDay}
+                onChangePax={setPax}
+                onChangeStay={setStay}
+                onChangeNights={setNights}
+                onChangeHandling={setHandling}
+                onAutoCheckCiq={handleAutoCheckCiq}
+              />
+
+              <AddonsGrid
+                addons={addons}
+                operation={operation}
+                onToggleAddon={handleToggleAddon}
+              />
+            </div>
+
+            <QuoteSummary
+              quote={quote}
+              state={state}
+              lead={lead}
+              onSubmitLead={handleLeadSubmit}
+              onOpenRequestOrder={() => setIsModalOpen(true)}
             />
           </div>
+        </div>
 
-          {/* QUOTE SUMMARY STICKY SIDEBAR */}
-          <QuoteSummary
-            quote={quote}
-            state={state}
-            lead={lead}
-            onSubmitLead={handleLeadSubmit}
-            onOpenRequestOrder={() => setIsModalOpen(true)}
-          />
+        {/* PRICE LIST */}
+        <div
+          role="tabpanel"
+          id="pricing-panel-ref"
+          aria-labelledby="pricing-tab-ref"
+          hidden={tab !== 'ref'}
+        >
+          <PriceListTab />
         </div>
       </div>
 

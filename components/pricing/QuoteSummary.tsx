@@ -4,9 +4,8 @@ import React from 'react'
 import { QuoteResult, QuoteState, LeadDetails } from '@/types/pricing'
 import { BANDS } from '@/lib/pricing/bands'
 import QuoteLineItem from './QuoteLineItem'
-import LeadGate from './LeadGate'
 import QuoteActions from './QuoteActions'
-import { Calculator, Info } from 'lucide-react'
+import LeadGate from './LeadGate'
 
 interface QuoteSummaryProps {
   quote: QuoteResult
@@ -22,7 +21,7 @@ export default function QuoteSummary({
   onSubmitLead,
   onOpenRequestOrder,
 }: QuoteSummaryProps) {
-  const isBlurred = !state.revealed
+  const isLocked = !state.revealed
 
   // The calculator falls back to a Band A default weight when nothing is
   // chosen, so `quote.band` is always populated. Naming a specific aircraft and
@@ -33,102 +32,102 @@ export default function QuoteSummary({
   const aircraftName = state.aircraft?.name
     ?? (state.mtow_manual ? `Aircraft (${state.mtow_manual.toLocaleString()} kg)` : 'No aircraft selected')
 
-  // Weight range subtext, e.g. "15,001 – 30,000 kg · Lagos · Domestic".
   const bandRangeText = hasAircraft ? (BANDS[quote.band]?.range ?? '') : ''
   const locationLabel = state.location === 'LOS' ? 'Lagos' : 'Abuja'
   const opLabel = state.operation === 'intl' ? 'International' : 'Domestic'
-  const stayLabel = state.stay === 'over' ? `overnight (${state.nights}n)` : 'same-day turnaround'
+  const stayLabel = state.stay === 'over'
+    ? `${state.nights}-night stay`
+    : 'same-day turnaround'
 
   return (
-    <div className="w-full lg:w-100 shrink-0 sticky top-24 space-y-4">
-      <div className="relative bg-white shadow-sm border border-ean-border-light overflow-hidden">
-        {/* HEADER (DARK BURGUNDY BANNER) */}
-        <div className="p-6 bg-ean-burgundy-rich text-ean-text-light space-y-1">
-          <h2 className="font-display font-medium text-xl md:text-2xl text-ean-text-light tracking-wide truncate">
+    <div className="w-full lg:w-100 shrink-0 lg:sticky lg:top-32 space-y-4">
+      <div className="bg-white shadow-sm border border-ean-border-light overflow-hidden">
+        {/* QUOTE HEADER — the brand blue band, AGENTS.md §5. Literal white type
+            is wrong here; `ean-text-dark` is the token whose job is "type on the
+            blue fill". The configuration is never gated: what the visitor built
+            stays legible, only the money is withheld. */}
+        <div className="p-5 md:p-6 bg-ean-gold text-ean-text-dark space-y-0.5">
+          <h2 className="font-display font-medium text-xl md:text-2xl text-ean-text-dark tracking-wide truncate">
             {aircraftName}
           </h2>
-          <div className="text-xs font-ui text-ean-text-light/80">
+          <div className="text-xs font-ui text-ean-muted-dark">
             {[bandRangeText, locationLabel, opLabel].filter(Boolean).join(' · ')}
           </div>
-          <div className="text-xs font-ui text-ean-text-light/70">
-            {stayLabel} · {state.pax} pax
+          <div className="text-[11.5px] font-ui text-ean-muted-dark pt-1">
+            {stayLabel} · {state.pax} pax{state.day === 'we' ? ' · weekend' : ''}
           </div>
         </div>
 
-        {/* MAIN BODY AREA */}
-        <div className="relative p-6 space-y-5">
-          {/* LEAD GATE FORM OVERLAY (UNTIL REVEALED) */}
-          {isBlurred ? (
-            <div className="relative z-10">
-              <LeadGate
-                onSubmitLead={onSubmitLead}
-                quote={quote}
-                state={state}
-              />
-
-              {/* BLURRED BACKGROUND PLACEHOLDER ITEM LIST */}
-              <div className="mt-6 blur-xs opacity-30 select-none pointer-events-none space-y-3">
-                <div className="flex justify-between text-xs font-ui">
-                  <span className="font-semibold text-ean-text-light">Handling fee</span>
-                  <span className="font-mono font-bold text-ean-text-light">$550</span>
-                </div>
-                <div className="flex justify-between text-xs font-ui">
-                  <span className="font-semibold text-ean-text-light">CIQ fee</span>
-                  <span className="font-mono font-bold text-ean-text-light">$600</span>
-                </div>
-                <div className="flex justify-between text-xs font-ui">
-                  <span className="font-semibold text-ean-text-light">Overnight parking</span>
-                  <span className="font-mono font-bold text-ean-text-light">$100</span>
-                </div>
+        {/* A one-cell grid, not a positioning context. The gate and the quote
+            are stacked in the same cell, so the container sizes to whichever is
+            taller. `absolute inset-0` sized the gate to the quote behind it
+            instead, and the quote is short on first load — one line of
+            placeholder, the masked total, the note — so the form was clipped by
+            the card's `overflow-hidden` before the visitor could fill it in. */}
+        <div className="grid p-5 md:p-6">
+          {/* THE QUOTE. Blurred and inert while locked — `pointer-events-none`
+              is what stops a gated visitor tabbing into what is behind the
+              overlay. The total is not merely blurred, it is not rendered at
+              all until reveal: a 6px blur is a picture of a number, and the
+              real one would still be sitting in the DOM for anyone who opens
+              devtools. */}
+          <div
+            className={`col-start-1 row-start-1 ${
+              isLocked
+                ? 'blur-[6px] pointer-events-none select-none'
+                : 'animate-fadeIn'
+            }`}
+            aria-hidden={isLocked}
+          >
+            {!hasAircraft ? (
+              <div className="text-xs font-ui text-ean-muted-light text-center py-6">
+                Select an aircraft to build your turnaround.
               </div>
+            ) : (
+              <div>
+                {quote.items.map((item, idx) => (
+                  <QuoteLineItem key={`${item.label}-${idx}`} item={item} />
+                ))}
+              </div>
+            )}
+
+            {/* ESTIMATED TOTAL */}
+            <div className="flex items-baseline justify-between gap-4 pt-4 mt-1">
+              <span className="font-display font-semibold text-sm uppercase tracking-widest text-ean-gold">
+                Estimated total
+              </span>
+              <span className="font-display font-bold text-2xl md:text-[27px] text-ean-gold tabular-nums">
+                {isLocked ? 'USD ————' : quote.totalDisplay}
+              </span>
             </div>
-          ) : (
-            /* REVEALED PRICE DETAILS & ITEMIZED BREAKDOWN */
-            <div className="space-y-5 animate-fadeIn">
-              <div className="flex items-center justify-between pb-2 border-b border-ean-border-light">
-                <span className="text-xs font-ui uppercase tracking-widest font-semibold flex items-center gap-1.5 text-ean-text-light">
-                  <Calculator className="w-4 h-4 text-ean-gold" />
-                  Itemized Charge Summary
-                </span>
-              </div>
 
-              {quote.items.length === 0 ? (
-                <div className="text-xs font-ui text-ean-muted-light text-center py-6">
-                  Select an aircraft to view ground handling estimates.
-                </div>
-              ) : (
-                <div className="divide-y divide-ean-border-light">
-                  {quote.items.map((item, idx) => (
-                    <QuoteLineItem key={`${item.label}-${idx}`} item={item} />
-                  ))}
-                </div>
-              )}
+            {/* NOTE */}
+            <div className="bg-ean-surface border-l-3 border-ean-gold p-3 mt-4 space-y-1">
+              <p className="font-ui text-[11.5px] text-ean-text-light leading-relaxed">
+                Fuel is quoted at Platts-based location pricing on request, and a disbursement
+                fee applies to any payment EAN makes on your behalf.
+              </p>
+              <p className="font-ui text-[11.5px] text-ean-text-light leading-relaxed">
+                Final passenger count is confirmed by the CRO on arrival.
+              </p>
+            </div>
+          </div>
 
-              {/* TOTAL ESTIMATE ROW */}
-              <div className="pt-4 border-t border-ean-border-light">
-                <div className="text-[11px] font-ui uppercase tracking-widest text-ean-muted-light font-semibold">
-                  Total Estimated Handling Fee
-                </div>
-                <div className="text-2xl font-mono font-bold text-ean-text-light mt-1 tabular-nums">
-                  {quote.totalDisplay}
-                </div>
-              </div>
-
-              {/* DISBURSEMENT & REGULATORY NOTES */}
-              <div className="p-3 bg-amber-500/10 border-l-3 border-amber-500 text-[11px] font-ui text-amber-900 leading-relaxed space-y-1">
-                <div className="flex items-center gap-1 text-amber-900 font-semibold text-[10px] uppercase">
-                  <Info className="w-3.5 h-3.5 text-amber-700" /> Note & Disbursement Terms
-                </div>
-                <p>All rates are USD, per turnaround, as published on the EAN FBO price list.</p>
-                <p>A 15% disbursement fee applies to any payment EAN makes on your behalf.</p>
-              </div>
+          {/* THE GATE — an overlay sitting on the blurred quote, not a card
+              stacked above it. Rendered last so it paints over the blur, and
+              outside the blurred wrapper so the form itself stays sharp. */}
+          {isLocked && (
+            <div className="col-start-1 row-start-1 z-10 flex items-start justify-center p-3 md:p-4 bg-white/55">
+              <LeadGate onSubmitLead={onSubmitLead} quote={quote} state={state} />
             </div>
           )}
         </div>
       </div>
 
-      {/* REVEALED ACTION BUTTONS */}
-      {!isBlurred && (
+      {/* Everything that acts on a priced quote comes back once the gate is
+          cleared: copy for WhatsApp, copy as a formal email, and the request
+          order. None of it exists while the visitor is gated. */}
+      {!isLocked && (
         <QuoteActions
           quote={quote}
           state={state}
