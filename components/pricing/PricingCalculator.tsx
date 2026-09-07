@@ -24,21 +24,12 @@ import dynamic from 'next/dynamic'
 import BuildYourQuoteCard from './BuildYourQuoteCard'
 import AddonsGrid from './AddonsGrid'
 import QuoteSummary from './QuoteSummary'
-import PriceListTab from './PriceListTab'
 import { Calculator } from 'lucide-react'
 
 // Dynamically import heavy modals to cut down JS bundle size & main-thread execution time
 const RequestOrderModal = dynamic(() => import('./RequestOrderModal'))
 
-const TABS = [
-  { id: 'quote', label: 'Get a Quote' },
-  { id: 'ref', label: 'Price List' },
-] as const
-
-type TabId = (typeof TABS)[number]['id']
-
 export default function PricingCalculator() {
-  const [tab, setTab] = useState<TabId>('quote')
   const [aircraft, setAircraft] = useState<Aircraft | null>(null)
   const [manualMtow, setManualMtow] = useState<number | null>(null)
   const [location, setLocation] = useState<Location>('LOS')
@@ -196,51 +187,16 @@ export default function PricingCalculator() {
         </div>
       </section>
 
-      {/* TAB BAR — sticky beneath the site navbar. The quote panel sticks lower
-          (lg:top-32) so it clears this strip rather than sliding under it. */}
-      <div className="sticky top-16 z-20 bg-white border-b border-ean-border-light shadow-xs">
-        <div
-          role="tablist"
-          aria-label="Pricing portal sections"
-          className="max-w-ean mx-auto px-6 flex gap-1 overflow-x-auto"
-        >
-          {TABS.map(({ id, label }) => {
-            const isActive = tab === id
-            return (
-              <button
-                key={id}
-                type="button"
-                role="tab"
-                id={`pricing-tab-${id}`}
-                aria-selected={isActive}
-                aria-controls={`pricing-panel-${id}`}
-                onClick={() => setTab(id)}
-                className={`font-ui font-semibold text-[13.5px] px-4 py-4 border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
-                  isActive
-                    ? 'text-ean-gold border-ean-gold'
-                    : 'text-ean-muted-light border-transparent hover:text-ean-text-light'
-                }`}
-              >
-                {label}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
+      {/* GET A QUOTE. This was one of two tab panels behind a sticky
+          "Get a Quote / Price List" strip; the strip and the price list panel
+          were removed, so the quote builder is the whole portal and needs no
+          tab semantics. `QuoteSummary` sticks at lg:top-20 rather than
+          lg:top-32 because there is no longer a strip under the navbar for it
+          to clear. */}
       <div className="max-w-ean mx-auto px-6 mt-6 md:mt-8">
-        {/* GET A QUOTE. Kept mounted and hidden rather than unmounted, so a
-            visitor who checks the price list does not come back to a cleared
-            configuration. */}
-        <div
-          role="tabpanel"
-          id="pricing-panel-quote"
-          aria-labelledby="pricing-tab-quote"
-          hidden={tab !== 'quote'}
-        >
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
-            <div className="flex-1 w-full space-y-6">
-              <BuildYourQuoteCard
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <div className="flex-1 w-full space-y-6">
+            <BuildYourQuoteCard
                 aircraft={aircraft}
                 manualMtow={manualMtow}
                 onSelectAircraft={handleSelectAircraft}
@@ -270,24 +226,13 @@ export default function PricingCalculator() {
               />
             </div>
 
-            <QuoteSummary
-              quote={quote}
-              state={state}
-              lead={lead}
-              onSubmitLead={handleLeadSubmit}
-              onOpenRequestOrder={() => setIsModalOpen(true)}
-            />
-          </div>
-        </div>
-
-        {/* PRICE LIST */}
-        <div
-          role="tabpanel"
-          id="pricing-panel-ref"
-          aria-labelledby="pricing-tab-ref"
-          hidden={tab !== 'ref'}
-        >
-          <PriceListTab />
+          <QuoteSummary
+            quote={quote}
+            state={state}
+            lead={lead}
+            onSubmitLead={handleLeadSubmit}
+            onOpenRequestOrder={() => setIsModalOpen(true)}
+          />
         </div>
       </div>
 

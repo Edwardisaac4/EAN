@@ -40,7 +40,7 @@ export default function QuoteSummary({
     : 'same-day turnaround'
 
   return (
-    <div className="w-full lg:w-100 shrink-0 lg:sticky lg:top-32 space-y-4">
+    <div className="w-full lg:w-100 shrink-0 lg:sticky lg:top-20 space-y-4">
       <div className="bg-white shadow-sm border border-ean-border-light overflow-hidden">
         {/* QUOTE HEADER — the brand blue band, AGENTS.md §5. Literal white type
             is wrong here; `ean-text-dark` is the token whose job is "type on the
