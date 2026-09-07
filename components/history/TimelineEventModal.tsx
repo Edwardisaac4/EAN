@@ -52,10 +52,6 @@ export default function TimelineEventModal({ event, isOpen, onClose }: TimelineE
                 <span className="px-2 py-0.5 bg-ean-gold/15 border border-ean-gold/30 text-ean-gold font-mono text-xs font-bold">
                   {event.year}
                 </span>
-                <span className="font-ui text-xs font-semibold tracking-widest text-ean-gold uppercase flex items-center gap-1.5">
-                  <BookOpen className="w-3.5 h-3.5 text-ean-gold" />
-                  <span>{event.category || 'Historical Milestone'}</span>
-                </span>
               </div>
               <button
                 onClick={onClose}
