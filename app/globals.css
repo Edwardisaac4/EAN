@@ -371,36 +371,54 @@
     }
   }
 
+  /*
+   * `--ean-rise-base` shifts the whole ladder without touching a single stop.
+   * The first paint leaves it at 0s so the headline is on screen as early as
+   * it has ever been. Every later slide sets it to a beat's worth of delay,
+   * which is what lets the outgoing copy clear and the image crossfade get
+   * underway before the new copy starts arriving — the swap reads as
+   * choreographed rather than as a cut.
+   */
   .ean-rise {
     animation: ean-rise 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--ean-rise-base, 0s);
+  }
+
+  /*
+   * Headline words. Inline-block because `transform` does not apply to inline
+   * boxes — without it the word fades but never rises. Each word carries its
+   * own delay inline; the class only supplies the box type.
+   */
+  .ean-rise-word {
+    display: inline-block;
   }
 
   .ean-rise-delay-1 {
-    animation-delay: 0.20s;
+    animation-delay: calc(var(--ean-rise-base, 0s) + 0.20s);
   }
 
   .ean-rise-delay-2 {
-    animation-delay: 0.42s;
+    animation-delay: calc(var(--ean-rise-base, 0s) + 0.42s);
   }
 
   .ean-rise-delay-3 {
-    animation-delay: 0.58s;
+    animation-delay: calc(var(--ean-rise-base, 0s) + 0.58s);
   }
 
   .ean-rise-delay-4 {
-    animation-delay: 0.74s;
+    animation-delay: calc(var(--ean-rise-base, 0s) + 0.74s);
   }
 
   .ean-rise-delay-5 {
-    animation-delay: 0.90s;
+    animation-delay: calc(var(--ean-rise-base, 0s) + 0.90s);
   }
 
   .ean-rise-delay-6 {
-    animation-delay: 1.08s;
+    animation-delay: calc(var(--ean-rise-base, 0s) + 1.08s);
   }
 
   .ean-rise-delay-7 {
-    animation-delay: 1.30s;
+    animation-delay: calc(var(--ean-rise-base, 0s) + 1.30s);
   }
 
   @keyframes hero-slide-progress {

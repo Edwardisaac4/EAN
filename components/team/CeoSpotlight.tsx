@@ -76,16 +76,6 @@ export default function CeoSpotlight({ ceoMember }: CeoSpotlightProps) {
                 </p>
               </div>
 
-              {/* CEO Signature Quote Box */}
-              {ceoMember.quote && (
-                <div className="relative p-6 sm:p-8 bg-linear-to-r from-black/15 via-black/5 to-transparent border-l border-ean-gold space-y-3">
-                  <Quote className="w-8 h-8 text-ean-gold/40 absolute top-4 right-4" />
-                  <p className="font-display italic text-lg sm:text-xl text-ean-text-light leading-relaxed relative z-10">
-                    &ldquo;{ceoMember.quote}&rdquo;
-                  </p>
-                </div>
-              )}
-
               {/* Bio Summary Excerpt */}
               <div className="space-y-4 font-ui text-sm sm:text-base text-ean-muted-light leading-relaxed">
                 <p>{ceoMember.bio[0]}</p>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   Plane,
   Wrench,
@@ -21,6 +22,11 @@ import { SERVICES_DATA } from '@/lib/constants';
 import { withReducedMotion } from '@/lib/gsap-motion';
 import GoldButton from '@/components/shared/GoldButton';
 import OutlineButton from '@/components/shared/OutlineButton';
+import SectionReveal from '@/components/shared/SectionReveal';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const ICON_MAP = {
   Plane,
@@ -33,6 +39,7 @@ const ICON_MAP = {
 
 export default function ServicesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLUListElement>(null);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -86,22 +93,58 @@ export default function ServicesSection() {
 
   const activeService = SERVICES_DATA[activeTab] || SERVICES_DATA[0];
 
+  /*
+   * Band parallax, at the same rate and on the same scrub as VIPSection and
+   * CharterSection. It is deliberately a separate GSAP context from the
+   * showcase timeline below: this one is created once and driven by scroll
+   * position, whereas that one is rebuilt on every tab change. Sharing a
+   * context would tear down and re-create the ScrollTrigger six clicks in a
+   * row, which is how a scrubbed parallax ends up snapping back to yPercent 0
+   * mid-scroll.
+   *
+   * The tween targets the wrapper, which never remounts; the photograph inside
+   * it is what swaps per service, so the two motions never contend for the
+   * same transform.
+   */
+  useGSAP(
+    () =>
+      withReducedMotion(
+        () => {
+          gsap.to(bgRef.current, {
+            yPercent: 15,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true,
+            },
+          });
+        },
+        () => {
+          gsap.set(bgRef.current, { yPercent: 0, clearProps: 'transform' });
+        }
+      ),
+    { scope: containerRef }
+  );
+
   // One master timeline for the whole showcase, replacing the 0.35s
   // `ean-enter-up` fade the card used to get from CSS. Nothing here touches
   // opacity: every element arrives from behind a clip edge or from under a
   // mask, which is what separates this from the generic fade and is also what
-  // keeps §8 satisfied — the card paints complete without JS, and GSAP only
+  // keeps §8 satisfied — the band paints complete without JS, and GSAP only
   // ever applies the hidden state at runtime, inside useLayoutEffect, so there
   // is no flash of finished content before it plays.
   //
   // The beats overlap rather than queue. First movement is at 0.06s and the
-  // headline is legible by ~0.5s, so the card never reads as *waiting*; the
+  // headline is legible by ~0.5s, so the band never reads as *waiting*; the
   // photograph keeps easing out of its 1.06 scale underneath for a full 1.3s,
   // which is where the unhurried feel comes from. Perceived speed is set by
   // the first beat, not the last.
   //
-  // Keyed to activeTab because the block is remounted per service, so every
-  // ref and selector resolves to fresh nodes and the sequence has to replay.
+  // Keyed to activeTab because this is the tab-switch transition, not the
+  // scroll arrival — the band arriving as a whole is SectionReveal's job, on
+  // the same curve as the two bands below it.
   useGSAP(
     () =>
       withReducedMotion(
@@ -145,6 +188,16 @@ export default function ServicesSection() {
               0.16
             )
             .fromTo(
+              '[data-card-lede]',
+              { clipPath: 'inset(0% 100% 0% 0%)' },
+              {
+                clipPath: 'inset(0% 0% 0% 0%)',
+                duration: 0.7,
+                clearProps: 'clipPath',
+              },
+              0.28
+            )
+            .fromTo(
               '[data-card-rule]',
               { scaleX: 0 },
               {
@@ -153,7 +206,7 @@ export default function ServicesSection() {
                 ease: 'power2.inOut',
                 clearProps: 'transform',
               },
-              0.3
+              0.34
             )
             .fromTo(
               '[data-card-label]',
@@ -163,7 +216,7 @@ export default function ServicesSection() {
                 duration: 0.5,
                 clearProps: 'clipPath',
               },
-              0.42
+              0.46
             );
 
           // Highlights keep the slow, one-at-a-time cadence: stagger is ~73%
@@ -179,7 +232,7 @@ export default function ServicesSection() {
                 stagger: 0.55,
                 clearProps: 'clipPath,transform',
               },
-              0.55
+              0.59
             ).fromTo(
               marks,
               { scale: 0, rotate: -120 },
@@ -191,7 +244,7 @@ export default function ServicesSection() {
                 ease: 'back.out(3)',
                 clearProps: 'transform',
               },
-              0.8
+              0.84
             );
           }
 
@@ -205,7 +258,7 @@ export default function ServicesSection() {
               stagger: 0.1,
               clearProps: 'clipPath,transform',
             },
-            0.72
+            0.76
           );
         },
         () => {
@@ -213,6 +266,7 @@ export default function ServicesSection() {
             [
               '[data-card-media]',
               '[data-card-title]',
+              '[data-card-lede]',
               '[data-card-rule]',
               '[data-card-label]',
               '[data-card-action]',
@@ -232,41 +286,99 @@ export default function ServicesSection() {
     <section
       ref={containerRef}
       id="services-section"
-      className="bg-linear-to-b from-ean-obsidian-raised via-ean-obsidian to-ean-obsidian-elevated text-ean-text-light py-20 sm:py-24 relative overflow-hidden border-y border-ean-border-dark select-none"
+      className="relative w-full min-h-125 sm:min-h-150 flex items-center justify-center overflow-hidden bg-ean-navy select-none"
     >
+      {/*
+        Parallax background container, the same construction as VIPSection and
+        CharterSection. This band used to be a paper section with the
+        photograph boxed into a hairline card, which put a bordered inset
+        between two full-bleed photo bands and broke the run of three. The
+        photograph is the ground now.
 
-      <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
-        {/* Section Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 sm:mb-16 gap-6">
-          <div className="max-w-2xl">
+        Only the inner media div is keyed, so the wrapper the parallax tween
+        owns survives a tab change.
+      */}
+      <div ref={bgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
+        <div key={`${activeService.slug}-bg`} data-card-media className="absolute inset-0">
+          <Image
+            src={activeService.image}
+            alt={`${activeService.name} at EAN Aviation`}
+            fill
+            sizes="100vw"
+            priority={false}
+            quality={80}
+            className="object-cover"
+            style={{ objectPosition: activeService.imagePosition ?? '50% 50%' }}
+          />
+        </div>
+        {/*
+          Two layers, as on the bands below: a flat scrim at the VIP band's 45%
+          so the imagery stays luminous, then a left-weighted ramp for the copy
+          column.
+
+          The ramp is carried further across than VIP's — 55% at the midpoint
+          against its 35% — because this band drives six photographs rather
+          than one, and several of them put a bright region (overcast sky,
+          apron concrete, a white fuselage) exactly where the text column sits.
+          That keeps white body text clear of 4.5:1 across the column on all
+          six, while the right edge still shows the subject at ~50% of the
+          photograph, in line with the other two bands.
+        */}
+        <div className="absolute inset-0 bg-black/45" />
+        <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/55 to-black/10" />
+      </div>
+
+      {/* Content Area */}
+      <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 py-20 sm:py-24 w-full">
+        {/*
+          Full-bleed photo band: the longest travel and slowest curve on the
+          site. These sections are a single statement laid over a photograph
+          that is already moving under parallax, so the copy has to arrive on a
+          slower curve than the card grids or it reads as a second scroll effect
+          rather than a sequence.
+
+          The marked blocks are the header, the tab strip and the copy column.
+          The showcase timeline above drives the elements *inside* the column,
+          so the two never animate the same property on the same node.
+        */}
+        <SectionReveal stagger={0.14} distance={48} duration={1.1} ease="power3.out">
+          {/* Section Header */}
+          <div
+            data-reveal
+            className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-10"
+          >
             <div className="flex items-center gap-2">
-              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-ean-gold uppercase">
+              <span className="font-ui text-xs sm:text-sm font-semibold tracking-[0.25em] text-white/70 uppercase">
                 Our Services
               </span>
-              <span className="inline-block w-8 h-px bg-ean-gold/40" />
+              <span className="inline-block w-8 h-px bg-white/40" />
+            </div>
+
+            <div className="shrink-0">
+              <Link
+                href={`/services#${activeService.slug}`}
+                className="group font-ui text-sm font-semibold text-white hover:text-white/70 flex items-center gap-1.5 transition-colors duration-300"
+              >
+                <span>View All Services</span>
+                <ArrowUpRight
+                  size={16}
+                  className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
+              </Link>
             </div>
           </div>
 
-          <div className="shrink-0">
-            <Link
-              href={`/services#${activeService.slug}`}
-              className="group font-ui text-sm font-semibold text-ean-gold hover:text-ean-gold-light flex items-center gap-1.5 transition-colors duration-300"
-            >
-              <span>View All Services</span>
-              <ArrowUpRight
-                size={16}
-                className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              />
-            </Link>
-          </div>
-        </div>
-
-        {/* Interactive Services Explorer */}
-        <div className="space-y-8">
-          {/* Horizontal Service Tabs Bar */}
+          {/*
+            Horizontal Service Tabs Bar. The chips drew in tokens while this
+            section sat on paper; on a photograph there is no token for type
+            over an image (§5), so the resting chip is a white hairline over a
+            translucent white wash. The active one keeps the brand-blue pill,
+            which is the fill GoldButton already lands on this ground.
+          */}
           <div
             ref={tabsRef}
-            className="relative flex items-center gap-2 overflow-x-auto pb-3 pt-1 scrollbar-none border-b border-ean-border-dark"
+            data-reveal
+            className="relative flex items-center gap-2 overflow-x-auto pb-3 pt-1 scrollbar-none border-b border-white/15"
           >
             {/* Single gold pill that glides to whichever tab is active */}
             <span
@@ -294,11 +406,11 @@ export default function ServicesSection() {
                   className={`relative z-10 flex items-center gap-2.5 px-5 py-3 font-ui text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap transition-all duration-300 cursor-pointer ${
                     isActive
                       ? 'text-ean-text-dark font-semibold'
-                      : 'text-ean-muted-light hover:text-ean-blue-light bg-ean-obsidian-elevated/80 border border-ean-border-dark hover:border-ean-blue/50'
+                      : 'text-white/70 hover:text-white bg-white/10 border border-white/25 hover:bg-white/20 hover:border-white/50'
                   }`}
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    <IconComp size={16} className={isActive ? 'text-ean-text-dark' : 'text-ean-gold'} />
+                    <IconComp size={16} className={isActive ? 'text-ean-text-dark' : 'text-white/70'} />
                     <span>{srv.tabLabel || srv.name}</span>
                   </span>
                 </button>
@@ -306,100 +418,82 @@ export default function ServicesSection() {
             })}
           </div>
 
-          {/* Active Service Showcase — photograph as the card ground, content
-              overlaid on a scrim (same treatment as CharterSection) */}
-          <div className="relative overflow-hidden bg-ean-obsidian border-t border-t-ean-obsidian border-x border-b border-ean-border-dark min-h-125 sm:min-h-137 flex items-center">
-            {/* Background photograph + readability scrim */}
-            <div key={`${activeService.slug}-bg`} data-card-media className="absolute inset-0 pointer-events-none">
-              <Image
-                src={activeService.image}
-                alt={`${activeService.name} visual`}
-                fill
-                sizes="(max-width: 1280px) 100vw, 1280px"
-                className="object-cover"
-                style={{ objectPosition: activeService.imagePosition ?? '50% 50%' }}
-                quality={80}
-                loading="lazy"
-              />
-              {/* One left-weighted ramp rather than a flat wash plus a ramp:
-                  the flat layer was greying out the right half, where the
-                  subject of every one of these photographs sits. Measured
-                  against the actual pixels under the copy, this holds white
-                  body text above 4.5:1 across the text column on all six
-                  images — worst case 4.88:1, VIP Lounge under the second
-                  bullet column — while leaving the right edge, where every
-                  subject sits, at 85% of the photograph. */}
-              <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/75 to-black/15" />
+          {/* Active Service Showcase — the same left column as the two bands
+              below it: statement headline, lede, operational highlights,
+              action bar, all inside one max-w-2xl measure. */}
+          <div
+            data-reveal
+            className="max-w-2xl text-left space-y-6 sm:space-y-8 pt-10 sm:pt-12"
+          >
+            <div className="space-y-3">
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-white leading-[1.15] overflow-hidden pb-1 -mb-1">
+                <span data-card-title className="block">
+                  {activeService.name}
+                </span>
+              </h2>
+
+              <p
+                data-card-lede
+                className="font-ui text-base sm:text-lg text-white/70 leading-relaxed"
+              >
+                {activeService.short}
+              </p>
             </div>
 
-            {/* Keying on the slug replays the CSS enter animation per service */}
-            <div
-              key={activeService.slug}
-              className="relative z-10 w-full p-6 sm:p-10 lg:p-12"
-            >
-              <div className="max-w-2xl space-y-6">
-                <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-light text-white leading-tight overflow-hidden pb-1 -mb-1">
-                  <span data-card-title className="block">
-                    {activeService.name}
-                  </span>
-                </h3>
+            {/* Highlights Feature Grid, matching VIPSection */}
+            <div className="space-y-3">
+              <span
+                data-card-rule
+                className="block h-px w-full bg-white/15 origin-left mb-6"
+              />
+              <span
+                data-card-label
+                className="font-ui text-xs font-bold tracking-wider text-white/80 uppercase block"
+              >
+                Operational Highlights
+              </span>
+              <ul
+                ref={featuresRef}
+                className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 font-ui text-sm sm:text-base text-white font-medium"
+              >
+                {activeService.features.slice(0, 2).map((feat, fIdx) => (
+                  <li key={fIdx} className="flex items-start gap-2.5 sm:gap-3">
+                    <CheckCircle2 className="w-4.5 h-4.5 text-white shrink-0 mt-0.5" />
+                    <span className="leading-snug">{feat}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-                {/* Features Grid */}
-                <div className="space-y-3">
-                  <span
-                    data-card-rule
-                    className="block h-px w-full bg-white/15 origin-left mb-6"
-                  />
-                  <span
-                    data-card-label
-                    className="font-ui text-xs font-bold tracking-wider text-white/80 uppercase block"
-                  >
-                    Operational Highlights
-                  </span>
-                  <ul
-                    ref={featuresRef}
-                    className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-ui text-sm text-white"
-                  >
-                    {activeService.features.slice(0, 2).map((feat, fIdx) => (
-                      <li key={fIdx} className="flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4.5 h-4.5 text-white shrink-0 mt-0.5" />
-                        <span className="leading-snug">{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Action Bar */}
-                <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                  <Link
-                    data-card-action
-                    href={activeService.primaryButtonHref || `/contact?service=${activeService.slug}`}
-                  >
-                    <GoldButton className="w-full sm:w-auto">
-                      <span>{activeService.primaryButtonText || 'Inquire With Operations'}</span>
-                      <ChevronRight size={16} />
-                    </GoldButton>
-                  </Link>
-                  {/* Secondary action only where the service defines one. There used
-                      to be a "Full Specifications" fallback to /services#slug in this
-                      slot; it was removed, so the five services without their own
-                      secondary text now show a single primary button. The section
-                      header still links through to /services. */}
-                  {activeService.secondaryButtonText && (
-                    <Link
-                      data-card-action
-                      href={activeService.secondaryButtonHref || `/contact?service=${activeService.slug}&action=quote`}
-                    >
-                      <OutlineButton variant="photo" className="w-full sm:w-auto">
-                        {activeService.secondaryButtonText}
-                      </OutlineButton>
-                    </Link>
-                  )}
-                </div>
-              </div>
+            {/* Action Bar */}
+            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <Link
+                data-card-action
+                href={activeService.primaryButtonHref || `/contact?service=${activeService.slug}`}
+              >
+                <GoldButton className="w-full sm:w-auto">
+                  <span>{activeService.primaryButtonText || 'Inquire With Operations'}</span>
+                  <ChevronRight size={16} />
+                </GoldButton>
+              </Link>
+              {/* Secondary action only where the service defines one. There used
+                  to be a "Full Specifications" fallback to /services#slug in this
+                  slot; it was removed, so the five services without their own
+                  secondary text now show a single primary button. The section
+                  header still links through to /services. */}
+              {activeService.secondaryButtonText && (
+                <Link
+                  data-card-action
+                  href={activeService.secondaryButtonHref || `/contact?service=${activeService.slug}&action=quote`}
+                >
+                  <OutlineButton variant="photo" className="w-full sm:w-auto">
+                    {activeService.secondaryButtonText}
+                  </OutlineButton>
+                </Link>
+              )}
             </div>
           </div>
-        </div>
+        </SectionReveal>
       </div>
     </section>
   );

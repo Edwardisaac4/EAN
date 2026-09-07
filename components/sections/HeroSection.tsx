@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { withReducedMotion } from '@/lib/gsap-motion';
+import { withReducedMotion, prefersReducedMotion } from '@/lib/gsap-motion';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import GoldButton from '@/components/shared/GoldButton';
@@ -18,6 +18,34 @@ if (typeof window !== 'undefined') {
 }
 
 const SLIDE_INTERVAL_MS = 9500;
+const CROSSFADE_MS = 1800;
+
+// The transition is deliberately three-beat: the copy leaves, the images
+// crossfade, the new copy arrives. Cutting the copy on the same frame the
+// image changes is what made the old hero read as a loop rather than as a
+// sequence — nothing was ever leaving, things only appeared.
+const TEXT_EXIT_MS = 500;
+const TEXT_ENTER_DELAY = '0.45s';
+
+// Ken Burns runs the slide's whole life *plus* its fade-out, so the frame is
+// still travelling while it dissolves. Ending it on the hold would park the
+// image for the entire crossfade.
+const KEN_BURNS_MS = SLIDE_INTERVAL_MS + CROSSFADE_MS;
+
+// Scale and pan are both proportions, which is the only way the pan stays
+// inside the zoom's overscan at every viewport width. At scale s the slack on
+// each side is (s - 1) / 2, so the 1.02 start already grants 1% and the 1.085
+// end grants 4.25%; a 2.2% drift clears both. A pixel offset does not — 36px
+// sits well inside the overscan at 1440 and hangs off the edge at 375.
+const KEN_BURNS_FROM = { scale: 1.02, xPercent: 0 };
+const KEN_BURNS_SCALE_TO = 1.085;
+const KEN_BURNS_PAN_PERCENT = 2.2;
+
+// Word-level stagger for the headline. 0.20s is where `ean-rise-delay-1` used
+// to put the whole line, so the first word still lands exactly when the old
+// headline did and only the tail arrives later.
+const HEADLINE_BASE_DELAY = 0.2;
+const HEADLINE_WORD_STAGGER = 0.05;
 
 // Written out as whole class strings, not composed from fragments — Tailwind
 // scans source text, so a class it cannot read literally never reaches the CSS.
@@ -35,7 +63,17 @@ const TITLE_SCALES = {
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const parallaxRef = useRef<HTMLDivElement>(null);
+  const copyRef = useRef<HTMLDivElement>(null);
+  const slideInnerRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Two indices, not one. `currentSlide` is the target — the dots and the
+  // autoplay timer answer to it the instant it changes, so a click never feels
+  // laggy. `displaySlide` is what is actually painted, and it trails by the
+  // length of the exit animation. Collapsing these back into one state is what
+  // removes the exit beat.
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [displaySlide, setDisplaySlide] = useState(0);
+  const [riseBase, setRiseBase] = useState('0s');
   const [isPaused, setIsPaused] = useState(false);
 
   // Slides 2..n are withheld from the server HTML. They sit at inset-0 inside
@@ -70,6 +108,92 @@ export default function HeroSection() {
     }, SLIDE_INTERVAL_MS);
     return () => clearInterval(timer);
   }, [currentSlide, carouselReady, isPaused]);
+
+  // Exit beat. The copy block is keyed on `displaySlide`, so React would
+  // otherwise tear the old text out on the same frame the new one mounts.
+  // Holding the swap until this tween finishes is the whole point — the two
+  // state updates in `commit` batch into a single render.
+  //
+  // `revertOnUpdate` stays false so a retarget (a dot clicked while the copy
+  // is already leaving) does not snap the half-faded block back to full
+  // opacity before re-fading it. `overwrite: 'auto'` does the tidying instead:
+  // the replacement tween kills the one it conflicts with and picks up from
+  // wherever the fade had reached.
+  useGSAP(
+    () => {
+      if (currentSlide === displaySlide) return;
+
+      const node = copyRef.current;
+      const commit = () => {
+        setDisplaySlide(currentSlide);
+        setRiseBase(TEXT_ENTER_DELAY);
+      };
+
+      if (!node || prefersReducedMotion()) {
+        commit();
+        return;
+      }
+
+      gsap.to(node, {
+        opacity: 0,
+        y: -12,
+        duration: TEXT_EXIT_MS / 1000,
+        ease: 'power2.in',
+        overwrite: 'auto',
+        onComplete: commit,
+      });
+    },
+    {
+      scope: containerRef,
+      dependencies: [currentSlide, displaySlide],
+      revertOnUpdate: false,
+    }
+  );
+
+  // Ken Burns. Deliberately NOT wrapped in `withReducedMotion`, and
+  // deliberately returning no cleanup: `withReducedMotion` reverts its
+  // matchMedia, and a revert on every slide change would snap the *outgoing*
+  // frame back to its start scale while it is still visible behind the
+  // crossfade. Leaving the previous run's tween alone is what keeps that
+  // dissolve smooth — the tween is harmless once the slide is transparent, and
+  // `fromTo` resets the frame on the way back in, at opacity 0, where the
+  // reset cannot be seen.
+  //
+  // The motion preference is therefore read per slide change rather than
+  // watched, so a mid-session toggle takes effect within one slide.
+  useGSAP(
+    () => {
+      const el = slideInnerRefs.current[displaySlide];
+      if (!el) return;
+
+      if (prefersReducedMotion()) {
+        gsap.set(el, { scale: 1, xPercent: 0 });
+        return;
+      }
+
+      // Alternating direction. A pan that always travels the same way turns
+      // the carousel into a conveyor belt; reversing per slide keeps each
+      // arrival feeling like a new frame.
+      const direction = displaySlide % 2 === 0 ? -1 : 1;
+
+      gsap.fromTo(el, KEN_BURNS_FROM, {
+        scale: KEN_BURNS_SCALE_TO,
+        xPercent: direction * KEN_BURNS_PAN_PERCENT,
+        duration: KEN_BURNS_MS / 1000,
+        // Linear, always. An eased Ken Burns spends its motion in the first
+        // second or two and then holds a still frame for the rest of the
+        // slide, which is exactly the staleness this replaces.
+        ease: 'none',
+        force3D: true,
+        overwrite: 'auto',
+      });
+    },
+    {
+      scope: containerRef,
+      dependencies: [displaySlide, carouselReady],
+      revertOnUpdate: false,
+    }
+  );
 
   useGSAP(
     () =>
@@ -110,7 +234,7 @@ export default function HeroSection() {
     }
   };
 
-  const slide = HERO_SLIDES[currentSlide];
+  const slide = HERO_SLIDES[displaySlide];
   const secondaryHref = slide.secondaryCta?.href ?? '';
   const bulletItems =
     slide.bullets ??
@@ -120,6 +244,11 @@ export default function HeroSection() {
           .map((s) => s.trim())
           .filter(Boolean)
       : null);
+
+  // Flattened word counter across every line, so the stagger keeps climbing
+  // through a line break instead of restarting on the second line.
+  const titleLines = slide.title.split('\n');
+  let wordIndex = 0;
 
   return (
     <div
@@ -134,7 +263,7 @@ export default function HeroSection() {
         className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none"
       >
         {HERO_SLIDES.map((s, idx) => {
-          const isActive = idx === currentSlide;
+          const isActive = idx === displaySlide;
           // The dots are clickable before idle fires, so gating purely on
           // `carouselReady` would unmount the very slide the visitor just
           // selected and leave the hero blank. Only non-selected slides wait.
@@ -147,10 +276,13 @@ export default function HeroSection() {
                 isActive ? 'opacity-100 z-1' : 'opacity-0 z-0 pointer-events-none'
               }`}
             >
+              {/* GSAP owns `transform` on this element — no CSS transform or
+                  transform transition may live here, or the two will fight. */}
               <div
-                className={`relative w-full h-full transform-gpu transition-transform duration-[9500ms] ease-out ${
-                  isActive ? 'scale-100' : 'scale-[1.035]'
-                }`}
+                ref={(el) => {
+                  slideInnerRefs.current[idx] = el;
+                }}
+                className="relative w-full h-full"
               >
                 <Image
                   src={s.image}
@@ -175,9 +307,15 @@ export default function HeroSection() {
 
       {/* Main Content (Text Layer) */}
       <div className="relative z-10 max-w-ean mx-auto px-6 md:px-10 lg:px-12 w-full pt-20 sm:pt-22 md:pt-24 lg:pt-20 pb-12">
-        {/* Keyed on the slide index so the CSS entrance replays on each change */}
+        {/* Keyed on the painted slide so the CSS entrance replays on each
+            change. That entrance stays in CSS on purpose — see globals.css: it
+            paints on the very first frame instead of waiting for hydration,
+            which is what keeps LCP down. Only the *exit* is GSAP, and by the
+            time an exit can happen the page has long since hydrated. */}
         <div
-          key={currentSlide}
+          key={displaySlide}
+          ref={copyRef}
+          style={{ '--ean-rise-base': riseBase } as React.CSSProperties}
           className="max-w-2xl lg:max-w-3xl flex flex-col items-start text-left"
         >
           {/* Eyebrow */}
@@ -185,18 +323,44 @@ export default function HeroSection() {
             {slide.eyebrow}
           </p>
 
-          {/* Headline */}
+          {/* Headline — one animated box per word */}
           <h1
-            className={`ean-rise ean-rise-delay-1 font-display ${
+            className={`font-display ${
               TITLE_SCALES[slide.titleScale ?? 'default']
             } text-white font-medium leading-[1.1] mb-4 sm:mb-5`}
           >
-            {slide.title.split('\n').map((line, i) => (
-              <React.Fragment key={i}>
-                {line}
-                {i < slide.title.split('\n').length - 1 && <br />}
-              </React.Fragment>
-            ))}
+            {titleLines.map((line, lineIdx) => {
+              const words = line.split(' ');
+              return (
+                <React.Fragment key={lineIdx}>
+                  {words.map((word, wIdx) => {
+                    // Rounded because the raw sum lands on values like
+                    // 0.30000000000000004 and this string ships in the server
+                    // HTML for every word of every slide.
+                    const delay = (
+                      HEADLINE_BASE_DELAY +
+                      wordIndex++ * HEADLINE_WORD_STAGGER
+                    ).toFixed(2);
+                    return (
+                      <React.Fragment key={wIdx}>
+                        <span
+                          className="ean-rise ean-rise-word"
+                          style={{
+                            animationDelay: `calc(var(--ean-rise-base, 0s) + ${delay}s)`,
+                          }}
+                        >
+                          {word}
+                        </span>
+                        {/* Real space text node, kept outside the animated box
+                            so the line still wraps naturally. */}
+                        {wIdx < words.length - 1 && ' '}
+                      </React.Fragment>
+                    );
+                  })}
+                  {lineIdx < titleLines.length - 1 && <br />}
+                </React.Fragment>
+              );
+            })}
           </h1>
 
           {/* Subtitle / Bullet Points */}
