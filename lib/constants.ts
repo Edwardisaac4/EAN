@@ -1433,7 +1433,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     id: "tunde-awe",
-    name: "Tunde Awe",
+    name: "Tunde Tunde-Awe",
     role: "Head, Project Management Office",
     department: "Executive",
     departmentLabel: "P.M.O",
