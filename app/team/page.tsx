@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useRef } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -112,22 +111,10 @@ export default function TeamPage() {
           ref={heroRef}
           className="relative w-full h-[75vh] min-h-125 overflow-hidden bg-ean-obsidian flex items-center text-white border-b border-ean-border-dark"
         >
-          {/* Parallax Background */}
-          <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
-            <Image
-              src="/images/contact-cta.jpg"
-              alt="EAN Aviation executive personnel at runway sunset"
-              fill
-              sizes="100vw"
-              priority
-              className="object-cover object-center"
-              quality={80}
-            />
-            {/* Cinematic Obsidian Black luxury overlays */}
-            <div className="absolute inset-0 bg-black/60" />
-            <div className="absolute inset-0 bg-linear-to-b from-black/80 via-transparent to-black/90" />
-            <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
-          </div>
+          {/* Flat black, no photograph. The div and its ref stay: the parallax
+              tween and the reduced-motion settle branch both target it, and a
+              null target makes GSAP warn rather than fail quietly. */}
+          <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] bg-black pointer-events-none" />
 
           <div className="relative z-10 max-w-ean mx-auto px-6 md:px-8 w-full pt-20">
             <div className="max-w-3xl space-y-6">
