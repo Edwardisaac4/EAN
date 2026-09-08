@@ -1311,7 +1311,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: "Director, Operations",
     department: "Operations",
     departmentLabel: "Operations",
-    image: "/images/leadership/Babatunde Ajao.jpg",
+    image: "/images/leadership/Director of Operations.png",
     bio: [
       "Babatunde Ajao Adeniji brings more than 28 years of aviation experience spanning airline operations, ground services, airport terminal management, aviation consulting, and commercial strategy — a breadth that lets him see the full operating picture, from the ramp to the boardroom.",
       "His career includes roles with Uganda National Airlines, Bi-Courtney Aviation Services, Air Nigeria/Virgin Nigeria Airways, KLM Royal Dutch Airlines, and Upside Aviation Limited, giving him experience of both international carrier standards and the realities of operating in the West and East African markets. He most recently served as Head of Ground Operations at Uganda National Airlines.",
