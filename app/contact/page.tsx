@@ -315,7 +315,7 @@ export default function ContactPage() {
           {/* Parallax Background with Runway Jet */}
           <div ref={heroBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
             <Image
-              src="/images/runway.jpg"
+              src="/images/tarmac-soft-web.jpg"
               alt="Private jet on runway approaching city skyline"
               fill
               sizes="100vw"

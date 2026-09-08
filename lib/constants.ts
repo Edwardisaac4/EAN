@@ -164,11 +164,38 @@ export interface TimelineEvent {
   sourceLabel?: string;
 }
 
+/**
+ * A certification mark shown on a pillar card. `width`/`height` carry the
+ * source's own aspect, so next/image reserves the right box for each mark
+ * inside the one uniform tile the card draws.
+ */
+export interface PillarCredential {
+  name: string;
+  logo: string;
+  width: number;
+  height: number;
+}
+
 export interface ValuePillar {
   icon: string;
   title: string;
   description: string;
   image?: string;
+  /**
+   * `object-position` for the pillar card's photo. The card is a tall portrait
+   * box (~0.6 aspect) and the photo is cropped to fill it, so a landscape
+   * source loses roughly two thirds of its width — and the default centre crop
+   * has no idea where the subject is. Set this when the subject sits off
+   * centre. Omit for portrait photography, which the default crop already
+   * frames correctly.
+   */
+  imagePosition?: string;
+  /**
+   * Certification marks tiled in place of the card's photo. A pillar carries
+   * either a photo or credentials, never both — the grid *is* the picture, so
+   * `image` is left off when this is set.
+   */
+  credentials?: PillarCredential[];
 }
 
 export interface CredentialItem {
@@ -202,6 +229,12 @@ export interface TeamMember {
     | "Human Resources";
   departmentLabel: string;
   image: string;
+  /**
+   * Pull-quote shown in the member modal. Deliberately absent from every entry:
+   * the roster carried quotes nobody had actually said, so they were stripped
+   * pending real ones from each manager. The field and the modal guard stay so
+   * they can be restored one at a time — do not repopulate it from a bio.
+   */
   quote?: string;
   bio: string[];
   credentials: string[];
@@ -310,7 +343,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     title: "Precision in Flight,\nLuxury in Detail",
     subtitle:
       "Experience bespoke jet and helicopter chartering tailored to\nyour schedule and designed for ultimate comfort.",
-    image: "/images/charter-cabin.jpg",
+    image: "/images/Sliders/honda-jet-interior.webp",
     primaryCta: {
       text: "Request a Charter",
       // /charter now exists and takes the route, date and passenger count the
@@ -495,7 +528,7 @@ export const SERVICES_DATA: ServiceRichData[] = [
       "Aircraft fueling and ground power (GPU)",
       "Secure hangar and ramp parking",
     ],
-    image: "/images/services/fbo-jet-overwater.jpg",
+    image: "/images/services/fbo-ground-handling.jpg",
     primaryButtonText: "MAKE AN INQUIRY",
     primaryButtonHref: "/contact?service=fbo-ground-support",
     secondaryButtonText: "BUILD YOUR QUOTE",
@@ -558,7 +591,7 @@ export const SERVICES_DATA: ServiceRichData[] = [
       "Dedicated 24/7 flight dispatch and permit clearance",
       "Discreet VIP boarding and direct tarmac transfer",
     ],
-    image: "/images/charter-cabin.jpg",
+    image: "/images/Sliders/honda-jet-interior.webp",
     imagePosition: "50% 50%",
     primaryButtonText: "REQUEST A CHARTER",
     primaryButtonHref: "/charter",
@@ -653,7 +686,13 @@ export const ARTICLES_DATABASE: Article[] = [
       "CIQ — Customs, Immigration, and Quarantine — is the gateway to international business aviation. Understand what CIQ means, why it matters, and how EAN Aviation’s FBO services ensure your passengers clear borders efficiently and professionally.",
     publishedAt: "July 8, 2026",
     readTime: "9 min read",
-    image: "/images/blog/ciq-passenger-arrival.jpg",
+    // The EAN FBO lounge at MMIA, copied from /images/vip-lounge.jpg. Replaces
+    // ciq-passenger-arrival.jpg, a generated image of uniformed officers at an
+    // airstair — the illustration of a border process EAN does not itself run.
+    // At 1920x895 this also clears the 1664x840 cover target the old file
+    // missed by 1.8x. Copied rather than referenced so every cover stays under
+    // public/images/blog/, which is what public/images/blog/README.md audits.
+    image: "/images/blog/ciq-fbo-lounge.jpg",
     isFeatured: true,
   },
   {
@@ -683,7 +722,11 @@ export const ARTICLES_DATABASE: Article[] = [
       "Discover why top CEOs and executives are ditching first-class airline seats for FBO services. From time efficiency and privacy to productivity and prestige — here’s the business case for choosing FBO over commercial aviation.",
     publishedAt: "May 8, 2026",
     readTime: "6 min read",
-    image: "/images/blog/fbo-hondajet-departure.jpg",
+    // The ramp turnaround shot the FBO service page leads with
+    // (/images/services/fbo-ground-handling.jpg), copied here under a distinct
+    // name — blog/fbo-ground-handling.jpg is already a different body image.
+    // Replaces fbo-hondajet-departure.jpg, a generated frame.
+    image: "/images/blog/fbo-ramp-turnaround.jpg",
   },
   {
     slug: "private-jet-whole-ownership-vs-fractional-ownership-in-west-africa-which-model-makes-business-sense",
@@ -1028,7 +1071,7 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     year: "2023",
     title: "Heliconia-EAN JV",
     category: "CHARTER & JOINT VENTURES",
-    image: "/images/History/Heliconia.png",
+    image: "/images/History/new hean.jpeg",
     imageFit: "contain",
     description:
       "Formed a strategic joint venture with Heliconia to expand offshore helicopter transport and logistics across West Africa.",
@@ -1143,7 +1186,19 @@ export const VALUE_PILLARS: ValuePillar[] = [
     title: "Safety & Compliance",
     description:
       "We operate to the highest international safety standards, backed by regular audits and NCAA approvals to provide absolute peace of mind.",
-    image: "/images/about cards/about card4.jpg",
+    // The audit marks rather than a hangar photograph: this is the one pillar
+    // whose claim a visitor can check, and the registrations are the evidence.
+    // Order matches PARTNER_LOGOS: the standard, then the safety programme,
+    // then the association.
+    //
+    // cc4 and cc2 are the marquee crops (135x72) and the only copies of those
+    // two marks in the repo. They hold at the tile's ~140px but will soften on
+    // a 2x display; re-export both before widening this treatment.
+    credentials: [
+      { name: "IS-BAO registered", logo: "/images/History/isbao.png", width: 356, height: 200 },
+      { name: "NATA Safety 1st", logo: "/images/partners/cc4.jpg", width: 135, height: 72 },
+      { name: "NATA member", logo: "/images/partners/cc2.jpg", width: 135, height: 72 },
+    ],
   },
   {
     icon: "Crown",
@@ -1157,14 +1212,13 @@ export const VALUE_PILLARS: ValuePillar[] = [
     title: "Operational Precision",
     description:
       "We coordinate ground support, fueling, and maintenance with meticulous efficiency to guarantee on-time departures.",
-    image: "/images/about cards/about card2.jpg",
-  },
-  {
-    icon: "Globe",
-    title: "Regional Leadership",
-    description:
-      "Deeply rooted in West Africa, we bridge regional aviation requirements with international flight support, AMO engineering, and charter services.",
-    image: "/images/about cards/about card3.jpg",
+    // The marshaller directing the jet in reads as ground-handling precision,
+    // which is why this photo sits here rather than on Safety & Compliance.
+    image: "/images/safety.jpg",
+    // The only landscape source in this set (6000x3376). The marshaller and the
+    // wands sit at ~65% across, so a centre crop framed the engine nacelle and a
+    // disembodied arm. Shifting right puts the subject in the card.
+    imagePosition: "65% 50%",
   },
 ];
 
@@ -1208,6 +1262,19 @@ export const COMMITTEE_MEMBERS: CommitteeMember[] = [
   },
 ];
 
+/**
+ * The CEO is the one roster entry with two homes on /team: his own spotlight
+ * section, and — until now — the directory grid below it. The grid excludes him
+ * by this id, because listing the same person twice on one page reads as an
+ * oversight rather than as emphasis.
+ *
+ * Keyed on the id rather than on array position: `TEAM_MEMBERS[0]` plus a
+ * `slice(1)` would both silently point at the wrong person the moment anyone
+ * inserted an entry above him. `department: "Executive"` cannot serve either —
+ * Sales and the PMO carry it too.
+ */
+export const CEO_MEMBER_ID = "segun-demuren";
+
 export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "segun-demuren",
@@ -1216,8 +1283,6 @@ export const TEAM_MEMBERS: TeamMember[] = [
     department: "Executive",
     departmentLabel: "CEO",
     image: "/images/leadership/sd-nbac.jpg",
-    quote:
-      "In executive aviation, luxury is not merely an aesthetic — it is the disciplined execution of uncompromising safety, total privacy, and absolute precision.",
     bio: [
       "Olusegun Demuren brings visionary leadership and strategic expertise to EAN Aviation, driving its evolution as a leading force in Africa’s private aviation sector.",
       "He holds a B.Sc. in Information Systems from Marist College, New York, and has completed executive programs at Lagos Business School and the International Air Transport Association (IATA) in Singapore.",
@@ -1237,14 +1302,94 @@ export const TEAM_MEMBERS: TeamMember[] = [
     ],
   },
   {
+    id: "babatunde-adeniji",
+    name: "Babatunde Ajao Adeniji",
+    role: "Head, Operations",
+    department: "Operations",
+    departmentLabel: "Operations",
+    image: "/images/leadership/Babatunde Ajao.jpg",
+    bio: [
+      "Babatunde Ajao Adeniji brings more than 28 years of aviation experience spanning airline operations, ground services, airport terminal management, aviation consulting, and commercial strategy — a breadth that lets him see the full operating picture, from the ramp to the boardroom.",
+      "His career includes roles with Uganda National Airlines, Bi-Courtney Aviation Services, Air Nigeria/Virgin Nigeria Airways, KLM Royal Dutch Airlines, and Upside Aviation Limited, giving him experience of both international carrier standards and the realities of operating in the West and East African markets. He most recently served as Head of Ground Operations at Uganda National Airlines.",
+      "He holds an Executive MBA from Lagos Business School, Pan-Atlantic University, and a B.Sc. in Physics from the University of Jos. He has also completed a range of executive and aviation-focused training programmes, including courses with IATA and McGill University’s Institute of Air & Space Law.",
+    ],
+    credentials: [
+      "28+ Yrs Airline & Ground Operations",
+      "Executive MBA, Lagos Business School",
+      "B.Sc. Physics, University of Jos",
+      "IATA & McGill Air & Space Law Trained",
+    ],
+    highlights: [{ label: "Aviation Experience", value: "28+ Years" }],
+  },
+  {
+    id: "alexey-saliu-lawal",
+    name: "Alexey “Alyosha” Saliu-Lawal",
+    role: "Head, Maintenance",
+    department: "Maintenance",
+    departmentLabel: "Hangar & Maintenance",
+    image: "/images/leadership/alexey-saliu-lawal.jpg",
+    bio: [
+      "Alexey Saliu-Lawal is an accomplished aviation engineer with over 21 years of combined experience spanning aircraft maintenance, facility management, and engineering project delivery across Nigeria's aviation and industrial sectors. Since joining EAN Aviation in 2011, first as Head, Facilities, and since 2014, as Hangar Manager, his technical leadership has ensured that EAN's hangar and ground support operations run with precision, safety, and efficiency.",
+      "He holds a Nigerian Civil Aviation Authority (NCAA) Aircraft Maintenance Engineer's license with type ratings on the Challenger 601/604/605 series and GE CF-34-3B engines and completed EASA Part 66 (Category B1.1) approved training in Aircraft Maintenance Engineering at Air Service Training, Scotland. He is also a certified Level 2 Non-Destructive Testing (NDT) Inspector, trained in Penetrant, Magnetic Particle, and Eddy Current Inspection to EN4179/NAS410 standards, and holds a Wheels and Brakes qualification with Distinction from the Nigerian College of Aviation Technology, Zaria.",
+      "Alexey oversees all aircraft maintenance, hangar, and ground service equipment operations with meticulous attention to safety, quality, and international best practice, including ICAO, NCAA, and IS-BAH standards, delivering engineering excellence that supports EAN's reputation for reliability and uncompromising service.",
+    ],
+    credentials: [
+      "NCAA AME License (Challenger 601/604/605)",
+      "EASA Part 66 (Cat B1.1) Training",
+      "Certified Level 2 NDT Inspector",
+      "21+ Yrs Aviation Engineering",
+    ],
+    highlights: [{ label: "Engineering Leadership", value: "21+ Years" }],
+  },
+  {
+    id: "bukunola-hundeyin",
+    name: "Olubukunola Hundeyin",
+    role: "Head, Quality & Safety",
+    department: "Quality & Safety",
+    departmentLabel: "Quality & Safety",
+    image: "/images/leadership/bukky-nbac.jpg",
+    bio: [
+      "Olubukunola Hundeyin is an accomplished Quality, Safety, and Compliance executive with nearly a decade of progressive leadership experience driving operational excellence, regulatory compliance, and continuous improvement within the aviation industry. As Head of Quality & Safety, she provides strategic leadership in quality assurance, safety management, compliance monitoring, and organizational performance, ensuring alignment with the Nigerian Civil Aviation Regulations (Nig. CARs), ICAO Standards and Recommended Practices (SARPs), and internationally recognized best practices.",
+      "She holds a Bachelor's degree in Chemical Engineering from the University of Lagos and a Postgraduate Diploma in Quality Management from Robert Gordon University, Aberdeen, Scotland. A full member of the Nigerian Society of Engineers (NSE), Olubukunola combines technical expertise with strategic leadership to deliver sustainable business improvements and strengthen organizational resilience.",
+      "Throughout her career, Olubukunola has led and contributed to high-impact quality, safety, and compliance initiatives across aviation operations. She has successfully driven the implementation and continual improvement of Quality Management Systems (QMS), strengthened compliance monitoring programmes, enhanced operational processes, and partnered with multidisciplinary teams to embed a culture of quality, safety, and accountability.",
+      "Among her notable achievements is leading the successful maintenance of the International Standard for Business Aircraft Handling (IS-BAH) Stage II Certification through two consecutive certification cycles, demonstrating her commitment to operational excellence and international best practices. She also leads the implementation and continual enhancement of ISO-based Quality Management Systems, supporting improved organizational performance, customer satisfaction, and regulatory compliance.",
+      "An American Society for Quality (ASQ) Certified Quality Auditor (CQA) and Certified Quality Improvement Associate (CQIA), Olubukunola also holds certifications in NEBOSH International General Certificate in Occupational Health and Safety, ISO 9001:2015 Lead Auditor, Quality Management Systems in Aviation, QMS Auditor/Lead Auditor, and Internal Auditing, reflecting her commitment to continuous professional development.",
+      "Recognized for her collaborative leadership, integrity, and results-driven approach, Olubukunola is passionate about building high-performing teams, fostering a proactive safety culture, and implementing management systems that deliver measurable value. She remains committed to advancing quality and safety standards, strengthening regulatory compliance, and helping organizations achieve operational excellence in an evolving global aviation industry.",
+    ],
+    credentials: [
+      "ASQ Certified Quality Auditor (CQA)",
+      "ISO 9001:2015 Lead Auditor",
+      "NEBOSH IGC Certified",
+      "QMS & Safety Management Lead",
+    ],
+    highlights: [{ label: "Hangar & Terminal Uptime", value: "99.9%" }],
+  },
+  {
+    id: "ahmed-kazeem",
+    name: "Ahmed Kazeem",
+    role: "Head, Finance",
+    department: "Finance",
+    departmentLabel: "Finance & Governance",
+    image: "/images/leadership/Ahmed Kazeem Head Finance.jpg",
+    bio: [
+      "Ahmed Kazeem is the financial architect behind EAN Aviation’s operational excellence. He has over 15 years of strategic financial leadership, bringing sharp acumen with refined precision to every balance sheet, investment decision, and fiscal strategy. A certified accountant and tax authority, Ahmed’s expertise ensures that EAN’s financial engine runs with the same sophistication as our premium aviation services.",
+      "His academic pedigree spans top institutions: Ahmadu Bello University, University of Lagos,",
+      "He is a steward of growth, guiding sustainable expansion with grace and discipline. From strategic planning to meticulous reporting, his stewardship ensures that every naira and dollar is aligned with our commitment to excellence.",
+    ],
+    credentials: [
+      "Certified Accountant & Tax Authority",
+      "ABU, Unilag & NYIF Alumnus",
+      "15+ Yrs Strategic Financial Leadership",
+    ],
+    highlights: [{ label: "Financial Leadership", value: "15+ Years" }],
+  },
+  {
     id: "boyede-oyegbami",
     name: "Boyede Oyegbami",
     role: "Head, Sales",
     department: "Executive",
     departmentLabel: "Sales",
     image: "/images/leadership/boyede-nbac.jpg",
-    quote:
-      "Sustainable growth in aviation relies on rigorous contract discipline, trusted client relationships, and flawless fuel & flight operations.",
     bio: [
       "Boyede Oyegbami is an accomplished aviation commercial leader with over a decade of experience driving business growth, customer acquisition, and operational excellence across leading energy and aviation fueling companies in Nigeria.",
       "Prior to joining EAN, Boyede served as Aviation Commercial Manager at Eternal Plc, leading aviation business start-up, regulatory compliance, and end-to-end jet fuel operations, achieving milestones such as first into-plane fueling within a year and onboarding five airline customers in five months.",
@@ -1268,8 +1413,6 @@ export const TEAM_MEMBERS: TeamMember[] = [
     department: "Marketing",
     departmentLabel: "Marketing",
     image: "/images/leadership/Josephine Kolawole Head Marketing.jpg",
-    quote:
-      "Every marketing strategy begins with brand clarity — articulating our commitment to safety, luxury, and unmatched service in business aviation.",
     bio: [
       "Josephine Kolawole is a marketing leader with nearly a decade of experience driving brand growth across the technology and aviation sectors. As Head of Marketing at EAN Aviation, she leads brand strategy, integrated marketing communications, digital marketing, and public relations, delivering initiatives that strengthen brand visibility and support business growth.",
       "Prior to this, she led regional marketing initiatives across Central Africa at HP, overseeing multi-market campaigns, go-to-market strategies, and channel marketing. Josephine is passionate about building brands that create measurable business impact through strategic thinking, stakeholder engagement, and data-driven execution. She is currently pursuing a PhD, reflecting her commitment to continuous learning and leadership.",
@@ -1291,8 +1434,6 @@ export const TEAM_MEMBERS: TeamMember[] = [
     department: "Executive",
     departmentLabel: "P.M.O",
     image: "/images/leadership/tunde-awe.jpg",
-    quote:
-      "Strategic project delivery in aviation relies on rigorous governance, cross-functional precision, and uncompromising quality control.",
     bio: [
       "Tunde oversees a multi-programme portfolio at EAN Aviation Group spanning aviation infrastructure development, charter operations, digital transformation, and new business development. He is building the PMO’s maturity as a strategic function within EAN.",
       "His strengths lie in critical thinking, stakeholder management, and problem-solving, aligning consultants, regulators, and internal teams toward shared outcomes. He brings hands-on execution to corporate goals, closing the gap between strategy and delivery.",
@@ -1311,12 +1452,10 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "ann-umeh",
     name: "Ann Umeh",
-    role: "Customer Relations Manager",
+    role: "Head, Client Relations",
     department: "Operations",
     departmentLabel: "Customer Relations",
     image: "/images/leadership/Ann Umeh Client Relations Manager.jpg",
-    quote:
-      "Combining technical knowledge with a people-first approach to deliver consistent customer experiences that uphold elite standards.",
     bio: [
       "Ann Umeh is a dedicated Customer Relations professional known for building meaningful client connections and enhancing service excellence.",
       "She earned a bachelor’s degree in Computer Science from Lagos State University (LASU) and began her aviation career with a leading support service operator in Nigeria. Through her tenure as a Customer Relations Officer, Ann developed a strong foundation in client engagement and service management. She has since sharpened her skills with specialized training in project management, PLST, and leadership development.",
@@ -1331,39 +1470,12 @@ export const TEAM_MEMBERS: TeamMember[] = [
     highlights: [{ label: "Client Service Excellence", value: "Premium" }]
   },
   {
-    id: "bukunola-hundeyin",
-    name: "Olubukunola Hundeyin",
-    role: "Head of Quality & Safety",
-    department: "Quality & Safety",
-    departmentLabel: "Quality & Safety",
-    image: "/images/leadership/bukky-nbac.jpg",
-    quote:
-      "World-class aviation facilities depend on disciplined maintenance, security protocols, and operational readiness.",
-    bio: [
-      "Olubukunola Hundeyin is an accomplished Quality, Safety, and Compliance executive with nearly a decade of progressive leadership experience driving operational excellence, regulatory compliance, and continuous improvement within the aviation industry. As Head of Quality & Safety, she provides strategic leadership in quality assurance, safety management, compliance monitoring, and organizational performance, ensuring alignment with the Nigerian Civil Aviation Regulations (Nig. CARs), ICAO Standards and Recommended Practices (SARPs), and internationally recognized best practices.",
-      "She holds a Bachelor's degree in Chemical Engineering from the University of Lagos and a Postgraduate Diploma in Quality Management from Robert Gordon University, Aberdeen, Scotland. A full member of the Nigerian Society of Engineers (NSE), Olubukunola combines technical expertise with strategic leadership to deliver sustainable business improvements and strengthen organizational resilience.",
-      "Throughout her career, Olubukunola has led and contributed to high-impact quality, safety, and compliance initiatives across aviation operations. She has successfully driven the implementation and continual improvement of Quality Management Systems (QMS), strengthened compliance monitoring programmes, enhanced operational processes, and partnered with multidisciplinary teams to embed a culture of quality, safety, and accountability.",
-      "Among her notable achievements is leading the successful maintenance of the International Standard for Business Aircraft Handling (IS-BAH) Stage II Certification through two consecutive certification cycles, demonstrating her commitment to operational excellence and international best practices. She also leads the implementation and continual enhancement of ISO-based Quality Management Systems, supporting improved organizational performance, customer satisfaction, and regulatory compliance.",
-      "An American Society for Quality (ASQ) Certified Quality Auditor (CQA) and Certified Quality Improvement Associate (CQIA), Olubukunola also holds certifications in NEBOSH International General Certificate in Occupational Health and Safety, ISO 9001:2015 Lead Auditor, Quality Management Systems in Aviation, QMS Auditor/Lead Auditor, and Internal Auditing, reflecting her commitment to continuous professional development.",
-      "Recognized for her collaborative leadership, integrity, and results-driven approach, Olubukunola is passionate about building high-performing teams, fostering a proactive safety culture, and implementing management systems that deliver measurable value. She remains committed to advancing quality and safety standards, strengthening regulatory compliance, and helping organizations achieve operational excellence in an evolving global aviation industry.",
-    ],
-    credentials: [
-      "ASQ Certified Quality Auditor (CQA)",
-      "ISO 9001:2015 Lead Auditor",
-      "NEBOSH IGC Certified",
-      "QMS & Safety Management Lead",
-    ],
-    highlights: [{ label: "Hangar & Terminal Uptime", value: "99.9%" }],
-  },
-  {
     id: "osayuwamen-abu",
     name: "Osayuwamen Abu",
     role: "Head, Business Intelligence & Revenue Controller",
     department: "IT & Business Intelligence",
     departmentLabel: "IT & BI",
     image: "/images/leadership/Yuwa.jpg",
-    quote:
-      "Data-driven insights and real-time revenue analytics empower strategic growth and operational efficiency.",
     bio: [
       "Yuwa Abu is a technology and data leader with almost a decade of experience delivering data, analytics, and digital transformation initiatives across the telecommunications, e-commerce, FMCG, and aviation industries. He specializes in using data and technology to improve decision-making, optimize business performance, and drive innovation through scalable enterprise solutions.",
       "He holds a Bachelor’s degree in Economics and Statistics from the University of Benin and is a Member of the Chartered Institute of Statisticians of Nigeria (CISON).",
@@ -1382,8 +1494,6 @@ export const TEAM_MEMBERS: TeamMember[] = [
     department: "Facilities",
     departmentLabel: "Facilities",
     image: "/images/leadership/Ineh Osikhekha facilities manager (2) (1).jpg",
-    quote:
-      "Operational infrastructure must be reliable, secure, and engineered to accelerate executive movement.",
     bio: [
       "Ineh Osikhekha leads all lease, commercial strategy, aviation, and real estate infrastructure projects, facility management, and engineering functions at EAN Aviation, ensuring reliable facility management and infrastructure excellence.",
       "With over 15 years of expertise spanning civil construction, office planning, infrastructure management, energy management, transport & logistics, service charge management, health, safety, and security, he plays a pivotal role in sustaining operational integrity both within and beyond company premises. Ineh holds a Bachelor’s degree in Electrical & Electronic Engineering from the University of Benin and a Master’s in Facility Management from the University of Lagos.",
@@ -1407,8 +1517,6 @@ export const TEAM_MEMBERS: TeamMember[] = [
     department: "Legal",
     departmentLabel: "Legal Services",
     image: "/images/leadership/Vivian Okoh-Olutunfese Head Legal Services.jpg",
-    quote:
-      "Navigating the complexities of international aviation demands precision, proactive engagement, and absolute regulatory alignment.",
     bio: [
       "Vivian is an experienced legal business partner with over 15 years of experience spanning private legal practice, in-house advisory, and corporate leadership within multinational organizations.",
       "Prior to joining EAN, Vivian served as Lead Corporate & Commercial Counsel at Baywood Holdings Limited, a pan-African conglomerate with interests across Oil & gas, financial services, and aviation. She has also held key legal roles at Hayat Kimya Nigeria Limited and CWAY Group, where she strengthened compliance frameworks and governance standards.",
@@ -1427,36 +1535,12 @@ export const TEAM_MEMBERS: TeamMember[] = [
     ],
   },
   {
-    id: "alexey-saliu-lawal",
-    name: "Alexey “Alyosha” Saliu-Lawal",
-    role: "Hangar Manager",
-    department: "Maintenance",
-    departmentLabel: "Hangar & Maintenance",
-    image: "/images/leadership/alexey-saliu-lawal.jpg",
-    quote:
-      "Ensuring that EAN's hangar and ground support operations run with precision, safety, and efficiency.",
-    bio: [
-      "Alexey Saliu-Lawal is an accomplished aviation engineer with over 21 years of combined experience spanning aircraft maintenance, facility management, and engineering project delivery across Nigeria's aviation and industrial sectors. Since joining EAN Aviation in 2011, first as Head, Facilities, and since 2014, as Hangar Manager, his technical leadership has ensured that EAN's hangar and ground support operations run with precision, safety, and efficiency.",
-      "He holds a Nigerian Civil Aviation Authority (NCAA) Aircraft Maintenance Engineer's license with type ratings on the Challenger 601/604/605 series and GE CF-34-3B engines and completed EASA Part 66 (Category B1.1) approved training in Aircraft Maintenance Engineering at Air Service Training, Scotland. He is also a certified Level 2 Non-Destructive Testing (NDT) Inspector, trained in Penetrant, Magnetic Particle, and Eddy Current Inspection to EN4179/NAS410 standards, and holds a Wheels and Brakes qualification with Distinction from the Nigerian College of Aviation Technology, Zaria.",
-      "Alexey oversees all aircraft maintenance, hangar, and ground service equipment operations with meticulous attention to safety, quality, and international best practice, including ICAO, NCAA, and IS-BAH standards, delivering engineering excellence that supports EAN's reputation for reliability and uncompromising service.",
-    ],
-    credentials: [
-      "NCAA AME License (Challenger 601/604/605)",
-      "EASA Part 66 (Cat B1.1) Training",
-      "Certified Level 2 NDT Inspector",
-      "21+ Yrs Aviation Engineering",
-    ],
-    highlights: [{ label: "Engineering Leadership", value: "21+ Years" }],
-  },
-  {
     id: "tomilara-adewale",
     name: "Oluwatomilara Adewale",
     role: "Manager, Human Resources",
     department: "Human Resources",
     departmentLabel: "Human Resources",
     image: "/images/leadership/Tomilara Adewale HR Manager.jpg",
-    quote:
-      "Bridging the gap between employee engagement and business objectives to maintain a culture of excellence and growth.",
     bio: [
       "Oluwatomilara Adewale is a seasoned Human Capital Practitioner and Change Leader, driving employee development and organizational growth with dedication and agility.",
       "She holds a B.Sc. in Management from the University of Nigeria (UNN) and is a certified and licensed HR Practitioner (HRPL). Oluwatomilara is also an associate member of the Chartered Institute of Personnel Management of Nigeria (ACIPM). Her career began in the Nigerian financial sector as a Customer Service Executive, where her commitment and expertise quickly earned her promotion to Customer Experience Manager.",
@@ -1471,35 +1555,12 @@ export const TEAM_MEMBERS: TeamMember[] = [
     highlights: [{ label: "Specialized HR Experience", value: "7+ Years" }],
   },
   {
-    id: "ahmed-kazeem",
-    name: "Ahmed Kazeem",
-    role: "Head, Finance",
-    department: "Finance",
-    departmentLabel: "Finance & Governance",
-    image: "/images/leadership/Ahmed Kazeem Head Finance.jpg",
-    quote:
-      "Ensuring that EAN's financial engine runs with the same sophistication as our premium aviation services.",
-    bio: [
-      "Ahmed Kazeem is the financial architect behind EAN Aviation’s operational excellence. He has over 15 years of strategic financial leadership, bringing sharp acumen with refined precision to every balance sheet, investment decision, and fiscal strategy. A certified accountant and tax authority, Ahmed’s expertise ensures that EAN’s financial engine runs with the same sophistication as our premium aviation services.",
-      "His academic pedigree spans top institutions: Ahmadu Bello University, University of Lagos,",
-      "He is a steward of growth, guiding sustainable expansion with grace and discipline. From strategic planning to meticulous reporting, his stewardship ensures that every naira and dollar is aligned with our commitment to excellence.",
-    ],
-    credentials: [
-      "Certified Accountant & Tax Authority",
-      "ABU, Unilag & NYIF Alumnus",
-      "15+ Yrs Strategic Financial Leadership",
-    ],
-    highlights: [{ label: "Financial Leadership", value: "15+ Years" }],
-  },
-  {
     id: "okechukwu-umeh",
     name: "Okechukwu Umeh",
     role: "Manager, Operations Support",
     department: "Operations",
     departmentLabel: "Operations Support",
     image: "/images/leadership/Okechukwu Umeh Operations Support Manager 2026.jpg",
-    quote:
-      "Maintaining the highest standards of safety, regulatory compliance, and service excellence across all operational touchpoints.",
     bio: [
       "Umeh Okechukwu serves as the operations support manager at EAN Aviation Limited, Nigeria's first fully integrated Fixed Base Operator (FBO) and maintenance organization, headquartered at Murtala Muhammed International Airport in Lagos.",
       "With over twelve years of experience in aviation operations, Okechukwu oversees the full scope of EAN Aviation's ground and flight service delivery, ensuring close coordination across VIP terminal operations, business jet charter services, aircraft maintenance, and the company's role as the authorized Airbus Helicopters distributor for West Africa.",
@@ -1520,8 +1581,6 @@ export const TEAM_MEMBERS: TeamMember[] = [
     department: "Operations",
     departmentLabel: "Ramp Operations",
     image: "/images/leadership/Oluwatosin Taiwo Ramp Manager.jpg",
-    quote:
-      "Overseeing ground operations with a sharp focus on safety, efficiency, and resource optimization.",
     bio: [
       "Oluwatosin Taiwo is a skilled ramp manager, responsible for overseeing ground operations with a sharp focus on safety, efficiency, and resource optimization.",
       "He holds a bachelor’s degree in chemical engineering from Ladoke Akintola University of Technology and an MBA in finance management. Complemented by certifications in IATA Ground Operations Management, IATA Safety Management Systems, Workplace Safety & Health, and ISO 45001 Occupational Health & Safety, Oluwatosin brings comprehensive expertise to his role. He advises executive leadership on operational matters while serving as a human factors and ramp safety trainer.",

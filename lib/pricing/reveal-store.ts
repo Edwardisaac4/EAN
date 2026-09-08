@@ -1,19 +1,35 @@
 'use client'
 
 // =============================================================================
-// Pricing reveal store — session-scoped gate state
+// Pricing reveal store — page-view gate, session-scoped lead capture
 // =============================================================================
-// Once a visitor submits the lead gate, the price stays revealed for the rest of
-// their browsing session. Persisting this is what stops a page refresh from
-// re-gating them and submitting a second, duplicate lead.
+// Two facts with deliberately different lifetimes. They used to share one
+// sessionStorage entry, which is why a refresh left the price unlocked:
+//
+//   `revealed` / `lead`   In memory only. Module state dies with the page, so a
+//                         refresh drops the visitor back onto the default,
+//                         gated calculator — every selection reset, the form to
+//                         fill again before a price is shown.
+//
+//   captured emails       sessionStorage. Outlives the refresh so re-revealing
+//                         does not file a second lead against someone sales has
+//                         already been told about.
 //
 // Exposed as an external store (consumed via useSyncExternalStore) so the
-// initial server render is always "not revealed" and the client can restore the
-// real value after hydration without a mismatch.
+// server render and the client's first paint agree on "not revealed".
 
 import type { LeadDetails } from '@/types/pricing'
 
-const STORAGE_KEY = 'ean_pricing_reveal_v1'
+/** Emails already accepted by /api/leads in this tab. */
+const CAPTURED_KEY = 'ean_pricing_captured_v1'
+
+/**
+ * Superseded by CAPTURED_KEY. It persisted `revealed` alongside the whole lead
+ * — name, email and phone — which is both more than the duplicate check needs
+ * and the thing that used to keep a refreshed page unlocked. Cleared on first
+ * read so a visitor already mid-session is not left carrying it.
+ */
+const LEGACY_REVEAL_KEY = 'ean_pricing_reveal_v1'
 
 export interface RevealState {
   revealed: boolean
@@ -23,42 +39,50 @@ export interface RevealState {
 const UNREVEALED: RevealState = { revealed: false, lead: null }
 
 /**
- * Authoritative in-memory state. Stays `null` until first read so the value can
- * be lazily restored from sessionStorage, and remains correct even when storage
- * is unavailable (private browsing, quota exceeded).
+ * Authoritative state for this page view. Never read from storage — a refresh
+ * is meant to re-gate, so starting `UNREVEALED` is the whole point.
  */
-let state: RevealState | null = null
+let state: RevealState = UNREVEALED
 
 const listeners = new Set<() => void>()
 
-/**
- * Storage is writable by anything running on the origin, so the restored lead is
- * shape-checked before it reaches the UI — a malformed value would otherwise
- * render as `undefined` in the revealed quote summary.
- */
-function isLeadDetails(value: unknown): value is LeadDetails {
-  if (!value || typeof value !== 'object') return false
-  const lead = value as Record<string, unknown>
-  return (
-    typeof lead.name === 'string' &&
-    typeof lead.email === 'string' &&
-    typeof lead.phone === 'string' &&
-    typeof lead.company === 'string'
-  )
+let legacyCleared = false
+
+function clearLegacyEntry(): void {
+  if (legacyCleared) return
+  legacyCleared = true
+  try {
+    sessionStorage.removeItem(LEGACY_REVEAL_KEY)
+  } catch {
+    // Storage unavailable — nothing to clear.
+  }
 }
 
-function parseStored(raw: string | null): RevealState {
-  if (!raw) return UNREVEALED
+/** Matches the server's own normalisation in lib/services/leads-service.ts. */
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase()
+}
+
+/**
+ * Storage is writable by anything running on the origin, so a malformed value
+ * is treated as "nothing captured yet" rather than trusted. Erring this way
+ * costs at most one extra POST, which the server's duplicate guard absorbs.
+ */
+function readCaptured(): string[] {
+  if (typeof window === 'undefined') return []
+
+  clearLegacyEntry()
+
   try {
-    const parsed = JSON.parse(raw) as Partial<RevealState> | null
-    if (!parsed || typeof parsed.revealed !== 'boolean') return UNREVEALED
+    const raw = sessionStorage.getItem(CAPTURED_KEY)
+    if (!raw) return []
 
-    const lead = parsed.lead
-    if (lead !== null && lead !== undefined && !isLeadDetails(lead)) return UNREVEALED
+    const parsed = JSON.parse(raw) as unknown
+    if (!Array.isArray(parsed)) return []
 
-    return { revealed: parsed.revealed, lead: lead ?? null }
+    return parsed.filter((entry): entry is string => typeof entry === 'string')
   } catch {
-    return UNREVEALED
+    return []
   }
 }
 
@@ -74,15 +98,6 @@ export function subscribeToReveal(listener: () => void): () => void {
  * useSyncExternalStore requires.
  */
 export function getRevealSnapshot(): RevealState {
-  if (state) return state
-  if (typeof window === 'undefined') return UNREVEALED
-
-  try {
-    state = parseStored(sessionStorage.getItem(STORAGE_KEY))
-  } catch {
-    state = UNREVEALED
-  }
-
   return state
 }
 
@@ -91,15 +106,38 @@ export function getRevealServerSnapshot(): RevealState {
   return UNREVEALED
 }
 
-/** Unlocks pricing for the rest of the session after a successful lead submit. */
-export function grantReveal(lead: LeadDetails): void {
-  state = { revealed: true, lead }
+/**
+ * True when this email has already produced a lead in this tab, so the gate can
+ * unlock the price again without POSTing a duplicate.
+ *
+ * Scoped to the email rather than to the tab as a whole: a second visitor on a
+ * shared browser entering their own details is a genuinely new lead and must
+ * still reach sales.
+ */
+export function isLeadAlreadyCaptured(email: string): boolean {
+  return readCaptured().includes(normalizeEmail(email))
+}
+
+/** Records an accepted /api/leads POST so a later reveal does not repeat it. */
+export function markLeadCaptured(email: string): void {
+  if (typeof window === 'undefined') return
+
+  const normalized = normalizeEmail(email)
+  const captured = readCaptured()
+  if (captured.includes(normalized)) return
 
   try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    sessionStorage.setItem(CAPTURED_KEY, JSON.stringify([...captured, normalized]))
   } catch {
-    // Storage unavailable — the reveal still holds in memory for this session.
+    // Storage unavailable (private browsing, quota). The reveal still works;
+    // the server's email+service duplicate guard becomes the only defence, so
+    // a re-reveal more than DUPLICATE_WINDOW_MINUTES later could file a second
+    // lead. Accepted over losing the reveal entirely.
   }
+}
 
+/** Unlocks pricing for the rest of this page view after a successful submit. */
+export function grantReveal(lead: LeadDetails): void {
+  state = { revealed: true, lead }
   listeners.forEach((listener) => listener())
 }

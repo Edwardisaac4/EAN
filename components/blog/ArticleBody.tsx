@@ -179,8 +179,13 @@ function Block({ block }: { block: ArticleBlock }) {
             Intrinsic sizing rather than a fixed-height box: these came from
             WordPress at every aspect ratio from 4:3 to panoramic, and forcing
             them into one crop box would cut the subject out of half of them.
-            quality 80 is the content-imagery value whitelisted in
-            next.config.ts — anything not in that list is served as a 400.
+
+            quality 90 is the blog-photography value whitelisted in
+            next.config.ts — anything not in that list is served as a 400. It is
+            higher than the site-wide 80 because AVIF leads `formats`: at 80 the
+            AVIF encoder smooths exactly the fine texture these frames are
+            carrying, and these are the largest images on the site at 896 CSS px
+            with no crop, so the softening is most visible here.
           */}
           <Image
             src={block.src}
@@ -188,7 +193,7 @@ function Block({ block }: { block: ArticleBlock }) {
             width={block.width}
             height={block.height}
             sizes="(max-width: 896px) 100vw, 896px"
-            quality={80}
+            quality={90}
             className="w-full h-auto border border-ean-border-light bg-black/5"
           />
           {block.caption && (

@@ -76,7 +76,7 @@ export default function AboutSection() {
             */}
             <div data-reveal className="lg:col-span-6">
               <ImageBlock
-                src="/images/about-us.jpg"
+                src="/images/homesection-about.jpg"
                 alt="EAN Aviation ground crew towing a Dassault Falcon on the ramp at Murtala Muhammed International Airport, Lagos"
                 ratio="16 / 10"
                 sizes="(max-width: 1024px) 100vw, 45vw"

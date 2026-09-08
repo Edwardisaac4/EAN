@@ -101,10 +101,21 @@ const nextConfig: NextConfig = {
     // is no reason to re-transform them every day.
     minimumCacheTTL: ONE_YEAR,
     // Next 16 rejects any `quality` not listed here with a 400, so this must
-    // cover every value the app can request: 70 for full-bleed hero art, 80 for
-    // content imagery, and 75 for any <Image> that omits the prop entirely
-    // (Navbar logo, Footer, PartnersStrip) and so falls back to the default.
-    qualities: [70, 75, 80],
+    // cover every value the app can request: 70 for full-bleed hero art, 90 for
+    // blog photography, 80 for other content imagery, and 75 for any <Image>
+    // that omits the prop entirely (Navbar logo, Footer, PartnersStrip) and so
+    // falls back to the default.
+    //
+    // 90 exists because of AVIF. It is first in `formats`, so Chrome and Edge
+    // get AVIF and nothing else, and the AVIF encoder spends its bit budget
+    // differently from WebP at the same number: at 80 it holds large flat areas
+    // well but smooths fine high-frequency texture — aircraft livery lettering,
+    // hangar floor grain, fabric weave in the lounge shots — which is exactly
+    // the detail that makes a photograph read as sharp. 90 costs roughly 35-45%
+    // more bytes on these frames and restores that texture. Reserved for the
+    // blog, where the photograph is the content; do not spread it site-wide
+    // without re-measuring LCP.
+    qualities: [70, 75, 80, 90],
     // No source image is wider than ~1920px, so a 3840 candidate only inflates
     // every srcset string in the HTML without ever being served.
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],

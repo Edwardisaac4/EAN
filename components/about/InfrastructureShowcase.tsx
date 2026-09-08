@@ -50,7 +50,7 @@ const INFRASTRUCTURE_ITEMS = [
     title: 'Aircraft Sales & Charter Advisory',
     category: 'Aircraft Brokerage & Acquisitions',
     icon: Plane,
-    image: '/images/charter-cabin.jpg',
+    image: '/images/Sliders/honda-jet-interior.webp',
     badge: 'Executive Jet Sales & Charter',
     description: 'Corporate aircraft sales brokerage, pre-purchase technical evaluations, fleet management, and charter flight arrangements across West Africa.',
     specs: [

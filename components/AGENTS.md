@@ -116,11 +116,19 @@ it to `0` before counting up. Crawlers and no-JS visitors read the true number.
 extra one adds a competing preload. Everything else is `loading="lazy"`.
 
 **`quality` must be a value listed in `next.config.ts` → `images.qualities`**
-(currently `70`, `75`, `80`). On the declared Next.js version, `next/image`
+(currently `70`, `75`, `80`, `90`). On the declared Next.js version, `next/image`
 resolves an unlisted value to the closest entry in that array, so the prop is
 silently not what you wrote; a direct request to the optimizer with an
 unsupported quality is rejected with an HTTP 400. Add the value to the array
-before using it. Use 70 for full-bleed hero art, 80 otherwise.
+before using it. Use 70 for full-bleed hero art, 90 for blog photography, 80
+otherwise — see AGENTS.md §8 for why the blog gets its own step.
+
+**Every `fill` image needs an explicit `sizes`.** Without it next/image assumes
+`100vw` and builds the srcset for a full-viewport box, so a wide monitor
+downloads a 1920px variant to paint a 380px card. Measure the box against the
+1160px `max-w-ean` container and declare it — slightly *over* is correct, since
+an over-declared `sizes` costs only bytes while an under-declared one costs
+sharpness, and any `group-hover:scale-*` spends that surplus.
 
 Descriptive `alt` on every image — never empty, generic, or a filename.
 

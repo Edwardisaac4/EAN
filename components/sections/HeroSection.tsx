@@ -17,7 +17,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const SLIDE_INTERVAL_MS = 9500;
+const SLIDE_INTERVAL_MS = 4000;
 const CROSSFADE_MS = 1800;
 
 // The transition is deliberately three-beat: the copy leaves, the images

@@ -168,7 +168,7 @@ const CONTACT_HREF = "/contact?service=general";
 // ============================================================================
 
 export const AEROPLEX_HERO: AeroplexHeroContent = {
-  eyebrow: "WHAT WE ARE BUILDING",
+  eyebrow: "COMING SOON",
   title: "The EAN Aeroplex.",
   lede: [
     "An integrated airside campus at Murtala Muhammed International Airport.",
@@ -182,7 +182,7 @@ export const AEROPLEX_HERO: AeroplexHeroContent = {
    * describing it as a photograph of the site would be a false claim about the
    * state of the project.
    */
-  image: "/images/aeroplex/airside-view.jpg",
+  image: "/images/Project Airborne Landside.png",
   imageAlt:
     "BENOY concept design render of the EAN Aeroplex airside campus at dusk, showing the hangar frontage lit from within, business jets and helicopters on the apron and an Airbus A320neo on the taxiway",
   primaryCta: {
@@ -205,7 +205,7 @@ export const AEROPLEX_FACTS: AeroplexFact[] = [
     label: "SITE",
     value: "Airside, MMIA Lagos",
     note: "Within the existing international airport boundary",
-    image: "/images/about-jet.jpg",
+    image: "/images/aeroplex/airside-view.jpg",
     imageAlt: "Airside operations at EAN terminal",
     iconName: "Compass",
   },
@@ -214,7 +214,7 @@ export const AEROPLEX_FACTS: AeroplexFact[] = [
     label: "SCALE",
     value: "~60,000 sqm",
     note: "Hangars, executive terminal, support facilities",
-    image: "/images/services/office-space.jpg",
+    image: "/images/aeroplex 60.jpg",
     imageAlt: "Serviced boardroom at EAN airside offices",
     iconName: "Ruler",
   },
@@ -226,15 +226,6 @@ export const AEROPLEX_FACTS: AeroplexFact[] = [
     image: "/images/services/s1-banner-maintenance-c-2.jpg",
     imageAlt: "EAN engineers in the maintenance workshop",
     iconName: "HardHat",
-  },
-  {
-    id: "status",
-    label: "STATUS",
-    value: "Works in progress",
-    note: "Programme updates published as milestones complete",
-    image: "/images/runway.jpg",
-    imageAlt: "Airside operations at Murtala Muhammed International Airport",
-    iconName: "Layers",
   },
 ];
 

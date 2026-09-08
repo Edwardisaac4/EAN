@@ -238,20 +238,23 @@ export default function AboutPage() {
                 Defining the EAN Standard
               </h2>
               <p data-reveal className="font-ui text-base sm:text-lg text-ean-muted-light leading-relaxed">
-                Our operations are governed by four non-negotiable principles, ensuring every charter, maintenance operation, and FBO handling exceeds industry norms.
+                Our operations are governed by three non-negotiable principles, ensuring every charter, maintenance operation, and FBO handling exceeds industry norms.
               </p>
             </SectionReveal>
 
             {/* One trigger on the grid, then a diagonal sweep. One
-                SectionReveal per pillar meant four private ScrollTriggers on the
-                same `top 85%` line, so the row landed on a single frame. */}
+                SectionReveal per pillar meant a private ScrollTrigger each on
+                the same `top 85%` line, so the row landed on a single frame. */}
             <SectionReveal
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
               stagger={0.06}
               grid
             >
               {VALUE_PILLARS.map((pillar, idx) => {
                 const isExpanded = expandedCard === idx;
+                // Hoisted so the tile map keeps the narrowing: TypeScript drops
+                // it for a property read inside a callback.
+                const credentials = pillar.credentials;
                 return (
                   <div key={idx} data-reveal className="h-full">
                     <div
@@ -262,17 +265,30 @@ export default function AboutPage() {
                           : 'border border-ean-border-dark hover:border-blue-500/80 hover:shadow-[0_20px_45px_rgba(43,0,152,0.45)]'
                       }`}
                     >
-                      {/* Photo Background representing the Service/Pillar */}
-                      <Image
-                        src={pillar.image || '/images/about-jet.jpg'}
-                        alt={`${pillar.title} - EAN Aviation`}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                        className={`object-cover transition-transform duration-700 ease-out ${
-                          isExpanded ? 'scale-105' : 'group-hover:scale-110'
-                        }`}
-                        quality={85}
-                      />
+                      {/* A photograph, or — on Safety & Compliance — the audit
+                          marks themselves. A logo grid cannot be a background
+                          image: object-cover would crop the marks and the scrim
+                          below would darken them, so the credentialled card
+                          takes a flat panel and tiles the logos above the
+                          overlays instead. */}
+                      {credentials ? (
+                        <>
+                          <div className="absolute inset-0 bg-[#080d28]" />
+                          <div className="absolute inset-0 bg-radial-at-t from-[#2b0098]/45 via-blue-900/15 to-transparent" />
+                        </>
+                      ) : (
+                        <Image
+                          src={pillar.image || '/images/about-jet.jpg'}
+                          alt={`${pillar.title} - EAN Aviation`}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className={`object-cover transition-transform duration-700 ease-out ${
+                            isExpanded ? 'scale-105' : 'group-hover:scale-110'
+                          }`}
+                          style={pillar.imagePosition ? { objectPosition: pillar.imagePosition } : undefined}
+                          quality={80}
+                        />
+                      )}
 
                       {/* Base Luminous Vignette Overlay - lightened */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent z-10 transition-opacity duration-500" />
@@ -290,6 +306,45 @@ export default function AboutPage() {
                           isExpanded ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                         }`}
                       />
+
+                      {/* Credential tiles. Absolutely positioned rather than a
+                          flex child between the accent row and the write-up:
+                          the write-up grows on hover, and in the flow that
+                          expansion would squeeze the tiles every time. Each
+                          mark sits on its own white plate because the four
+                          sources disagree — two transparent PNGs and two
+                          white-backed JPEGs — and the plate is what makes them
+                          read as one set. z-20 keeps them above the hover
+                          scrim, so they stay crisp while the panel darkens. */}
+                      {credentials && (
+                        <div className="absolute inset-x-6 sm:inset-x-7 top-14 sm:top-16 z-20 grid grid-cols-2 gap-2 sm:gap-2.5">
+                          {credentials.map((credential, credentialIdx) => (
+                            <div
+                              key={credential.name}
+                              /* Fixed height rather than an aspect ratio: an odd
+                                 last mark spans both columns, and an aspect
+                                 would make that tile twice as tall as the row
+                                 above it. */
+                              className={`flex h-[74px] sm:h-[82px] items-center justify-center bg-white px-3 py-2.5 shadow-[0_10px_24px_rgba(0,0,0,0.35)] ${
+                                credentials.length % 2 === 1 &&
+                                credentialIdx === credentials.length - 1
+                                  ? 'col-span-2'
+                                  : ''
+                              }`}
+                            >
+                              <Image
+                                src={credential.logo}
+                                alt={credential.name}
+                                width={credential.width}
+                                height={credential.height}
+                                sizes="(max-width: 640px) 40vw, 150px"
+                                className="max-h-full w-auto max-w-full object-contain"
+                                quality={80}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
                       {/* Card Top: Glowing Minimal Accent */}
                       <div className="relative z-20 p-6 sm:p-7 flex items-center justify-end">
@@ -360,7 +415,7 @@ export default function AboutPage() {
           {/* Parallax Background Container */}
           <div ref={ctaBgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
             <Image
-              src="/images/about.jpg"
+              src="/images/tarmac-soft-web.jpg"
               alt="Experience EAN Aviation bespoke private jet operations and flight support"
               fill
               sizes="100vw"
