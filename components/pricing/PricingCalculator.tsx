@@ -149,23 +149,31 @@ export default function PricingCalculator() {
          *
          * The scrim is tuned to this frame rather than shared with the other
          * two heroes — the three photographs sit whole stops apart, so one
-         * setting either drowns this one or under-protects the others. Here the
-         * copy sits over the dead-black left third while the jet line fills the
-         * right, so 40% flat plus a 40/10/45 gradient is already 9.8:1 for
-         * white across the 99th percentile and 5.1:1 at the brightest pixel.
-         * Anything heavier just erases the aircraft.
+         * setting either drowns this one or under-protects the others.
+         *
+         * The flat layer is 50%, not the 40% this hero carried against the
+         * retired frame. That frame had a dead-black left third (mean luma 14)
+         * and the copy sat on it for free; the first hero slide is a whole
+         * different exposure (mean 130, left third 128), and at 40% its 99th
+         * percentile left white body copy at 4.35:1 — under AA. 50% flat plus
+         * the 40/10/45 gradient puts it back to ~5.8:1, with the headline far
+         * above that. Re-measure before changing either the frame or a stop.
          */}
         <div className="absolute inset-0 z-0" aria-hidden="true">
           <Image
-            src="/images/pricing hero.jpg"
+            src="/images/Sliders/First Slide.jpg"
             alt=""
             fill
             sizes="100vw"
             quality={70}
             priority
-            className="object-cover object-center"
+            /* The jet sits low in this frame — its mass runs from ~65% to
+               ~90% of the height, with the hangar roof filling the top half.
+               A centre crop in a short hero band shows nothing but roof
+               trusses and downlights, so the focal point goes to 78%. */
+            className="object-cover object-[50%_78%]"
           />
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-black/50" />
           <div className="absolute inset-0 bg-linear-to-b from-black/40 via-black/10 to-black/45" />
         </div>
 
