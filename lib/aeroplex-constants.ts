@@ -214,7 +214,7 @@ export const AEROPLEX_FACTS: AeroplexFact[] = [
     label: "SCALE",
     value: "~60,000 sqm",
     note: "Hangars, executive terminal, support facilities",
-    image: "/images/aeroplex 60.JPG",
+    image: "/images/aeroplex scale.jpeg",
     imageAlt: "Serviced boardroom at EAN airside offices",
     iconName: "Ruler",
   },

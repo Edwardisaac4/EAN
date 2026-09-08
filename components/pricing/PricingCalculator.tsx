@@ -161,7 +161,10 @@ export default function PricingCalculator() {
          */}
         <div className="absolute inset-0 z-0" aria-hidden="true">
           <Image
-            src="/images/Sliders/First Slide.jpg"
+            /* A retouch of Sliders/First Slide.jpg with the GLOBAL EXPRESS
+               livery text painted out of the rear fuselage. Kept as its own
+               file so the homepage slider still carries the untouched frame. */
+            src="/images/pricing-hero-hangar.jpg"
             alt=""
             fill
             sizes="100vw"
