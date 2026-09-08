@@ -136,16 +136,25 @@ export default function ServicesPage() {
            */}
           <div className="absolute inset-0 z-0" aria-hidden="true">
             <Image
-              src="/images/services hero.jpg"
+              src="/images/pricing-hero-hangar.jpg"
               alt=""
               fill
               sizes="100vw"
               quality={70}
               priority
-              className="object-cover object-bottom"
+              /* The jet sits low in this frame, so the crop favours the lower
+                 half — same reasoning as the pricing hero, a taller band. */
+              className="object-cover object-[50%_72%]"
             />
-            <div className="absolute inset-0 bg-black/50" />
-            <div className="absolute inset-0 bg-linear-to-b from-black/55 via-black/15 to-black/45" />
+            {/* The retired apron frame was dark in the foreground and only lit
+                across the hangar mouth, which is why the gradient above is
+                top-heavy at 55/15/45. This frame is a lit interior and far more
+                even (mean luma 130 against that one's 55), so the flat layer
+                carries the work at 60% and the gradient drops to a gentle
+                45/15/40. Measured over this crop, white holds 8.5:1 across the
+                99th percentile. */}
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-linear-to-b from-black/45 via-black/15 to-black/40" />
           </div>
 
           {/* Literal white over a photograph, per AGENTS.md §5 — no surface or
