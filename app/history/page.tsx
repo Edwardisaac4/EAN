@@ -404,16 +404,9 @@ export default function HistoryPage() {
                     {/* Content Section (Bottom on mobile, Left on desktop) */}
                     <div className="flex-1 space-y-2 sm:space-y-3 z-10 text-left flex flex-col justify-between order-last sm:order-first">
                       <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="font-display text-2xl sm:text-3xl lg:text-4xl font-semibold text-ean-gold tracking-tight">
-                            {event.year}
-                          </span>
-                          {event.category && (
-                            <span className="px-2 py-0.5 bg-black/5 border border-black/10 text-[9px] font-mono text-ean-text-light font-bold uppercase tracking-wider">
-                              {event.category}
-                            </span>
-                          )}
-                        </div>
+                        <span className="block font-display text-2xl sm:text-3xl lg:text-4xl font-semibold text-ean-gold tracking-tight">
+                          {event.year}
+                        </span>
                         <h3 className="font-ui text-base sm:text-xl font-semibold text-ean-text-light group-hover:text-ean-gold transition-colors duration-300 line-clamp-2 sm:line-clamp-none">
                           {event.title}
                         </h3>
