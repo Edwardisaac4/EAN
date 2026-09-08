@@ -100,10 +100,29 @@ export default function AeroplexHero() {
             quality={70}
             className="object-cover object-center"
           />
-          {/* Cinematic Obsidian Black luxury overlays — evenly balanced across the image */}
-          <div className="absolute inset-0 bg-black/60" />
-          <div className="absolute inset-0 bg-linear-to-b from-black/80 via-transparent to-black/90" />
-          <div className="absolute inset-0 bg-radial-at-c from-transparent via-black/20 to-black/60" />
+          {/*
+            The scrim was an even wash — flat 60%, a vertical ramp and a radial
+            vignette — tuned to a runway photograph with nothing in it to lose.
+            Measured against the render that replaced it, that stack was both
+            darker and *worse*: the campus is a dusk frame whose subject is the
+            lit hangar, and the brightest thing in it sits behind the copy, so
+            an even wash pulled the headline down to 3.1:1 while flattening the
+            building it was meant to be showing.
+
+            Left-weighted instead, the way the photo bands do it. Against the
+            actual pixels under the text column: the headline clears 5.0:1 at
+            the 95th percentile and 4.5:1 at the 99th — large text needs 3:1 —
+            and the lede holds 6.6:1 and 5.0:1 against its 4.5:1 floor. The
+            right edge keeps 57% of the photograph rather than 40%, which is
+            where the hangar and the A320neo are.
+
+            The vertical ramp stays for the chrome: the navbar sits over the top
+            edge and the CTA row over the bottom. It passes through transparent
+            at the middle, so it costs the copy nothing.
+          */}
+          <div className="absolute inset-0 bg-black/35" />
+          <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/50 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-b from-black/70 via-transparent to-black/65" />
         </div>
 
         {/* Hero Title & Lede Content */}
