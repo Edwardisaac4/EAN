@@ -26,7 +26,7 @@ export default function CharterPage() {
         {/* `.pagehero` — the prototype's shorter hero: image, scrim, three lines. */}
         <section className="relative min-h-100 flex items-end overflow-hidden bg-ean-black">
           <Image
-            src="/images/charter-cabin.jpg"
+            src="/images/Sliders/honda-jet-interior.webp"
             alt="Cabin interior of a private jet on charter with EAN Aviation"
             fill
             priority

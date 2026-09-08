@@ -110,7 +110,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               priority
               sizes="100vw"
               className="object-cover object-center"
-              quality={85}
+              quality={80}
             />
             {/* Balanced Obsidian Black gradient overlays — keeping imagery clear while ensuring text contrast */}
             <div className="absolute inset-0 bg-black/25" />

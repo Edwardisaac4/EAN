@@ -147,7 +147,21 @@ function renderTiptapNode(node: TiptapNode, key: number | string): React.ReactNo
       if (!imgSrc) return null;
       return (
         <div key={key} className="my-6 relative w-full h-64 sm:h-96 overflow-hidden border border-ean-border-light">
-          <Image src={imgSrc} alt={imgAlt} fill className="object-cover" />
+          {/*
+            `sizes` is required, not optional, on a `fill` image: without it
+            next/image assumes 100vw and builds the srcset for a full-viewport
+            box, so a 2560px monitor downloads a 1920px variant to paint an
+            832px column. The measured box is the 832px article column, matching
+            the cover above.
+          */}
+          <Image
+            src={imgSrc}
+            alt={imgAlt}
+            fill
+            sizes="(max-width: 1024px) 100vw, 832px"
+            quality={90}
+            className="object-cover"
+          />
         </div>
       );
     }
@@ -375,6 +389,18 @@ export default async function BlogPostPage({ params }: Props) {
             
             {/* Cover Image Container */}
             <div className="relative w-full h-72 sm:h-105 overflow-hidden border border-ean-border-light bg-black/10">
+              {/*
+                The largest on-page use of any blog photograph: `max-w-4xl`
+                minus `px-8` puts this box at 832 CSS px, so a 2x screen wants
+                ~1660px of real pixels. 80vw keeps the request above that at
+                every viewport rather than matching the box exactly — the whole
+                article leads on this frame, so bytes are the cheaper side of
+                the trade.
+
+                Sources narrower than ~1700px are served at their own width
+                here; no `sizes` or `quality` value recovers detail the file
+                does not contain. See public/images/blog/README.md.
+              */}
               <Image
                 src={article.image}
                 alt={article.title}
@@ -382,7 +408,7 @@ export default async function BlogPostPage({ params }: Props) {
                 priority
                 sizes="(max-width: 1024px) 100vw, 80vw"
                 className="object-cover"
-                quality={80}
+                quality={90}
               />
               <div className="absolute inset-0 border border-ean-border-dark pointer-events-none" />
             </div>
@@ -451,6 +477,7 @@ export default async function BlogPostPage({ params }: Props) {
                           alt={rel.title}
                           fill
                           sizes="(max-width: 1024px) 100vw, 33vw"
+                          quality={90}
                           className="object-cover transition-transform duration-500 group-hover:scale-103"
                         />
                         <span className="absolute top-3 left-3 bg-ean-navy/95 border border-ean-gold/30 text-ean-gold text-[9px] uppercase font-bold tracking-widest px-2.5 py-1">

@@ -148,7 +148,7 @@ export const PAGE_SEO = {
     description:
       "Request an on-demand jet or helicopter charter from Lagos MMIA. Give our charter desk the route, date and passenger count and receive aircraft options with an all-in price.",
     path: "/charter",
-    image: "/images/charter-cabin.jpg",
+    image: "/images/honda-jet-interior.jpg",
   },
   pricing: {
     title: "FBO Pricing & Instant Quote Calculator | EAN Aviation Lagos",
@@ -161,7 +161,7 @@ export const PAGE_SEO = {
     description:
       "Analysis on business aviation in West Africa — CIQ and international clearance, FBO operations, regulatory change, and why executives choose private aviation.",
     path: "/blog",
-    image: "/images/charter-cabin.jpg",
+    image: "/images/honda-jet-interior.jpg",
   },
   contact: {
     title: "Contact EAN Aviation | 24/7 Flight Support, Lagos MMIA",

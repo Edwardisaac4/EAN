@@ -29,6 +29,13 @@ interface ImageBlockProps {
   alt: string;
   /** CSS aspect-ratio, e.g. '3 / 4', '16 / 9'. */
   ratio?: string;
+  /**
+   * Tailwind aspect utilities, for a frame that has to change ratio across
+   * breakpoints — e.g. `aspect-[16/10] sm:aspect-[2/1]`. Takes precedence over
+   * `ratio`, which cannot be responsive because it resolves to an inline style
+   * and inline styles outrank every utility class.
+   */
+  ratioClass?: string;
   sizes?: string;
   quality?: AllowedQuality;
   /** Only ever on a genuine above-the-fold LCP image, one per page. */
@@ -42,6 +49,7 @@ export default function ImageBlock({
   src,
   alt,
   ratio = '16 / 9',
+  ratioClass = '',
   sizes = '(max-width: 768px) 100vw, 50vw',
   quality = 80,
   priority = false,
@@ -53,8 +61,8 @@ export default function ImageBlock({
 
   return (
     <div
-      className={`group relative overflow-hidden bg-linear-to-b from-ean-obsidian-elevated to-ean-black ${className}`}
-      style={{ aspectRatio: ratio }}
+      className={`group relative overflow-hidden bg-linear-to-b from-ean-obsidian-elevated to-ean-black ${ratioClass} ${className}`}
+      style={ratioClass ? undefined : { aspectRatio: ratio }}
       {...(failed ? { role: 'img', 'aria-label': alt } : {})}
     >
       {!failed && (

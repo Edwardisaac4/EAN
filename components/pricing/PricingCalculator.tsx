@@ -42,8 +42,10 @@ export default function PricingCalculator() {
   const [addons, setAddons] = useState<Record<string, boolean>>({})
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
-  // Reveal state lives in a session-scoped external store so it survives a page
-  // refresh — otherwise the visitor is re-gated and submits a duplicate lead.
+  // Reveal state lives in an external store that holds it in memory only, so a
+  // refresh returns the whole calculator to its gated default. The lead form
+  // has to be passed again to unlock a price; see lib/pricing/reveal-store.ts
+  // for why that no longer risks a duplicate lead.
   const { revealed, lead } = useSyncExternalStore(
     subscribeToReveal,
     getRevealSnapshot,

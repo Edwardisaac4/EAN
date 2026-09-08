@@ -312,20 +312,31 @@ export default function ServicesSection() {
           />
         </div>
         {/*
-          Two layers, as on the bands below: a flat scrim at the VIP band's 45%
-          so the imagery stays luminous, then a left-weighted ramp for the copy
-          column.
+          Two layers: a flat scrim, then a left-weighted ramp for the copy
+          column. The flat layer is 25% rather than the VIP band's 45% because
+          it dims the whole frame uniformly and was the layer flattening these
+          photographs; the ramp does the contrast work instead.
 
-          The ramp is carried further across than VIP's — 55% at the midpoint
-          against its 35% — because this band drives six photographs rather
-          than one, and several of them put a bright region (overcast sky,
-          apron concrete, a white fuselage) exactly where the text column sits.
-          That keeps white body text clear of 4.5:1 across the column on all
-          six, while the right edge still shows the subject at ~50% of the
-          photograph, in line with the other two bands.
+          The ramp is carried further across than VIP's — 65% at 55% against
+          its 35% at the midpoint — because this band drives seven photographs
+          rather than one, and several put a bright region (overcast sky, apron
+          concrete, a white fuselage) exactly where the text column sits. The
+          stop is pushed to 55% to land past the max-w-2xl measure's right edge,
+          which on a 1160px container sits at ~52-56% of the viewport.
+
+          Measured against the 95th-percentile luminance inside the text column
+          on all seven images, this composite is equal or fractionally darker
+          than the 45/80-55-10 pair it replaces at every point across the
+          column, so no photograph loses white-text contrast; past the measure
+          it lifts the subject to 123-152% of the light it used to show.
+
+          Five of the seven still fall short of 4.5:1 for white body copy at
+          their worst column pixel (3.3-4.3:1) — a shortfall inherited from the
+          previous values, not introduced here. It wants per-image
+          `imagePosition` tuning, not a heavier scrim.
         */}
-        <div className="absolute inset-0 bg-black/45" />
-        <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/55 to-black/10" />
+        <div className="absolute inset-0 bg-black/25" />
+        <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/65 via-55% to-transparent" />
       </div>
 
       {/* Content Area */}

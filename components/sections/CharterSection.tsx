@@ -51,7 +51,7 @@ export default function CharterSection() {
       {/* Parallax Background Container */}
       <div ref={bgRef} className="absolute inset-0 w-full h-[120%] top-[-10%] pointer-events-none">
         <Image
-          src="/images/charter-cabin.jpg"
+          src="/images/Sliders/honda-jet-interior.webp"
           alt="EAN Aviation premium private jet cabin interior"
           fill
           sizes="100vw"

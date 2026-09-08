@@ -300,10 +300,23 @@ required, but it now covers only the 0.25s dissolve rather than three quarters
 of the beat.
 
 **`images.qualities` in `next.config.ts` is a whitelist.** Next 16 returns
-**HTTP 400** for any `quality` not listed. It currently allows `[70, 75, 80]` —
-70 for full-bleed hero art, 80 for content imagery, 75 because that is the
-default for any `<Image>` that omits the prop. Add a new value to the array
-*before* using it in a component.
+**HTTP 400** for any `quality` not listed. It currently allows
+`[70, 75, 80, 90]` — 70 for full-bleed hero art, 90 for blog photography, 80 for
+other content imagery, 75 because that is the default for any `<Image>` that
+omits the prop. Add a new value to the array *before* using it in a component.
+
+**90 is a blog-only value, and AVIF is the reason it exists.** `image/avif` is
+first in `formats`, so Chromium browsers get AVIF and nothing else. At quality
+80 the AVIF encoder holds flat areas well but smooths fine high-frequency
+texture — livery lettering, hangar floor grain, fabric weave — which is the
+detail that makes a photograph read as sharp. On the blog the photograph *is* the
+content, so it pays the extra 35–45% in bytes. Do not spread 90 to the rest of
+the site without re-measuring LCP.
+
+**A `quality` bump cannot rescue an undersized source.** next/image never
+upscales: a 624px-wide file requested at `w=1080` is served at 624px. The blog
+covers documented in `public/images/blog/README.md` are below what the layout
+asks for, and the only fix is re-exporting the assets.
 
 **Never put a comma in an image filename.** The optimizer rejects it with
 "The requested resource isn't a valid image." Spaces and parentheses are fine.

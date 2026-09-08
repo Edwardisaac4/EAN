@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { LeadDetails, QuoteResult, QuoteState } from '@/types/pricing'
 import { getTrackingContext } from '@/lib/lead-tracking'
+import { isLeadAlreadyCaptured, markLeadCaptured } from '@/lib/pricing/reveal-store'
 import { Loader2 } from 'lucide-react'
 import HoneypotField from '@/components/shared/HoneypotField'
 
@@ -69,6 +70,18 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
       company: '',
     }
 
+    // A refresh re-gates the calculator by design, so the same visitor can pass
+    // this form more than once per session. Reveal on the strength of the first
+    // capture rather than filing a second lead: the server's duplicate guard
+    // only covers a 10-minute window, and every POST also spends one of the
+    // visitor's five-per-hour /api/leads attempts — exhaust those and a genuine
+    // re-reveal fails with a rate-limit error instead of showing the price.
+    if (isLeadAlreadyCaptured(lead.email)) {
+      setIsSubmitting(false)
+      onSubmitLead(lead)
+      return
+    }
+
     const aircraftName =
       state?.aircraft?.name ??
       (state?.mtow_manual ? `Unlisted aircraft (${state.mtow_manual.toLocaleString()} kg)` : 'Not specified')
@@ -111,6 +124,7 @@ export default function LeadGate({ onSubmitLead, quote, state }: LeadGateProps) 
         return
       }
 
+      markLeadCaptured(lead.email)
       setIsSubmitting(false)
       onSubmitLead(lead)
     } catch {

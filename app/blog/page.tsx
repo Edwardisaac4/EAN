@@ -250,13 +250,21 @@ export default function BlogPage() {
                 ref={featuredImageRef} 
                 className="lg:col-span-6 relative w-full h-65 sm:h-87.5 lg:h-105 overflow-hidden border border-white/20 group"
               >
+                {/*
+                  The box is `lg:col-span-6` of a 12-col grid inside the 1160px
+                  container with `gap-16`, so it settles at 548 CSS px from a
+                  1208px viewport up. 50vw over-declares from there on, and that
+                  is deliberate: the surplus is what the 3% hover scale spends,
+                  and an over-declared `sizes` costs only bytes while an
+                  under-declared one costs sharpness.
+                */}
                 <Image
                   src={featuredArticle.image}
                   alt={featuredArticle.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover transition-transform duration-1000 group-hover:scale-103"
-                  quality={80}
+                  quality={90}
                 />
                 {/* Inset frame. White at low opacity, not a border token — the
                     card sits on the photographic band. */}
@@ -358,13 +366,27 @@ export default function BlogPage() {
                           >
                             {/* Image Box */}
                             <div className={`relative w-full ${isWide ? 'h-52 lg:h-auto lg:w-1/2 min-h-60' : 'h-52'} overflow-hidden bg-black/10 shrink-0`}>
+                              {/*
+                                Cards render at 365 CSS px (square) or 381 (the
+                                half-width side of a wide card) once the 1160px
+                                container caps, so 33vw stays just above the real
+                                box at every width and never under-declares.
+
+                                quality 90 rather than 80 is the change that
+                                actually shows here. These boxes are small, the
+                                photograph is cropped hard by `object-cover`, and
+                                `group-hover:scale-104` resamples it another 4% on
+                                top — three things that each eat detail. AVIF at
+                                80 was smoothing the texture that survives all
+                                that; 90 keeps it.
+                              */}
                               <Image
                                 src={art.image}
                                 alt={art.title}
                                 fill
                                 sizes="(max-width: 1024px) 100vw, 33vw"
                                 className="object-cover transition-transform duration-750 group-hover:scale-104"
-                                quality={80}
+                                quality={90}
                               />
                               {/* Floating category tag */}
                               <span className="absolute top-4 left-4 bg-ean-navy/95 border border-ean-gold/30 text-ean-gold text-[9px] uppercase font-bold tracking-widest px-2.5 py-1">

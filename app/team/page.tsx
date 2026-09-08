@@ -17,7 +17,7 @@ import OutlineButton from '@/components/shared/OutlineButton';
 import CeoSpotlight from '@/components/team/CeoSpotlight';
 import TeamDirectoryGrid from '@/components/team/TeamDirectoryGrid';
 
-import { TEAM_MEMBERS } from '@/lib/constants';
+import { CEO_MEMBER_ID, TEAM_MEMBERS } from '@/lib/constants';
 
 // Register GSAP plugins at the file level
 if (typeof window !== 'undefined') {
@@ -32,7 +32,10 @@ export default function TeamPage() {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
-  const ceoMember = TEAM_MEMBERS[0];
+  // The spotlight section owns the CEO, so the directory grid below drops him.
+  // See CEO_MEMBER_ID in lib/constants.ts for why this keys on the id.
+  const ceoMember = TEAM_MEMBERS.find((member) => member.id === CEO_MEMBER_ID) ?? TEAM_MEMBERS[0];
+  const directoryMembers = TEAM_MEMBERS.filter((member) => member.id !== CEO_MEMBER_ID);
 
   useGSAP(
     () =>
@@ -172,7 +175,7 @@ export default function TeamPage() {
         </div>
 
         {/* SECTION 3: Executive Leadership & Management Directory Grid */}
-        <TeamDirectoryGrid members={TEAM_MEMBERS} />
+        <TeamDirectoryGrid members={directoryMembers} />
       </main>
     </>
   );
