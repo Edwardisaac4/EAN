@@ -1018,7 +1018,7 @@ return (
             </button>
 
             <a
-              href={`mailto:handling@ean.aero?subject=Official%20Quote%20Request%20[${quoteReferenceId}]&body=Hello%20EAN%20Operations,%0A%0AHere%20are%20the%20quote%20details%20for%20${encodeURIComponent(quoteResult.aircraft.name)}:`}
+              href={`mailto:handling@ean.aero?subject=Official%20Quote%20Request%20[${encodeURIComponent(quoteReferenceId)}]&body=Hello%20EAN%20Operations,%0A%0AHere%20are%20the%20quote%20details%20for%20${encodeURIComponent(quoteResult.aircraft.name)}:`}
               className="w-full bg-ean-black-accent hover:bg-ean-gold/20 border border-ean-gold/20 hover:border-ean-gold/40 text-ean-text-light font-medium text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 transition-all cursor-pointer text-center"
             >
               <Mail className="w-3.5 h-3.5 text-ean-gold" /> Email Desk
