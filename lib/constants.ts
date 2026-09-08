@@ -1191,11 +1191,15 @@ export const VALUE_PILLARS: ValuePillar[] = [
     // Order matches PARTNER_LOGOS: the standard, then the safety programme,
     // then the association.
     //
-    // cc4 and cc2 are the marquee crops (135x72) and the only copies of those
-    // two marks in the repo. They hold at the tile's ~140px but will soften on
-    // a 2x display; re-export both before widening this treatment.
+    // IS-BAH, not IS-BAO: the handling standard, which is what an FBO is
+    // audited against. History/isbao.png is the operations standard and does
+    // not belong on this card.
+    //
+    // All three are the marquee crops (135x72) and the only copies of these
+    // marks in the repo. They hold at the tile's ~140px but will soften on a 2x
+    // display; re-export all three before widening this treatment.
     credentials: [
-      { name: "IS-BAO registered", logo: "/images/History/isbao.png", width: 356, height: 200 },
+      { name: "IS-BAH registered", logo: "/images/partners/cc7.jpg", width: 135, height: 72 },
       { name: "NATA Safety 1st", logo: "/images/partners/cc4.jpg", width: 135, height: 72 },
       { name: "NATA member", logo: "/images/partners/cc2.jpg", width: 135, height: 72 },
     ],
@@ -1304,7 +1308,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "babatunde-adeniji",
     name: "Babatunde Ajao Adeniji",
-    role: "Head, Operations",
+    role: "Director, Operations",
     department: "Operations",
     departmentLabel: "Operations",
     image: "/images/leadership/Babatunde Ajao.jpg",
