@@ -159,42 +159,16 @@ export default function BlogPage() {
         {/* SECTION 1: Featured Post Hero */}
         <section
           ref={heroRef}
-          className="relative pt-36 pb-24 overflow-hidden"
+          className="relative pt-36 pb-24 overflow-hidden bg-black"
         >
-          {/*
-           * Full-bleed photograph. Decorative — the featured article's own
-           * headline is the h1 — so `alt` is empty. `priority` lives here now
-           * rather than on the cover image below: this band is the larger
-           * above-the-fold paint and therefore the LCP element, and AGENTS.md
-           * §8 allows exactly one per page. `quality={70}` is the whitelisted
-           * step for full-bleed hero art.
-           *
-           * The scrim is tuned to this frame, not shared with the other two
-           * heroes. This one is a lounge interior: two warm lamps in the lower
-           * left, directly behind where the excerpt starts, and a floodlit
-           * fuselage behind the headline. Those are the two constraints, and
-           * they are what set 40% flat plus a 35/10/40 gradient — at that
-           * weight the excerpt clears 5.8:1 against its worst pixel and the
-           * headline 3.8:1, while the lamps and the jet both survive. Dropping
-           * to 30% puts the headline at 2.7:1 over the fuselage.
-           *
-           * A second photograph sits inside this band (the featured cover), and
-           * the scrim is also what separates them: the band reads as ground,
-           * the card as the image.
-           */}
-          <div className="absolute inset-0 z-0" aria-hidden="true">
-            <Image
-              src="/images/insight Hero.jpg"
-              alt=""
-              fill
-              sizes="100vw"
-              quality={70}
-              priority
-              className="object-cover object-center"
-            />
-            <div className="absolute inset-0 bg-black/40" />
-            <div className="absolute inset-0 bg-linear-to-b from-black/35 via-black/10 to-black/40" />
-          </div>
+          {/* Flat black, no photograph. The band used to carry a lounge
+              interior under a 40% flat scrim plus a 35/10/40 gradient, all of
+              it there to hold white type over two warm lamps and a floodlit
+              fuselage; against black none of that is needed, and the featured
+              cover beside it is now the only photograph in the band, which is
+              the point. `priority` moved to that cover with the photograph:
+              it is the above-the-fold LCP paint now, and AGENTS.md §8 allows
+              exactly one per page. */}
 
           <div className="max-w-ean mx-auto px-6 md:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -265,6 +239,7 @@ export default function BlogPage() {
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover transition-transform duration-1000 group-hover:scale-103"
                   quality={90}
+                  priority
                 />
                 {/* Inset frame. White at low opacity, not a border token — the
                     card sits on the photographic band. */}
