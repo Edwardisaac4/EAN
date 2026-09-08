@@ -174,9 +174,17 @@ export const AEROPLEX_HERO: AeroplexHeroContent = {
     "An integrated airside campus at Murtala Muhammed International Airport.",
     "Broke ground in June 2026.",
   ],
-  image: "/images/runway.jpg",
+  /**
+   * The BENOY concept design render of the campus ("Project Airborne", airside
+   * view), replacing the generic runway photograph that stood in while there
+   * was no artwork. The alt text says "concept design render" outright: the
+   * campus broke ground in June 2026 and nothing in this frame is built, so
+   * describing it as a photograph of the site would be a false claim about the
+   * state of the project.
+   */
+  image: "/images/aeroplex/airside-view.jpg",
   imageAlt:
-    "Airside campus development at Murtala Muhammed International Airport Lagos",
+    "BENOY concept design render of the EAN Aeroplex airside campus at dusk, showing the hangar frontage lit from within, business jets and helicopters on the apron and an Airbus A320neo on the taxiway",
   primaryCta: {
     text: "REQUEST THE PROJECT OVERVIEW",
     href: CONTACT_HREF,
