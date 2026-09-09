@@ -1028,9 +1028,9 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
   },
   {
     year: "2019",
-    title: "Achieved IS-BAO Certification Stage 2",
+    title: "Achieved IS-BAH Certification Stage 2",
     category: "GLOBAL SAFETY REGISTRATION",
-    image: "/images/History/isbao.png",
+    image: "/images/History/isbah.jpg",
     imageFit: "contain",
     description:
       "Achieved International Standard for Business Aircraft Operations (IS-BAO) Stage 2 registration, reinforcing international safety and operational compliance.",
