@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "check:auth": "node scripts/check-route-auth.mjs"
+    "check:auth": "node scripts/check-route-auth.mjs",
+    "images:optimize": "node scripts/optimize-images.mjs",
+    "images:warm": "node scripts/warm-images.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
@@ -44,6 +46,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "^16.3.1",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

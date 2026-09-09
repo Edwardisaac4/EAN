@@ -303,7 +303,16 @@ export default function Navbar({ hasPhotoHero = false }: NavbarProps) {
                 // public/images and swapping src on isOnPhoto is the fix that
                 // costs neither the colour on paper nor the legibility here.
                 className="h-8 md:h-8.5 w-auto object-contain"
-                priority
+                // `priority` deliberately absent. It emitted a second
+                // rel=preload into every page's <head>, racing the hero's own
+                // image preload for the same early bandwidth — and AGENTS.md §8
+                // is explicit that only one genuine LCP candidate per page earns
+                // a preload. The lockup is a 6KB PNG rendered at 180x48 inside a
+                // fixed-height bar, so it neither wins LCP nor shifts layout
+                // when it arrives a beat later. `fetchPriority="high"` gets it
+                // treated as important in the normal queue without minting a
+                // preload that competes with the hero.
+                fetchPriority="high"
               />
             </Link>
 
