@@ -182,7 +182,7 @@ export const AEROPLEX_HERO: AeroplexHeroContent = {
    * describing it as a photograph of the site would be a false claim about the
    * state of the project.
    */
-  image: "/images/Project Airborne Landside.png",
+  image: "/images/Project Airborne Landside.jpg",
   imageAlt:
     "BENOY concept design render of the EAN Aeroplex airside campus at dusk, showing the hangar frontage lit from within, business jets and helicopters on the apron and an Airbus A320neo on the taxiway",
   primaryCta: {

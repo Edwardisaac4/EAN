@@ -322,7 +322,45 @@ asks for, and the only fix is re-exporting the assets.
 "The requested resource isn't a valid image." Spaces and parentheses are fine.
 
 **`priority` belongs only on a genuine above-the-fold LCP image**, one per
-page. Each extra `priority` adds a preload that competes with the real LCP.
+page. Each extra `priority` adds a preload that competes with the real LCP. The
+navbar lockup used to carry it and no longer does — it put a second
+`rel=preload` in every page's head, racing the hero for the same early
+bandwidth, and a 6KB PNG in a fixed-height bar can neither win LCP nor shift
+layout. It uses `fetchPriority="high"` instead, which prioritises it inside the
+normal queue without minting a competing preload. The homepage should emit
+**exactly one** `<link rel="preload" as="image">`; more than that is a
+regression.
+
+**No source image may exceed 1920px on its long edge.** `images.deviceSizes`
+tops out at 1920 and next/image never upscales, so a larger source contributes
+nothing a browser can receive — it only makes the optimizer decode pixels it
+will throw away. `npm run images:optimize` enforces the cap and re-encodes
+(JPEG at quality 85 with **4:4:4** chroma, so fine coloured detail like livery
+lettering survives; ICC profile kept, since several of these photographs are
+wide-gamut and would shift if read as sRGB). It is idempotent and safe to
+re-run: a rewrite needs to save 5% and 8KB, or breach the cap, precisely because
+overwriting a source colds its cache (below). Run it after adding photography.
+This took `public/images` from 81MB to 14MB with no loss of served resolution.
+
+**Vercel's image cache is keyed on the source's content hash, and a redeploy
+does not cold it — changing a photograph's bytes does.** The key is (project,
+`w`, `q`, normalised `Accept`, content hash). So swapping one photograph kills
+every cached variant of it at once, and the next request per `w`/`Accept`
+combination is a `MISS`: a synchronous decode-and-re-encode before any byte is
+sent, landing inside that visitor's LCP. A Lighthouse or GTmetrix run that
+happens to be the first visitor after a photography commit therefore measures
+transform time rather than the site, which is why an untouched codebase scores
+A one week and B the next.
+
+**So a deploy that changes photography must be followed by
+`npm run images:warm`.** It replays every `/_next/image` URL that the build
+emitted into `.next/server/app/**/*.html` — the exact set a browser can request,
+srcset candidates and Supabase blog covers included — against both `Accept`
+buckets (AVIF for Chromium, WebP for the rest; one warmed leaves the other
+cold). It reports `x-vercel-cache`, so a second consecutive run reading all
+`HIT` is the proof it worked. `MISS` on the first run is the point: that run
+absorbs the transform instead of a visitor. A deploy with no image changes needs
+no warming.
 
 **Only the active hero slide is server-rendered.** The rest mount after idle.
 Absolutely positioned slides sit inside the viewport, so `loading="lazy"` does
