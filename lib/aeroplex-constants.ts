@@ -223,7 +223,7 @@ export const AEROPLEX_FACTS: AeroplexFact[] = [
     label: "JUN 2026",
     value: "Construction commenced",
     note: "Ground broken with appointed EPC contractor",
-    image: "/images/services/s1-banner-maintenance-c-2.jpg",
+    image: "/images/aeroplex 60.JPG",
     imageAlt: "EAN engineers in the maintenance workshop",
     iconName: "HardHat",
   },
