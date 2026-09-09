@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const ONE_YEAR = 60 * 60 * 24 * 365;
+const ONE_DAY = 60 * 60 * 24;
 
 /**
  * Supabase Storage origin, derived from the public project URL.
@@ -97,9 +98,19 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ["image/avif", "image/webp"],
-    // Optimised variants are immutable for a given (url, w, q) triple, so there
-    // is no reason to re-transform them every day.
-    minimumCacheTTL: ONE_YEAR,
+    // Optimised variants expire after 24h and are re-transformed on the next
+    // request. This is a deliberate product decision, not an oversight, and it
+    // is a deliberate trade *against* LCP: a variant that has expired costs the
+    // next visitor a synchronous decode-and-re-encode before any byte is sent.
+    // Measured cold transforms on this project ran 0.5-1.0s each, and the LCP
+    // image is one of them, so expect one slow run per variant per day.
+    //
+    // It was ONE_YEAR, on the reasoning that a variant is immutable for a given
+    // (url, w, q) triple and Vercel keys its cache on the source content hash,
+    // so nothing but a byte change can make a cached variant wrong. If LCP
+    // needs buying back, this is the first line to revisit -- pair a return to
+    // ONE_YEAR with a scheduled npm run images:warm to cover POP eviction.
+    minimumCacheTTL: ONE_DAY,
     // Next 16 rejects any `quality` not listed here with a 400, so this must
     // cover every value the app can request: 70 for full-bleed hero art, 90 for
     // blog photography, 80 for other content imagery, and 75 for any <Image>
