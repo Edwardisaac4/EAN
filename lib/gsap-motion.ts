@@ -51,3 +51,61 @@ export function prefersReducedMotion(): boolean {
   if (typeof window === 'undefined') return false;
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
+
+/**
+ * ScrollTrigger, kept off the hydration critical path.
+ *
+ * Every scroll animation on this site is below-the-fold behaviour that cannot
+ * matter until the visitor scrolls, yet a module-scope
+ * `import { ScrollTrigger } from 'gsap/ScrollTrigger'` put the plugin's 43KB
+ * into the page's first chunk and ran `registerPlugin` — plus every
+ * `ScrollTrigger.create` and its forced layout read — inside the same task as
+ * React's hydration. A Lighthouse trace of the homepage attributed 87ms of
+ * blocking time to that one task.
+ *
+ * Loading the plugin through a dynamic import moves the parse, the
+ * registration and the trigger creation into a later task, after hydration has
+ * finished. The promise is memoised at module scope, so the second caller and
+ * every client-side navigation resolve in a microtask rather than re-fetching.
+ *
+ * The reveal animations tween *from* `opacity: 0`, so deferring them means the
+ * content paints visible and is then hidden a beat later. On first load the
+ * preloader's veil is still up for that beat and covers it; on a client-side
+ * navigation the module is already resolved, so there is no beat to cover.
+ * Do not stretch this deferral any further without checking both cases.
+ */
+let scrollTriggerLoad: Promise<void> | null = null;
+
+export function loadScrollTrigger(): Promise<void> {
+  if (!scrollTriggerLoad) {
+    scrollTriggerLoad = import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
+      gsap.registerPlugin(ScrollTrigger);
+    });
+  }
+
+  return scrollTriggerLoad;
+}
+
+/**
+ * `withReducedMotion`, deferred until ScrollTrigger has loaded.
+ *
+ * Returns the cleanup `useGSAP` expects. The tweens are created asynchronously
+ * and so fall outside the `gsap.context` that `useGSAP` sets up — which is why
+ * the cleanup reverts the `matchMedia` this creates rather than trusting the
+ * context to find them. `cancelled` covers the unmount-before-resolve case,
+ * where there is nothing to revert yet and the callback must not build one.
+ */
+export function withScrollTrigger(animate: () => void, settle: () => void): () => void {
+  let cancelled = false;
+  let revert: (() => void) | undefined;
+
+  void loadScrollTrigger().then(() => {
+    if (cancelled) return;
+    revert = withReducedMotion(animate, settle);
+  });
+
+  return () => {
+    cancelled = true;
+    revert?.();
+  };
+}

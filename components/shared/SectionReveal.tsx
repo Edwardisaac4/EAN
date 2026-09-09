@@ -3,12 +3,7 @@
 import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { withReducedMotion } from '@/lib/gsap-motion';
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+import { withScrollTrigger } from '@/lib/gsap-motion';
 
 /** Today's values. A site-wide default that changes here changes 41 sections. */
 const DEFAULT_DISTANCE = 32;
@@ -86,7 +81,7 @@ export default function SectionReveal({
 
   useGSAP(
     () =>
-      withReducedMotion(
+      withScrollTrigger(
         () => {
           const rafId = requestAnimationFrame(() => {
             const container = containerRef.current;

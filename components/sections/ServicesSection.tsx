@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   Plane,
   Wrench,
@@ -19,14 +18,10 @@ import {
 } from 'lucide-react';
 
 import { SERVICES_DATA } from '@/lib/constants';
-import { withReducedMotion } from '@/lib/gsap-motion';
+import { withReducedMotion, withScrollTrigger } from '@/lib/gsap-motion';
 import GoldButton from '@/components/shared/GoldButton';
 import OutlineButton from '@/components/shared/OutlineButton';
 import SectionReveal from '@/components/shared/SectionReveal';
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 const ICON_MAP = {
   Plane,
@@ -108,7 +103,7 @@ export default function ServicesSection() {
    */
   useGSAP(
     () =>
-      withReducedMotion(
+      withScrollTrigger(
         () => {
           gsap.to(bgRef.current, {
             yPercent: 15,
