@@ -5,15 +5,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { withReducedMotion } from '@/lib/gsap-motion';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { withScrollTrigger } from '@/lib/gsap-motion';
 
 import GoldButton from '@/components/shared/GoldButton';
 import SectionReveal from '@/components/shared/SectionReveal';
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 export default function CharterSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -21,7 +16,7 @@ export default function CharterSection() {
 
   useGSAP(
     () =>
-      withReducedMotion(
+      withScrollTrigger(
         () => {
           // Parallax effect on background image
           gsap.to(bgRef.current, {

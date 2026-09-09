@@ -5,17 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { withReducedMotion, prefersReducedMotion } from '@/lib/gsap-motion';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { withScrollTrigger, prefersReducedMotion } from '@/lib/gsap-motion';
 
 import GoldButton from '@/components/shared/GoldButton';
 import OutlineButton from '@/components/shared/OutlineButton';
 import { HERO_SLIDES } from '@/lib/constants';
-
-// Register GSAP plugins at the file level
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 const SLIDE_INTERVAL_MS = 4000;
 const CROSSFADE_MS = 1800;
@@ -197,7 +191,7 @@ export default function HeroSection() {
 
   useGSAP(
     () =>
-      withReducedMotion(
+      withScrollTrigger(
         () => {
           const rafId = requestAnimationFrame(() => {
             if (!containerRef.current) return;
