@@ -299,11 +299,12 @@ export default function HeroSection() {
           );
         })}
 
-        {/* A flat 25% black over the whole frame, the same scrim the Services
-            band and the /airborne bands sit under, then the two ramps that give
-            the copy its contrast. */}
+        {/* The Services band's pair, which the /airborne bands also carry: a
+            flat 25% black over the whole frame and a left-weighted ramp under
+            the copy. The vertical ramp is the hero's own, for the bar above and
+            the dots and scroll cue below. */}
         <div className="absolute inset-0 z-2 bg-black/25" />
-        <div className="absolute inset-0 z-2 bg-linear-to-r from-black/65 via-black/25 to-transparent" />
+        <div className="absolute inset-0 z-2 bg-linear-to-r from-black/90 via-black/65 via-55% to-transparent" />
         <div className="absolute inset-0 z-2 bg-linear-to-t from-black/45 via-transparent to-black/35" />
       </div>
 
