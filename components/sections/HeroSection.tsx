@@ -299,7 +299,10 @@ export default function HeroSection() {
           );
         })}
 
-        {/* Luminous overlays for high image visibility and clean text contrast */}
+        {/* A flat 25% black over the whole frame, the same scrim the Services
+            band and the /airborne bands sit under, then the two ramps that give
+            the copy its contrast. */}
+        <div className="absolute inset-0 z-2 bg-black/25" />
         <div className="absolute inset-0 z-2 bg-linear-to-r from-black/65 via-black/25 to-transparent" />
         <div className="absolute inset-0 z-2 bg-linear-to-t from-black/45 via-transparent to-black/35" />
       </div>
