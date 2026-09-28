@@ -244,12 +244,17 @@ export default function HeroSection() {
   const titleLines = slide.title.split('\n');
   let wordIndex = 0;
 
+  // One screen tall, never more — `svh`, so a phone's toolbar cannot cover the
+  // bottom either. The 600px floor only protects the copy on a very short
+  // window; the 700px and 760px floors this once had at md and lg were taller
+  // than most laptop windows (1280×720 at 150% leaves about 620px), which put
+  // the bottom of the photograph, the dots and the scroll cue below the fold.
   return (
     <div
       ref={containerRef}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative w-full h-screen min-h-150 md:min-h-175 lg:min-h-190 overflow-hidden bg-ean-navy flex items-center select-none"
+      className="relative w-full h-svh min-h-150 overflow-hidden bg-ean-navy flex items-center select-none"
     >
       {/* Background Slides Container — single parallax layer */}
       <div
