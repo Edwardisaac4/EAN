@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Navbar from '@/components/layout/Navbar'
-import PricingCalculator from '@/components/pricing/PricingCalculator'
+import RateSheet from '@/components/pricing/RateSheet'
 import JsonLd from '@/components/shared/JsonLd'
 import { buildMetadata, breadcrumbSchema, PAGE_SEO } from '@/lib/seo'
 
@@ -18,11 +18,12 @@ export default function PricingPage() {
           { name: 'Pricing', path: '/pricing' },
         ])}
       />
+      {/* The hero is the brand-blue band, not a photograph, but it is dark all
+          the same — the bar needs its white-on-dark palette at rest. */}
       <Navbar hasPhotoHero />
       <main className="flex-1">
-        <PricingCalculator />
+        <RateSheet />
       </main>
     </>
   )
 }
-

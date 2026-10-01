@@ -101,7 +101,7 @@ export default function PrincipleModal({ pillar, index, isOpen, onClose }: Princ
                   fill
                   sizes="(max-width: 768px) 100vw, 768px"
                   className="object-cover"
-                  quality={85}
+                  quality={80}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                 <div className="absolute bottom-4 left-6 right-6 flex items-end justify-between">

@@ -58,7 +58,7 @@ export default function VIPSection() {
           fill
           sizes="100vw"
           priority={false}
-          quality={85}
+          quality={80}
           className="object-cover object-center"
         />
         {/* Subtle black overlay so the lounge imagery remains luminous while text is legible */}

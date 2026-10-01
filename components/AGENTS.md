@@ -7,7 +7,7 @@ layout/     Navbar · Footer · PublicShell · Preloader
 sections/   homepage + page sections (Hero, TrustBar, About, Services, VIP,
             Charter, Partners, Contact, News, Pricing, QuoteCalculator)
 shared/     GoldButton · OutlineButton · SectionReveal · StatCounter · Presence
-pricing/    quote builder UI
+pricing/    rate sheet (/pricing) and quote builder (/pricing/quote)
 team/ history/ about/   page-specific components
 admin/      → see app/admin/AGENTS.md
 ```
@@ -35,11 +35,12 @@ and the `Navbar` chrome collapse. Always `useGSAP` from `@gsap/react`. Register
 plugins at file level, outside the component. Never a raw `useEffect` with gsap
 inside.
 
-`Navbar` is **transparent at rest on all fifteen routes** and resolves to the
+`Navbar` is **transparent at rest on all sixteen routes** and resolves to the
 same opaque paper bar on scroll. Only the *palette* varies, via `hasPhotoHero`:
 white links over the eleven full-bleed photo heroes (`/`, `/about`, `/contact`,
-`/history`, `/team`, `/charter`, `/services`, `/services/[slug]`, `/pricing`,
-`/blog`, `/the-aeroplex`), ink links on the four paper ones (`/blog/[slug]`,
+`/history`, `/team`, `/charter`, `/services`, `/services/[slug]`,
+`/pricing/quote`, `/blog`, `/the-aeroplex`) and over the brand-blue band on
+`/pricing`, ink links on the four paper ones (`/blog/[slug]`,
 `/privacy-policy`, `/terms-of-use`, the 404). Set the prop from what is actually
 behind the bar — white type on a near-white hero is invisible, and so is ink on
 a scrim. The logo is held to brand colour on every route regardless.

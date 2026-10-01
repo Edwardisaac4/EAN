@@ -109,3 +109,34 @@ export function withScrollTrigger(animate: () => void, settle: () => void): () =
     revert?.();
   };
 }
+
+/**
+ * Resolves once the opening veil (components/layout/Preloader.tsx) has lifted.
+ *
+ * An entrance that plays while the veil is up is one nobody sees — or worse,
+ * half of one: the veil holds opaque to 1.15s and dissolves by 1.36s, which is
+ * exactly when a deferred ScrollTrigger entrance tends to be mid-rise. That is
+ * the "site arriving mid-animation" failure the Preloader's own comment
+ * describes, so anything above the fold that animates in should wait for this.
+ *
+ * It reads the veil's CSS animation rather than duplicating its timings, so the
+ * two cannot drift. After a client-side navigation the veil finished long ago
+ * and this resolves in a microtask; with no veil, no Web Animations API, or a
+ * veil removed mid-flight, it resolves rather than holding the page hostage.
+ */
+export function afterPreloader(): Promise<void> {
+  if (typeof document === 'undefined' || typeof document.getAnimations !== 'function') {
+    return Promise.resolve();
+  }
+
+  const veil = document
+    .getAnimations()
+    .find((animation) => (animation as CSSAnimation).animationName === 'ean-veil-out');
+
+  if (!veil || veil.playState === 'finished') return Promise.resolve();
+
+  return veil.finished.then(
+    () => undefined,
+    () => undefined
+  );
+}

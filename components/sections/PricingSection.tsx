@@ -387,7 +387,7 @@ export default function PricingSection(): React.JSX.Element {
 
             {/* Action Buttons */}
             <div className="space-y-3 pt-2">
-              <Link href="/pricing" className="block w-full">
+              <Link href="/pricing/quote" className="block w-full">
                 <GoldButton className="w-full justify-center py-3.5 font-ui text-sm font-semibold flex items-center gap-2">
                   <span>Generate Full Formal Quote & PDF</span>
                   <ChevronRight size={16} />

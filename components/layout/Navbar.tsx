@@ -10,7 +10,7 @@ import { Menu, X, ChevronDown } from 'lucide-react';
 import Presence from '@/components/shared/Presence';
 import OpsStrip from '@/components/layout/OpsStrip';
 import { withReducedMotion } from '@/lib/gsap-motion';
-import { NAV_ITEMS, NAV_CTA } from '@/lib/constants';
+import { NAV_ITEMS, NAV_CTA, NAV_SECONDARY_CTA } from '@/lib/constants';
 
 // File level, outside the component: Next remounts on StrictMode and on every
 // HMR patch, and a registration inside the body runs again on each of them.
@@ -308,10 +308,16 @@ export default function Navbar({ hasPhotoHero = false }: NavbarProps) {
                 // image preload for the same early bandwidth — and AGENTS.md §8
                 // is explicit that only one genuine LCP candidate per page earns
                 // a preload. The lockup is a 6KB PNG rendered at 180x48 inside a
-                // fixed-height bar, so it neither wins LCP nor shifts layout
-                // when it arrives a beat later. `fetchPriority="high"` gets it
-                // treated as important in the normal queue without minting a
-                // preload that competes with the hero.
+                // fixed-height bar, so it doesn't shift layout when it arrives a
+                // beat later. `fetchPriority="high"` gets it treated as
+                // important in the normal queue without minting a preload that
+                // competes with the hero.
+                //
+                // `loading="eager"` because on routes with no hero photograph
+                // the lockup *is* the LCP element, and next/image lazy-loads by
+                // default. Eager only skips the lazy-load wait. Unlike
+                // `priority`, it adds no preload.
+                loading="eager"
                 fetchPriority="high"
               />
             </Link>
@@ -429,6 +435,35 @@ export default function Navbar({ hasPhotoHero = false }: NavbarProps) {
                 />
               </nav>
 
+              {/* The container's gap-8 is the distance between the links and
+                  the actions; the actions are closer to each other than that,
+                  or they read as two more nav items rather than a pair. */}
+              <div className="flex items-center gap-4">
+              {/* A button, with the same geometry as the inquiry beside it —
+                  same 11px uppercase, same padding, same hairline — so the two
+                  read as one pair of controls rather than a control and a link.
+
+                  What separates them is fill against outline, which is the one
+                  distinction that survives at 11px: this one is solid, the
+                  inquiry is a hairline over an empty ground. A tinted fill was
+                  tried first and read as a highlighted link rather than a
+                  control — at this size the fill has to be full strength to
+                  register as a button at all.
+
+                  Over a photograph it inverts, because the solid on that ground
+                  has to be the white: brand blue on a scrimmed photograph is
+                  1.4:1 against the scrim and the button would vanish. */}
+              <Link
+                href={NAV_SECONDARY_CTA.href}
+                aria-current={pathname === NAV_SECONDARY_CTA.href ? 'page' : undefined}
+                className={`font-ui font-semibold text-[11px] uppercase tracking-[0.08em] px-4 py-2.5 border transition-colors duration-300 whitespace-nowrap ${isOnPhoto
+                    ? 'border-white bg-white text-ean-gold hover:bg-transparent hover:text-white'
+                    : 'border-ean-gold bg-ean-gold text-ean-text-dark hover:bg-ean-gold-light hover:border-ean-gold-light'
+                  }`}
+              >
+                {NAV_SECONDARY_CTA.name}
+              </Link>
+
               {/* The floating pair mirrors `OutlineButton variant="photo"`,
                   the site's settled answer for an outline control on a scrimmed
                   photograph — a 50% white hairline resolving to a white fill
@@ -442,6 +477,7 @@ export default function Navbar({ hasPhotoHero = false }: NavbarProps) {
               >
                 {NAV_CTA.name}
               </Link>
+              </div>
             </div>
 
             {/* Below 1120px: the CTA stays reachable, as it does in the prototype,
@@ -560,13 +596,29 @@ export default function Navbar({ hasPhotoHero = false }: NavbarProps) {
               })}
             </nav>
 
+            {/* An outline above the fill — the inverse of the desktop bar, and
+                deliberately so. Up there the inquiry is the outline and this is
+                the solid, because the bar has room for only one filled shape
+                and the destination is what the bar is selling. Down here the
+                drawer already lists every destination above, so the one solid
+                surface goes to the action instead. Two solids stacked would
+                read as a choice between equals in both places. */}
+            <Link
+              href={NAV_SECONDARY_CTA.href}
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-current={pathname === NAV_SECONDARY_CTA.href ? 'page' : undefined}
+              className="mt-8 w-full border border-ean-gold text-ean-gold py-4 text-center font-ui font-semibold text-[12.5px] uppercase tracking-[0.08em] hover:bg-ean-gold hover:text-ean-text-dark transition-colors duration-300"
+            >
+              {NAV_SECONDARY_CTA.name}
+            </Link>
+
             {/* The one solid brass surface in the drawer: it is the single action
                 on the screen, where the desktop bar's outline sits beside seven
                 competing links. */}
             <Link
               href={NAV_CTA.href}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="mt-8 w-full bg-ean-gold text-ean-text-dark py-4 text-center font-ui font-semibold text-[12.5px] uppercase tracking-[0.08em] hover:bg-ean-gold-light transition-colors duration-300"
+              className="mt-3 w-full bg-ean-gold text-ean-text-dark py-4 text-center font-ui font-semibold text-[12.5px] uppercase tracking-[0.08em] hover:bg-ean-gold-light transition-colors duration-300"
             >
               {NAV_CTA.name}
             </Link>
