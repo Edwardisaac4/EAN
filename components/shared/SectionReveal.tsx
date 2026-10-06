@@ -47,12 +47,6 @@ interface SectionRevealProps {
    * the marked items are the cells of one CSS grid.
    */
   grid?: boolean;
-  /**
-   * Hide again as the block leaves the top of the screen, and replay as it comes
-   * back down — so the reveal runs scrolling up as well as down. Off by default:
-   * everywhere else on the site a section arrives once and stays.
-   */
-  twoWay?: boolean;
   /** Travel distance in px. Headline blocks want more than card grids. */
   distance?: number;
   duration?: number;
@@ -79,7 +73,6 @@ export default function SectionReveal({
   id,
   stagger,
   grid = false,
-  twoWay = false,
   distance = DEFAULT_DISTANCE,
   duration = DEFAULT_DURATION,
   ease = DEFAULT_EASE,
@@ -114,19 +107,11 @@ export default function SectionReveal({
                     ? { each, from: 'start', grid: 'auto' }
                     : each
                   : undefined,
-                scrollTrigger: twoWay
-                  ? {
-                      trigger: container,
-                      start: 'top 85%',
-                      // Mirrors the start, so it goes as far from the top as it came from the foot.
-                      end: 'bottom 15%',
-                      toggleActions: 'play reverse play reverse',
-                    }
-                  : {
-                      trigger: container,
-                      start: 'top 85%',
-                      toggleActions: 'play none none none',
-                    },
+                scrollTrigger: {
+                  trigger: container,
+                  start: 'top 85%',
+                  toggleActions: 'play none none none',
+                },
               }
             );
           });

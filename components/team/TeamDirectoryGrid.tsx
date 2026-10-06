@@ -52,7 +52,7 @@ export default function TeamDirectoryGrid({ members }: TeamDirectoryGridProps) {
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
-                    quality={80}
+                    quality={85}
                   />
 
                   {/* Base Luminous Vignette Overlay - lightened so portraits remain bright & clear */}

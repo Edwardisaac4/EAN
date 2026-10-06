@@ -1,7 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { SITE_URL } from '@/lib/seo'
 import { ARTICLES_DATABASE, SERVICES_DATA } from '@/lib/constants'
-import { FUTURE_PROGRAMMES } from '@/lib/future-constants'
 import { adminSupabase } from '@/utils/supabase/admin'
 
 /**
@@ -25,7 +24,6 @@ const STATIC_ROUTES: Array<{
   { path: '/', changeFrequency: 'weekly', priority: 1.0 },
   { path: '/services', changeFrequency: 'monthly', priority: 0.9 },
   { path: '/pricing', changeFrequency: 'monthly', priority: 0.9 },
-  { path: '/pricing/quote', changeFrequency: 'monthly', priority: 0.8 },
   // Ranked with /contact rather than below it: charter is the highest-intent
   // request on the site, and it is deliberately absent from the navigation, so
   // search is one of the few ways anyone reaches it directly.
@@ -34,16 +32,6 @@ const STATIC_ROUTES: Array<{
   { path: '/about', changeFrequency: 'monthly', priority: 0.8 },
   // Monthly because the programme section is updated as milestones complete.
   { path: '/the-aeroplex', changeFrequency: 'monthly', priority: 0.8 },
-  // Same cadence and rank as /the-aeroplex, which is one of the ten it carries.
-  { path: '/airborne', changeFrequency: 'monthly', priority: 0.8 },
-  // The ten programme pages, listed from the same array the route builds from
-  // so a new line cannot reach the site without reaching the sitemap. Ranked
-  // below their index and on its cadence: each one moves as milestones land.
-  ...FUTURE_PROGRAMMES.map((programme) => ({
-    path: `/airborne/${programme.slug}`,
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
-  })),
   { path: '/blog', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/team', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/history', changeFrequency: 'yearly', priority: 0.5 },

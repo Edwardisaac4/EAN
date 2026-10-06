@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 const SUGGESTED_LINKS = [
   { label: 'Our Services', href: '/services', hint: 'FBO, maintenance, charter and catering' },
-  { label: 'Get a Quote', href: '/pricing/quote', hint: 'Indicative handling pricing in minutes' },
+  { label: 'Get a Quote', href: '/pricing', hint: 'Indicative handling pricing in minutes' },
   { label: 'Insights', href: '/blog', hint: 'Business aviation analysis' },
   { label: 'Contact Operations', href: '/contact', hint: '24/7 flight support desk' },
 ];

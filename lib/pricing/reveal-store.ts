@@ -136,22 +136,8 @@ export function markLeadCaptured(email: string): void {
   }
 }
 
-/**
- * Unlocks pricing for the rest of this page view after a successful submit.
- * Module state survives client-side navigation, so one unlock covers both the
- * rate sheet on /pricing and the calculator on /pricing/quote.
- */
+/** Unlocks pricing for the rest of this page view after a successful submit. */
 export function grantReveal(lead: LeadDetails): void {
   state = { revealed: true, lead }
-  listeners.forEach((listener) => listener())
-}
-
-/**
- * Re-gates both pages — the rate sheet's "Not you? Change details". Captured
- * emails are left alone: re-entering the same details reveals again without a
- * second lead, and different details are a new lead, as they should be.
- */
-export function revokeReveal(): void {
-  state = UNREVEALED
   listeners.forEach((listener) => listener())
 }
