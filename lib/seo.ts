@@ -143,6 +143,14 @@ export const PAGE_SEO = {
     path: "/services",
     image: "/images/vip-lounge.jpg",
   },
+  future: {
+    title:
+      "Airborne | Ten Programmes Building EAN's Next Decade at Lagos",
+    description:
+      "FBO and lounges, EAN Jets, maintenance, leasing and brokerage, fuels, the bonded cargo terminal, commercial and retail, GSA services, an eVTOL vertiport, and the Aeroplex campus at Lagos MMIA.",
+    path: "/airborne",
+    image: "/images/future/10-the-aeroplex.jpg",
+  },
   charter: {
     title: "Request a Charter | Private Jet & Helicopter Charter — EAN Aviation",
     description:
@@ -151,10 +159,16 @@ export const PAGE_SEO = {
     image: "/images/honda-jet-interior.jpg",
   },
   pricing: {
-    title: "FBO Pricing & Instant Quote Calculator | EAN Aviation Lagos",
+    title: "FBO Services & Rates | EAN Aviation Lagos & Abuja",
+    description:
+      "The published EAN rate schedule for Lagos MMIA, Abuja NAIA and outstations — handling, permits, parking, hangarage and aircraft services in USD, banded by aircraft MTOW.",
+    path: "/pricing",
+  },
+  pricingQuote: {
+    title: "FBO Quote Calculator | EAN Aviation Lagos",
     description:
       "Build an indicative handling quote for Lagos MMIA or Abuja NAIA — landing, parking, ground support and add-ons priced by aircraft MTOW.",
-    path: "/pricing",
+    path: "/pricing/quote",
   },
   blog: {
     title: "Insights & Industry News | EAN Aviation",

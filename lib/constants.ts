@@ -263,6 +263,7 @@ export const NAV_ITEMS: NavItem[] = [
     dropdownItems: [
       { name: "Our Team", href: "/team" },
       { name: "History", href: "/history" },
+      { name: "Insights", href: "/blog" },
     ],
   },
   {
@@ -280,13 +281,25 @@ export const NAV_ITEMS: NavItem[] = [
   },
   { name: "The Aeroplex", href: "/the-aeroplex" },
   { name: "Pricing", href: "/pricing" },
-  { name: "Insights", href: "/blog" },
   { name: "Contact Us", href: "/contact" },
 ];
 
 export const NAV_CTA = {
   name: "Make an Inquiry",
   href: "/contact",
+};
+
+/**
+ * The second bar action, left of {@link NAV_CTA} and quieter than it.
+ *
+ * Two controls in the chrome needs a reason, and the reason is that they are
+ * different kinds of thing: "Make an Inquiry" asks the visitor to do something,
+ * this one offers somewhere to go. It is styled as a plain link rather than a
+ * second outline so the pair does not read as two equal buttons — see Navbar.
+ */
+export const NAV_SECONDARY_CTA = {
+  name: "Airborne",
+  href: "/airborne",
 };
 
 export const FOOTER_SERVICES_LINKS = [
@@ -305,6 +318,7 @@ export const FOOTER_COMPANY_LINKS = [
   { name: "History", href: "/history" },
   { name: "Our Team", href: "/team" },
   { name: "The Aeroplex", href: "/the-aeroplex" },
+  { name: "Airborne", href: "/airborne" },
   { name: "Insights", href: "/blog" },
   { name: "Security & Data Protection", href: "/privacy-policy" },
   { name: "Contact", href: "/contact" },
@@ -327,7 +341,7 @@ export const HERO_SLIDES: HeroSlide[] = [
       "NCAA-Approved Maintenance",
       "VIP Ground Handling",
     ],
-    image: "/images/Sliders/First Slide.jpg",
+    image: "/images/Sliders/slide one new.jpg",
     primaryCta: {
       text: "Make an Inquiry",
       href: "#contact-section",
@@ -532,7 +546,7 @@ export const SERVICES_DATA: ServiceRichData[] = [
     primaryButtonText: "MAKE AN INQUIRY",
     primaryButtonHref: "/contact?service=fbo-ground-support",
     secondaryButtonText: "BUILD YOUR QUOTE",
-    secondaryButtonHref: "/pricing",
+    secondaryButtonHref: "/pricing/quote",
   },
   {
     slug: "aircraft-maintenance",

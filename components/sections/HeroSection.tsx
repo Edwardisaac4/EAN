@@ -11,6 +11,11 @@ import GoldButton from '@/components/shared/GoldButton';
 import OutlineButton from '@/components/shared/OutlineButton';
 import { HERO_SLIDES } from '@/lib/constants';
 
+interface IntentLinkProps {
+  href: string;
+  children: React.ReactNode;
+}
+
 const SLIDE_INTERVAL_MS = 4000;
 const CROSSFADE_MS = 1800;
 
@@ -54,6 +59,42 @@ const TITLE_SCALES = {
   compact: 'text-[clamp(30px,4.4vw,52px)]',
 } as const;
 
+/**
+ * A slide CTA that prefetches on intent rather than on sight.
+ *
+ * Each slide mounts its own buttons, so the default viewport prefetch fired a
+ * route fetch plus its JS chunks at every autoplay step — /charter on the first
+ * advance, /services/aircraft-maintenance on the second, two more on the third.
+ * An unthrottled Lighthouse run, which is what GTmetrix does, stops recording
+ * only after 5.25s of network and CPU quiet, so that traffic kept the test
+ * running through several slide changes and scoring all of them. Hover, touch
+ * and focus still prefetch, so the click stays instant for anyone about to make
+ * it. This is the hover-prefetch pattern from the Next.js linking guide.
+ */
+function IntentLink({ href, children }: IntentLinkProps) {
+  const [intent, setIntent] = useState(false);
+  const arm = () => setIntent(true);
+
+  return (
+    <Link
+      href={href}
+      prefetch={intent ? null : false}
+      onMouseEnter={arm}
+      onTouchStart={arm}
+      onFocus={arm}
+    >
+      {children}
+    </Link>
+  );
+}
+
+/**
+ * Flips once a HeroSection has mounted in this page session. Only the first
+ * mount of a hard load paints from server HTML under the preloader, so only
+ * that one sets its headline statically — see `staticTitle`.
+ */
+let heroHasMounted = false;
+
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const parallaxRef = useRef<HTMLDivElement>(null);
@@ -69,6 +110,19 @@ export default function HeroSection() {
   const [displaySlide, setDisplaySlide] = useState(0);
   const [riseBase, setRiseBase] = useState('0s');
   const [isPaused, setIsPaused] = useState(false);
+
+  // The first slide of a hard load sets its headline as plain text, with no
+  // word rise. Chrome skips text while it is at opacity 0 and never came back
+  // for this headline once the rise brought it in, so it was never an LCP
+  // candidate: LCP sat on the navbar logo until autoplay mounted slide 2's
+  // headline, then jumped to it — 5.9s on GTmetrix. The rise finished under the
+  // preloader's opaque veil anyway, so a visitor loses nothing. Every slide
+  // change, and a client-side visit back to "/", still rises.
+  const [staticTitle, setStaticTitle] = useState(() => !heroHasMounted);
+
+  useEffect(() => {
+    heroHasMounted = true;
+  }, []);
 
   // Slides 2..n are withheld from the server HTML. They sit at inset-0 inside
   // the viewport, so `loading="lazy"` never defers them — the browser would
@@ -121,6 +175,7 @@ export default function HeroSection() {
       const commit = () => {
         setDisplaySlide(currentSlide);
         setRiseBase(TEXT_ENTER_DELAY);
+        setStaticTitle(false);
       };
 
       if (!node || prefersReducedMotion()) {
@@ -244,12 +299,17 @@ export default function HeroSection() {
   const titleLines = slide.title.split('\n');
   let wordIndex = 0;
 
+  // One screen tall, never more — `svh`, so a phone's toolbar cannot cover the
+  // bottom either. The 600px floor only protects the copy on a very short
+  // window; the 700px and 760px floors this once had at md and lg were taller
+  // than most laptop windows (1280×720 at 150% leaves about 620px), which put
+  // the bottom of the photograph, the dots and the scroll cue below the fold.
   return (
     <div
       ref={containerRef}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative w-full h-screen min-h-150 md:min-h-175 lg:min-h-190 overflow-hidden bg-ean-navy flex items-center select-none"
+      className="relative w-full h-svh min-h-150 overflow-hidden bg-ean-navy flex items-center select-none"
     >
       {/* Background Slides Container — single parallax layer */}
       <div
@@ -294,8 +354,12 @@ export default function HeroSection() {
           );
         })}
 
-        {/* Luminous overlays for high image visibility and clean text contrast */}
-        <div className="absolute inset-0 z-2 bg-linear-to-r from-black/65 via-black/25 to-transparent" />
+        {/* The Services band's pair, which the /airborne bands also carry: a
+            flat 25% black over the whole frame and a left-weighted ramp under
+            the copy. The vertical ramp is the hero's own, for the bar above and
+            the dots and scroll cue below. */}
+        <div className="absolute inset-0 z-2 bg-black/25" />
+        <div className="absolute inset-0 z-2 bg-linear-to-r from-black/90 via-black/65 via-55% to-transparent" />
         <div className="absolute inset-0 z-2 bg-linear-to-t from-black/45 via-transparent to-black/35" />
       </div>
 
@@ -305,7 +369,8 @@ export default function HeroSection() {
             change. That entrance stays in CSS on purpose — see globals.css: it
             paints on the very first frame instead of waiting for hydration,
             which is what keeps LCP down. Only the *exit* is GSAP, and by the
-            time an exit can happen the page has long since hydrated. */}
+            time an exit can happen the page has long since hydrated. The first
+            headline skips the entrance entirely — see `staticTitle`. */}
         <div
           key={displaySlide}
           ref={copyRef}
@@ -317,13 +382,21 @@ export default function HeroSection() {
             {slide.eyebrow}
           </p>
 
-          {/* Headline — one animated box per word */}
+          {/* Headline — one animated box per word, except on the static first
+              paint (see `staticTitle`), where it is one plain text block */}
           <h1
             className={`font-display ${
               TITLE_SCALES[slide.titleScale ?? 'default']
             } text-white font-medium leading-[1.1] mb-4 sm:mb-5`}
           >
-            {titleLines.map((line, lineIdx) => {
+            {staticTitle &&
+              titleLines.map((line, lineIdx) => (
+                <React.Fragment key={lineIdx}>
+                  {line}
+                  {lineIdx < titleLines.length - 1 && <br />}
+                </React.Fragment>
+              ))}
+            {!staticTitle && titleLines.map((line, lineIdx) => {
               const words = line.split(' ');
               return (
                 <React.Fragment key={lineIdx}>
@@ -401,9 +474,9 @@ export default function HeroSection() {
                 {slide.primaryCta.text}
               </GoldButton>
             ) : (
-              <Link href={slide.primaryCta.href}>
+              <IntentLink href={slide.primaryCta.href}>
                 <GoldButton>{slide.primaryCta.text}</GoldButton>
-              </Link>
+              </IntentLink>
             )}
             {/* Bound to a local so the narrowing survives into the callback —
                 reading `slide.secondaryCta` again inside `onClick` would widen
@@ -417,9 +490,9 @@ export default function HeroSection() {
                   {slide.secondaryCta.text}
                 </OutlineButton>
               ) : (
-                <Link href={slide.secondaryCta.href}>
+                <IntentLink href={slide.secondaryCta.href}>
                   <OutlineButton variant="photo">{slide.secondaryCta.text}</OutlineButton>
-                </Link>
+                </IntentLink>
               )
             )}
           </div>

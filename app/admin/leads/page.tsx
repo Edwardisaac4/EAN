@@ -142,7 +142,7 @@ export default function MasterLeadHubPage() {
     runMutation(MUTATION_ADD_LEAD_NOTE, { id: leadId, note: noteText });
 
   const handleExportCsv = () => {
-    const headers = ['Lead Code', 'Full Name', 'Email', 'Phone', 'Company', 'Service', 'Referral Source', 'Priority', 'Status', 'Submitted At'];
+    const headers = ['Lead Code', 'Full Name', 'Email', 'Phone', 'Company', 'Service', 'Referral Source', 'Priority', 'Status', 'Submitted At', 'Message'];
     const rows = leads.map((l) => [
       l.leadCode ?? l.id,
       l.fullName,
@@ -154,6 +154,7 @@ export default function MasterLeadHubPage() {
       l.priority,
       l.status,
       l.createdAt,
+      l.message,
     ]);
 
     const csvContent = [headers, ...rows]
