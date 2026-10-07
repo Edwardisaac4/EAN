@@ -67,10 +67,10 @@ export default function QuoteSummary({
         <div className="grid p-5 md:p-6">
           {/* THE QUOTE. Blurred and inert while locked — `pointer-events-none`
               is what stops a gated visitor tabbing into what is behind the
-              overlay. The total is not merely blurred, it is not rendered at
-              all until reveal: a 6px blur is a picture of a number, and the
-              real one would still be sitting in the DOM for anyone who opens
-              devtools. */}
+              overlay. The total and the line prices are not merely blurred,
+              they are not rendered at all until reveal: a 6px blur is a
+              picture of a number, and the real one would still be sitting in
+              the DOM for anyone who opens devtools. */}
           <div
             className={`col-start-1 row-start-1 ${
               isLocked
@@ -86,7 +86,7 @@ export default function QuoteSummary({
             ) : (
               <div>
                 {quote.items.map((item, idx) => (
-                  <QuoteLineItem key={`${item.label}-${idx}`} item={item} />
+                  <QuoteLineItem key={`${item.label}-${idx}`} item={item} isLocked={isLocked} />
                 ))}
               </div>
             )}
