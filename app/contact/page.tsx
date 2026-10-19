@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -418,6 +419,17 @@ export default function ContactPage() {
                       </div>
                     </div>
                   </div>
+                </SectionReveal>
+
+                {/* Feedback has its own form and inboxes — the enquiry form on
+                    the right feeds the sales pipeline, which is the wrong desk. */}
+                <SectionReveal>
+                  <p className="font-ui text-sm text-ean-muted-light">
+                    Have a compliment, suggestion or complaint?{' '}
+                    <Link href="/feedback" className="font-semibold text-ean-gold hover:underline">
+                      Share your feedback
+                    </Link>
+                  </p>
                 </SectionReveal>
               </div>
 

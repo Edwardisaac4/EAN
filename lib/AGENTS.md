@@ -28,6 +28,7 @@ services/          server-only business logic
   leads-service.ts       all lead CRUD (uses adminSupabase)
   lead-input.ts          zod schemas + guards for every untrusted lead payload
   lead-notifications.ts  Resend email on new lead
+  feedback-notifications.ts  Resend email for /feedback → both department inboxes
 pricing/           quote engine
   bands.ts               MTOW bands, tariffs, add-ons — the rate card
   calculations.ts        buildQuote(state) -> QuoteResult
@@ -37,6 +38,7 @@ mappers/
 supabase/helpers.ts      dbError() / notFound() response builders
 auth.ts                  HMAC session token sign + verify
 rate-limiter.ts          in-memory attempt throttle (admin login)
+feedback.ts              /feedback audiences (client/operator) and types — shared by form and route
 graphql-client.ts        typed browser client for /api/graphql
 lead-tracking.ts         UTM / referrer attribution capture
 constants.ts             site copy, nav, services, team, blog seed (65 KB)

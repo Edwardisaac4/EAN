@@ -43,6 +43,7 @@ const PUBLIC_HANDLERS = new Map([
   ['/api/admin/login:POST', 'the login endpoint itself — nothing could sign in otherwise'],
   ['/api/admin/logout:POST', 'clearing your own cookie requires no privilege'],
   ['/api/leads:POST', 'the public website contact form'],
+  ['/api/feedback:POST', 'the public customer feedback form'],
   ['/api/pricing/quote:POST', 'the public quote calculator'],
   ['/api/aircraft/search:GET', 'public aircraft lookup on the pricing page'],
 ])

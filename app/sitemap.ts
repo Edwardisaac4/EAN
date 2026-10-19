@@ -35,6 +35,7 @@ const STATIC_ROUTES: Array<{
   { path: '/blog', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/team', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/history', changeFrequency: 'yearly', priority: 0.5 },
+  { path: '/feedback', changeFrequency: 'yearly', priority: 0.3 },
   { path: '/privacy-policy', changeFrequency: 'yearly', priority: 0.3 },
   { path: '/terms-of-use', changeFrequency: 'yearly', priority: 0.3 },
 ]
