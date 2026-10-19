@@ -20,8 +20,10 @@ const FROM_EMAIL = 'EAN Aviation Leads <noreply@ean.aero>'
  * markup — a link, a styled block — into an internal email the desk reads as
  * EAN's own, which is the shape of the impersonated-FBO fraud the security page
  * already calls out as a known pattern in this region.
+ *
+ * Exported for the feedback email, which has the same exposure.
  */
-function escapeHtml(value: string): string {
+export function escapeHtml(value: string): string {
   return value
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

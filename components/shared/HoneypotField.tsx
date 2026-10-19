@@ -6,8 +6,9 @@ interface HoneypotFieldProps {
 }
 
 /**
- * Spam trap for the public lead forms, validated server-side in
- * app/api/leads/route.ts — a non-empty value means the submission is discarded.
+ * Spam trap for the public lead forms and the feedback form, validated
+ * server-side in app/api/leads/route.ts and app/api/feedback/route.ts — a
+ * non-empty value means the submission is discarded.
  *
  * `website` is chosen because it is a field name naive bots recognise and fill
  * eagerly. Three details matter for correctness:

@@ -75,12 +75,12 @@ app/
   not-found.tsx         branded 404
   error.tsx             route-level error boundary (client)
   global-error.tsx      root-layout failure boundary; inline styles by necessity
-  about|history|team|contact|pricing|services|blog|privacy-policy|terms|terms-of-use/
+  about|history|team|contact|feedback|pricing|services|blog|privacy-policy|terms|terms-of-use/
     layout.tsx          server layout per client page — owns metadata + JSON-LD
   services/[slug]/      SSG service detail pages
   blog/[slug]/          blog post — static seed + Supabase
   admin/                protected portal, own layout        → app/admin/AGENTS.md
-  api/                  15 route handlers
+  api/                  16 route handlers
 components/             → components/AGENTS.md
   blog/ArticleBody.tsx  renders structured article bodies; owns body typography
   shared/JsonLd.tsx     emits <script type="application/ld+json">
@@ -106,7 +106,7 @@ one when you add a client page, or the page silently inherits the root title.
 ## 4. Routes
 
 **Public** — `/` `/about` `/history` `/team` `/services` `/services/[slug]`
-`/pricing` `/blog` `/blog/[slug]` `/contact` `/privacy-policy` `/terms-of-use`
+`/pricing` `/blog` `/blog/[slug]` `/contact` `/feedback` `/privacy-policy` `/terms-of-use`
 (`/terms` 307-redirects to `/terms-of-use`), plus `/sitemap.xml` and
 `/robots.txt`.
 
@@ -121,7 +121,7 @@ and asserted invented market figures as fact.
 `/admin/blog/new` `/admin/blog/[slug]/edit` `/admin/settings` `/admin/login`
 
 **API** — `/api/leads` (+ `/[id]`, `/export`, `/stats`), `/api/graphql`,
-`/api/pricing/quote`, `/api/aircraft/search`, `/api/analytics/leads`,
+`/api/pricing/quote`, `/api/aircraft/search`, `/api/analytics/leads`, `/api/feedback`,
 `/api/admin/*` (login, logout, upload, blog CRUD, leads/forward).
 
 Everything except `/blog/[slug]`, the admin blog editor, and the API is
@@ -403,6 +403,13 @@ API_NINJAS_KEY / RAPIDAPI_KEY / RAPIDAPI_AERODATABOX_KEY   aircraft lookup
 still saved, but nobody is emailed about it. Confirm it is set in Vercel, or lead
 alerts are silently dropped in production.
 
+`/feedback` is stricter, because it stores nothing: the email *is* the record.
+`POST /api/feedback` awaits the send and returns 502 when the key is unset or
+Resend rejects it, so the customer is told to retry rather than shown a
+confirmation. Locally, without the key, every feedback submission fails by
+design. Recipients are `FEEDBACK_RECIPIENTS` in
+`lib/services/feedback-notifications.ts`; every submission goes to both.
+
 ## 10. Code standards
 
 - Strict TypeScript. No `any`, no `as any`, no `@ts-ignore`.
@@ -427,11 +434,13 @@ unthrottled`. Seeing that line in production means migration 004 has not been
 applied — the limits are silently absent even though the code is present.
 
 Guarded surfaces: admin login (5 failed attempts / 15 min, then a 15 min
-lockout), `POST /api/leads` (5 / hour / IP), `/api/aircraft/search` (30 / min /
-IP, protecting metered third-party API spend).
+lockout), `POST /api/leads` (5 / hour / IP), `POST /api/feedback` (5 / hour / IP,
+its own bucket), `/api/aircraft/search` (30 / min / IP, protecting metered
+third-party API spend).
 
-The public lead forms also carry a honeypot (`components/shared/HoneypotField.tsx`,
-validated in `app/api/leads/route.ts`). A tripped honeypot returns the normal
+The public lead forms and the feedback form also carry a honeypot
+(`components/shared/HoneypotField.tsx`, validated in `app/api/leads/route.ts` and
+`app/api/feedback/route.ts`). A tripped honeypot returns the normal
 success shape so the bot gets no signal — do not "fix" that into an error.
 
 ## 12. Not built

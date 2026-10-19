@@ -169,6 +169,13 @@ export const PAGE_SEO = {
     path: "/contact",
     image: "/images/contact-cta.jpg",
   },
+  feedback: {
+    title: "Customer Feedback | EAN Aviation",
+    description:
+      "Send EAN Aviation a compliment, suggestion or complaint about our FBO, VIP lounge, charter, maintenance or Wings™ catering services at Lagos MMIA.",
+    path: "/feedback",
+    image: "/images/vip-lounge.jpg",
+  },
   privacyPolicy: {
     title: "Privacy Policy & Data Subject Rights | EAN Aviation",
     description:

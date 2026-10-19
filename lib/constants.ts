@@ -308,6 +308,7 @@ export const FOOTER_COMPANY_LINKS = [
   { name: "Insights", href: "/blog" },
   { name: "Security & Data Protection", href: "/privacy-policy" },
   { name: "Contact", href: "/contact" },
+  { name: "Feedback", href: "/feedback" },
 ];
 
 // ============================================================================
