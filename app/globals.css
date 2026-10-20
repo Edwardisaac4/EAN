@@ -125,6 +125,13 @@
   --color-ean-blue-border: rgba(43, 0, 152, 0.3);
 
   /*
+   * The accent at 7% mixed onto paper, pre-flattened. `ean-blue-muted` is the
+   * same wash but translucent, which a sticky cell cannot use: content scrolls
+   * visibly underneath it. Use this where the wash has to be opaque.
+   */
+  --color-ean-blue-tint: #f0edf8;
+
+  /*
    * Neutrals — anchored on the given grey.
    *
    * `ean-grey` is the CEO's #969696, kept verbatim. It measures 2.96:1 on
@@ -419,6 +426,47 @@
 
   .ean-rise-delay-7 {
     animation-delay: calc(var(--ean-rise-base, 0s) + 1.30s);
+  }
+
+  /*
+   * The /pricing hero photograph settling into place: a slight scale-down and
+   * lift from a dimmed start, once, on load. Not a Ken Burns — it ends still.
+   */
+  @keyframes ean-photo-settle {
+    from {
+      opacity: 0.4;
+      transform: scale(1.08);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .ean-photo-settle {
+    animation: ean-photo-settle 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  /*
+   * A heading whose text has just changed — the quote title on /pricing as the
+   * visitor picks aircraft. The element is re-keyed on each change, so the
+   * animation replays from a soft blur.
+   */
+  @keyframes ean-swap {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 10px, 0);
+      filter: blur(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  .ean-swap {
+    animation: ean-swap 0.45s ease both;
   }
 
   @keyframes hero-slide-progress {
@@ -926,7 +974,9 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ean-rise {
+    .ean-rise,
+    .ean-photo-settle,
+    .ean-swap {
       animation: none;
     }
 

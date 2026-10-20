@@ -7,9 +7,9 @@
 // sessionStorage entry, which is why a refresh left the price unlocked:
 //
 //   `revealed` / `lead`   In memory only. Module state dies with the page, so a
-//                         refresh drops the visitor back onto the default,
-//                         gated calculator — every selection reset, the form to
-//                         fill again before a price is shown.
+//   / `quote`             refresh drops the visitor back onto the default,
+//                         gated quote builder — every selection reset, the form
+//                         to fill again before a price is shown.
 //
 //   captured emails       sessionStorage. Outlives the refresh so re-revealing
 //                         does not file a second lead against someone sales has
@@ -31,12 +31,19 @@ const CAPTURED_KEY = 'ean_pricing_captured_v1'
  */
 const LEGACY_REVEAL_KEY = 'ean_pricing_reveal_v1'
 
+/** The quotation's reference and date, fixed when the quote is unlocked. */
+export interface QuoteStamp {
+  number: string
+  date: string
+}
+
 export interface RevealState {
   revealed: boolean
   lead: LeadDetails | null
+  quote: QuoteStamp | null
 }
 
-const UNREVEALED: RevealState = { revealed: false, lead: null }
+const UNREVEALED: RevealState = { revealed: false, lead: null, quote: null }
 
 /**
  * Authoritative state for this page view. Never read from storage — a refresh
@@ -136,8 +143,22 @@ export function markLeadCaptured(email: string): void {
   }
 }
 
-/** Unlocks pricing for the rest of this page view after a successful submit. */
-export function grantReveal(lead: LeadDetails): void {
-  state = { revealed: true, lead }
+/**
+ * Unlocks pricing for the rest of this page view after a successful submit.
+ * Module state survives client-side navigation, so leaving /pricing and coming
+ * back keeps the quote unlocked under the same reference.
+ */
+export function grantReveal(lead: LeadDetails, quote: QuoteStamp): void {
+  state = { revealed: true, lead, quote }
+  listeners.forEach((listener) => listener())
+}
+
+/**
+ * Re-gates the quote builder — its "Change details". Captured
+ * emails are left alone: re-entering the same details reveals again without a
+ * second lead, and different details are a new lead, as they should be.
+ */
+export function revokeReveal(): void {
+  state = UNREVEALED
   listeners.forEach((listener) => listener())
 }
