@@ -151,9 +151,9 @@ export const PAGE_SEO = {
     image: "/images/honda-jet-interior.jpg",
   },
   pricing: {
-    title: "FBO Pricing & Instant Quote Calculator | EAN Aviation Lagos",
+    title: "Build Your FBO Quote | EAN Aviation Lagos & Abuja",
     description:
-      "Build an indicative handling quote for Lagos MMIA or Abuja NAIA — landing, parking, ground support and add-ons priced by aircraft MTOW.",
+      "Build a ground handling quotation for Lagos MMIA, Abuja NAIA and outstations — choose your aircraft and services, priced in USD by MTOW from the published EAN rate schedule.",
     path: "/pricing",
   },
   blog: {

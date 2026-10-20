@@ -73,8 +73,10 @@ present it as one.
 keeps unused exports out of the bundle — do not defeat that by adding barrel
 re-exports or side effects at module scope.
 
-**Pricing figures live in `pricing/bands.ts`.** Never inline a rate in a
-component or a route. `buildQuote` falls back to a 5,700 kg MTOW when weight is
+**Pricing figures live in `pricing/rate-schedule.ts` (the published schedule,
+EAN-FBO-RS) and `pricing/bands.ts` (the `/api/pricing/quote` engine).** The
+quote builder on `/pricing` reads only the schedule, through `pricing/quote.ts`.
+Never inline a rate in a component or a route. `buildQuote` falls back to a 5,700 kg MTOW when weight is
 missing — that default is deliberate, not a placeholder.
 
 Every figure in `pricing/bands.ts` is transcribed from

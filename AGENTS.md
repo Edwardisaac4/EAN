@@ -39,7 +39,7 @@ endpoint, a pricing calculator, and a blog editor.
 | Blog | Hybrid: static seed in `lib/constants.ts` + `lib/blog-content.ts`, plus `blog_posts` in Supabase |
 | Editor | Tiptap (admin blog) |
 | Sanitiser | `isomorphic-dompurify` — the only permitted path to `dangerouslySetInnerHTML` |
-| Data fetching | `@tanstack/react-query`, **pricing routes only** (`app/pricing/layout.tsx`) |
+| Data fetching | Plain `fetch`. `@tanstack/react-query` is installed but unused — see below |
 | Icons | lucide-react |
 | Email | Resend |
 | Fonts | Cormorant Garamond (display) + Inter (UI), via `next/font/google` |
@@ -57,9 +57,10 @@ August 2026; a new warning is a regression, not background noise.
 August 2026 — they were imported by zero files, and `next-sanity` was the
 transitive source of the `framer-motion` that §7 bans. Do not reintroduce them.
 
-`@tanstack/react-query` **is** used, despite what earlier revisions of this file
-claimed: `app/pricing/layout.tsx`, `components/pricing/AircraftSelector.tsx` and
-`components/pricing/BuildYourQuoteCard.tsx`. Do not remove it as dead weight.
+`@tanstack/react-query` lost its last importers in October 2026, when the
+quote builder replaced the pricing calculator (`app/pricing/layout.tsx`,
+`AircraftSelector`, `BuildYourQuoteCard`). It is still in `package.json`; it
+can be removed in a change of its own.
 
 ## 3. Structure
 
