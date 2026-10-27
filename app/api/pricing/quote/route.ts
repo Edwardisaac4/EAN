@@ -8,6 +8,7 @@ import {
   findRecentDuplicateLead,
   updateLead,
 } from '@/lib/services/leads-service'
+import { sendNewLeadAlert } from '@/lib/services/lead-notifications'
 import { leadTrackingSchema } from '@/lib/services/lead-input'
 import {
   clientIpFrom,
@@ -224,6 +225,11 @@ export async function POST(request: NextRequest) {
         } else {
           savedToDb = true
           leadCode = created.lead_code
+          // Fire-and-forget, as on /api/leads: the visitor's quote does not
+          // wait on the email.
+          sendNewLeadAlert(created, { audience: 'pricing' }).catch((err) =>
+            console.error('Pricing quote email alert failed:', err)
+          )
         }
       }
     }

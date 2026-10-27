@@ -1,14 +1,17 @@
 // =============================================================================
-// Lead Email Notifications — Resend → marketing@ean.aero
-// Sends instant alerts to the marketing desk for high-priority leads
+// Lead Email Notifications — Resend
+// Every lead alerts a recipient list from lib/email-recipients.ts: pricing
+// quotes go to PRICING_RECIPIENTS, everything else to LEAD_RECIPIENTS.
 // SERVER ONLY
 // =============================================================================
 
 import { Resend } from 'resend'
 import type { LeadRow } from '@/types/database'
 import { SERVICE_LABELS, PRIORITY_LABELS } from '@/types/database'
+import { LEAD_RECIPIENTS, PRICING_RECIPIENTS } from '@/lib/email-recipients'
 
-const MARKETING_EMAIL = 'marketing@ean.aero'
+/** Which list a lead is sent to. */
+export type LeadAudience = 'general' | 'pricing'
 const FROM_EMAIL = 'EAN Aviation Leads <noreply@ean.aero>'
 
 /**
@@ -33,12 +36,22 @@ export function escapeHtml(value: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// Send new lead alert to marketing desk
+// Send new lead alert
 // ---------------------------------------------------------------------------
 
-export async function sendNewLeadAlert(lead: LeadRow): Promise<void> {
-  // Only send for urgent and high priority leads (configurable)
-  if (lead.priority !== 'urgent' && lead.priority !== 'high') {
+/**
+ * Emails a new lead to its list. Every submission is sent, whatever priority
+ * the scoring gave it — the priority only changes the subject line — so a
+ * change to the scoring can never quietly stop a form reaching its people.
+ */
+export async function sendNewLeadAlert(
+  lead: LeadRow,
+  { audience = 'general' }: { audience?: LeadAudience } = {}
+): Promise<void> {
+  const isPricingQuote = audience === 'pricing'
+  const recipients = [...(isPricingQuote ? PRICING_RECIPIENTS : LEAD_RECIPIENTS)]
+  if (!recipients.length) {
+    console.warn(`[Lead Alert] No ${audience} recipients configured. Skipping email for ${lead.lead_code}.`)
     return
   }
 
@@ -54,9 +67,13 @@ export async function sendNewLeadAlert(lead: LeadRow): Promise<void> {
   const priorityLabel = PRIORITY_LABELS[lead.priority] || lead.priority
   const isUrgent = lead.priority === 'urgent'
 
-  const subject = isUrgent
-    ? `🚨 URGENT LEAD: ${lead.full_name} — ${serviceLabel}`
-    : `📋 New High-Priority Lead: ${lead.full_name} — ${serviceLabel}`
+  const subject = isPricingQuote
+    ? `📋 New Pricing Quote: ${lead.full_name}${lead.company ? ` — ${lead.company}` : ''}`
+    : isUrgent
+      ? `🚨 URGENT LEAD: ${lead.full_name} — ${serviceLabel}`
+      : lead.priority === 'high'
+        ? `📋 New High-Priority Lead: ${lead.full_name} — ${serviceLabel}`
+        : `📩 New Lead: ${lead.full_name} — ${serviceLabel}`
 
   const htmlBody = `
     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0a; color: #e5e5e5; border-radius: 12px; overflow: hidden;">
@@ -147,11 +164,11 @@ export async function sendNewLeadAlert(lead: LeadRow): Promise<void> {
   try {
     await resend.emails.send({
       from: FROM_EMAIL,
-      to: [MARKETING_EMAIL],
+      to: recipients,
       subject,
       html: htmlBody,
     })
-    console.log(`[Lead Alert] Email sent for ${lead.lead_code} (${lead.priority}) → ${MARKETING_EMAIL}`)
+    console.log(`[Lead Alert] Email sent for ${lead.lead_code} (${lead.priority}) → ${recipients.join(', ')}`)
   } catch (error) {
     // Non-fatal — log but don't fail the lead creation
     console.error(`[Lead Alert] Failed to send email for ${lead.lead_code}:`, error)

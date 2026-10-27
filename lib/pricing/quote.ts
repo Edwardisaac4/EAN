@@ -19,6 +19,13 @@ import {
 // copy-as-email text all read the quote through here, so the three cannot price
 // the same selection differently.
 
+/**
+ * The `formId` the quote builder's gate files its leads under. The leads route
+ * reads it to send these leads to the pricing recipients rather than the
+ * general list (lib/email-recipients.ts), so it must not change casually.
+ */
+export const QUOTE_FORM_ID = 'pricing_quote_builder_gate'
+
 /** A visitor quoting a fleet adds each aircraft as its own tab. */
 export const MAX_AIRCRAFT = 6
 

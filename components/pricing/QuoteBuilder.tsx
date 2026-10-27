@@ -21,6 +21,7 @@ import {
   MAX_QUANTITY,
   MTOW_MAX_KG,
   MTOW_MIN_KG,
+  QUOTE_FORM_ID,
   QUOTE_SECTIONS,
   aircraftShortName,
   bandOf,
@@ -200,7 +201,7 @@ export default function QuoteBuilder() {
           // The quote's own total, so the CRM pipeline value reflects it rather
           // than a flat per-service estimate.
           estimatedValue: quoteValue(priced),
-          tracking: getTrackingContext('pricing_quote_builder_gate'),
+          tracking: getTrackingContext(QUOTE_FORM_ID),
           website: honeypot,
         }),
       })
