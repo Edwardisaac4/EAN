@@ -3,9 +3,10 @@ import type { MtowBand } from '@/types/pricing'
 // =============================================================================
 // FBO Services & Rates — the published schedule, EAN-FBO-RS v2026.2
 // =============================================================================
-// The single source for every figure the quote builder on /pricing shows — its
-// page, PDF and email copy. v2026.2 supersedes FBO Price List 0626, which
-// bands.ts (and so /api/pricing/quote) was transcribed from. A revision is a new version here — bump `version` and
+// The single source for every published figure: the quote builder on /pricing
+// (its page, PDF and email copy) and /api/pricing/quote (through bands.ts). v2026.2
+// supersedes FBO Price List 0626, the sheet the calculator was transcribed from
+// until September 2026. A revision is a new version here — bump `version` and
 // `issued`, and set `supersedes` to the version it replaces.
 
 /** One published price, or a floor–ceiling range quoted as "$450–550". */

@@ -29,8 +29,9 @@ services/          server-only business logic
   lead-input.ts          zod schemas + guards for every untrusted lead payload
   lead-notifications.ts  Resend email on new lead
   feedback-notifications.ts  Resend email for /feedback → both department inboxes
-pricing/           quote engine
-  bands.ts               MTOW bands, tariffs, add-ons — the rate card
+pricing/           rate schedule + quote engine
+  rate-schedule.ts       the published schedule (EAN-FBO-RS) — every published figure
+  bands.ts               MTOW bands, tariffs, add-ons, read from the schedule
   calculations.ts        buildQuote(state) -> QuoteResult
   reveal-store.ts        gates price reveal behind the lead form
 mappers/
@@ -73,19 +74,25 @@ present it as one.
 keeps unused exports out of the bundle — do not defeat that by adding barrel
 re-exports or side effects at module scope.
 
-**Pricing figures live in `pricing/rate-schedule.ts` (the published schedule,
-EAN-FBO-RS) and `pricing/bands.ts` (the `/api/pricing/quote` engine).** The
-quote builder on `/pricing` reads only the schedule, through `pricing/quote.ts`.
-Never inline a rate in a component or a route. `buildQuote` falls back to a 5,700 kg MTOW when weight is
-missing — that default is deliberate, not a placeholder.
+**Pricing figures live in `pricing/rate-schedule.ts`.** Never inline a rate in
+a component or a route. `buildQuote` falls back to a 5,700 kg MTOW when weight
+is missing — that default is deliberate, not a placeholder.
 
-Every figure in `pricing/bands.ts` is transcribed from
-`docs/FBO PRICE LIST_adjusted.pdf` and nothing else. The MTOW bands are that
-sheet's columns (0–9,000 · 9,001–20,000 · 20,001–30,000 · 30,001–50,000 ·
-50,001+ kg), and the quote is USD-only — the passenger service charges, the
-₦85,000 VIP lounge rate and the $850 international terminal fee were removed in
-August 2026 because the sheet does not carry them. Do not reintroduce a rate the
-sheet does not publish; revise the sheet first.
+`rate-schedule.ts` is the published schedule, EAN-FBO-RS v2026.2 (issued
+28 September 2026), which superseded FBO Price List 0626
+(`docs/FBO PRICE LIST_adjusted.pdf`). The quote builder on `/pricing` reads it
+through `pricing/quote.ts`, and `bands.ts` reads the `/api/pricing/quote`
+calculator's rates out of it by item id, so the two cannot quote different
+figures. The lookups throw on a missing id or a band that turns into a range,
+which fails the build rather than pricing a service at zero. The MTOW bands are
+the schedule's columns (0–9,000 · 9,001–20,000 · 20,001–30,000 · 30,001–50,000 ·
+50,001+ kg), and everything is USD.
+
+Four calculator rates are **not** on v2026.2 and are typed into `bands.ts`
+instead, each marked "calculator-only": CIQ $600, GPU $100, block clearance (on
+request) and PSC $65 per passenger. They were kept on the quote when v2026.2
+was adopted. A revision is a new version in `rate-schedule.ts`; do not change a
+figure without one.
 
 ## Database
 
