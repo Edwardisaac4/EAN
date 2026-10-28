@@ -108,7 +108,8 @@ one when you add a client page, or the page silently inherits the root title.
 
 **Public** — `/` `/about` `/history` `/team` `/services` `/services/[slug]`
 `/pricing` `/blog` `/blog/[slug]` `/contact` `/feedback` `/privacy-policy` `/terms-of-use`
-(`/terms` 307-redirects to `/terms-of-use`), plus `/sitemap.xml` and
+(`/terms` 307-redirects to `/terms-of-use`, `/pricing/quote` 308-redirects to
+`/pricing`), plus `/sitemap.xml` and
 `/robots.txt`.
 
 The blog carries the three real articles migrated from the WordPress site:

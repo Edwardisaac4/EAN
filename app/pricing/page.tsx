@@ -9,8 +9,9 @@ import { buildMetadata, breadcrumbSchema, PAGE_SEO } from '@/lib/seo'
 // the site root via metadataBase and shared as a bare link.
 export const metadata: Metadata = buildMetadata(PAGE_SEO.pricing)
 
-// The quote builder. Since October 2026 it is the whole pricing page, replacing
-// the calculator that was here.
+// The quote builder. Since October 2026 it is the whole pricing page: it
+// replaced both the published rate sheet that was here and the calculator at
+// /pricing/quote, which now redirects here.
 export default function PricingPage() {
   return (
     <>
