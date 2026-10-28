@@ -11,14 +11,8 @@ import {
   type FeedbackType,
 } from '@/lib/feedback'
 import { escapeHtml } from '@/lib/services/lead-notifications'
+import { FEEDBACK_RECIPIENTS } from '@/lib/email-recipients'
 
-/**
- * Every submission goes to both departments, from clients and operators alike.
- * Routing was deliberately left out when the form shipped (October 2026); if it
- * is wanted, choose the recipients from `feedback.audience` / `type`
- * here so the route stays unaware of who reads what.
- */
-const FEEDBACK_RECIPIENTS = ['josephine.kolawole@ean.aero', 'cro@ean.aero']
 const FROM_EMAIL = 'EAN Aviation Feedback <noreply@ean.aero>'
 
 interface FeedbackBase {
@@ -183,7 +177,7 @@ export async function sendFeedbackEmail(feedback: FeedbackSubmission): Promise<b
   try {
     const { error } = await new Resend(apiKey).emails.send({
       from: FROM_EMAIL,
-      to: FEEDBACK_RECIPIENTS,
+      to: [...FEEDBACK_RECIPIENTS],
       ...(feedback.email && { replyTo: feedback.email }),
       subject,
       html: htmlBody,
