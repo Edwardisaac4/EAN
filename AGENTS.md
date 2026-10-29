@@ -367,6 +367,42 @@ no warming.
 Absolutely positioned slides sit inside the viewport, so `loading="lazy"` does
 not defer them — mounting does.
 
+**The first headline paints as plain text, with no entrance.** Chrome skips
+text while it is at `opacity: 0`, and the word-by-word rise starts every word
+there. For slide 1's server-rendered headline it never came back once the rise
+brought the words in, so the page's real headline was never an LCP candidate:
+LCP sat on the 3,630px² navbar logo until autoplay mounted slide 2's copy, and
+Chrome — which keeps re-reporting LCP whenever something larger paints, until
+the visitor clicks, scrolls or types, and a GTmetrix run never does — then took
+slide 2's headline, part-way through its own rise, at 5.9s. That was GTmetrix
+in September 2026: Performance 66 on a page whose first paint was 0.5s. The
+hero photographs never register either; Chrome treats a full-viewport image as
+background. `staticTitle` in `HeroSection` now sets the first slide of a hard
+load as one plain text block, which Chrome records at first paint at its full
+~69,000px², and nothing autoplay mounts afterwards out-sizes it: local
+GTmetrix-settings runs went from Performance 52–67 and LCP 5.7–6.5s to 93–94
+and 0.4–0.5s. The rise ran under the preloader's opaque veil on a hard load
+anyway, and every later slide, plus a client-side visit back to `/`, still gets
+it. Do not put an opacity-0 entrance back on the first headline, and do not
+split it into per-word boxes on first paint — as inline-blocks each word is its
+own candidate, so Chrome would count only the largest word (~21,000px²).
+
+The margin that holds today depends on the later headlines rising word by word,
+because Chrome records each of them part-way through its rise, at a fraction of
+its full area. At full size slide 2's complete headline is 118% of slide 1's and
+slide 4's is 104%, so if the rise is ever removed from later slides — or Chrome
+starts recording them whole — those two would take LCP back when autoplay
+reaches them. The fix then is `titleScale: "compact"` on both, which puts them
+at 69% and 61% of slide 1.
+
+**Slide CTAs prefetch on intent, not on sight.** Each slide mounts its own
+buttons, and the default viewport prefetch fired a route fetch plus its chunks at
+every autoplay step. An unthrottled Lighthouse run — which is what GTmetrix
+does — stops recording only after 5.25s of network and CPU quiet, so that
+traffic kept the test running through several slide changes and scoring all of
+them. `IntentLink` in `HeroSection` prefetches on hover, touch or focus instead.
+Do not swap it back to a plain `<Link>`.
+
 **`proxy.ts` matches `/admin` and `/api` only.** Public pages are static; do
 not widen the matcher.
 
