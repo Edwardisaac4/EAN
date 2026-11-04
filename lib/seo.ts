@@ -129,6 +129,12 @@ export const PAGE_SEO = {
     path: "/history",
     image: "/images/runway.jpg",
   },
+  credentials: {
+    title: "Credentials & Certificates | EAN Aviation",
+    description:
+      "View the approvals and registrations EAN Aviation holds at Murtala Muhammed International Airport, Lagos, each shown as issued with its certificate number and validity.",
+    path: "/credentials",
+  },
   team: {
     title: "Leadership & Team | EAN Aviation",
     description:

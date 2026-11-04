@@ -263,6 +263,7 @@ export const NAV_ITEMS: NavItem[] = [
     dropdownItems: [
       { name: "Our Team", href: "/team" },
       { name: "History", href: "/history" },
+      { name: "Credentials", href: "/credentials" },
     ],
   },
   {
@@ -303,6 +304,7 @@ export const FOOTER_SERVICES_LINKS = [
 export const FOOTER_COMPANY_LINKS = [
   { name: "About", href: "/about" },
   { name: "History", href: "/history" },
+  { name: "Credentials", href: "/credentials" },
   { name: "Our Team", href: "/team" },
   { name: "The Aeroplex", href: "/the-aeroplex" },
   { name: "Insights", href: "/blog" },
