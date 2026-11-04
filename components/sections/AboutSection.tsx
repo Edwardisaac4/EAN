@@ -11,7 +11,7 @@ const LINK_HOVER =
   'hover:bg-ean-gold hover:border-ean-gold hover:text-ean-text-dark';
 
 const SECTION_LINKS = [
-  { label: 'Our Credentials', href: '/about' },
+  { label: 'Our Credentials', href: '/credentials' },
   { label: 'Our History', href: '/history' },
   { label: 'Our Team', href: '/team' },
 ];

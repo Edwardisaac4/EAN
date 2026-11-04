@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { SITE_URL } from '@/lib/seo'
 import { ARTICLES_DATABASE, SERVICES_DATA } from '@/lib/constants'
+import { ISSUERS, currentCertificates } from '@/lib/credentials-constants'
 import { adminSupabase } from '@/utils/supabase/admin'
 
 /**
@@ -35,6 +36,9 @@ const STATIC_ROUTES: Array<{
   { path: '/blog', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/team', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/history', changeFrequency: 'yearly', priority: 0.5 },
+  // Monthly, not yearly: certificates renew and lapse on their own schedules,
+  // and the page drops one the day after it expires.
+  { path: '/credentials', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/feedback', changeFrequency: 'yearly', priority: 0.3 },
   { path: '/privacy-policy', changeFrequency: 'yearly', priority: 0.3 },
   { path: '/terms-of-use', changeFrequency: 'yearly', priority: 0.3 },
@@ -120,5 +124,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
-  return [...staticEntries, ...serviceEntries, ...blogEntries]
+  // Only the bodies with a certificate in force: the rest 404 (see
+  // app/credentials/[issuer]/page.tsx).
+  const certificates = currentCertificates(now)
+  const credentialEntries: MetadataRoute.Sitemap = ISSUERS.filter((issuer) =>
+    certificates.some((certificate) => certificate.issuer === issuer.id),
+  ).map((issuer) => ({
+    url: `${SITE_URL}/credentials/${issuer.id}`,
+    lastModified: now,
+    changeFrequency: 'monthly',
+    priority: 0.5,
+  }))
+
+  return [...staticEntries, ...serviceEntries, ...credentialEntries, ...blogEntries]
 }
