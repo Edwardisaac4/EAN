@@ -1,28 +1,22 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Navbar from '@/components/layout/Navbar'
-import IssuerCards from '@/components/credentials/IssuerCards'
+import CertificateGallery from '@/components/credentials/CertificateGallery'
 import JsonLd from '@/components/shared/JsonLd'
-import { ISSUERS, currentCertificates, type IssuerId } from '@/lib/credentials-constants'
+import { currentCertificates } from '@/lib/credentials-constants'
 import { buildMetadata, breadcrumbSchema, PAGE_SEO } from '@/lib/seo'
 
 export const metadata: Metadata = buildMetadata(PAGE_SEO.credentials)
 
-// Re-rendered once a day, so an issuer whose last certificate lapses turns back
-// to "Coming soon" without anyone having to redeploy. See currentCertificates.
+// Re-rendered once a day, so a lapsed certificate leaves the grid the day after
+// its validUntil without anyone having to redeploy. See currentCertificates.
 export const revalidate = 86400
 
-// The issuer cards. Each "View cert" goes to /credentials/[issuer], where that
-// body's certificates are shown as a grid. Counted here rather than in the
-// client so the expiry filter runs on the deploy's clock, not the visitor's.
+// Every certificate in force, in one grid, not grouped by issuing body; each
+// one opens in the viewer. Filtered here rather than in the client so the
+// expiry check runs on the deploy's clock, not the visitor's.
 export default function CredentialsPage() {
   const certificates = currentCertificates()
-  const counts = Object.fromEntries(
-    ISSUERS.map((issuer) => [
-      issuer.id,
-      certificates.filter((certificate) => certificate.issuer === issuer.id).length,
-    ]),
-  ) as Record<IssuerId, number>
 
   return (
     <>
@@ -39,7 +33,7 @@ export default function CredentialsPage() {
 
       <main className="flex-1 bg-ean-navy text-ean-text-light">
         {/* Short on purpose. On a 620px-tall laptop window a full-height hero
-            would push the cards below the fold, and the cards are the page. */}
+            would push the certificates below the fold, and they are the page. */}
         <section className="relative overflow-hidden text-white">
           {/* The /services hero photograph and scrims, in this page's short band.
               Decorative, so empty alt; the only image above the fold, so it is
@@ -72,7 +66,7 @@ export default function CredentialsPage() {
           </div>
         </section>
 
-        {/* Same container as the cards, so the paragraph spans their full width. */}
+        {/* Same container as the grid, so the paragraph spans its full width. */}
         <section className="pt-10 sm:pt-12">
           <div className="max-w-ean mx-auto px-6 md:px-8">
             <p className="m-0 font-ui text-[17px] md:text-[19px] leading-relaxed text-ean-muted-light">
@@ -83,9 +77,9 @@ export default function CredentialsPage() {
           </div>
         </section>
 
-        <section aria-label="Issuing bodies" className="pt-6 pb-16 sm:pt-8 sm:pb-20">
+        <section aria-label="Certificates" className="pt-6 pb-16 sm:pt-8 sm:pb-20">
           <div className="max-w-ean mx-auto px-6 md:px-8">
-            <IssuerCards counts={counts} />
+            <CertificateGallery certificates={certificates} />
           </div>
         </section>
       </main>

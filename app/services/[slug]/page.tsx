@@ -19,12 +19,14 @@ import {
   MapPin
 } from 'lucide-react';
 
+import HeroCertificates from '@/components/credentials/HeroCertificates';
 import Navbar from '@/components/layout/Navbar';
 import GoldButton from '@/components/shared/GoldButton';
 import OutlineButton from '@/components/shared/OutlineButton';
 import SectionReveal from '@/components/shared/SectionReveal';
 import JsonLd from '@/components/shared/JsonLd';
 import { SERVICES_DATA } from '@/lib/constants';
+import { certificatesForService, SERVICES_WITH_CERTIFICATE_LABEL } from '@/lib/credentials-constants';
 import { buildMetadata, breadcrumbSchema, serviceSchema } from '@/lib/seo';
 
 const iconMap = {
@@ -41,6 +43,10 @@ interface ServicePageProps {
     slug: string;
   }>;
 }
+
+// Re-rendered once a day, as /credentials is, so a certificate in the hero
+// corner leaves it the day after its validUntil. See certificatesForService.
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
   return SERVICES_DATA.map((service) => ({
@@ -77,6 +83,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
   const IconComponent = iconMap[service.iconName] || Plane;
   const otherServices = SERVICES_DATA.filter((s) => s.slug !== service.slug);
+  const heroCertificates = certificatesForService(service.slug);
 
   return (
     <>
@@ -188,6 +195,14 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               </div>
             </div>
           </div>
+
+          {/* Pinned to the hero's bottom-right, out of flow, so it adds no height. */}
+          {heroCertificates.length > 0 && (
+            <HeroCertificates
+              certificates={heroCertificates}
+              showLabel={SERVICES_WITH_CERTIFICATE_LABEL.has(service.slug)}
+            />
+          )}
         </section>
 
         {/* KEY HIGHLIGHTS BAR */}

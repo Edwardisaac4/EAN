@@ -106,7 +106,7 @@ one when you add a client page, or the page silently inherits the root title.
 
 ## 4. Routes
 
-**Public** — `/` `/about` `/history` `/credentials` (issuer cards) `/credentials/[issuer]` (that body's certificates, view-only; data in `lib/credentials-constants.ts`; 404 while a body has none in force) `/team` `/services` `/services/[slug]`
+**Public** — `/` `/about` `/history` `/credentials` (every certificate in force in one grid, view-only; data in `lib/credentials-constants.ts`) `/team` `/services` `/services/[slug]`
 `/pricing` `/blog` `/blog/[slug]` `/contact` `/feedback` `/privacy-policy` `/terms-of-use`
 (`/terms` 307-redirects to `/terms-of-use`), plus `/sitemap.xml` and
 `/robots.txt`.

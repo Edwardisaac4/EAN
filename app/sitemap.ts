@@ -1,7 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { SITE_URL } from '@/lib/seo'
 import { ARTICLES_DATABASE, SERVICES_DATA } from '@/lib/constants'
-import { ISSUERS, currentCertificates } from '@/lib/credentials-constants'
 import { adminSupabase } from '@/utils/supabase/admin'
 
 /**
@@ -124,17 +123,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
-  // Only the bodies with a certificate in force: the rest 404 (see
-  // app/credentials/[issuer]/page.tsx).
-  const certificates = currentCertificates(now)
-  const credentialEntries: MetadataRoute.Sitemap = ISSUERS.filter((issuer) =>
-    certificates.some((certificate) => certificate.issuer === issuer.id),
-  ).map((issuer) => ({
-    url: `${SITE_URL}/credentials/${issuer.id}`,
-    lastModified: now,
-    changeFrequency: 'monthly',
-    priority: 0.5,
-  }))
-
-  return [...staticEntries, ...serviceEntries, ...credentialEntries, ...blogEntries]
+  return [...staticEntries, ...serviceEntries, ...blogEntries]
 }
