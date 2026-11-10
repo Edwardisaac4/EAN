@@ -10,7 +10,11 @@ export interface FleetAircraft {
     | "Ultra Long Range"
     | "Helicopter"
     | "VIP Airliner"
-    | "Turboprop";
+    | "Turboprop"
+    // Electric vertical take-off and landing. No entries yet: the /pricing
+    // quote builder offers eVTOL types only once the rate schedule prices one
+    // (EVTOL_PRICED in lib/pricing/rate-schedule.ts).
+    | "eVTOL";
   mtowKg: number;
   mtowRange: string;
   maxPassengers: number;

@@ -129,6 +129,12 @@ export const PAGE_SEO = {
     path: "/history",
     image: "/images/runway.jpg",
   },
+  credentials: {
+    title: "Credentials & Certificates | EAN Aviation",
+    description:
+      "View the approvals and registrations EAN Aviation holds at Murtala Muhammed International Airport, Lagos, each shown as issued with its certificate number and validity.",
+    path: "/credentials",
+  },
   team: {
     title: "Leadership & Team | EAN Aviation",
     description:
@@ -159,16 +165,10 @@ export const PAGE_SEO = {
     image: "/images/honda-jet-interior.jpg",
   },
   pricing: {
-    title: "FBO Services & Rates | EAN Aviation Lagos & Abuja",
+    title: "Build Your FBO Quote | EAN Aviation Lagos & Abuja",
     description:
-      "The published EAN rate schedule for Lagos MMIA, Abuja NAIA and outstations — handling, permits, parking, hangarage and aircraft services in USD, banded by aircraft MTOW.",
+      "Build a ground handling quotation for Lagos MMIA, Abuja NAIA and outstations — choose your aircraft and services, priced in USD by MTOW from the published EAN rate schedule.",
     path: "/pricing",
-  },
-  pricingQuote: {
-    title: "FBO Quote Calculator | EAN Aviation Lagos",
-    description:
-      "Build an indicative handling quote for Lagos MMIA or Abuja NAIA — landing, parking, ground support and add-ons priced by aircraft MTOW.",
-    path: "/pricing/quote",
   },
   blog: {
     title: "Insights & Industry News | EAN Aviation",
@@ -182,6 +182,13 @@ export const PAGE_SEO = {
     description: `Reach EAN Aviation’s operations desk at ${LAGOS_HQ.phone} or ${LAGOS_HQ.email}. Based at Murtala Muhammed International Airport, Ikeja, Lagos — 24/7 flight support.`,
     path: "/contact",
     image: "/images/contact-cta.jpg",
+  },
+  feedback: {
+    title: "Customer Feedback | EAN Aviation",
+    description:
+      "Send EAN Aviation a compliment, suggestion or complaint about our FBO, VIP lounge, charter, maintenance or Wings™ catering services at Lagos MMIA.",
+    path: "/feedback",
+    image: "/images/vip-lounge.jpg",
   },
   privacyPolicy: {
     title: "Privacy Policy & Data Subject Rights | EAN Aviation",

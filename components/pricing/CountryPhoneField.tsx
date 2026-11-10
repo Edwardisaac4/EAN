@@ -6,7 +6,7 @@ import type * as PhoneLibModule from 'libphonenumber-js/max'
 import { ChevronDown } from 'lucide-react'
 
 /**
- * libphonenumber-js with full metadata. The rate sheet imports it after
+ * libphonenumber-js with full metadata. The quote builder imports it after
  * hydration and passes it down, so its 157 KB metadata file stays out of the
  * page bundle; until it arrives the field works from FALLBACK_DIAL_CODES.
  */
@@ -238,7 +238,7 @@ export default function CountryPhoneField({
   return (
     <div
       ref={wrapRef}
-      className={`relative flex rounded-lg border bg-ean-navy focus-within:outline-2 focus-within:outline-ean-gold-light focus-within:border-transparent ${
+      className={`relative flex rounded-[2px] border bg-ean-white focus-within:outline-2 focus-within:outline-ean-gold-light focus-within:border-transparent ${
         isInvalid ? 'border-ean-error' : 'border-ean-border-light'
       }`}
     >
@@ -250,7 +250,7 @@ export default function CountryPhoneField({
         aria-expanded={isOpen}
         aria-controls={isOpen ? listId : undefined}
         aria-label={`Country code: ${regionName(country)} +${dial}`}
-        className="flex items-center gap-[7px] pl-3 pr-2.5 border-r border-ean-border-light rounded-l-lg font-mono text-sm text-ean-text-light whitespace-nowrap cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ean-gold-light"
+        className="flex items-center gap-[7px] pl-3 pr-2.5 border-r border-ean-border-light rounded-l-[2px] font-mono text-sm text-ean-text-light whitespace-nowrap cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ean-gold-light"
       >
         <Flag code={country} />
         <span>+{dial}</span>
@@ -264,13 +264,13 @@ export default function CountryPhoneField({
         type="tel"
         autoComplete="tel-national"
         inputMode="tel"
-        placeholder={country === 'NG' ? '803 123 4567' : 'Phone number'}
+        placeholder="Phone / WhatsApp"
         value={value}
         onChange={(e) => handleValueChange(e.target.value)}
         onBlur={onBlur}
         aria-invalid={isInvalid}
         aria-describedby={describedBy}
-        className="flex-1 min-w-0 bg-transparent px-3 py-2.5 font-mono text-[14.5px] text-ean-text-light placeholder:text-ean-text-light/20 outline-none"
+        className="flex-1 min-w-0 bg-transparent px-3 py-3.5 font-mono text-[14.5px] text-ean-text-light placeholder:font-ui placeholder:text-[15px] placeholder:text-ean-slate outline-none"
       />
 
       {isOpen && (

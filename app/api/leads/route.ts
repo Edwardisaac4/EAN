@@ -13,6 +13,7 @@ import {
   requiredString,
 } from '@/lib/services/lead-input'
 import { sendNewLeadAlert } from '@/lib/services/lead-notifications'
+import { QUOTE_FORM_ID } from '@/lib/pricing/quote'
 import {
   consumeRateLimit,
   clientIpFrom,
@@ -208,7 +209,10 @@ export async function POST(request: Request) {
     }
 
     // Fire-and-forget email alert (non-blocking)
-    sendNewLeadAlert(lead).catch((err) =>
+    // A quote from the /pricing builder goes to the pricing list; every other
+    // form here goes to the general one. See lib/email-recipients.ts.
+    const audience = payload.tracking?.formId === QUOTE_FORM_ID ? 'pricing' : 'general'
+    sendNewLeadAlert(lead, { audience }).catch((err) =>
       console.error('Lead email alert failed:', err)
     )
 

@@ -53,6 +53,15 @@ export const AIRCRAFT_SEARCH_WINDOW_SECONDS = 60
 export const QUOTE_MAX_SUBMISSIONS = 20
 export const QUOTE_WINDOW_SECONDS = 60
 
+/**
+ * Public feedback form: 5 submissions per hour per IP, in its own bucket so a
+ * customer who has just sent an enquiry can still send feedback. Every accepted
+ * submission is an email to two department inboxes and nothing is stored, so
+ * this is the only ceiling on how many a script can send.
+ */
+export const FEEDBACK_MAX_SUBMISSIONS = 5
+export const FEEDBACK_WINDOW_SECONDS = 60 * 60
+
 type RpcRow = { is_allowed: boolean; retry_after_seconds: number }
 
 /**
@@ -102,6 +111,11 @@ export function aircraftSearchKey(ip: string): string {
 /** Bucket key for the public pricing quote calculator — IP only, like leads. */
 export function quoteKey(ip: string): string {
   return `quote:${normalise(ip)}`
+}
+
+/** Bucket key for the public feedback form — IP only, like leads. */
+export function feedbackKey(ip: string): string {
+  return `feedback:${normalise(ip)}`
 }
 
 /**

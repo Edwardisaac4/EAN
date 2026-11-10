@@ -10,7 +10,7 @@ export { DISBURSEMENT_RATE } from './rate-schedule'
 
 // The calculator's view of the published schedule. Every figure that the
 // schedule publishes is read out of `rate-schedule.ts` (EAN-FBO-RS v2026.2) by
-// id, so the rate sheet on /pricing and the quote on /pricing/quote cannot
+// id, so the quote builder on /pricing and /api/pricing/quote cannot
 // disagree. Do not type a published figure into this file — change it in the
 // schedule. The few rates below that are typed here are the calculator-only
 // services the schedule does not list, and each says so.

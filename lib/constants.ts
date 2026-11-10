@@ -263,6 +263,7 @@ export const NAV_ITEMS: NavItem[] = [
     dropdownItems: [
       { name: "Our Team", href: "/team" },
       { name: "History", href: "/history" },
+      { name: "Credentials", href: "/credentials" },
       { name: "Insights", href: "/blog" },
     ],
   },
@@ -316,12 +317,14 @@ export const FOOTER_SERVICES_LINKS = [
 export const FOOTER_COMPANY_LINKS = [
   { name: "About", href: "/about" },
   { name: "History", href: "/history" },
+  { name: "Credentials", href: "/credentials" },
   { name: "Our Team", href: "/team" },
   { name: "The Aeroplex", href: "/the-aeroplex" },
   { name: "Airborne", href: "/airborne" },
   { name: "Insights", href: "/blog" },
   { name: "Security & Data Protection", href: "/privacy-policy" },
   { name: "Contact", href: "/contact" },
+  { name: "Feedback", href: "/feedback" },
 ];
 
 // ============================================================================
@@ -546,7 +549,7 @@ export const SERVICES_DATA: ServiceRichData[] = [
     primaryButtonText: "MAKE AN INQUIRY",
     primaryButtonHref: "/contact?service=fbo-ground-support",
     secondaryButtonText: "BUILD YOUR QUOTE",
-    secondaryButtonHref: "/pricing/quote",
+    secondaryButtonHref: "/pricing",
   },
   {
     slug: "aircraft-maintenance",

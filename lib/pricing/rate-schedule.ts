@@ -3,11 +3,27 @@ import type { MtowBand } from '@/types/pricing'
 // =============================================================================
 // FBO Services & Rates — the published schedule, EAN-FBO-RS v2026.2
 // =============================================================================
-// The single source for every published figure on /pricing (the rate sheet and
-// its PDF) and /pricing/quote (the calculator, through bands.ts). v2026.2
+// The single source for every published figure: the quote builder on /pricing
+// (its page, PDF and email copy) and /api/pricing/quote (through bands.ts). v2026.2
 // supersedes FBO Price List 0626, the sheet the calculator was transcribed from
 // until September 2026. A revision is a new version here — bump `version` and
 // `issued`, and set `supersedes` to the version it replaces.
+
+/**
+ * The kind of aircraft a service is for.
+ *
+ * `conventional` is everything the schedule prices today: jets, turboprops and
+ * helicopters, banded by MTOW. `evtol` is held for the vertiport on the
+ * Aeroplex campus (the EAN–Archer MOU, December 2024). No published rate uses
+ * it yet, and the quote builder offers eVTOL only once one does — see
+ * EVTOL_PRICED below. When eVTOL rates are published, mark their section (or a
+ * shared service) `categories: ['evtol']`, or both kinds, and the builder
+ * picks them up with no other change.
+ */
+export type AircraftCategory = 'conventional' | 'evtol'
+
+/** What a section or service without `categories` applies to. */
+const DEFAULT_CATEGORIES: readonly AircraftCategory[] = ['conventional']
 
 /** One published price, or a floor–ceiling range quoted as "$450–550". */
 export type ScheduleFigure = number | readonly [min: number, max: number]
@@ -21,12 +37,21 @@ export interface ScheduleItem {
   name: string
   unit?: string
   price: ScheduleFigure | BandFigures
+  /** Printed under the line on a quotation — what the price includes. */
+  quoteNote?: string
+  /** Overrides the section's `categories` for this one service. */
+  categories?: readonly AircraftCategory[]
 }
 
 export interface ScheduleSection {
   id: string
   title: string
   note?: string
+  /**
+   * The aircraft its services are for. Omitted means conventional aircraft
+   * only, so an existing service never turns up on an eVTOL quote by default.
+   */
+  categories?: readonly AircraftCategory[]
   items: readonly ScheduleItem[]
 }
 
@@ -45,6 +70,10 @@ export const SCHEDULE_DOCUMENT = {
 // Disbursement is a percentage, not a line on the table, so it lives here as a
 // number and the term below is written from it.
 export const DISBURSEMENT_RATE = 0.15
+
+// Both monthly programmes carry the same inclusions.
+const MONTHLY_INCLUSIONS =
+  'Inclusive of 4 aircraft washes per month; toilet services and potable water are unlimited.'
 
 export const SCHEDULE_SECTIONS: readonly ScheduleSection[] = [
   {
@@ -141,16 +170,36 @@ export const SCHEDULE_SECTIONS: readonly ScheduleSection[] = [
         name: 'Monthly handling — hangarage',
         unit: 'per month',
         price: { A: 3000, B: 5000, C: 9000, D: 25000, E: 30000 },
+        quoteNote: MONTHLY_INCLUSIONS,
       },
       {
         id: 'monthly_apron',
         name: 'Monthly handling — apron',
         unit: 'per month',
         price: { A: 2500, B: 4000, C: 7000, D: 20000, E: 25000 },
+        quoteNote: MONTHLY_INCLUSIONS,
       },
     ],
   },
 ]
+
+/** Whether a service is offered to a kind of aircraft. */
+export function appliesTo(
+  section: ScheduleSection,
+  item: ScheduleItem,
+  category: AircraftCategory
+): boolean {
+  return (item.categories ?? section.categories ?? DEFAULT_CATEGORIES).includes(category)
+}
+
+/**
+ * True once the schedule publishes any eVTOL service. Until then the quote
+ * builder hides eVTOL entirely: no eVTOL types in the picker, no category
+ * choice on a manual MTOW.
+ */
+export const EVTOL_PRICED = SCHEDULE_SECTIONS.some((section) =>
+  section.items.some((item) => appliesTo(section, item, 'evtol'))
+)
 
 export const SCHEDULE_TERMS: readonly { label: string; text: string }[] = [
   { label: 'Fuel', text: 'Quoted per location agreement, based on international Platts pricing.' },
@@ -159,6 +208,7 @@ export const SCHEDULE_TERMS: readonly { label: string; text: string }[] = [
     text: `${Math.round(DISBURSEMENT_RATE * 100)}% of any payment made by EAN on the operator’s behalf.`,
   },
   { label: 'Ad-hoc services', text: 'Available on demand and quoted on request.' },
+  { label: 'Payment terms', text: '7 days from receipt of invoice.' },
 ]
 
 /**

@@ -25,7 +25,6 @@ const STATIC_ROUTES: Array<{
   { path: '/', changeFrequency: 'weekly', priority: 1.0 },
   { path: '/services', changeFrequency: 'monthly', priority: 0.9 },
   { path: '/pricing', changeFrequency: 'monthly', priority: 0.9 },
-  { path: '/pricing/quote', changeFrequency: 'monthly', priority: 0.8 },
   // Ranked with /contact rather than below it: charter is the highest-intent
   // request on the site, and it is deliberately absent from the navigation, so
   // search is one of the few ways anyone reaches it directly.
@@ -47,6 +46,10 @@ const STATIC_ROUTES: Array<{
   { path: '/blog', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/team', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/history', changeFrequency: 'yearly', priority: 0.5 },
+  // Monthly, not yearly: certificates renew and lapse on their own schedules,
+  // and the page drops one the day after it expires.
+  { path: '/credentials', changeFrequency: 'monthly', priority: 0.6 },
+  { path: '/feedback', changeFrequency: 'yearly', priority: 0.3 },
   { path: '/privacy-policy', changeFrequency: 'yearly', priority: 0.3 },
   { path: '/terms-of-use', changeFrequency: 'yearly', priority: 0.3 },
 ]

@@ -2,19 +2,34 @@
 
 import React, { useState } from 'react'
 import type { CountryCode } from 'libphonenumber-js/max'
-import { Check, Loader2, Lock } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import type { LeadDetails } from '@/types/pricing'
-import { getTrackingContext } from '@/lib/lead-tracking'
-import { isLeadAlreadyCaptured, markLeadCaptured } from '@/lib/pricing/reveal-store'
-import { SCHEDULE_DOCUMENT, SCHEDULE_SERVICE_COUNT } from '@/lib/pricing/rate-schedule'
 import HoneypotField from '@/components/shared/HoneypotField'
 import CountryPhoneField, { dialCode, regionName, type PhoneLib } from './CountryPhoneField'
 
-interface RateSheetGateProps {
+export interface GateSubmission {
+  lead: LeadDetails
+  /** Region of the phone number, e.g. "Nigeria" — for the lead note. */
+  phoneRegion: string
+  honeypot: string
+}
+
+interface QuoteGateProps {
   lib: PhoneLib | null
   /** Details to start from — set when the visitor chose "Change details". */
   prefill: LeadDetails | null
-  onUnlock: (lead: LeadDetails) => void
+  /** The quote's heading, restated on the blue band above the form. */
+  title: string
+  subtitle: string
+  serviceSummary: string
+  /** Service names drawn blurred behind the form, as a preview of the quote. */
+  previewRows: string[]
+  /** A priceable quote with no aircraft waiting on a weight. */
+  isReady: boolean
+  /** Why the button is disabled, or that the quote is ready. */
+  hint: string
+  /** Files the lead and unlocks the quote. Resolves to an error message, or null. */
+  onSubmit: (submission: GateSubmission) => Promise<string | null>
 }
 
 type FieldKey = 'name' | 'company' | 'email' | 'phone'
@@ -23,9 +38,9 @@ type FieldErrors = Record<FieldKey, string>
 const NO_ERRORS: FieldErrors = { name: '', company: '', email: '', phone: '' }
 const FIELD_ORDER: FieldKey[] = ['name', 'company', 'email', 'phone']
 
-export const GATE_ID = 'rate-gate'
+export const GATE_ID = 'quote-gate'
 const inputId = (key: FieldKey) => `${GATE_ID}-${key}`
-/** The first field — where "View rates" sends focus. */
+/** The first field — where "Change details" sends focus. */
 export const GATE_NAME_ID = inputId('name')
 
 // Common misspellings of the big free-mail domains. A lead with a dead address
@@ -119,7 +134,17 @@ function initialPhone(lib: PhoneLib | null, prefill: LeadDetails | null): { coun
     : { country: 'NG', value: prefill.phone }
 }
 
-export default function RateSheetGate({ lib, prefill, onUnlock }: RateSheetGateProps) {
+export default function QuoteGate({
+  lib,
+  prefill,
+  title,
+  subtitle,
+  serviceSummary,
+  previewRows,
+  isReady,
+  hint,
+  onSubmit,
+}: QuoteGateProps) {
   const [name, setName] = useState(prefill?.name ?? '')
   const [company, setCompany] = useState(prefill?.company ?? '')
   const [email, setEmail] = useState(prefill?.email ?? '')
@@ -170,6 +195,7 @@ export default function RateSheetGate({ lib, prefill, onUnlock }: RateSheetGateP
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!isReady || isSubmitting) return
     setSubmitError('')
 
     const nextErrors: FieldErrors = { ...NO_ERRORS }
@@ -184,62 +210,30 @@ export default function RateSheetGate({ lib, prefill, onUnlock }: RateSheetGateP
     }
 
     const parsed = parsePhone(lib, phone, country)
-    const lead: LeadDetails = {
-      name: name.trim().replace(/\s+/g, ' '),
-      company: company.trim(),
-      email: email.trim().toLowerCase(),
-      phone: parsed.intl ?? phone.trim(),
-    }
-
-    // The same rule as the calculator's gate: an email that already produced a
-    // lead in this tab unlocks again without filing a second one.
-    if (isLeadAlreadyCaptured(lead.email)) {
-      onUnlock(lead)
-      return
-    }
-
     setIsSubmitting(true)
-    try {
-      const res = await fetch('/api/leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName: lead.name,
-          email: lead.email,
-          phone: lead.phone,
-          company: lead.company,
-          service: 'fbo',
-          message: `Rate sheet request:
-- Viewed: ${SCHEDULE_DOCUMENT.title}, ${SCHEDULE_DOCUMENT.ref} v${SCHEDULE_DOCUMENT.version}
-- Company: ${lead.company}
-- Phone: ${lead.phone} (${regionName(parsed.country ?? country)})`,
-          tracking: getTrackingContext('pricing_rate_sheet_gate'),
-          website: honeypot,
-        }),
-      })
-      const data = await res.json().catch(() => null)
-
-      if (!res.ok || !data?.success) {
-        setSubmitError(data?.error ?? 'Could not submit your details. Please try again.')
-        return
-      }
-
-      markLeadCaptured(lead.email)
-      onUnlock(lead)
-    } catch {
-      setSubmitError('Network error submitting your details. Please try again.')
-    } finally {
+    const error = await onSubmit({
+      lead: {
+        name: name.trim().replace(/\s+/g, ' '),
+        company: company.trim(),
+        email: email.trim().toLowerCase(),
+        phone: parsed.intl ?? phone.trim(),
+      },
+      phoneRegion: regionName(parsed.country ?? country),
+      honeypot,
+    })
+    // On success the gate unmounts, so only a failure has state left to set.
+    if (error) {
+      setSubmitError(error)
       setIsSubmitting(false)
     }
   }
 
   const fieldClass = (key: FieldKey) =>
-    `w-full min-w-0 bg-ean-navy border rounded-lg px-3 py-2.5 font-ui text-[15px] text-ean-text-light placeholder:text-ean-text-light/20 focus:outline-2 focus:outline-ean-gold-light focus:border-transparent ${
+    `w-full min-w-0 bg-ean-white border rounded-[2px] px-4 py-3.5 font-ui text-[15px] text-ean-text-light placeholder:text-ean-slate focus:outline-2 focus:outline-ean-gold-light focus:border-transparent ${
       errors[key] ? 'border-ean-error' : 'border-ean-border-light'
     }`
-  const labelClass = 'font-ui text-[12.5px] font-medium text-ean-muted-light'
   const errorText = (key: FieldKey) => (
-    <span id={`${inputId(key)}-error`} className="font-ui text-xs text-ean-error" aria-live="polite">
+    <span id={`${inputId(key)}-error`} className="mt-[5px] empty:mt-0 font-ui text-xs text-ean-error" aria-live="polite">
       {errors[key]}
     </span>
   )
@@ -248,11 +242,10 @@ export default function RateSheetGate({ lib, prefill, onUnlock }: RateSheetGateP
     key: Exclude<FieldKey, 'phone'>,
     label: string,
     setter: (v: string) => void,
-    props: React.InputHTMLAttributes<HTMLInputElement>,
-    isFull = false
+    props: React.InputHTMLAttributes<HTMLInputElement>
   ) => (
-    <div className={`grid gap-[5px] min-w-0 ${isFull ? 'sm:col-span-2' : ''}`}>
-      <label htmlFor={inputId(key)} className={labelClass}>{label}</label>
+    <div className="flex flex-col min-w-0">
+      <label htmlFor={inputId(key)} className="sr-only">{label}</label>
       <input
         id={inputId(key)}
         value={values[key]}
@@ -260,6 +253,7 @@ export default function RateSheetGate({ lib, prefill, onUnlock }: RateSheetGateP
         onBlur={handleBlur(key)}
         aria-invalid={Boolean(errors[key])}
         aria-describedby={`${inputId(key)}-error`}
+        placeholder={label}
         className={fieldClass(key)}
         {...props}
       />
@@ -270,87 +264,105 @@ export default function RateSheetGate({ lib, prefill, onUnlock }: RateSheetGateP
   return (
     <section
       id={GATE_ID}
-      aria-labelledby="rate-gate-heading"
-      className="grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)] bg-ean-white border border-ean-border-light rounded-[14px] overflow-hidden scroll-mt-24"
+      aria-labelledby="quote-gate-heading"
+      className="bg-ean-white border border-ean-border-light rounded-[4px] shadow-[0_1px_2px_var(--color-ean-blue-muted)] scroll-mt-28"
     >
-      <div className="bg-ean-blue-muted px-6 py-[26px] grid gap-3 content-start">
-        <span className="w-[38px] h-[38px] rounded-[10px] bg-ean-gold text-ean-text-dark grid place-items-center" aria-hidden="true">
-          <Lock className="w-[18px] h-[18px]" />
-        </span>
-        <h2 id="rate-gate-heading" className="font-display font-normal text-[22px] leading-tight text-ean-text-light text-balance">
-          Enter your details to see our rates
-        </h2>
-        <p className="font-ui text-sm text-ean-muted-light">
-          Rates are shown once we know who we&apos;re quoting for, so the right member of our dispatch team can
-          follow up.
-        </p>
-        <ul className="mt-1 grid gap-2 font-ui text-[13.5px] text-ean-muted-light">
-          {[
-            `All ${SCHEDULE_SERVICE_COUNT} services, across all five weight bands`,
-            'Fuel and disbursement terms',
-            'Takes about 30 seconds',
-          ].map((point) => (
-            <li key={point} className="flex gap-[9px] items-start">
-              <Check className="w-4 h-4 mt-0.5 flex-none text-ean-gold" strokeWidth={2.2} aria-hidden="true" />
-              {point}
-            </li>
-          ))}
-        </ul>
+      {/* The quote's own heading on the blue band, so the visitor sees which
+          aircraft they are about to be quoted for before they give details. */}
+      <div className="bg-ean-gold text-ean-text-dark px-5 py-[22px] sm:px-[34px] sm:pt-[26px] sm:pb-6 rounded-t-[4px]">
+        <div key={title} className="ean-swap font-ui font-medium text-[clamp(24px,2.6vw,32px)] leading-[1.15] text-balance">
+          {title}
+        </div>
+        <div className="mt-1.5 font-ui text-[15px] text-ean-text-dark/85">{subtitle}</div>
+        <div className="mt-2.5 font-ui text-[13.5px] text-ean-text-dark/75">{serviceSummary}</div>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate className="relative p-6 grid sm:grid-cols-2 gap-x-4 gap-y-3.5">
-        <HoneypotField value={honeypot} onChange={setHoneypot} />
-        {textField('name', 'Full name', setName, { name: 'name', autoComplete: 'name', placeholder: 'Adaeze Okafor' })}
-        {textField('company', 'Company name', setCompany, {
-          name: 'company',
-          autoComplete: 'organization',
-          placeholder: 'Operator or management company',
-        })}
-        {textField(
-          'email',
-          'Work email',
-          setEmail,
-          { name: 'email', type: 'email', autoComplete: 'email', inputMode: 'email', placeholder: 'name@company.com' },
-          true
-        )}
-
-        <div className="grid gap-[5px] min-w-0 sm:col-span-2">
-          <label htmlFor={inputId('phone')} className={labelClass}>Phone number</label>
-          <CountryPhoneField
-            inputId={inputId('phone')}
-            describedBy={`${inputId('phone')}-error`}
-            lib={lib}
-            country={country}
-            onCountryChange={handleCountryChange}
-            value={phone}
-            onValueChange={handleChange('phone', setPhone)}
-            onBlur={handlePhoneBlur}
-            isInvalid={Boolean(errors.phone)}
-          />
-          {errorText('phone')}
+      <div className="relative px-3.5 py-[22px] sm:px-[34px] sm:pt-[34px] sm:pb-[30px]">
+        {/* The quote lines, blurred: a preview of what the form unlocks.
+            Decorative — the rows carry no prices. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-[18px] inset-y-[26px] grid content-start gap-4 blur-[7px] opacity-55 pointer-events-none select-none"
+        >
+          {previewRows.map((row, i) => (
+            <div key={`${row}-${i}`} className="flex justify-between gap-4 font-ui text-sm text-ean-gold">
+              <span>{row}</span>
+              <b className="w-[72px] h-3 self-center rounded bg-ean-muted-dark" />
+            </div>
+          ))}
+          <div className="flex justify-between gap-4 border-t-2 border-ean-gold pt-3 font-ui text-sm font-semibold text-ean-gold">
+            <span>Estimated total</span>
+            <b className="w-[72px] h-3 self-center rounded bg-ean-muted-dark" />
+          </div>
         </div>
 
-        <div className="sm:col-span-2 flex justify-between items-center gap-3.5 flex-wrap pt-1">
-          <p className="m-0 font-ui text-xs text-ean-slate max-w-[44ch]">
-            By continuing you agree that EAN Aviation may contact you about your enquiry. We don&apos;t share your
-            details.
-          </p>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="inline-flex items-center gap-2 rounded-lg bg-ean-gold hover:bg-ean-gold-light px-4 py-2.5 font-ui text-sm font-medium text-ean-text-dark cursor-pointer transition-colors disabled:opacity-55 disabled:cursor-not-allowed"
+        <div className="relative z-1 mx-auto max-w-[480px] bg-ean-navy border border-ean-border-light px-[18px] py-[22px] sm:px-[34px] sm:pt-[30px] sm:pb-[26px]">
+          <span className="inline-flex items-center gap-2 rounded-full bg-ean-white px-3.5 py-[7px] font-ui text-sm font-medium shadow-[0_1px_4px_var(--color-ean-blue-border)]">
+            <i className="w-[9px] h-[9px] rounded-full bg-ean-gold" aria-hidden="true" />
+            See your quote
+          </span>
+          <h2
+            id="quote-gate-heading"
+            className="mt-[18px] mb-1.5 font-ui font-semibold text-[22px] leading-[1.3] text-ean-text-light text-balance"
           >
-            {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />}
-            {isSubmitting ? 'Revealing prices…' : 'Reveal prices'}
-          </button>
-        </div>
-
-        {submitError && (
-          <p role="alert" className="sm:col-span-2 m-0 font-ui text-[13px] text-ean-error">
-            {submitError}
+            Enter your details to see your quote
+          </h2>
+          <p className="mt-0 mb-[18px] font-ui text-[15px] text-ean-muted-light">
+            So our team can follow up and prepare your handling.
           </p>
-        )}
-      </form>
+
+          <form onSubmit={handleSubmit} noValidate className="relative grid gap-3">
+            <HoneypotField value={honeypot} onChange={setHoneypot} />
+            {textField('name', 'Full name', setName, { name: 'name', autoComplete: 'name' })}
+            {textField('company', 'Company name', setCompany, { name: 'company', autoComplete: 'organization' })}
+            {textField('email', 'Email', setEmail, {
+              name: 'email',
+              type: 'email',
+              autoComplete: 'email',
+              inputMode: 'email',
+            })}
+
+            <div className="flex flex-col min-w-0">
+              <label htmlFor={inputId('phone')} className="sr-only">Phone / WhatsApp</label>
+              <CountryPhoneField
+                inputId={inputId('phone')}
+                describedBy={`${inputId('phone')}-error`}
+                lib={lib}
+                country={country}
+                onCountryChange={handleCountryChange}
+                value={phone}
+                onValueChange={handleChange('phone', setPhone)}
+                onBlur={handlePhoneBlur}
+                isInvalid={Boolean(errors.phone)}
+              />
+              {errorText('phone')}
+            </div>
+
+            <div className="grid gap-2.5 pt-0.5">
+              <button
+                type="submit"
+                disabled={!isReady || isSubmitting}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-[2px] bg-ean-gold hover:bg-ean-gold-light px-4 py-[15px] font-ui text-base font-semibold text-ean-text-dark shadow-ean-gold cursor-pointer transition-colors disabled:opacity-55 disabled:cursor-not-allowed disabled:hover:bg-ean-gold"
+              >
+                {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />}
+                {isSubmitting ? 'Preparing your quote…' : 'See Quote'}
+              </button>
+              <p className="m-0 text-center font-ui text-[13px] text-ean-muted-light" aria-live="polite">
+                {hint}
+              </p>
+              {submitError && (
+                <p role="alert" className="m-0 text-center font-ui text-[13px] text-ean-error">
+                  {submitError}
+                </p>
+              )}
+              <p className="m-0 text-center font-ui text-[11.5px] text-ean-slate">
+                By continuing you agree that EAN Aviation may contact you about your enquiry. We don&apos;t share
+                your details.
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
     </section>
   )
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Navbar from '@/components/layout/Navbar'
-import RateSheet from '@/components/pricing/RateSheet'
+import QuoteBuilder from '@/components/pricing/QuoteBuilder'
 import JsonLd from '@/components/shared/JsonLd'
 import { buildMetadata, breadcrumbSchema, PAGE_SEO } from '@/lib/seo'
 
@@ -9,6 +9,9 @@ import { buildMetadata, breadcrumbSchema, PAGE_SEO } from '@/lib/seo'
 // the site root via metadataBase and shared as a bare link.
 export const metadata: Metadata = buildMetadata(PAGE_SEO.pricing)
 
+// The quote builder. Since October 2026 it is the whole pricing page: it
+// replaced both the published rate sheet that was here and the calculator at
+// /pricing/quote, which now redirects here.
 export default function PricingPage() {
   return (
     <>
@@ -18,11 +21,11 @@ export default function PricingPage() {
           { name: 'Pricing', path: '/pricing' },
         ])}
       />
-      {/* The hero is the brand-blue band, not a photograph, but it is dark all
-          the same — the bar needs its white-on-dark palette at rest. */}
+      {/* The hero is a photograph under a dark scrim — the bar needs its
+          white-on-dark palette at rest. */}
       <Navbar hasPhotoHero />
       <main className="flex-1">
-        <RateSheet />
+        <QuoteBuilder />
       </main>
     </>
   )
