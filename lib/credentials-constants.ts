@@ -56,7 +56,7 @@ export const ISSUERS: Issuer[] = [
     shortName: 'NCAA',
     logo: { src: '/images/History/ncaa.png', width: 192, height: 192 },
   },
-  
+
   {
     id: 'ibac',
     name: 'International Business Aviation Council',
@@ -212,6 +212,47 @@ export function currentCertificates(now: Date = new Date()): Certificate[] {
   return CERTIFICATES.filter(
     (certificate) => !certificate.validUntil || certificate.validUntil >= today,
   );
+}
+
+/**
+ * The certificates in the bottom-right corner of each /services/[slug] hero,
+ * keyed by service slug, in the order the corner deals them. Chosen by the CEO
+ * in November 2026. A service with no entry shows no corner.
+ */
+export const SERVICE_CERTIFICATES: Record<string, string[]> = {
+  'aircraft-maintenance': ['ncaa-amo'],
+  'wings-catering': ['ncaa-inflight-catering'],
+  'fbo-ground-support': [
+    'ncaa-pncf',
+    'ncaa-agent-of-foreign-airlines',
+    'ncaa-facility-approval-2011',
+  ],
+  'aircraft-charter': ['ncaa-agent-of-foreign-airlines'],
+};
+
+/**
+ * Services whose hero corner also says "View certificate" under the sheet.
+ * Every other corner is the bare certificate alone.
+ */
+export const SERVICES_WITH_CERTIFICATE_LABEL: ReadonlySet<string> = new Set([
+  'wings-catering',
+  'aircraft-charter',
+  'aircraft-maintenance',
+]);
+
+/**
+ * A service's corner certificates that are still in force, in order. An id
+ * that names no certificate at all throws, so a typo fails the build rather
+ * than quietly emptying a corner; one that has merely lapsed drops out.
+ */
+export function certificatesForService(slug: string, now: Date = new Date()): Certificate[] {
+  const inForce = new Map(currentCertificates(now).map((certificate) => [certificate.id, certificate]));
+  return (SERVICE_CERTIFICATES[slug] ?? []).flatMap((id) => {
+    if (!CERTIFICATES.some((certificate) => certificate.id === id)) {
+      throw new Error(`Unknown certificate in SERVICE_CERTIFICATES['${slug}']: ${id}`);
+    }
+    return inForce.get(id) ?? [];
+  });
 }
 
 /** "2027-03-31" → "31 March 2027". Parsed as UTC so no timezone shifts the day. */
