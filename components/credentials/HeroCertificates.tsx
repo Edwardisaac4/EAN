@@ -29,11 +29,7 @@ const TUCK_MS = 450;
 const PILE_MOTION =
   'transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none';
 
-/**
- * Where each sheet sits by its depth in the pile (0 is the top), in degrees
- * and in pile units: 1px from lg up, scaled down with the sheets below that
- * (--pile-unit on the button), so the phone pile keeps the same shape.
- */
+/** Where each sheet sits by its depth in the pile (0 is the top), in px and degrees. */
 const PILE_SLOTS = [
   { x: 0, y: 0, rotate: 0 },
   { x: 12, y: -8, rotate: 7 },
@@ -69,17 +65,17 @@ function sheetSize(certificate: Certificate): { width: string; height: string } 
  * in the viewer, which also steps through the rest.
  *
  * Out of flow, pinned to the hero section, so it adds no height to the hero.
- * From lg it is the corner beside the button row. Below lg the copy and
- * buttons take the full width, so a pile shrinks to 32px in the strip of
- * bottom padding under the buttons, where a tap opens the full-screen viewer;
- * a lone certificate is not shown there at all.
+ * Desktop only: it is the corner beside the button row from lg. Below lg the
+ * copy and buttons take the full width, leaving no corner, so phones and
+ * tablets get ServiceCertificateList in the page's "Operational Base &
+ * Facilities" box instead.
  *
  * Built to leave the page's load untouched (AGENTS.md §8). The first sheet is
  * in the server HTML; the others get their images once the browser is idle. A
- * sheet is at most 160px wide (32px on a phone, a few KB), far smaller than
- * the hero photograph that is these pages' LCP element, so it cannot take LCP
- * however late it paints. Where it is display:none (a lone certificate below
- * lg) it is lazy, so the phone never fetches it.
+ * sheet is at most 160px wide, far smaller than the hero photograph that is
+ * these pages' LCP element, so it cannot take LCP however late it paints.
+ * Below lg it is display:none and its images are lazy, so a phone never
+ * fetches them.
  */
 export default function HeroCertificates({ certificates, showLabel = false }: HeroCertificatesProps) {
   const count = certificates.length;
@@ -176,22 +172,18 @@ export default function HeroCertificates({ certificates, showLabel = false }: He
 
     return {
       ...sheetSize(certificates[index]),
-      transform: `translate(calc(${x} * var(--pile-unit)), calc(${y} * var(--pile-unit))) rotate(${slot.rotate * scale}deg)`,
+      transform: `translate(${x}px, ${y}px) rotate(${slot.rotate * scale}deg)`,
       zIndex: isTucking ? count + 1 : count - depth,
       opacity: isVisible ? 1 : 0,
     };
   };
 
   return (
-    // A lone certificate stays desktop-only: shrunk to phone size, a single
-    // sheet (a landscape one especially) is a speck, not a certificate.
-    <div className={`pointer-events-none absolute inset-x-0 bottom-0 z-10 ${isPile ? 'block' : 'hidden lg:block'}`}>
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 hidden lg:block">
       {/* The same container as the hero copy, so the sheet's right edge lines
-          up with the page's. From lg, pb-16 matches the section's own, which
-          puts its foot level with the button row on a laptop-height window.
-          Below lg the buttons span the width, so the pile shrinks into the
-          section's 64px bottom padding beneath them instead. */}
-      <div className="mx-auto flex max-w-ean justify-end px-6 pb-2.5 md:px-8 lg:pb-16">
+          up with the page's. pb-16 matches the section's own, which puts its
+          foot level with the button row on a laptop-height window. */}
+      <div className="mx-auto flex max-w-ean justify-end px-8 pb-16">
         <button
           type="button"
           onClick={openViewer}
@@ -200,7 +192,7 @@ export default function HeroCertificates({ certificates, showLabel = false }: He
           onFocus={engage}
           onBlur={() => setIsEngaged(false)}
           aria-label={`View certificate: ${current.title}`}
-          className="group pointer-events-auto relative block aspect-3/4 w-8 cursor-pointer [--pile-unit:0.3px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white lg:w-32 lg:[--pile-unit:1px] xl:w-40"
+          className="group pointer-events-auto relative block aspect-3/4 w-32 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white xl:w-40"
         >
           {certificates.map((certificate, index) => (
             // Sized to the sheet itself and anchored bottom-right, so a
@@ -220,7 +212,7 @@ export default function HeroCertificates({ certificates, showLabel = false }: He
                   src={certificate.scan.src}
                   alt={`${certificate.title}, issued by ${getIssuer(certificate.issuer).name}`}
                   fill
-                  sizes="(min-width: 1280px) 160px, (min-width: 1024px) 128px, 32px"
+                  sizes="(min-width: 1280px) 160px, 128px"
                   quality={80}
                   className="object-contain select-none [-webkit-touch-callout:none]"
                   {...VIEW_ONLY_PROPS}
