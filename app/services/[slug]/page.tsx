@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 
 import HeroCertificates from '@/components/credentials/HeroCertificates';
+import ServiceCertificateList from '@/components/credentials/ServiceCertificateList';
 import Navbar from '@/components/layout/Navbar';
 import GoldButton from '@/components/shared/GoldButton';
 import OutlineButton from '@/components/shared/OutlineButton';
@@ -196,7 +197,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
             </div>
           </div>
 
-          {/* Pinned to the hero's bottom-right, out of flow, so it adds no height. */}
+          {/* Desktop: pinned to the hero's bottom-right, out of flow, so it adds no height. */}
           {heroCertificates.length > 0 && (
             <HeroCertificates
               certificates={heroCertificates}
@@ -250,14 +251,26 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                     {service.extendedDescription || service.short}
                   </p>
 
-                  <div className="p-6 bg-white border border-ean-border-light space-y-4 shadow-sm">
-                    <h3 className="font-ui text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-ean-gold" />
-                      Operational Base & Facilities
-                    </h3>
-                    <p className="font-ui text-xs sm:text-sm text-slate-600 leading-relaxed">
-                      All operations are conducted under strict regulatory guidelines at EAN Aviation&apos;s private terminal and maintenance hangar at Murtala Muhammed International Airport (MMIA), Ikeja, Lagos.
-                    </p>
+                  <div className="p-6 bg-white border border-ean-border-light shadow-sm">
+                    <div className="space-y-4">
+                      <h3 className="font-ui text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-ean-gold" />
+                        Operational Base & Facilities
+                      </h3>
+                      <p className="font-ui text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        All operations are conducted under strict regulatory guidelines at EAN Aviation&apos;s private terminal and maintenance hangar at Murtala Muhammed International Airport (MMIA), Ikeja, Lagos.
+                      </p>
+                    </div>
+
+                    {/* Phones and tablets: the certificates, as the proof of
+                        the sentence above (the hero corner is desktop-only).
+                        Outside the space-y stack: Tailwind v4's space-y margins
+                        every child but the last, so as its last child this would
+                        add 16px under the paragraph on desktop, where it is
+                        hidden. */}
+                    {heroCertificates.length > 0 && (
+                      <ServiceCertificateList certificates={heroCertificates} className="mt-5 lg:hidden" />
+                    )}
                   </div>
 
                   {/* 24/7 Operations Desk Callout */}
