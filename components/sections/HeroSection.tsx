@@ -299,12 +299,17 @@ export default function HeroSection() {
   const titleLines = slide.title.split('\n');
   let wordIndex = 0;
 
+  // One screen tall, never more — `svh`, so a phone's toolbar cannot cover the
+  // bottom either. The 600px floor only protects the copy on a very short
+  // window; the 700px and 760px floors this once had at md and lg were taller
+  // than most laptop windows (1280×720 at 150% leaves about 620px), which put
+  // the bottom of the photograph, the dots and the scroll cue below the fold.
   return (
     <div
       ref={containerRef}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative w-full h-screen min-h-150 md:min-h-175 lg:min-h-190 overflow-hidden bg-ean-navy flex items-center select-none"
+      className="relative w-full h-svh min-h-150 overflow-hidden bg-ean-navy flex items-center select-none"
     >
       {/* Background Slides Container — single parallax layer */}
       <div
@@ -349,8 +354,12 @@ export default function HeroSection() {
           );
         })}
 
-        {/* Luminous overlays for high image visibility and clean text contrast */}
-        <div className="absolute inset-0 z-2 bg-linear-to-r from-black/65 via-black/25 to-transparent" />
+        {/* The Services band's pair, which the /airborne bands also carry: a
+            flat 25% black over the whole frame and a left-weighted ramp under
+            the copy. The vertical ramp is the hero's own, for the bar above and
+            the dots and scroll cue below. */}
+        <div className="absolute inset-0 z-2 bg-black/25" />
+        <div className="absolute inset-0 z-2 bg-linear-to-r from-black/90 via-black/65 via-55% to-transparent" />
         <div className="absolute inset-0 z-2 bg-linear-to-t from-black/45 via-transparent to-black/35" />
       </div>
 
