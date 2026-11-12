@@ -330,7 +330,7 @@ export const HERO_SLIDES: HeroSlide[] = [
       "NCAA-Approved Maintenance",
       "VIP Ground Handling",
     ],
-    image: "/images/Sliders/First Slide.jpg",
+    image: "/images/Sliders/slide one new.jpg",
     primaryCta: {
       text: "Make an Inquiry",
       href: "#contact-section",
