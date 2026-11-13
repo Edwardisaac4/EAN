@@ -149,6 +149,16 @@ export const PAGE_SEO = {
     path: "/services",
     image: "/images/vip-lounge.jpg",
   },
+  findAircraft: {
+    title: "Find the Right Aircraft | Aircraft Sales & Leasing — EAN Aviation",
+    description:
+      "Buying or leasing a business jet, commercial aircraft or helicopter? Answer a few quick questions and EAN's sales and leasing team will come back with aircraft and terms that fit your mission.",
+    path: "/find-aircraft",
+    image: "/images/tarmac-soft-web.jpg",
+    // Out of search until the Sales & Leasing page links to it and the
+    // contact step sends a lead.
+    noIndex: true,
+  },
   charter: {
     title: "Request a Charter | Private Jet & Helicopter Charter — EAN Aviation",
     description:

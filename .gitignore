@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# internal planning docs — kept on disk, not in the repo
+/docs/EAN Aviation - Website Inquiry Flow & Brochure Guide.docx
