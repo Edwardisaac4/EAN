@@ -160,9 +160,9 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
                 {/*
-                 * Charter is the one service with a request form of its own, and
-                 * before this the page had no route to it: both CTAs here went to
-                 * the general contact form. Where `requestFormHref` is set it
+                 * Charter and Sales & Leasing have request forms of their own,
+                 * and before this the page had no route to them: both CTAs here
+                 * went to the general contact form. Where `requestFormHref` is set it
                  * takes the primary slot and the inquiry button steps down to an
                  * outline — two gold buttons abreast give the row no hierarchy,
                  * and the form is the stronger path for someone who already
@@ -188,11 +188,13 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                     </GoldButton>
                   )}
                 </Link>
-                <Link href="/services">
-                  <OutlineButton className="w-full sm:w-auto text-white border-white/40 hover:border-white">
-                    Explore Other Services
-                  </OutlineButton>
-                </Link>
+                {service.hasExploreButton !== false && (
+                  <Link href="/services">
+                    <OutlineButton className="w-full sm:w-auto text-white border-white/40 hover:border-white">
+                      Explore Other Services
+                    </OutlineButton>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

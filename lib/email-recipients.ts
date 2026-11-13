@@ -30,6 +30,16 @@ export const PRICING_RECIPIENTS: readonly string[] = [
 ]
 
 /**
+ * The Aircraft Sales & Leasing enquiry on /find-aircraft: the head of sales and
+ * the head of marketing. Its own list rather than LEAD_RECIPIENTS, because each
+ * of these arrives already scored Hot, Warm or Cold for the sales team to act on.
+ */
+export const SALES_LEASING_RECIPIENTS: readonly string[] = [
+  'boyede.oyegbami@ean.aero',
+  'josephine.kolawole@ean.aero',
+]
+
+/**
  * The /feedback form. Every submission goes to both, from clients and
  * operators alike. Routing by `feedback.audience` / `type` was deliberately
  * left out when the form shipped (October 2026); if it is wanted, add it in
