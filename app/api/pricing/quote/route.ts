@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse, after } from 'next/server'
 import { z } from 'zod'
 import { buildQuote } from '@/lib/pricing/calculations'
 import { QuoteState } from '@/types/pricing'
@@ -225,10 +225,14 @@ export async function POST(request: NextRequest) {
         } else {
           savedToDb = true
           leadCode = created.lead_code
-          // Fire-and-forget, as on /api/leads: the visitor's quote does not
-          // wait on the email.
-          sendNewLeadAlert(created, { audience: 'pricing' }).catch((err) =>
-            console.error('Pricing quote email alert failed:', err)
+          // After the response, as on /api/leads: the visitor's quote does not
+          // wait on the email, and `after` keeps the function alive until it
+          // is sent. An unawaited promise here lost every quote alert from
+          // 4 Nov 2026 on.
+          after(() =>
+            sendNewLeadAlert(created, { audience: 'pricing' }).catch((err) =>
+              console.error('Pricing quote email alert failed:', err)
+            )
           )
         }
       }

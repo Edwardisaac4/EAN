@@ -3,7 +3,7 @@
 // Connected to Supabase via leads-service
 // =============================================================================
 
-import { NextResponse } from 'next/server'
+import { NextResponse, after } from 'next/server'
 import { requireAdmin } from '@/lib/auth-guard'
 import { createLead, getLeads, findRecentDuplicateLead } from '@/lib/services/leads-service'
 import {
@@ -208,12 +208,18 @@ export async function POST(request: Request) {
       return dbError('Failed to submit inquiry. Please try again.')
     }
 
-    // Fire-and-forget email alert (non-blocking)
+    // Sent after the response, so the visitor's confirmation does not wait on
+    // the email. `after` keeps the function running until the send finishes. A
+    // bare unawaited promise does not: Vercel can freeze the function as soon
+    // as the response is out, and from 4 to 17 Nov 2026 that lost the alert for
+    // every real lead. The lead is already saved if the email fails.
     // A quote from the /pricing builder goes to the pricing list; every other
     // form here goes to the general one. See lib/email-recipients.ts.
     const audience = payload.tracking?.formId === QUOTE_FORM_ID ? 'pricing' : 'general'
-    sendNewLeadAlert(lead, { audience }).catch((err) =>
-      console.error('Lead email alert failed:', err)
+    after(() =>
+      sendNewLeadAlert(lead, { audience }).catch((err) =>
+        console.error('Lead email alert failed:', err)
+      )
     )
 
     return NextResponse.json(
