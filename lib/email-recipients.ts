@@ -15,6 +15,7 @@ export const LEAD_RECIPIENTS: readonly string[] = [
   'marketing@ean.aero',
   'josephine.kolawole@ean.aero',
   'yuwa.abu@ean.aero',
+  'boyede.oyegbami@ean.aero',
 ]
 
 /**
@@ -27,6 +28,7 @@ export const PRICING_RECIPIENTS: readonly string[] = [
   'josephine.kolawole@ean.aero',
   'ann.umeh@ean.aero',
   'babatunde.adeniji@ean.aero',
+  'boyede.oyegbami@ean.aero',
 ]
 
 /**
