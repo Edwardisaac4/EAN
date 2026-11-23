@@ -103,12 +103,19 @@ export interface ServiceRichData {
   /**
    * A request form dedicated to this service, where one exists. Rendered as the
    * leading CTA on `/services/[slug]`, ahead of the general contact-form
-   * inquiry. Only Charter has one today (`/charter`); every other service is
-   * served by `/contact?service=<slug>`, so leave this unset for them rather
-   * than pointing it back at the contact page and duplicating that button.
+   * inquiry. Charter (`/charter`) and Sales & Leasing (`/find-aircraft`) have
+   * one; every other service is served by `/contact?service=<slug>`, so leave
+   * this unset for them rather than pointing it back at the contact page and
+   * duplicating that button.
    */
   requestFormHref?: string;
   requestFormText?: string;
+  /**
+   * The hero's "Explore Other Services" button. Defaults to shown. Set false
+   * where the hero should keep to two buttons; the page still has the "All
+   * Aviation Services" link above the title and the other services at the foot.
+   */
+  hasExploreButton?: boolean;
 }
 
 export interface FAQItem {
@@ -577,6 +584,9 @@ export const SERVICES_DATA: ServiceRichData[] = [
     imagePosition: "50% 70%",
     primaryButtonText: "MAKE AN INQUIRY",
     primaryButtonHref: "/contact?service=aircraft-sales-leasing",
+    requestFormHref: "/find-aircraft",
+    requestFormText: "Find the Right Aircraft",
+    hasExploreButton: false,
   },
   {
     slug: "aircraft-charter",
